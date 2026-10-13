@@ -1,0 +1,34 @@
+package dev.umbra.registry;
+
+import dev.umbra.Umbra;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public final class ModTabs {
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Umbra.MODID);
+
+    /** Every Umbra item. New items: add them to the list below. */
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = TABS.register("main", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.umbra"))
+            .icon(() -> ModItems.DISPELLER.get().getDefaultInstance())
+            .displayItems((params, out) -> {
+                out.accept(ModItems.DISPELLER.get());
+                out.accept(ModItems.MIRROR.get());
+                out.accept(ModItems.ETERNAL_TORCH.get());
+                out.accept(ModItems.LUMINITE_LAMP.get());
+                out.accept(ModItems.LUMINITE_CRYSTAL.get());
+                out.accept(ModItems.LUMINITE_ORE.get());
+                out.accept(ModItems.DEEPSLATE_LUMINITE_ORE.get());
+                out.accept(ModItems.SHADOW_SHARD.get());
+                out.accept(ModItems.SEDATIVE.get());
+                out.accept(ModItems.ANTIPSYCHOTIC.get());
+                out.accept(ModItems.QUANTUM_BLOCK.get());
+                out.accept(ModItems.MAZE_WALL.get());
+            })
+            .build());
+
+    private ModTabs() {}
+}

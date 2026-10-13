@@ -1,6 +1,8 @@
 package dev.umbra.mimic;
 
 import dev.umbra.Umbra;
+import dev.umbra.UmbraConfig;
+import dev.umbra.sanity.Sanity;
 import dev.umbra.registry.ModAttachments;
 import dev.umbra.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
@@ -56,7 +58,8 @@ public final class MimicManager {
             AWAY.put(player.getUUID(), away + 20);
         } else if (dist < RETURN_DISTANCE && away > 0) {
             AWAY.put(player.getUUID(), 0);
-            if (away >= MIN_AWAY_TICKS && !player.isCreative() && level.getRandom().nextFloat() < 0.6F) {
+            float chance = Math.min(0.95F, 0.6F * (float) Math.sqrt(Sanity.dread(player)));
+            if (away >= MIN_AWAY_TICKS && !player.isCreative() && UmbraConfig.on(UmbraConfig.MIMICS) && level.getRandom().nextFloat() < chance) {
                 int count = 1 + level.getRandom().nextInt(2);
                 int placed = substitute(level, home, count, level.getRandom());
                 Umbra.LOGGER.debug("Placed {} mimics around {}'s home", placed, player.getName().getString());

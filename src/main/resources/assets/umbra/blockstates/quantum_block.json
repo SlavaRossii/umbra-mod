@@ -1,9 +1,15 @@
 {
   "variants": {
-    "open=false": {
+    "linked=false,open=false": {
       "model": "umbra:block/maze_wall"
     },
-    "open=true": {
+    "linked=true,open=false": {
+      "model": "umbra:block/maze_wall"
+    },
+    "linked=false,open=true": {
+      "model": "umbra:block/quantum_block_open"
+    },
+    "linked=true,open=true": {
       "model": "umbra:block/quantum_block_open"
     }
   }

@@ -1,5 +1,6 @@
 package dev.umbra.darkness;
 
+import dev.umbra.light.DarknessProof;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -82,7 +83,7 @@ public class LivingDarknessBlock extends Block {
         double bestDist = Double.MAX_VALUE;
         for (BlockPos p : BlockPos.betweenClosed(pos.offset(-TORCH_SEARCH, -TORCH_SEARCH / 2, -TORCH_SEARCH), pos.offset(TORCH_SEARCH, TORCH_SEARCH / 2, TORCH_SEARCH))) {
             Block b = level.getBlockState(p).getBlock();
-            if (b instanceof BaseTorchBlock && !(b instanceof RedstoneTorchBlock)) {
+            if (b instanceof BaseTorchBlock && !(b instanceof RedstoneTorchBlock) && !(b instanceof DarknessProof)) {
                 double d = p.distSqr(pos);
                 if (d < bestDist) {
                     bestDist = d;

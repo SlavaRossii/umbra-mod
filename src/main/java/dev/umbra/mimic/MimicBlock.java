@@ -1,5 +1,6 @@
 package dev.umbra.mimic;
 
+import dev.umbra.sanity.Sanity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -110,6 +111,7 @@ public class MimicBlock extends Block {
         }
         for (Player p : level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(6.0))) {
             p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));
+            Sanity.add(p, Sanity.Shock.MIMIC_SPRUNG);
         }
     }
 }

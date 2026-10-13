@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:sugar",
+    "minecraft:paper",
+    "umbra:luminite_crystal"
+  ],
+  "result": {
+    "count": 3,
+    "id": "umbra:sedative"
+  }
+}

@@ -1,6 +1,8 @@
 package dev.umbra.shadow;
 
 import dev.umbra.Umbra;
+import dev.umbra.UmbraConfig;
+import dev.umbra.sanity.Sanity;
 import dev.umbra.registry.ModEntities;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
@@ -75,7 +77,9 @@ public final class ShadowManager {
                 return;
             }
             if (player.isCreative() || s.cooldown > 0 || s.trail.size() < MIN_TRAIL_TO_SPAWN) return;
-            if (player.getRandom().nextInt(SPAWN_CHANCE) != 0) return;
+            if (!UmbraConfig.on(UmbraConfig.SHADOW)) return;
+            double chance = UmbraConfig.num(UmbraConfig.SHADOW_FREQUENCY) * Sanity.dread(player) / SPAWN_CHANCE;
+            if (player.getRandom().nextDouble() >= chance) return;
             spawn(level, player, s, false);
             return;
         }
@@ -144,6 +148,7 @@ public final class ShadowManager {
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 0.35F, 0.5F);
         player.sendOverlayMessage(Component.translatable("message.umbra.shadow_detached"));
+        Sanity.add(player, Sanity.Shock.SHADOW_DETACHED);
         Umbra.LOGGER.debug("Shadow detached for {} at {}", player.getName().getString(), start);
         return true;
     }
@@ -199,6 +204,7 @@ public final class ShadowManager {
         player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20 * 6, 1));
         player.hurtServer(level, level.damageSources().magic(), 7.0F);
         player.sendOverlayMessage(Component.translatable("message.umbra.shadow_caught"));
+        Sanity.add(player, Sanity.Shock.SHADOW_CAUGHT);
         shadow.dissipate();
         s.shadowId = null;
         s.trail.clear();

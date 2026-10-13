@@ -1,11 +1,18 @@
 package dev.umbra.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.umbra.darkness.DarknessManager;
 import dev.umbra.mimic.MimicManager;
+import dev.umbra.quantum.MazeController;
+import dev.umbra.quantum.MazePattern;
+import dev.umbra.quantum.MazePatterns;
 import dev.umbra.quantum.QuantumMaze;
+import dev.umbra.sanity.Hallucinations;
+import dev.umbra.sanity.Sanity;
 import dev.umbra.shadow.ShadowManager;
 import dev.umbra.steps.StepsManager;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,8 +30,15 @@ public final class UmbraCommand {
     private UmbraCommand() {}
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralArgumentBuilder<CommandSourceStack> patterns = Commands.literal("mazepattern");
+        for (MazePattern p : MazePatterns.ALL) {
+            patterns.then(Commands.literal(p.id()).executes(ctx -> mazePattern(ctx, p.id())));
+        }
         dispatcher.register(Commands.literal("umbra")
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(patterns)
+                .then(Commands.literal("sanity").then(Commands.argument("value", FloatArgumentType.floatArg(0, 100)).executes(UmbraCommand::sanity)))
+                .then(Commands.literal("hallucinate").executes(UmbraCommand::hallucinate))
                 .then(Commands.literal("shadow").executes(UmbraCommand::shadow))
                 .then(Commands.literal("steps").executes(UmbraCommand::steps))
                 .then(Commands.literal("mimic").executes(UmbraCommand::mimic))
@@ -71,7 +85,8 @@ public final class UmbraCommand {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         ServerLevel level = (ServerLevel) player.level();
         Vec3 dir = player.getLookAngle();
-        BlockPos center = BlockPos.containing(player.position().add(dir.x * 14, 0, dir.z * 14));
+        double dist = QuantumMaze.SIZE / 2.0 + 4;
+        BlockPos center = BlockPos.containing(player.position().add(dir.x * dist, 0, dir.z * dist));
         BlockPos corner = center.offset(-QuantumMaze.SIZE / 2, -1, -QuantumMaze.SIZE / 2);
         QuantumMaze.build(level, corner, level.getRandom());
         reply(ctx, "command.umbra.maze");
@@ -88,10 +103,35 @@ public final class UmbraCommand {
     private static int status(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         BlockPos home = MimicManager.getHome(player);
-        String text = "shadow[" + ShadowManager.debug(player) + "] steps[" + StepsManager.debug(player) + "] home="
-                + (home == null ? "-" : home.toShortString());
+        String text = "sanity=" + Math.round(Sanity.get(player)) + " shadow[" + ShadowManager.debug(player) + "] steps["
+                + StepsManager.debug(player) + "] home=" + (home == null ? "-" : home.toShortString());
         ctx.getSource().sendSuccess(() -> Component.literal(text), false);
         return 1;
+    }
+
+    private static int mazePattern(CommandContext<CommandSourceStack> ctx, String id) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        boolean ok = MazeController.force((ServerLevel) player.level(), player.blockPosition(), id);
+        ctx.getSource().sendSuccess(() -> ok
+                ? Component.translatable("command.umbra.mazepattern", Component.translatable("maze.umbra.pattern." + id))
+                : Component.translatable("command.umbra.no_maze"), false);
+        return ok ? 1 : 0;
+    }
+
+    private static int sanity(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        float v = FloatArgumentType.getFloat(ctx, "value");
+        Sanity.set(player, v);
+        ctx.getSource().sendSuccess(() -> Component.translatable("command.umbra.sanity", Math.round(v)), false);
+        return 1;
+    }
+
+    private static int hallucinate(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        Hallucinations.fakeSound((ServerLevel) player.level(), player, player.getRandom());
+        boolean ok = Hallucinations.spawnFigure((ServerLevel) player.level(), player, player.getRandom());
+        reply(ctx, ok ? "command.umbra.hallucinate" : "command.umbra.failed");
+        return ok ? 1 : 0;
     }
 
     private static void reply(CommandContext<CommandSourceStack> ctx, String key) {

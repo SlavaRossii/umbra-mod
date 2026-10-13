@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "umbra:luminite_crystal",
+    "L": "minecraft:lantern"
+  },
+  "pattern": [
+    "ICI",
+    "CLC",
+    "ICI"
+  ],
+  "result": {
+    "id": "umbra:dispeller"
+  }
+}

@@ -1,10 +1,9 @@
 package dev.umbra.quantum;
 
 import net.minecraft.core.BlockPos;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
@@ -23,107 +22,135 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * A wall that only exists while it is observed. Whenever no player is looking at it,
- * it may flip between solid (indistinguishable from a maze wall) and open (empty passage).
+ * A wall that only exists while it is observed. Solid it looks exactly like a maze wall; open it is an empty passage.
+ * A vertical stack of quantum blocks behaves as one wall ("column").
+ *
+ * LINKED blocks belong to a generated maze and are driven by its {@link MazeCoreBlock};
+ * free-standing ones (placed by a player) just flicker on their own.
  */
 public class QuantumBlock extends Block {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    public static final BooleanProperty LINKED = BooleanProperty.create("linked");
 
     private static final int CHECK_INTERVAL = 10;
     private static final int IDLE_INTERVAL = 40;
-    private static final double RANGE = 32.0;
+    public static final double RANGE = 32.0;
     private static final float FLIP_CHANCE = 0.18F;
     /** cos(70°): anything within 70° of the view direction counts as "seen". */
     private static final double VIEW_COS = 0.34;
 
-    private static final double[][] SAMPLES = {
-            {0.5, 0.5, 0.5},
-            {0.05, 0.05, 0.05}, {0.95, 0.05, 0.05}, {0.05, 0.95, 0.05}, {0.95, 0.95, 0.05},
-            {0.05, 0.05, 0.95}, {0.95, 0.05, 0.95}, {0.05, 0.95, 0.95}, {0.95, 0.95, 0.95}
-    };
-
     public QuantumBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, false).setValue(LINKED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(OPEN);
+        builder.add(OPEN, LINKED);
     }
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
-        if (!level.isClientSide() && !oldState.is(this)) level.scheduleTick(pos, this, CHECK_INTERVAL);
+        if (!level.isClientSide() && !oldState.is(this) && !state.getValue(LINKED)) level.scheduleTick(pos, this, CHECK_INTERVAL);
+    }
+
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return !state.getValue(LINKED);
     }
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        // safety net for blocks placed during world generation (no onPlace there)
         if (!level.getBlockTicks().hasScheduledTick(pos, this)) level.scheduleTick(pos, this, CHECK_INTERVAL);
     }
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (state.getValue(LINKED)) return; // the maze core decides
+        if (level.getBlockState(pos.below()).is(this)) return; // only the bottom block of a stack leads
         Player nearest = level.getNearestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, RANGE, false);
         if (nearest == null) {
             level.scheduleTick(pos, this, IDLE_INTERVAL);
             return;
         }
-        // A vertical stack of quantum blocks behaves as one wall; the bottom block decides for all of them.
-        if (level.getBlockState(pos.below()).is(this)) {
-            return; // not the leader: no own ticks needed
-        }
-        List<BlockPos> column = new ArrayList<>();
-        BlockPos p = pos;
-        while (column.size() < 8 && level.getBlockState(p).is(this)) {
-            column.add(p);
-            p = p.above();
-        }
-        if (random.nextFloat() < FLIP_CHANCE && !anyObserved(level, column)) {
-            boolean open = state.getValue(OPEN);
-            boolean blocked = open && column.stream().anyMatch(c -> occupied(level, c)); // never materialise inside someone
-            if (!blocked) {
-                for (BlockPos c : column) {
-                    BlockState cs = level.getBlockState(c);
-                    level.setBlock(c, cs.setValue(OPEN, !open), Block.UPDATE_ALL);
-                }
-            }
-        }
+        if (random.nextFloat() < FLIP_CHANCE) setColumn(level, pos, !state.getValue(OPEN));
         level.scheduleTick(pos, this, CHECK_INTERVAL);
     }
 
-    private static boolean anyObserved(ServerLevel level, List<BlockPos> column) {
-        for (BlockPos c : column) if (isObserved(level, c)) return true;
-        return false;
+    // ---------------------------------------------------------------- column helpers (used by mazes too)
+
+    /** Blocks of the quantum stack starting at {@code bottom}. */
+    public static List<BlockPos> column(Level level, BlockPos bottom) {
+        List<BlockPos> list = new ArrayList<>();
+        BlockPos p = bottom;
+        while (list.size() < 8 && level.getBlockState(p).getBlock() instanceof QuantumBlock) {
+            list.add(p);
+            p = p.above();
+        }
+        return list;
     }
 
-    private static boolean occupied(ServerLevel level, BlockPos pos) {
-        return !level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, new AABB(pos)).isEmpty();
+    public static boolean isOpen(Level level, BlockPos bottom) {
+        BlockState s = level.getBlockState(bottom);
+        return s.getBlock() instanceof QuantumBlock && s.getValue(OPEN);
     }
 
-    /** True if any player within range can currently see any part of this block. */
-    public static boolean isObserved(ServerLevel level, BlockPos pos) {
+    /**
+     * Tries to set the whole column open/closed. Refuses while anyone can see it,
+     * and never closes it on top of a living entity.
+     * @return true if the column changed
+     */
+    public static boolean setColumn(ServerLevel level, BlockPos bottom, boolean open) {
+        List<BlockPos> col = column(level, bottom);
+        if (col.isEmpty() || isOpen(level, bottom) == open) return false;
+        BlockPos top = col.get(col.size() - 1);
+        AABB box = new AABB(bottom.getX(), bottom.getY(), bottom.getZ(), bottom.getX() + 1, top.getY() + 1, bottom.getZ() + 1);
+        if (!open && !level.getEntitiesOfClass(LivingEntity.class, box).isEmpty()) return false;
+        if (isObserved(level, box)) return false;
+        for (BlockPos c : col) {
+            BlockState cs = level.getBlockState(c);
+            level.setBlock(c, cs.setValue(OPEN, open), Block.UPDATE_ALL);
+        }
+        return true;
+    }
+
+    /** True if any player within range can currently see any part of {@code box}. */
+    public static boolean isObserved(ServerLevel level, AABB box) {
+        Vec3 center = box.getCenter();
+        double[] xs = {box.minX + 0.05, box.maxX - 0.05};
+        double[] ys = {box.minY + 0.05, box.maxY - 0.05};
+        double[] zs = {box.minZ + 0.05, box.maxZ - 0.05};
+        List<Vec3> samples = new ArrayList<>(9);
+        samples.add(center);
+        for (double x : xs) for (double y : ys) for (double z : zs) samples.add(new Vec3(x, y, z));
+
         for (Player player : level.players()) {
             if (player.isSpectator()) continue;
             Vec3 eye = player.getEyePosition();
-            if (eye.distanceToSqr(Vec3.atCenterOf(pos)) > RANGE * RANGE) continue;
-            if (eye.distanceToSqr(Vec3.atCenterOf(pos)) < 2.0 * 2.0) return true; // too close to cheat
+            double d2 = eye.distanceToSqr(center);
+            if (d2 > RANGE * RANGE) continue;
+            if (box.inflate(1.5).contains(eye)) return true; // right next to it: no cheating
             Vec3 look = player.getViewVector(1.0F);
-            for (double[] s : SAMPLES) {
-                Vec3 point = new Vec3(pos.getX() + s[0], pos.getY() + s[1], pos.getZ() + s[2]);
+            for (Vec3 point : samples) {
                 Vec3 dir = point.subtract(eye);
                 double len = dir.length();
                 if (len < 1.0E-4) return true;
                 if (look.dot(dir.scale(1.0 / len)) < VIEW_COS) continue;
                 BlockHitResult hit = level.clip(new ClipContext(eye, point, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, player));
-                if (hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos)) return true;
+                if (hit.getType() == HitResult.Type.MISS) return true;
+                BlockPos hp = hit.getBlockPos();
+                if (box.contains(Vec3.atCenterOf(hp))) return true;
             }
         }
         return false;
     }
+
+    // ---------------------------------------------------------------- shape & light
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

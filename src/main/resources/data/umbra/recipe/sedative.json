@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:sugar",
+    "minecraft:sweet_berries",
+    "minecraft:paper"
+  ],
+  "result": {
+    "id": "umbra:sedative"
+  }
+}

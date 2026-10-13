@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "G": "minecraft:glass_pane",
+    "C": "umbra:luminite_crystal"
+  },
+  "pattern": [
+    " N ",
+    "NGN",
+    " C "
+  ],
+  "result": {
+    "id": "umbra:mirror"
+  }
+}

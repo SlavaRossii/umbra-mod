@@ -1,6 +1,19 @@
 package dev.umbra;
 
 import dev.umbra.darkness.DarknessManager;
+import dev.umbra.light.DispellerItem;
+import dev.umbra.quantum.MazeController;
+import dev.umbra.quantum.MazePattern;
+import dev.umbra.quantum.MazePatterns;
+import dev.umbra.quantum.QuantumBlock;
+import dev.umbra.registry.ModItems;
+import dev.umbra.sanity.Hallucinations;
+import dev.umbra.sanity.Sanity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import dev.umbra.mimic.MimicBlock;
 import dev.umbra.mimic.MimicManager;
 import dev.umbra.quantum.QuantumMaze;
@@ -35,6 +48,7 @@ final class SmokeTest {
     private static final BlockPos BOX = new BlockPos(40, Y, 0);
     private static final BlockPos MIMIC = new BlockPos(80, Y, 0);
     private static final BlockPos SHADOW = new BlockPos(100, Y, 0);
+    private static final BlockPos PLATFORM = new BlockPos(130, Y + 20, 0);
     private static final int BOX_SIZE = 9;
 
     private static int tick;
@@ -65,7 +79,11 @@ final class SmokeTest {
                 case 160 -> spreadDarkness(level);
                 case 180 -> placeLight(level);
                 case 260 -> recedeDarkness(level);
-                case 300 -> finish(server);
+                case 270 -> testDispeller(level);
+                case 280 -> testPatterns(level);
+                case 290 -> testSanity(level);
+                case 300 -> testOre(level);
+                case 320 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -81,7 +99,7 @@ final class SmokeTest {
     }
 
     private static void setup(ServerLevel level) {
-        for (int cx = -2; cx <= 8; cx++) {
+        for (int cx = -2; cx <= 11; cx++) {
             for (int cz = -2; cz <= 2; cz++) {
                 level.setChunkForced(cx, cz, true);
                 level.getChunk(cx, cz);
@@ -95,22 +113,77 @@ final class SmokeTest {
                     level.setBlock(BOX.offset(x, y, z), shell ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 }
         level.setBlock(MIMIC.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        for (int x = -15; x <= 15; x++)
+            for (int z = -15; z <= 15; z++)
+                level.setBlock(PLATFORM.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         check(true, "setup");
     }
 
     private static void testMaze(ServerLevel level) {
         QuantumMaze.build(level, MAZE, level.getRandom());
-        int walls = 0, quantum = 0;
+        int walls = 0, quantum = 0, ladders = 0;
         for (int x = 0; x < QuantumMaze.SIZE; x++)
             for (int z = 0; z < QuantumMaze.SIZE; z++)
                 for (int y = 0; y < QuantumMaze.HEIGHT; y++) {
                     BlockState s = level.getBlockState(MAZE.offset(x, y, z));
                     if (s.is(ModBlocks.MAZE_WALL.get())) walls++;
-                    if (s.is(ModBlocks.QUANTUM_BLOCK.get())) quantum++;
+                    if (s.is(ModBlocks.QUANTUM_BLOCK.get()) && s.getValue(QuantumBlock.LINKED)) quantum++;
+                    if (s.is(Blocks.LADDER)) ladders++;
                 }
-        check(walls > 300, "maze walls built (" + walls + ")");
-        check(quantum > 0, "maze has quantum walls (" + quantum + ")");
-        check(level.getBlockState(MAZE.offset(QuantumMaze.SIZE / 2, 1, QuantumMaze.SIZE / 2)).is(Blocks.CHEST), "maze chest in the middle");
+        int mid = QuantumMaze.SIZE / 2;
+        check(walls > 2000, "maze walls built (" + walls + ")");
+        check(quantum > 100, "maze has linked quantum walls (" + quantum + ")");
+        check(ladders >= 4, "maze has ladders between floors (" + ladders + " blocks)");
+        check(level.getBlockState(MAZE.offset(mid, 1, mid)).is(Blocks.CHEST), "ground floor chest");
+        check(level.getBlockState(MAZE.offset(mid, QuantumMaze.floorBase(1) + 1, mid)).is(Blocks.CHEST), "upper floor chest");
+        check(level.getBlockState(MAZE.offset(mid, -1, mid)).is(ModBlocks.MAZE_CORE.get()), "maze core under the centre");
+        check(ModBlocks.MAZE_WALL.get().defaultBlockState().getDestroySpeed(level, MAZE) < 0, "maze walls are unbreakable");
+    }
+
+    private static void testPatterns(ServerLevel level) {
+        BlockPos core = MAZE.offset(QuantumMaze.SIZE / 2, -1, QuantumMaze.SIZE / 2);
+        for (MazePattern p : MazePatterns.ALL) {
+            if (p == MazePatterns.HUNT) continue; // needs a real player inside
+            int changed = MazeController.runForTest(level, core, p, 12);
+            check(changed > 0, "maze pattern '" + p.id() + "' changes walls (" + changed + ")");
+        }
+    }
+
+    private static void testDispeller(ServerLevel level) {
+        int before = countDarkness(level);
+        Vec3 origin = Vec3.atCenterOf(BOX.offset(BOX_SIZE - 2, BOX_SIZE / 2, BOX_SIZE / 2));
+        int burned = DispellerItem.flash(level, null, origin, new Vec3(-1, 0, 0));
+        check(before == 0 || burned > 0, "dispeller burns living darkness (" + burned + " of " + before + ")");
+    }
+
+    private static void testSanity(ServerLevel level) {
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(PLATFORM.getX() + 0.5, PLATFORM.getY(), PLATFORM.getZ() + 0.5, 0, 0);
+        Sanity.set(fake, 50);
+        check(Math.abs(Sanity.get(fake) - 50) < 0.01, "sanity can be set");
+        Sanity.set(fake, 150);
+        check(Sanity.get(fake) == Sanity.MAX, "sanity is capped at 100");
+        Sanity.set(fake, 20);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SEDATIVE.get(), 2));
+        ModItems.SEDATIVE.get().use(level, fake, InteractionHand.MAIN_HAND);
+        check(Math.abs(Sanity.get(fake) - 50) < 0.01, "sedative restores 30 sanity (" + Sanity.get(fake) + ")");
+        check(fake.getItemInHand(InteractionHand.MAIN_HAND).getCount() == 1, "a pill is used up");
+        check(Sanity.dread(fake) > 1.0F, "low sanity makes things nastier");
+        check(Hallucinations.spawnFigure(level, fake, level.getRandom()), "a hallucination can appear");
+        Sanity.set(fake, Sanity.MAX);
+    }
+
+    private static void testOre(ServerLevel level) {
+        int ores = 0;
+        for (int cx = -2; cx <= 11; cx++) {
+            for (int cz = -2; cz <= 2; cz++) {
+                for (BlockPos p : BlockPos.betweenClosed(cx * 16, -64, cz * 16, cx * 16 + 15, 24, cz * 16 + 15)) {
+                    BlockState s = level.getBlockState(p);
+                    if (s.is(ModBlocks.LUMINITE_ORE.get()) || s.is(ModBlocks.DEEPSLATE_LUMINITE_ORE.get())) ores++;
+                }
+            }
+        }
+        check(ores > 0, "luminite ore generates underground (" + ores + " blocks in 70 chunks)");
     }
 
     private static void testMimic(ServerLevel level) {

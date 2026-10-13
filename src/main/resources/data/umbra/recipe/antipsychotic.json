@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "umbra:sedative",
+    "umbra:sedative",
+    "umbra:sedative",
+    "umbra:luminite_crystal",
+    "umbra:shadow_shard"
+  ],
+  "result": {
+    "id": "umbra:antipsychotic"
+  }
+}

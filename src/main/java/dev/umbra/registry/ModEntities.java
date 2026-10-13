@@ -1,6 +1,7 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.sanity.HallucinationEntity;
 import dev.umbra.shadow.ShadowEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -13,6 +14,10 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<ShadowEntity>> SHADOW = ENTITIES.registerEntityType("shadow",
             ShadowEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.8F).clientTrackingRange(10).updateInterval(1).fireImmune().noSummon());
+
+    public static final DeferredHolder<EntityType<?>, EntityType<HallucinationEntity>> HALLUCINATION = ENTITIES.registerEntityType("hallucination",
+            HallucinationEntity::new, MobCategory.MISC,
+            b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());
 
     private ModEntities() {}
 }

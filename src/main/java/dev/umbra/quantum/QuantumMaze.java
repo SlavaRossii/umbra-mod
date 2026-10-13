@@ -2,100 +2,171 @@ package dev.umbra.quantum;
 
 import dev.umbra.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Builds a small walled maze. Part of its walls are quantum blocks, so the layout
- * keeps changing behind the player's back. A chest waits in the middle.
+ * A two-storey walled maze. Every shell, floor and wall block is unbreakable.
+ * About a third of the inner walls are quantum: a {@link MazeCoreBlock} under the centre rearranges them
+ * while nobody is looking, following one of the {@link MazePatterns}.
+ *
+ * Layout (local coordinates, corner = minimum corner at the ground floor):
+ *   y=0 floor, y=1..3 floor 1, y=4 ceiling/floor, y=5..7 floor 2, y=8 roof, core at (SIZE/2, -1, SIZE/2).
  */
 public final class QuantumMaze {
-    public static final int CELLS = 7;
-    public static final int SIZE = CELLS * 2 + 1;   // 15
-    public static final int HEIGHT = 5;             // floor, 3 air, ceiling
+    public static final int CELLS = 11;
+    public static final int SIZE = CELLS * 2 + 1;   // 23
+    public static final int FLOORS = 2;
+    public static final int STOREY = 4;             // slab + 3 air
+    public static final int HEIGHT = FLOORS * STOREY + 1;
     private static final float QUANTUM_SHARE = 0.35F;
+    private static final int LADDERS = 3;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
     private QuantumMaze() {}
 
-    /** @param corner minimum corner of the maze, at floor level */
+    /** Floor base (slab) y offset of storey {@code f}. */
+    public static int floorBase(int f) {
+        return f * STOREY;
+    }
+
+    /** @param corner minimum corner of the maze, at ground-floor level */
     public static void build(WorldGenLevel level, BlockPos corner, RandomSource random) {
         BlockState wall = ModBlocks.MAZE_WALL.get().defaultBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
-        boolean[][] solid = carve(random);
+        BlockState quantum = ModBlocks.QUANTUM_BLOCK.get().defaultBlockState().setValue(QuantumBlock.LINKED, true);
 
+        boolean[][][] solid = new boolean[FLOORS][][];
+        for (int f = 0; f < FLOORS; f++) solid[f] = carve(random);
+
+        // ladders from floor 1 to floor 2; the wall they lean on must stay a real wall
+        Set<Long> fixed = new HashSet<>();
+        List<int[]> ladders = pickLadders(solid[0], random, fixed);
+
+        int mid = SIZE / 2;
         for (int x = 0; x < SIZE; x++) {
             for (int z = 0; z < SIZE; z++) {
-                // foundation so it does not float on uneven ground
-                for (int y = -1; y >= -6; y--) {
+                // unbreakable foundation down to the ground
+                for (int y = -1; y >= -8; y--) {
                     BlockPos p = corner.offset(x, y, z);
                     BlockState s = level.getBlockState(p);
-                    if (!s.isAir() && s.getFluidState().isEmpty() && !s.canBeReplaced()) break;
-                    level.setBlock(p, Blocks.COBBLED_DEEPSLATE.defaultBlockState(), FLAGS);
+                    boolean ground = !s.isAir() && s.getFluidState().isEmpty() && !s.canBeReplaced();
+                    if (ground && y < -1) break;
+                    level.setBlock(p, wall, FLAGS);
                 }
-                level.setBlock(corner.offset(x, 0, z), wall, FLAGS);
-                level.setBlock(corner.offset(x, HEIGHT - 1, z), wall, FLAGS);
+                for (int f = 0; f <= FLOORS; f++) level.setBlock(corner.offset(x, floorBase(f), z), wall, FLAGS);
                 for (int y = HEIGHT; y < HEIGHT + 4; y++) level.setBlock(corner.offset(x, y, z), air, FLAGS);
 
-                boolean isWall = solid[x][z];
                 boolean border = x == 0 || z == 0 || x == SIZE - 1 || z == SIZE - 1;
                 boolean pillar = x % 2 == 0 && z % 2 == 0;
                 boolean segment = !border && !pillar && (x % 2 == 0 || z % 2 == 0);
-                boolean quantum = segment && random.nextFloat() < QUANTUM_SHARE;
-                for (int y = 1; y < HEIGHT - 1; y++) {
-                    BlockPos p = corner.offset(x, y, z);
-                    if (quantum) {
-                        level.setBlock(p, ModBlocks.QUANTUM_BLOCK.get().defaultBlockState().setValue(QuantumBlock.OPEN, !isWall), FLAGS);
-                        scheduleQuantum(level, p);
-                    } else {
-                        level.setBlock(p, isWall ? wall : air, FLAGS);
+                for (int f = 0; f < FLOORS; f++) {
+                    boolean isWall = solid[f][x][z];
+                    boolean q = segment && !(f == 0 && fixed.contains(key(x, z))) && random.nextFloat() < QUANTUM_SHARE;
+                    for (int y = floorBase(f) + 1; y < floorBase(f) + STOREY; y++) {
+                        BlockPos p = corner.offset(x, y, z);
+                        if (q) {
+                            level.setBlock(p, quantum.setValue(QuantumBlock.OPEN, !isWall), FLAGS);
+                        } else {
+                            level.setBlock(p, isWall ? wall : air, FLAGS);
+                        }
                     }
                 }
             }
         }
 
-        // entrance on the west side, and a little doorway outside it
-        int mid = SIZE / 2;
-        for (int y = 1; y < HEIGHT - 1; y++) {
+        for (int[] l : ladders) {
+            Direction toWall = Direction.from2DDataValue(l[2]);
+            BlockState ladder = Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, toWall.getOpposite());
+            for (int y = 1; y <= STOREY; y++) level.setBlock(corner.offset(l[0], y, l[1]), ladder, FLAGS);
+        }
+
+        // entrance on the west side of the ground floor
+        for (int y = 1; y < STOREY; y++) {
             level.setBlock(corner.offset(0, y, mid), air, FLAGS);
             level.setBlock(corner.offset(-1, y, mid), air, FLAGS);
         }
 
-        // dim soul lanterns (the darkness cannot eat those)
+        // dim soul lanterns (the living darkness cannot eat those)
         List<int[]> cells = new ArrayList<>();
         for (int cx = 0; cx < CELLS; cx++) for (int cz = 0; cz < CELLS; cz++) cells.add(new int[]{cx * 2 + 1, cz * 2 + 1});
-        Collections.shuffle(cells, new java.util.Random(random.nextLong()));
         BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
-        for (int i = 0; i < 5; i++) {
-            int[] c = cells.get(i);
-            level.setBlock(corner.offset(c[0], HEIGHT - 2, c[1]), lantern, FLAGS);
+        for (int f = 0; f < FLOORS; f++) {
+            Collections.shuffle(cells, new java.util.Random(random.nextLong()));
+            int placed = 0;
+            for (int[] c : cells) {
+                if (placed >= 7) break;
+                if (isLadderCell(ladders, c[0], c[1])) continue;
+                level.setBlock(corner.offset(c[0], floorBase(f) + STOREY - 1, c[1]), lantern, FLAGS);
+                placed++;
+            }
         }
 
-        // the prize
-        BlockPos chest = corner.offset(SIZE / 2, 1, SIZE / 2);
-        level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
-        RandomizableContainer.setBlockEntityLootTable(level, random, chest, BuiltInLootTables.ANCIENT_CITY);
+        // prizes: a modest chest downstairs, the real one upstairs
+        placeChest(level, random, corner.offset(mid, 1, mid), BuiltInLootTables.SIMPLE_DUNGEON);
+        placeChest(level, random, corner.offset(mid, floorBase(1) + 1, mid), BuiltInLootTables.ANCIENT_CITY);
+
+        // the core that drives the quantum walls
+        BlockPos core = corner.offset(mid, -1, mid);
+        level.setBlock(core, ModBlocks.MAZE_CORE.get().defaultBlockState(), FLAGS);
+        level.scheduleTick(core, ModBlocks.MAZE_CORE.get(), 20);
     }
 
-    private static void scheduleQuantum(WorldGenLevel level, BlockPos pos) {
-        level.scheduleTick(pos, ModBlocks.QUANTUM_BLOCK.get(), 10 + (pos.hashCode() & 15));
+    private static void placeChest(WorldGenLevel level, RandomSource random, BlockPos pos, net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> loot) {
+        level.setBlock(pos, Blocks.CHEST.defaultBlockState(), FLAGS);
+        RandomizableContainer.setBlockEntityLootTable(level, random, pos, loot);
+    }
+
+    private static boolean isLadderCell(List<int[]> ladders, int x, int z) {
+        for (int[] l : ladders) if (l[0] == x && l[1] == z) return true;
+        return false;
+    }
+
+    private static long key(int x, int z) {
+        return ((long) x << 32) | (z & 0xffffffffL);
+    }
+
+    /** Picks ladder cells away from the centre; each entry is {x, z, 2D direction towards its wall}. */
+    private static List<int[]> pickLadders(boolean[][] solid, RandomSource random, Set<Long> fixed) {
+        List<int[]> result = new ArrayList<>();
+        int mid = SIZE / 2;
+        for (int attempt = 0; attempt < 200 && result.size() < LADDERS; attempt++) {
+            int x = random.nextInt(CELLS) * 2 + 1, z = random.nextInt(CELLS) * 2 + 1;
+            if (Math.abs(x - mid) + Math.abs(z - mid) < 6 || isLadderCell(result, x, z)) continue;
+            if (x == 1 && z == mid) continue; // keep the entrance clear
+            for (int d = 0; d < 4; d++) {
+                Direction dir = Direction.from2DDataValue(d);
+                int wx = x + dir.getStepX(), wz = z + dir.getStepZ();
+                if (solid[wx][wz]) {
+                    fixed.add(key(wx, wz));
+                    result.add(new int[]{x, z, d});
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /** Classic recursive-backtracker maze. true = wall. */
-    static boolean[][] carve(RandomSource random) {
+    public static boolean[][] carve(RandomSource random) {
         boolean[][] solid = new boolean[SIZE][SIZE];
-        for (boolean[] row : solid) java.util.Arrays.fill(row, true);
+        for (boolean[] row : solid) Arrays.fill(row, true);
         boolean[][] seen = new boolean[CELLS][CELLS];
         ArrayDeque<int[]> stack = new ArrayDeque<>();
         stack.push(new int[]{0, 0});
@@ -116,8 +187,13 @@ public final class QuantumMaze {
             int[] next = options.get(random.nextInt(options.size()));
             seen[next[0]][next[1]] = true;
             solid[next[0] * 2 + 1][next[1] * 2 + 1] = false;
-            solid[cur[0] + next[0] + 1][cur[1] + next[1] + 1] = false; // the wall between
+            solid[cur[0] + next[0] + 1][cur[1] + next[1] + 1] = false;
             stack.push(next);
+        }
+        // a few extra openings so it is not a single forced path
+        for (int i = 0; i < CELLS; i++) {
+            int x = random.nextInt(SIZE - 2) + 1, z = random.nextInt(SIZE - 2) + 1;
+            if ((x % 2 == 0) != (z % 2 == 0)) solid[x][z] = false;
         }
         return solid;
     }

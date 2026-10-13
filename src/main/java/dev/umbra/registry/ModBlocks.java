@@ -2,9 +2,15 @@ package dev.umbra.registry;
 
 import dev.umbra.Umbra;
 import dev.umbra.darkness.LivingDarknessBlock;
+import dev.umbra.light.EternalTorchBlock;
+import dev.umbra.light.EternalWallTorchBlock;
 import dev.umbra.mimic.MimicBlock;
+import dev.umbra.quantum.MazeCoreBlock;
 import dev.umbra.quantum.QuantumBlock;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -51,6 +57,39 @@ public final class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .noLootTable()
                     .pushReaction(PushReaction.IMMOVEABLE));
+
+    public static final DeferredBlock<MazeCoreBlock> MAZE_CORE = BLOCKS.registerBlock("maze_core",
+            MazeCoreBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .randomTicks()
+                    .pushReaction(PushReaction.IMMOVEABLE));
+
+    // --- Luminite: the light that the dark fears ---
+    public static final DeferredBlock<DropExperienceBlock> LUMINITE_ORE = BLOCKS.registerBlock("luminite_ore",
+            p -> new DropExperienceBlock(UniformInt.of(2, 5), p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).lightLevel(s -> 5));
+    public static final DeferredBlock<DropExperienceBlock> DEEPSLATE_LUMINITE_ORE = BLOCKS.registerBlock("deepslate_luminite_ore",
+            p -> new DropExperienceBlock(UniformInt.of(2, 5), p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 5));
+    public static final DeferredBlock<Block> LUMINITE_LAMP = BLOCKS.registerSimpleBlock("luminite_lamp",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).lightLevel(s -> 15).mapColor(MapColor.COLOR_LIGHT_BLUE));
+    public static final DeferredBlock<EternalTorchBlock> ETERNAL_TORCH = BLOCKS.registerBlock("eternal_torch",
+            p -> new EternalTorchBlock(ParticleTypes.END_ROD, p),
+            () -> torchProperties());
+    public static final DeferredBlock<EternalWallTorchBlock> ETERNAL_WALL_TORCH = BLOCKS.registerBlock("eternal_wall_torch",
+            p -> new EternalWallTorchBlock(ParticleTypes.END_ROD, p),
+            () -> torchProperties());
+
+    private static BlockBehaviour.Properties torchProperties() {
+        return BlockBehaviour.Properties.of()
+                .noCollision()
+                .instabreak()
+                .lightLevel(s -> 14)
+                .sound(SoundType.WOOD)
+                .pushReaction(PushReaction.POPPED);
+    }
 
     // --- Mimics: each mimic pretends to be one vanilla block ---
     public static final Map<String, DeferredBlock<MimicBlock>> MIMICS = new LinkedHashMap<>();

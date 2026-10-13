@@ -1,5 +1,7 @@
 package dev.umbra.steps;
 
+import dev.umbra.UmbraConfig;
+import dev.umbra.sanity.Sanity;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -82,9 +84,9 @@ public final class StepsManager {
 
         if (!s.active) {
             if (s.cooldown > 0) { s.cooldown--; return; }
-            if (player.isCreative()) return;
+            if (player.isCreative() || !UmbraConfig.on(UmbraConfig.STEPS)) return;
             if (!isSpooky(level, player)) return;
-            if (player.getRandom().nextInt(START_CHANCE) == 0) start(s);
+            if (player.getRandom().nextDouble() < Sanity.dread(player) / START_CHANCE) start(s);
             return;
         }
 
@@ -140,6 +142,7 @@ public final class StepsManager {
         Vec3 p = player.getEyePosition();
         level.playSound(null, p.x, p.y, p.z, SoundEvents.WARDEN_NEARBY_CLOSEST, SoundSource.HOSTILE, 0.6F, 1.6F);
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 4, 0));
+        Sanity.add(player, Sanity.Shock.STEPS_FINALE);
         stop(s);
     }
 

@@ -76,7 +76,7 @@ jobs:
 
       - name: Publish build output to branch ci-output
         if: always()
-        run: .github/scripts/publish.sh ci-output build.log errors.txt probe.txt
+        run: .github/scripts/publish.sh ci-output build.log errors.txt probe.txt build/libs/*.jar
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

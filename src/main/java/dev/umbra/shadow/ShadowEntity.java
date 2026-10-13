@@ -1,6 +1,11 @@
 package dev.umbra.shadow;
 
+import dev.umbra.light.LightSensitive;
+import dev.umbra.registry.ModItems;
+import dev.umbra.sanity.Sanity;
 import dev.umbra.util.UmbraUtil;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +23,7 @@ import net.minecraft.world.level.Level;
  * The player's shadow. It has no AI of its own: {@link ShadowManager} walks it along the player's trail.
  * It cannot be hurt by ordinary weapons; hitting it while holding a light source dispels it.
  */
-public class ShadowEntity extends Monster {
+public class ShadowEntity extends Monster implements LightSensitive {
     private boolean managed;
 
     public ShadowEntity(EntityType<? extends ShadowEntity> type, Level level) {
@@ -60,11 +65,20 @@ public class ShadowEntity extends Monster {
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         Entity attacker = source.getEntity();
         if (attacker instanceof Player player && UmbraUtil.holdsLight(player)) {
-            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 0.6F);
-            this.dissipate();
+            onLit(level, player);
             return true;
         }
         return false;
+    }
+
+    /** Light dispels the shadow and leaves a shard of it behind. */
+    @Override
+    public void onLit(ServerLevel level, Player source) {
+        if (!this.isAlive()) return;
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 0.6F);
+        level.addFreshEntity(new ItemEntity(level, this.getX(), this.getY() + 1.0, this.getZ(), new ItemStack(ModItems.SHADOW_SHARD.get())));
+        if (source != null) Sanity.add(source, Sanity.Shock.SHADOW_DISPELLED);
+        this.dissipate();
     }
 
     public void dissipate() {

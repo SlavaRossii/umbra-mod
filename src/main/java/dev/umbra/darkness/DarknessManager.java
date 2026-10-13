@@ -1,5 +1,6 @@
 package dev.umbra.darkness;
 
+import dev.umbra.UmbraConfig;
 import dev.umbra.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +39,7 @@ public final class DarknessManager {
         }
 
         // seeding
-        if (player.tickCount % SEED_INTERVAL != 0) return;
+        if (player.tickCount % SEED_INTERVAL != 0 || !UmbraConfig.on(UmbraConfig.DARKNESS)) return;
         if (level.dimension() != Level.OVERWORLD || player.getY() > SEED_MAX_Y + 16) return;
         RandomSource random = level.getRandom();
         if (random.nextInt(3) != 0) return;

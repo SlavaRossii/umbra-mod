@@ -6,6 +6,8 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import net.minecraft.network.codec.ByteBufCodecs;
+
 import java.util.function.Supplier;
 
 public final class ModAttachments {
@@ -16,6 +18,13 @@ public final class ModAttachments {
             () -> AttachmentType.builder(() -> Long.MIN_VALUE)
                     .serialize(Codec.LONG.fieldOf("pos"))
                     .copyOnDeath()
+                    .build());
+
+    /** Sanity 0..100, synced to the client for the HUD bar. Resets to full after death. */
+    public static final Supplier<AttachmentType<Float>> SANITY = ATTACHMENTS.register("sanity",
+            () -> AttachmentType.builder(() -> 100.0F)
+                    .serialize(Codec.FLOAT.fieldOf("value"))
+                    .sync(ByteBufCodecs.FLOAT)
                     .build());
 
     private ModAttachments() {}
