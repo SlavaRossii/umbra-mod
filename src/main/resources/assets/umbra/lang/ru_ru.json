@@ -1,0 +1,22 @@
+{
+  "block.umbra.living_darkness": "Живая тьма",
+  "block.umbra.quantum_block": "Квантовая стена",
+  "block.umbra.maze_wall": "Стена лабиринта",
+  "entity.umbra.shadow": "Тень",
+  "message.umbra.shadow_detached": "Твоя тень отделилась...",
+  "message.umbra.shadow_caught": "Она догнала тебя.",
+  "command.umbra.shadow": "Тень отделилась и идёт по твоим следам.",
+  "command.umbra.steps": "Кто-то идёт за тобой. Не оборачивайся.",
+  "command.umbra.mimic": "Этот блок больше не тот, чем кажется.",
+  "command.umbra.mimic_failed": "Посмотри на верстак, книжную полку, дубовые/еловые доски, булыжник или каменные кирпичи.",
+  "command.umbra.darkness": "Посеяно блоков живой тьмы: %s (она живёт только в тёмных закрытых местах).",
+  "command.umbra.maze": "Перед тобой появился квантовый лабиринт.",
+  "command.umbra.home": "Дом отмечен здесь. Пока тебя нет, в нём будут заводиться подмены.",
+  "command.umbra.failed": "Здесь это сделать не получилось.",
+  "block.umbra.mimic_crafting_table": "Верстак",
+  "block.umbra.mimic_bookshelf": "Книжная полка",
+  "block.umbra.mimic_oak_planks": "Дубовые доски",
+  "block.umbra.mimic_spruce_planks": "Еловые доски",
+  "block.umbra.mimic_cobblestone": "Булыжник",
+  "block.umbra.mimic_stone_bricks": "Каменные кирпичи"
+}

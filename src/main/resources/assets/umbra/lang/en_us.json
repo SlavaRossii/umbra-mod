@@ -1,0 +1,22 @@
+{
+  "block.umbra.living_darkness": "Living Darkness",
+  "block.umbra.quantum_block": "Quantum Wall",
+  "block.umbra.maze_wall": "Maze Wall",
+  "entity.umbra.shadow": "Shadow",
+  "message.umbra.shadow_detached": "Your shadow has come loose...",
+  "message.umbra.shadow_caught": "It caught up with you.",
+  "command.umbra.shadow": "A shadow detached and follows your path.",
+  "command.umbra.steps": "Someone is walking behind you. Don't turn around.",
+  "command.umbra.mimic": "That block is not what it seems anymore.",
+  "command.umbra.mimic_failed": "Look at a crafting table, bookshelf, oak/spruce planks, cobblestone or stone bricks.",
+  "command.umbra.darkness": "Seeded %s blocks of living darkness (it only lives in dark, enclosed places).",
+  "command.umbra.maze": "A quantum maze appeared in front of you.",
+  "command.umbra.home": "Home set here. Mimics will move in while you are away.",
+  "command.umbra.failed": "Could not do that here.",
+  "block.umbra.mimic_crafting_table": "Crafting Table",
+  "block.umbra.mimic_bookshelf": "Bookshelf",
+  "block.umbra.mimic_oak_planks": "Oak Planks",
+  "block.umbra.mimic_spruce_planks": "Spruce Planks",
+  "block.umbra.mimic_cobblestone": "Cobblestone",
+  "block.umbra.mimic_stone_bricks": "Stone Bricks"
+}

@@ -1,0 +1,49 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "umbra:block/living_darkness",
+    "d": "umbra:block/living_darkness"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#d",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#d",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#d",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#d",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#d",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#d",
+          "cullface": "east"
+        }
+      }
+    }
+  ],
+  "render_type": "minecraft:translucent",
+  "ambientocclusion": false
+}

@@ -1,0 +1,102 @@
+package dev.umbra.mimic;
+
+import dev.umbra.Umbra;
+import dev.umbra.registry.ModAttachments;
+import dev.umbra.registry.ModBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredBlock;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * While the player is away from home, something moves in. When they come back,
+ * one or two ordinary blocks of the base may have been replaced by mimics.
+ */
+public final class MimicManager {
+    private static final double AWAY_DISTANCE = 64.0;
+    private static final double RETURN_DISTANCE = 40.0;
+    private static final int MIN_AWAY_TICKS = 20 * 60 * 4;   // gone at least 4 minutes
+    private static final int SEARCH_RADIUS = 12;
+    private static final int SEARCH_HEIGHT = 6;
+
+    private static final Map<UUID, Integer> AWAY = new HashMap<>();
+
+    private MimicManager() {}
+
+    public static void setHome(ServerPlayer player, BlockPos pos) {
+        player.setData(ModAttachments.HOME, pos.asLong());
+    }
+
+    public static BlockPos getHome(ServerPlayer player) {
+        long packed = player.getData(ModAttachments.HOME);
+        return packed == Long.MIN_VALUE ? null : BlockPos.of(packed);
+    }
+
+    public static void forget(ServerPlayer player) {
+        AWAY.remove(player.getUUID());
+    }
+
+    public static void tick(ServerPlayer player) {
+        if (player.tickCount % 20 != 0) return;
+        if (!(player.level() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) return;
+        BlockPos home = getHome(player);
+        if (home == null) return;
+
+        double dist = Math.sqrt(player.blockPosition().distSqr(home));
+        int away = AWAY.getOrDefault(player.getUUID(), 0);
+        if (dist > AWAY_DISTANCE) {
+            AWAY.put(player.getUUID(), away + 20);
+        } else if (dist < RETURN_DISTANCE && away > 0) {
+            AWAY.put(player.getUUID(), 0);
+            if (away >= MIN_AWAY_TICKS && !player.isCreative() && level.getRandom().nextFloat() < 0.6F) {
+                int count = 1 + level.getRandom().nextInt(2);
+                int placed = substitute(level, home, count, level.getRandom());
+                Umbra.LOGGER.debug("Placed {} mimics around {}'s home", placed, player.getName().getString());
+            }
+        }
+    }
+
+    /** Replaces up to {@code count} suitable blocks around {@code center} with their mimics. */
+    public static int substitute(ServerLevel level, BlockPos center, int count, RandomSource random) {
+        int placed = 0;
+        for (int attempt = 0; attempt < 400 && placed < count; attempt++) {
+            BlockPos pos = center.offset(
+                    random.nextInt(SEARCH_RADIUS * 2 + 1) - SEARCH_RADIUS,
+                    random.nextInt(SEARCH_HEIGHT * 2 + 1) - SEARCH_HEIGHT,
+                    random.nextInt(SEARCH_RADIUS * 2 + 1) - SEARCH_RADIUS);
+            if (!level.isLoaded(pos)) continue;
+            if (tryMimic(level, pos)) placed++;
+        }
+        return placed;
+    }
+
+    /** Turns the block at {@code pos} into its mimic if there is one. */
+    public static boolean tryMimic(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        Block mimic = mimicFor(state.getBlock());
+        if (mimic == null) return false;
+        // only blocks that the player could actually see and touch
+        if (!level.getBlockState(pos.above()).isAir() && !level.getBlockState(pos.north()).isAir()
+                && !level.getBlockState(pos.south()).isAir() && !level.getBlockState(pos.east()).isAir()
+                && !level.getBlockState(pos.west()).isAir()) {
+            return false;
+        }
+        level.setBlock(pos, mimic.defaultBlockState(), Block.UPDATE_ALL);
+        return true;
+    }
+
+    private static Block mimicFor(Block block) {
+        for (DeferredBlock<MimicBlock> m : ModBlocks.MIMICS.values()) {
+            if (m.get().original() == block) return m.get();
+        }
+        return null;
+    }
+}

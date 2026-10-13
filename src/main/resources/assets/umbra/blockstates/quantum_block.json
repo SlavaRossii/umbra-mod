@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "umbra:block/maze_wall"
+    },
+    "open=true": {
+      "model": "umbra:block/quantum_block_open"
+    }
+  }
+}

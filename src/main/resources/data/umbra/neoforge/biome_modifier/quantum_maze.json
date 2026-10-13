@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:dark_forest",
+    "minecraft:taiga",
+    "minecraft:savanna",
+    "minecraft:meadow",
+    "minecraft:snowy_plains",
+    "minecraft:old_growth_spruce_taiga"
+  ],
+  "features": "umbra:quantum_maze",
+  "step": "surface_structures"
+}
