@@ -25,8 +25,8 @@ import java.util.List;
  */
 public class Mimicker extends Monster implements LightSensitive {
     private static final List<SoundEvent> LURES = List.of(
-            SoundEvents.COW_AMBIENT, SoundEvents.VILLAGER_AMBIENT, SoundEvents.CHICKEN_AMBIENT,
-            SoundEvents.SHEEP_AMBIENT, SoundEvents.PIG_AMBIENT, SoundEvents.STONE_STEP, SoundEvents.WOODEN_DOOR_OPEN);
+            SoundEvents.VILLAGER_AMBIENT, SoundEvents.SHEEP_AMBIENT, SoundEvents.VILLAGER_YES,
+            SoundEvents.STONE_STEP, SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.GENERIC_EAT);
     private static final double REVEAL_RANGE = 5.0;
     private int hiddenAgain;
 
