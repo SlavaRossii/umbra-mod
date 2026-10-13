@@ -47,20 +47,22 @@ jobs:
           PROBE: ${{ inputs.probe }}
           GREP: ${{ inputs.grep }}
         run: |
-          ls -la build/moddev/artifacts 2>/dev/null || true
-          JAR=$(find build/moddev -name 'neoforge-*.jar' ! -name '*sources*' | head -1)
+          JAR=""
+          for j in $(find build/moddev ~/.gradle/caches -name '*.jar' 2>/dev/null | grep -iE 'neoforge|minecraft' | grep -v sources); do
+            if unzip -l "$j" 2>/dev/null | grep -q 'net/minecraft/world/level/Level.class'; then JAR="$j"; break; fi
+          done
           echo "jar: $JAR"
-          [ -z "$JAR" ] && exit 0
+          if [ -z "$JAR" ]; then find build/moddev -name '*.jar' > probe.txt; python3 .github/scripts/annotate.py probe probe.txt; exit 0; fi
           CLASSES="$PROBE"
           if [ -f build.log ]; then
             CLASSES="$CLASSES $(grep -oE '(location: (class|interface)|of type) [a-z][A-Za-z0-9_.]*\.[A-Z][A-Za-z0-9_$]*' build.log | awk '{print $NF}' | grep -v '^dev\.umbra' | sort -u | tr '\n' ' ')"
           fi
           {
-            echo "jar: $JAR"; find build/moddev -name '*.jar' | head -20
+            echo "jar: $JAR"
             if [ -n "$GREP" ]; then echo "=== classes matching $GREP"; jar tf "$JAR" | grep -E -- "$GREP" | grep -v '\$[0-9]' | head -300; fi
             for c in $CLASSES; do
               echo "=================== $c"
-              javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -400
+              javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -${PROBE_LINES:-500}
             done
           } > probe.txt
           python3 .github/scripts/annotate.py probe probe.txt
