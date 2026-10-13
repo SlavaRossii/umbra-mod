@@ -14,6 +14,9 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,7 +42,6 @@ jobs:
         if: failure()
         run: |
           grep -nE -A4 'error:|warning: \[removal\]|FAILURE|What went wrong' build.log > errors.txt || tail -200 build.log > errors.txt
-          python3 .github/scripts/annotate.py errors errors.txt
 
       - name: Probe Minecraft API (on failure or on request)
         if: failure() || inputs.probe != '' || inputs.grep != ''
@@ -52,7 +54,7 @@ jobs:
             if unzip -l "$j" 2>/dev/null | grep -q 'net/minecraft/world/level/Level.class'; then JAR="$j"; break; fi
           done
           echo "jar: $JAR"
-          if [ -z "$JAR" ]; then find build/moddev -name '*.jar' > probe.txt; python3 .github/scripts/annotate.py probe probe.txt; exit 0; fi
+          if [ -z "$JAR" ]; then find build/moddev -name '*.jar' > probe.txt; exit 0; fi
           CLASSES="$PROBE"
           if [ -f build.log ]; then
             CLASSES="$CLASSES $(grep -oE '(location: (class|interface)|of type) [a-z][A-Za-z0-9_.]*\.[A-Z][A-Za-z0-9_$]*' build.log | awk '{print $NF}' | grep -v '^dev\.umbra' | sort -u | tr '\n' ' ')"
@@ -62,10 +64,15 @@ jobs:
             if [ -n "$GREP" ]; then echo "=== classes matching $GREP"; jar tf "$JAR" | grep -E -- "$GREP" | grep -v '\$[0-9]' | head -300; fi
             for c in $CLASSES; do
               echo "=================== $c"
-              javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -${PROBE_LINES:-500}
+              javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -3000
             done
           } > probe.txt
-          python3 .github/scripts/annotate.py probe probe.txt
+
+      - name: Publish build output to branch ci-output
+        if: always()
+        run: .github/scripts/publish.sh ci-output build.log errors.txt probe.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload mod jar
         uses: actions/upload-artifact@v5
@@ -110,8 +117,11 @@ jobs:
         if: always()
         run: |
           { cat run-smoke/umbra-smoketest.txt 2>/dev/null; echo; echo "----- log excerpts -----";
-            grep -nE -B2 -A12 'ERROR|Exception|umbra|UMBRA' run-smoke/logs/latest.log 2>/dev/null | head -1500; } > smoke.txt
-          python3 .github/scripts/annotate.py smoke smoke.txt
+            grep -nE -B2 -A12 'ERROR|Exception|umbra|UMBRA' run-smoke/logs/latest.log 2>/dev/null | head -3000; } > smoke.txt
+          cp run-smoke/logs/latest.log server.log 2>/dev/null || true
+          .github/scripts/publish.sh ci-smoke smoke.txt server.log
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload server logs
         if: always()
