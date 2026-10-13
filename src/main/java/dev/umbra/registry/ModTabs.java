@@ -25,6 +25,24 @@ public final class ModTabs {
                 out.accept(ModItems.SHADOW_SHARD.get());
                 out.accept(ModItems.SEDATIVE.get());
                 out.accept(ModItems.ANTIPSYCHOTIC.get());
+                out.accept(ModItems.DUSK_STONE.get());
+                out.accept(ModItems.ASH_STONE.get());
+                out.accept(ModItems.ASH_SOIL.get());
+                out.accept(ModItems.DEAD_LOG.get());
+                out.accept(ModItems.GLOOM_ORE.get());
+                out.accept(ModItems.RAW_GLOOM.get());
+                out.accept(ModItems.GLOOM_INGOT.get());
+                out.accept(ModItems.GLOOM_BLOCK.get());
+                out.accept(ModItems.ECHO_QUARTZ_ORE.get());
+                out.accept(ModItems.ECHO_QUARTZ.get());
+                out.accept(ModItems.GLOOM_SWORD.get());
+                out.accept(ModItems.GLOOM_PICKAXE.get());
+                out.accept(ModItems.GLOOM_AXE.get());
+                out.accept(ModItems.GLOOM_SHOVEL.get());
+                out.accept(ModItems.GLOOM_HELMET.get());
+                out.accept(ModItems.GLOOM_CHESTPLATE.get());
+                out.accept(ModItems.GLOOM_LEGGINGS.get());
+                out.accept(ModItems.GLOOM_BOOTS.get());
                 out.accept(ModItems.QUANTUM_BLOCK.get());
                 out.accept(ModItems.MAZE_WALL.get());
             })

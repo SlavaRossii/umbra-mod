@@ -7,10 +7,12 @@ import dev.umbra.light.EternalWallTorchBlock;
 import dev.umbra.mimic.MimicBlock;
 import dev.umbra.quantum.MazeCoreBlock;
 import dev.umbra.quantum.QuantumBlock;
+import dev.umbra.underside.RiftBlock;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -90,6 +92,34 @@ public final class ModBlocks {
                 .sound(SoundType.WOOD)
                 .pushReaction(PushReaction.POPPED);
     }
+
+    // --- The Underside ---
+    public static final DeferredBlock<Block> ASH_STONE = BLOCKS.registerSimpleBlock("ash_stone",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).mapColor(MapColor.COLOR_GRAY));
+    public static final DeferredBlock<Block> ASH_SOIL = BLOCKS.registerSimpleBlock("ash_soil",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_SOIL).mapColor(MapColor.COLOR_LIGHT_GRAY));
+    public static final DeferredBlock<Block> DUSK_STONE = BLOCKS.registerSimpleBlock("dusk_stone",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN).strength(30.0F, 1200.0F).mapColor(MapColor.COLOR_PURPLE));
+    public static final DeferredBlock<RotatedPillarBlock> DEAD_LOG = BLOCKS.registerBlock("dead_log",
+            RotatedPillarBlock::new, () -> BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_GRAY));
+    public static final DeferredBlock<DropExperienceBlock> GLOOM_ORE = BLOCKS.registerBlock("gloom_ore",
+            p -> new DropExperienceBlock(UniformInt.of(1, 3), p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_IRON_ORE).mapColor(MapColor.COLOR_GRAY));
+    public static final DeferredBlock<DropExperienceBlock> ECHO_QUARTZ_ORE = BLOCKS.registerBlock("echo_quartz_ore",
+            p -> new DropExperienceBlock(UniformInt.of(3, 7), p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 3));
+    public static final DeferredBlock<Block> GLOOM_BLOCK = BLOCKS.registerSimpleBlock("gloom_block",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK).mapColor(MapColor.COLOR_BLACK));
+    public static final DeferredBlock<RiftBlock> RIFT = BLOCKS.registerBlock("rift",
+            RiftBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .noCollision()
+                    .strength(-1.0F)
+                    .sound(SoundType.GLASS)
+                    .lightLevel(s -> 6)
+                    .noLootTable()
+                    .pushReaction(PushReaction.IMMOVEABLE)
+                    .mapColor(MapColor.COLOR_PURPLE));
 
     // --- Mimics: each mimic pretends to be one vanilla block ---
     public static final Map<String, DeferredBlock<MimicBlock>> MIMICS = new LinkedHashMap<>();

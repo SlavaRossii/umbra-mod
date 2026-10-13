@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": "minecraft:cobbled_deepslate",
+    "S": "umbra:shadow_shard"
+  },
+  "pattern": [
+    "DDD",
+    "DSD",
+    "DDD"
+  ],
+  "result": {
+    "count": 8,
+    "id": "umbra:dusk_stone"
+  }
+}

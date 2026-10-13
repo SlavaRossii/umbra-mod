@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": "umbra:raw_gloom",
+  "result": {
+    "id": "umbra:gloom_ingot"
+  }
+}

@@ -2,6 +2,11 @@
   "values": [
     "umbra:luminite_ore",
     "umbra:deepslate_luminite_ore",
-    "umbra:luminite_lamp"
+    "umbra:luminite_lamp",
+    "umbra:ash_stone",
+    "umbra:dusk_stone",
+    "umbra:gloom_ore",
+    "umbra:echo_quartz_ore",
+    "umbra:gloom_block"
   ]
 }

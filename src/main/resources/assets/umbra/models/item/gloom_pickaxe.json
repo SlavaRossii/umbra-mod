@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "umbra:item/gloom_pickaxe"
+  }
+}

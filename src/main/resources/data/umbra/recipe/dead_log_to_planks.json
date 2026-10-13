@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "umbra:dead_log"
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:pale_oak_planks"
+  }
+}

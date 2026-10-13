@@ -15,6 +15,8 @@ import dev.umbra.sanity.Hallucinations;
 import dev.umbra.sanity.Sanity;
 import dev.umbra.shadow.ShadowManager;
 import dev.umbra.steps.StepsManager;
+import dev.umbra.underside.RiftFrame;
+import dev.umbra.underside.RiftTravel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -39,6 +41,8 @@ public final class UmbraCommand {
                 .then(patterns)
                 .then(Commands.literal("sanity").then(Commands.argument("value", FloatArgumentType.floatArg(0, 100)).executes(UmbraCommand::sanity)))
                 .then(Commands.literal("hallucinate").executes(UmbraCommand::hallucinate))
+                .then(Commands.literal("underside").executes(UmbraCommand::underside))
+                .then(Commands.literal("rift").executes(UmbraCommand::rift))
                 .then(Commands.literal("shadow").executes(UmbraCommand::shadow))
                 .then(Commands.literal("steps").executes(UmbraCommand::steps))
                 .then(Commands.literal("mimic").executes(UmbraCommand::mimic))
@@ -132,6 +136,26 @@ public final class UmbraCommand {
         boolean ok = Hallucinations.spawnFigure((ServerLevel) player.level(), player, player.getRandom());
         reply(ctx, ok ? "command.umbra.hallucinate" : "command.umbra.failed");
         return ok ? 1 : 0;
+    }
+
+    private static int underside(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        var transition = RiftTravel.destination((ServerLevel) player.level(), player, player.blockPosition());
+        if (transition == null) {
+            reply(ctx, "command.umbra.failed");
+            return 0;
+        }
+        player.teleport(transition);
+        return 1;
+    }
+
+    private static int rift(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        Vec3 dir = player.getLookAngle();
+        BlockPos base = BlockPos.containing(player.position().add(dir.x * 3, 0, dir.z * 3));
+        RiftFrame.build(player.level(), base);
+        reply(ctx, "command.umbra.rift");
+        return 1;
     }
 
     private static void reply(CommandContext<CommandSourceStack> ctx, String key) {

@@ -1,0 +1,49 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 3000
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:white_ash"
+          },
+          "probability": 0.06
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#26232b"
+  },
+  "carvers": "minecraft:nether_cave",
+  "downfall": 0.0,
+  "effects": {
+    "water_color": "#0b0b16"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "umbra:ore_gloom",
+      "umbra:ore_echo_quartz"
+    ],
+    [],
+    [],
+    [
+      "umbra:hanging_trees_sparse"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.5
+}

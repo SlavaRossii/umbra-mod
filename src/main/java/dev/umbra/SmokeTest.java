@@ -9,6 +9,10 @@ import dev.umbra.quantum.QuantumBlock;
 import dev.umbra.registry.ModItems;
 import dev.umbra.sanity.Hallucinations;
 import dev.umbra.sanity.Sanity;
+import dev.umbra.underside.RiftFrame;
+import dev.umbra.underside.RiftTravel;
+import dev.umbra.underside.Underside;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -83,7 +87,9 @@ final class SmokeTest {
                 case 280 -> testPatterns(level);
                 case 290 -> testSanity(level);
                 case 300 -> testOre(level);
-                case 320 -> finish(server);
+                case 310 -> testFrame(level);
+                case 320 -> testUnderside(server, level);
+                case 340 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -171,6 +177,57 @@ final class SmokeTest {
         check(Sanity.dread(fake) > 1.0F, "low sanity makes things nastier");
         check(Hallucinations.spawnFigure(level, fake, level.getRandom()), "a hallucination can appear");
         Sanity.set(fake, Sanity.MAX);
+    }
+
+    private static final BlockPos FRAME = new BlockPos(170, Y, 0);
+
+    private static void testFrame(ServerLevel level) {
+        // hand-built frame, then open it with the shard logic
+        BlockState dusk = ModBlocks.DUSK_STONE.get().defaultBlockState();
+        for (int x = -1; x <= 2; x++)
+            for (int y = -1; y <= 3; y++)
+                level.setBlock(FRAME.offset(x, y, 0), (x == -1 || x == 2 || y == -1 || y == 3) ? dusk : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        check(RiftFrame.tryOpen(level, FRAME.offset(1, 1, 0)), "dusk stone frame opens a rift");
+        check(level.getBlockState(FRAME).is(ModBlocks.RIFT.get()) && level.getBlockState(FRAME.offset(1, 2, 0)).is(ModBlocks.RIFT.get()), "rift fills the whole frame");
+        level.setBlock(FRAME.offset(-1, 1, 0), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        check(!level.getBlockState(FRAME.offset(0, 1, 0)).is(ModBlocks.RIFT.get()), "breaking the frame closes the rift");
+    }
+
+    private static void testUnderside(MinecraftServer server, ServerLevel overworld) {
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        check(under != null, "the Underside dimension exists");
+        if (under == null) return;
+        int ash = 0, bedrock = 0, gloom = 0;
+        for (int cx = 0; cx < 3; cx++)
+            for (int cz = 0; cz < 3; cz++) {
+                under.getChunk(cx, cz);
+                for (BlockPos p : BlockPos.betweenClosed(cx * 16, 0, cz * 16, cx * 16 + 15, 127, cz * 16 + 15)) {
+                    BlockState s = under.getBlockState(p);
+                    if (s.is(ModBlocks.ASH_STONE.get()) || s.is(ModBlocks.ASH_SOIL.get())) ash++;
+                    else if (s.is(Blocks.BEDROCK)) bedrock++;
+                    else if (s.is(ModBlocks.GLOOM_ORE.get())) gloom++;
+                }
+            }
+        check(ash > 10000, "the Underside is made of ash (" + ash + " blocks)");
+        check(bedrock > 100, "the Underside has a bedrock floor and roof (" + bedrock + ")");
+        check(gloom > 0, "gloom ore generates in the Underside (" + gloom + ")");
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(overworld);
+        TeleportTransition t = RiftTravel.destination(overworld, fake, new BlockPos(300, 80, 300));
+        check(t != null && t.newLevel() == under, "a rift leads to the Underside");
+        if (t != null) {
+            BlockPos arrival = BlockPos.containing(t.position());
+            boolean riftNear = false;
+            for (BlockPos p : BlockPos.betweenClosed(arrival.offset(-4, -4, -4), arrival.offset(4, 4, 4))) {
+                if (under.getBlockState(p).is(ModBlocks.RIFT.get())) { riftNear = true; break; }
+            }
+            check(riftNear, "a return rift is built on arrival");
+            check(under.getBlockState(arrival).isAir() && under.getBlockState(arrival.below()).isSolid(), "arrival spot is safe (" + arrival.toShortString() + ")");
+            TeleportTransition back = RiftTravel.destination(under, fake, arrival);
+            check(back != null && back.newLevel() == overworld, "the rift leads back to the world");
+            TeleportTransition again = RiftTravel.destination(overworld, fake, new BlockPos(300, 80, 300));
+            check(again != null && again.position().distanceTo(t.position()) < 1.0, "the same rift is reused next time");
+        }
     }
 
     private static void testOre(ServerLevel level) {

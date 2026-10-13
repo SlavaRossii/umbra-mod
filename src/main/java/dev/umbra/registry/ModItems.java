@@ -4,6 +4,8 @@ import dev.umbra.Umbra;
 import dev.umbra.item.MirrorItem;
 import dev.umbra.item.PillItem;
 import dev.umbra.light.DispellerItem;
+import dev.umbra.underside.ShadowShardItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -34,7 +36,7 @@ public final class ModItems {
     public static final DeferredItem<DispellerItem> DISPELLER = ITEMS.registerItem("dispeller", DispellerItem::new,
             p -> p.durability(64).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<MirrorItem> MIRROR = ITEMS.registerItem("mirror", MirrorItem::new, p -> p.stacksTo(1));
-    public static final DeferredItem<Item> SHADOW_SHARD = ITEMS.registerSimpleItem("shadow_shard", p -> p.rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<ShadowShardItem> SHADOW_SHARD = ITEMS.registerItem("shadow_shard", ShadowShardItem::new, p -> p.rarity(Rarity.UNCOMMON));
 
     // --- Sanity ---
     public static final DeferredItem<PillItem> SEDATIVE = ITEMS.registerItem("sedative",
@@ -44,6 +46,28 @@ public final class ModItems {
                     new MobEffectInstance(MobEffects.SLOWNESS, 20 * 15, 0),
                     new MobEffectInstance(MobEffects.HUNGER, 20 * 10, 0))),
             p -> p.stacksTo(8).rarity(Rarity.RARE));
+
+    // --- The Underside ---
+    public static final DeferredItem<BlockItem> ASH_STONE = ITEMS.registerSimpleBlockItem("ash_stone", ModBlocks.ASH_STONE);
+    public static final DeferredItem<BlockItem> ASH_SOIL = ITEMS.registerSimpleBlockItem("ash_soil", ModBlocks.ASH_SOIL);
+    public static final DeferredItem<BlockItem> DUSK_STONE = ITEMS.registerSimpleBlockItem("dusk_stone", ModBlocks.DUSK_STONE);
+    public static final DeferredItem<BlockItem> DEAD_LOG = ITEMS.registerSimpleBlockItem("dead_log", ModBlocks.DEAD_LOG);
+    public static final DeferredItem<BlockItem> GLOOM_ORE = ITEMS.registerSimpleBlockItem("gloom_ore", ModBlocks.GLOOM_ORE);
+    public static final DeferredItem<BlockItem> ECHO_QUARTZ_ORE = ITEMS.registerSimpleBlockItem("echo_quartz_ore", ModBlocks.ECHO_QUARTZ_ORE);
+    public static final DeferredItem<BlockItem> GLOOM_BLOCK = ITEMS.registerSimpleBlockItem("gloom_block", ModBlocks.GLOOM_BLOCK);
+    public static final DeferredItem<Item> RAW_GLOOM = ITEMS.registerSimpleItem("raw_gloom");
+    public static final DeferredItem<Item> GLOOM_INGOT = ITEMS.registerSimpleItem("gloom_ingot");
+    public static final DeferredItem<Item> ECHO_QUARTZ = ITEMS.registerSimpleItem("echo_quartz", p -> p.rarity(Rarity.UNCOMMON));
+
+    // --- Gloom gear ---
+    public static final DeferredItem<Item> GLOOM_SWORD = ITEMS.registerSimpleItem("gloom_sword", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.4F));
+    public static final DeferredItem<Item> GLOOM_PICKAXE = ITEMS.registerSimpleItem("gloom_pickaxe", p -> p.pickaxe(ModMaterials.GLOOM_TOOLS, 1.0F, -2.8F));
+    public static final DeferredItem<Item> GLOOM_AXE = ITEMS.registerSimpleItem("gloom_axe", p -> p.axe(ModMaterials.GLOOM_TOOLS, 5.0F, -3.0F));
+    public static final DeferredItem<Item> GLOOM_SHOVEL = ITEMS.registerSimpleItem("gloom_shovel", p -> p.shovel(ModMaterials.GLOOM_TOOLS, 1.5F, -3.0F));
+    public static final DeferredItem<Item> GLOOM_HELMET = ITEMS.registerSimpleItem("gloom_helmet", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.HELMET));
+    public static final DeferredItem<Item> GLOOM_CHESTPLATE = ITEMS.registerSimpleItem("gloom_chestplate", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> GLOOM_LEGGINGS = ITEMS.registerSimpleItem("gloom_leggings", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> GLOOM_BOOTS = ITEMS.registerSimpleItem("gloom_boots", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.BOOTS));
 
     private ModItems() {}
 }

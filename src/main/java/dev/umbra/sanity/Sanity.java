@@ -3,6 +3,11 @@ package dev.umbra.sanity;
 import dev.umbra.UmbraConfig;
 import dev.umbra.registry.ModAttachments;
 import dev.umbra.registry.ModBlocks;
+import dev.umbra.registry.ModMaterials;
+import dev.umbra.underside.Underside;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.core.component.DataComponents;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -99,6 +104,9 @@ public final class Sanity {
 
         int monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(10.0)).size();
         drain += Math.min(0.4F, monsters * 0.1F);
+        if (Underside.is(level)) drain += Underside.SANITY_DRAIN;
+        // gloom armour steadies the mind: each piece takes 12% off the drain
+        drain *= 1.0F - 0.12F * gloomPieces(player);
 
         float delta = regen * (float) UmbraConfig.num(UmbraConfig.SANITY_REGEN)
                 - drain * (float) UmbraConfig.num(UmbraConfig.SANITY_DRAIN);
@@ -120,6 +128,15 @@ public final class Sanity {
             }
         }
         Hallucinations.tick(level, player, sanity);
+    }
+
+    public static int gloomPieces(Player player) {
+        int n = 0;
+        for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
+            Equippable eq = player.getItemBySlot(slot).get(DataComponents.EQUIPPABLE);
+            if (eq != null && eq.assetId().isPresent() && eq.assetId().get().equals(ModMaterials.GLOOM_ASSET)) n++;
+        }
+        return n;
     }
 
     /** Multiplier other features use to get nastier as sanity drops (1.0 at full sanity, up to 3.0). */

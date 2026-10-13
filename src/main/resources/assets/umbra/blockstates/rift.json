@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "umbra:block/rift_ns"
+    },
+    "axis=z": {
+      "model": "umbra:block/rift_ew"
+    }
+  }
+}

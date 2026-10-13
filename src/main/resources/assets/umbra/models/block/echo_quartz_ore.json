@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "umbra:block/echo_quartz_ore"
+  }
+}
