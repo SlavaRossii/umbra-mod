@@ -27,5 +27,12 @@ public final class ModAttachments {
                     .sync(ByteBufCodecs.FLOAT)
                     .build());
 
+    /** Set once the Primordial Shadow is defeated: your shadow fights for you from then on. */
+    public static final Supplier<AttachmentType<Boolean>> FREED = ATTACHMENTS.register("freed",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL.fieldOf("value"))
+                    .copyOnDeath()
+                    .build());
+
     private ModAttachments() {}
 }

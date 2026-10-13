@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level;
  */
 public class ShadowEntity extends Monster implements LightSensitive {
     private boolean managed;
+    private boolean ally;
 
     public ShadowEntity(EntityType<? extends ShadowEntity> type, Level level) {
         super(type, level);
@@ -45,6 +46,15 @@ public class ShadowEntity extends Monster implements LightSensitive {
         this.managed = true;
     }
 
+    /** A freed shadow: fights for its player, cannot be hurt or dispelled. */
+    void makeAlly() {
+        this.ally = true;
+    }
+
+    public boolean isAlly() {
+        return ally;
+    }
+
     @Override
     protected void registerGoals() {
         // no goals: movement is driven by ShadowManager
@@ -63,6 +73,7 @@ public class ShadowEntity extends Monster implements LightSensitive {
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (ally) return false;
         Entity attacker = source.getEntity();
         if (attacker instanceof Player player && UmbraUtil.holdsLight(player)) {
             onLit(level, player);
@@ -74,7 +85,7 @@ public class ShadowEntity extends Monster implements LightSensitive {
     /** Light dispels the shadow and leaves a shard of it behind. */
     @Override
     public void onLit(ServerLevel level, Player source) {
-        if (!this.isAlive()) return;
+        if (!this.isAlive() || ally) return;
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 0.6F);
         level.addFreshEntity(new ItemEntity(level, this.getX(), this.getY() + 1.0, this.getZ(), new ItemStack(ModItems.SHADOW_SHARD.get())));
         if (source != null) Sanity.add(source, Sanity.Shock.SHADOW_DISPELLED);

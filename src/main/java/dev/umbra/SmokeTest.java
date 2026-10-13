@@ -9,7 +9,11 @@ import dev.umbra.quantum.QuantumBlock;
 import dev.umbra.registry.ModItems;
 import dev.umbra.sanity.Hallucinations;
 import dev.umbra.sanity.Sanity;
+import dev.umbra.boss.Architect;
+import dev.umbra.boss.BossSummonItems;
 import dev.umbra.boss.Doppelganger;
+import dev.umbra.boss.PrimordialShadow;
+import dev.umbra.shadow.ShadowManager;
 import dev.umbra.boss.MimicQueen;
 import dev.umbra.boss.Shepherd;
 import dev.umbra.boss.SummonSealItem;
@@ -107,7 +111,8 @@ final class SmokeTest {
                 case 470 -> testDrops(level);
                 case 480 -> spawnBosses(level);
                 case 540 -> checkBosses(level);
-                case 560 -> finish(server);
+                case 560 -> testFinalBosses(level);
+                case 580 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -349,6 +354,36 @@ final class SmokeTest {
         } else {
             check(false, "the Shepherd lives");
         }
+    }
+
+    private static void testFinalBosses(ServerLevel level) {
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY() + 30, ARENA.getZ() + 0.5, 0, 0);
+        Architect architect = BossSummonItems.summonArchitect(level, fake);
+        check(architect != null && architect.isAlive(), "the key raises the Architect's maze");
+        if (architect != null) {
+            BlockPos core = BlockPos.containing(architect.position()).offset(0, -2, -2);
+            check(level.getBlockState(core).is(ModBlocks.MAZE_CORE.get()), "the Architect stands in his maze");
+            architect.discard();
+        }
+
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY(), ARENA.getZ() + 0.5, 0, 0);
+        PrimordialShadow boss = SummonSealItem.summon(level, fake, ModEntities.PRIMORDIAL_SHADOW.get());
+        check(boss != null, "the Primordial Shadow can be summoned");
+        if (boss != null) {
+            boss.setTarget(null);
+            check(boss.phase() == 1, "she starts in phase 1");
+            boss.setHealth(boss.getMaxHealth() * 0.2F);
+            check(boss.phase() == 3, "phase 3 below a third of her health");
+            float hp = boss.getHealth();
+            boss.hurtServer(level, level.damageSources().magic(), 20.0F);
+            check(boss.getHealth() == hp, "in phase 3 ordinary damage does nothing");
+            boss.onLit(level, null);
+            check(boss.getHealth() < hp, "in phase 3 light hurts her");
+            boss.discard();
+        }
+        ShadowManager.free(fake);
+        check(ShadowManager.isFreed(fake), "defeating her frees your shadow");
     }
 
     private static void testOre(ServerLevel level) {

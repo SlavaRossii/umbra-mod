@@ -26,6 +26,8 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new SilhouetteRenderer<>(ctx, "mimic_queen"));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new SilhouetteRenderer<>(ctx, "shepherd"));
         event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new SilhouetteRenderer<>(ctx, "doppelganger"));
+        event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new SilhouetteRenderer<>(ctx, "architect"));
+        event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "primordial_shadow"));
         event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), LightEaterRenderer::new);
     }
 

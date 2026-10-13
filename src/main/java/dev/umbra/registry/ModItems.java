@@ -1,7 +1,9 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.boss.BossSummonItems;
 import dev.umbra.boss.SummonSealItem;
+import dev.umbra.light.DawnLanternItem;
 import dev.umbra.item.MirrorItem;
 import dev.umbra.item.PillItem;
 import dev.umbra.light.DispellerItem;
@@ -90,7 +92,10 @@ public final class ModItems {
     public static final DeferredItem<Item> MIMIC_CROWN = ITEMS.registerSimpleItem("mimic_crown", p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> SHEPHERD_CROOK = ITEMS.registerSimpleItem("shepherd_crook", p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> MIRROR_MASK = ITEMS.registerSimpleItem("mirror_mask", p -> p.stacksTo(1).rarity(Rarity.EPIC));
-    public static final DeferredItem<Item> UNDERSIDE_KEY = ITEMS.registerSimpleItem("underside_key", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<BossSummonItems.Key> UNDERSIDE_KEY = ITEMS.registerItem("underside_key", BossSummonItems.Key::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<BossSummonItems.Heart> ABYSS_HEART = ITEMS.registerItem("abyss_heart", BossSummonItems.Heart::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<DawnLanternItem> DAWN_LANTERN = ITEMS.registerItem("dawn_lantern", DawnLanternItem::new,
+            p -> p.durability(512).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
 
     private ModItems() {}
 }

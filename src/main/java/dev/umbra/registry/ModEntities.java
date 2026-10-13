@@ -1,7 +1,9 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.boss.Architect;
 import dev.umbra.boss.Doppelganger;
+import dev.umbra.boss.PrimordialShadow;
 import dev.umbra.boss.MimicQueen;
 import dev.umbra.boss.Shepherd;
 import dev.umbra.boss.Watcher;
@@ -49,6 +51,12 @@ public final class ModEntities {
             Shepherd::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<Doppelganger>> DOPPELGANGER = ENTITIES.registerEntityType("doppelganger",
             Doppelganger::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.8F).clientTrackingRange(10));
+
+    // --- Bosses ---
+    public static final DeferredHolder<EntityType<?>, EntityType<Architect>> ARCHITECT = ENTITIES.registerEntityType("architect",
+            Architect::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(12).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<PrimordialShadow>> PRIMORDIAL_SHADOW = ENTITIES.registerEntityType("primordial_shadow",
+            PrimordialShadow::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(12).fireImmune());
 
     private ModEntities() {}
 }

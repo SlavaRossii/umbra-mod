@@ -3,7 +3,10 @@ package dev.umbra.shadow;
 import dev.umbra.Umbra;
 import dev.umbra.UmbraConfig;
 import dev.umbra.sanity.Sanity;
+import dev.umbra.registry.ModAttachments;
 import dev.umbra.registry.ModEntities;
+import dev.umbra.underside.Underside;
+import net.minecraft.world.entity.monster.Monster;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -63,6 +66,11 @@ public final class ShadowManager {
 
         recordTrail(player, s);
 
+        if (isFreed(player)) {
+            allyTick(level, player, s);
+            return;
+        }
+
         ShadowEntity shadow = find(level, s);
         if (s.shadowId != null && shadow == null) {
             // it was dispelled by the player or removed some other way
@@ -91,6 +99,64 @@ public final class ShadowManager {
             return;
         }
         moveShadow(level, player, s, shadow);
+    }
+
+    public static boolean isFreed(ServerPlayer player) {
+        return player.getData(ModAttachments.FREED);
+    }
+
+    /** Called when the Primordial Shadow falls: this player's shadow becomes an ally. */
+    public static void free(ServerPlayer player) {
+        player.setData(ModAttachments.FREED, true);
+        State s = STATES.get(player.getUUID());
+        if (s != null) {
+            ShadowEntity old = find(player.level(), s);
+            if (old != null) old.dissipate();
+            s.shadowId = null;
+        }
+    }
+
+    /** The freed shadow walks beside you at night and in the Underside, and strikes monsters that come close. */
+    private static void allyTick(ServerLevel level, ServerPlayer player, State s) {
+        boolean active = UmbraUtil.isNight(level) || Underside.is(level);
+        ShadowEntity ally = find(level, s);
+        if (!active || player.isSpectator()) {
+            if (ally != null) ally.dissipate();
+            s.shadowId = null;
+            return;
+        }
+        if (ally == null) {
+            ally = ModEntities.SHADOW.get().create(level, EntitySpawnReason.EVENT);
+            if (ally == null) return;
+            ally.makeAlly();
+            ally.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0.0F);
+            level.addFreshEntity(ally);
+            s.shadowId = ally.getUUID();
+        }
+        ally.markManaged();
+        ally.makeAlly();
+        Vec3 side = UmbraUtil.horizontal(player.getLookAngle()).scale(-1.5).add(player.position());
+        Vec3 pos = ally.position().lerp(side, 0.25);
+        ally.setPos(pos.x, side.y, pos.z);
+        ally.setYRot(player.getYRot());
+        ally.setYHeadRot(player.getYHeadRot());
+        ally.setYBodyRot(player.getYRot());
+        if (player.tickCount % 20 == 0) {
+            Monster prey = null;
+            double best = 36.0;
+            for (Monster m : level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(6.0))) {
+                if (m instanceof ShadowEntity) continue;
+                double d = m.distanceToSqr(player);
+                if (d < best) {
+                    best = d;
+                    prey = m;
+                }
+            }
+            if (prey != null) {
+                prey.hurtServer(level, level.damageSources().playerAttack(player), 5.0F);
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.SQUID_INK, prey.getX(), prey.getY() + 1, prey.getZ(), 8, 0.3, 0.5, 0.3, 0.02);
+            }
+        }
     }
 
     /** Used by /umbra shadow. */

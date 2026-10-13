@@ -57,6 +57,8 @@ public final class ModTabs {
                 out.accept(ModItems.SHEPHERD_CROOK.get());
                 out.accept(ModItems.MIRROR_MASK.get());
                 out.accept(ModItems.UNDERSIDE_KEY.get());
+                out.accept(ModItems.ABYSS_HEART.get());
+                out.accept(ModItems.DAWN_LANTERN.get());
                 out.accept(ModItems.QUANTUM_BLOCK.get());
                 out.accept(ModItems.MAZE_WALL.get());
             })

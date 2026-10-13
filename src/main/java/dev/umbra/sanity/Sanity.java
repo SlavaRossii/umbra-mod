@@ -102,7 +102,8 @@ public final class Sanity {
         if (!enclosed && !UmbraUtil.isNight(level)) regen += 0.15F;
         if (level.getBlockState(eye).is(ModBlocks.LIVING_DARKNESS.get())) drain += 1.0F;
 
-        int monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(10.0)).size();
+        int monsters = level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(10.0),
+                m -> !(m instanceof dev.umbra.shadow.ShadowEntity s && s.isAlly())).size();
         drain += Math.min(0.4F, monsters * 0.1F);
         if (Underside.is(level)) drain += Underside.SANITY_DRAIN;
         // gloom armour steadies the mind: each piece takes 12% off the drain

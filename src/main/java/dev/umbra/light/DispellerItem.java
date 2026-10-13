@@ -28,9 +28,19 @@ public class DispellerItem extends Item {
     /** cos(35°): half-angle of the cone */
     public static final double CONE_COS = 0.82;
     private static final int COOLDOWN = 30;
+    private final int cooldown;
+    private final double range;
+    private final double coneCos;
 
     public DispellerItem(Properties properties) {
+        this(properties, COOLDOWN, RANGE, CONE_COS);
+    }
+
+    protected DispellerItem(Properties properties, int cooldown, double range, double coneCos) {
         super(properties);
+        this.cooldown = cooldown;
+        this.range = range;
+        this.coneCos = coneCos;
     }
 
     @Override
@@ -38,9 +48,9 @@ public class DispellerItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.getCooldowns().isOnCooldown(stack)) return InteractionResult.PASS;
         if (level instanceof ServerLevel server) {
-            flash(server, player, player.getEyePosition(), player.getLookAngle());
+            flash(server, player, player.getEyePosition(), player.getLookAngle(), range, coneCos);
             stack.hurtAndBreak(1, player, hand);
-            player.getCooldowns().addCooldown(stack, COOLDOWN);
+            player.getCooldowns().addCooldown(stack, cooldown);
             Sanity.add(player, Sanity.Shock.DISPELLER);
         }
         return InteractionResult.SUCCESS;
@@ -48,6 +58,10 @@ public class DispellerItem extends Item {
 
     /** The flash itself; usable from tests and future light weapons. Returns how many darkness blocks burned. */
     public static int flash(ServerLevel level, Player source, Vec3 origin, Vec3 direction) {
+        return flash(level, source, origin, direction, RANGE, CONE_COS);
+    }
+
+    public static int flash(ServerLevel level, Player source, Vec3 origin, Vec3 direction, double RANGE, double CONE_COS) {
         Vec3 dir = direction.normalize();
         int burned = 0;
         int r = (int) Math.ceil(RANGE);

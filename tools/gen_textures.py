@@ -504,6 +504,47 @@ def stage4():
     icon("underside_key", key)
 
 
+# ------------------------------------------------------------------ stage 5: bosses
+
+def stage5():
+    humanoid_skin("entity/architect.png", (70, 66, 80), (95, 90, 110), (255, 220, 120), 81)
+    img = Image.open(os.path.join(ROOT, "entity/architect.png"))
+    px = img.load()
+    for x in range(16, 40):  # glowing blueprint lines across the body
+        for y in range(16, 32):
+            if (x + y) % 6 == 0:
+                px[x, y] = (255, 210, 110, 255)
+    save(img, "entity/architect.png")
+    humanoid_skin("entity/primordial_shadow.png", (4, 2, 8), (10, 6, 16), (190, 120, 255), 82)
+
+    def heart(px, rnd):
+        for y in range(16):
+            for x in range(16):
+                u, v = (x - 7.5) / 6.0, (y - 7.0) / 6.0
+                if (u * u + v * v - 1) ** 3 - u * u * v ** 3 * -1 <= 0:
+                    px[x, y] = (40, 10, 60, 255) if rnd.random() < 0.7 else (120, 60, 190, 255)
+        px[6, 6] = (220, 180, 255, 255)
+    icon("abyss_heart", heart, 5)
+
+    def lantern(px, rnd):
+        frame = (230, 200, 120, 255)
+        for x in range(5, 11):
+            px[x, 3] = frame
+            px[x, 13] = frame
+        for y in range(3, 14):
+            px[4, y] = frame
+            px[11, y] = frame
+        for y in range(4, 13):
+            for x in range(5, 11):
+                d = math.hypot(x - 7.5, y - 8)
+                v = int(255 - d * 14)
+                px[x, y] = (255, max(200, v), max(120, v - 60), 255)
+        for x in (7, 8):
+            px[x, 1] = frame
+            px[x, 2] = frame
+    icon("dawn_lantern", lantern)
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -519,4 +560,5 @@ if __name__ == "__main__":
     stage2()
     stage3()
     stage4()
+    stage5()
     print("textures written")

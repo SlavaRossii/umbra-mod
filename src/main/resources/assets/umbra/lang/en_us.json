@@ -92,5 +92,11 @@
   "item.umbra.shepherd_crook": "Shepherd's Crook",
   "item.umbra.mirror_mask": "Mirror Mask",
   "item.umbra.underside_key": "Key of the Underside",
-  "message.umbra.no_room": "There is no room for it to appear here."
+  "message.umbra.no_room": "There is no room for it to appear here.",
+  "entity.umbra.architect": "The Architect",
+  "entity.umbra.primordial_shadow": "The Primordial Shadow",
+  "item.umbra.abyss_heart": "Heart of the Abyss",
+  "item.umbra.dawn_lantern": "Dawn",
+  "message.umbra.only_underside": "This only works in the Underside.",
+  "message.umbra.freed": "The Primordial Shadow is gone. Your own shadow bows to you — from now on it fights at your side."
 }

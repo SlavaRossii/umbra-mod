@@ -92,5 +92,11 @@
   "item.umbra.shepherd_crook": "Посох пастуха",
   "item.umbra.mirror_mask": "Зеркальная маска",
   "item.umbra.underside_key": "Ключ Изнанки",
-  "message.umbra.no_room": "Здесь ему негде появиться."
+  "message.umbra.no_room": "Здесь ему негде появиться.",
+  "entity.umbra.architect": "Архитектор",
+  "entity.umbra.primordial_shadow": "Первородная Тень",
+  "item.umbra.abyss_heart": "Сердце бездны",
+  "item.umbra.dawn_lantern": "Рассвет",
+  "message.umbra.only_underside": "Это работает только в Изнанке.",
+  "message.umbra.freed": "Первородной Тени больше нет. Твоя собственная тень склоняется перед тобой: теперь она сражается на твоей стороне."
 }
