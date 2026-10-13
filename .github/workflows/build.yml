@@ -13,6 +13,10 @@ on:
         description: "Regex of class paths to list from the Minecraft/NeoForge jar"
         required: false
         default: ""
+      files:
+        description: "Space-separated resource paths to print from the Minecraft jar"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -44,10 +48,11 @@ jobs:
           grep -nE -A4 'error:|warning: \[removal\]|FAILURE|What went wrong' build.log > errors.txt || tail -200 build.log > errors.txt
 
       - name: Probe Minecraft API (on failure or on request)
-        if: failure() || inputs.probe != '' || inputs.grep != ''
+        if: failure() || inputs.probe != '' || inputs.grep != '' || inputs.files != ''
         env:
           PROBE: ${{ inputs.probe }}
           GREP: ${{ inputs.grep }}
+          FILES: ${{ inputs.files }}
         run: |
           JAR=""
           for j in $(find build/moddev ~/.gradle/caches -name '*.jar' 2>/dev/null | grep -iE 'neoforge|minecraft' | grep -v sources); do
@@ -62,6 +67,7 @@ jobs:
           {
             echo "jar: $JAR"
             if [ -n "$GREP" ]; then echo "=== classes matching $GREP"; jar tf "$JAR" | grep -E -- "$GREP" | grep -v '\$[0-9]' | head -300; fi
+            for f in $FILES; do echo "=================== file $f"; unzip -p "$JAR" "$f" 2>&1 | head -300; done
             for c in $CLASSES; do
               echo "=================== $c"
               javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -3000
