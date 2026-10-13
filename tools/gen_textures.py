@@ -343,6 +343,76 @@ def stage2():
     armor_layers()
 
 
+# ------------------------------------------------------------------ stage 3: creatures
+
+def fill_tex(size, regions, color_fn, seed):
+    rnd = random.Random(seed)
+    img = Image.new("RGBA", size, (0, 0, 0, 0))
+    px = img.load()
+    for (x0, y0, x1, y1) in regions:
+        for x in range(x0, x1):
+            for y in range(y0, y1):
+                px[x, y] = color_fn(x, y, rnd)
+    return img, px
+
+
+def crawler():
+    # spider layout 64x32: head 32,4..56,20 ; body0 0,0..24,12 ; body1 0,12..40,24 ; legs 18,0..50,4
+    regions = [(0, 0, 64, 32)]
+    img, px = fill_tex((64, 32), regions, lambda x, y, r: (lambda v: (v, v, v - 6, 255))(r.randint(170, 200)), 61)
+    for (ex, ey) in [(40, 12), (41, 12), (45, 12), (46, 12), (42, 14), (44, 14)]:
+        px[ex, ey] = (20, 20, 20, 255)
+    save(img, "entity/crawler.png")
+
+
+def light_eater():
+    # vex layout 32x32
+    img, px = fill_tex((32, 32), [(0, 0, 32, 32)], lambda x, y, r: (lambda v: (v, v, v + 8, 210))(r.randint(200, 240)), 62)
+    for (ex, ey) in [(2, 3), (5, 3)]:
+        px[ex, ey] = (0, 0, 0, 255)
+    for x in range(16, 32):  # wings: dusty with dark eye-spots
+        for y in range(14, 30):
+            if (x - 23) ** 2 + (y - 21) ** 2 < 6:
+                px[x, y] = (40, 30, 30, 255)
+    save(img, "entity/light_eater.png")
+
+
+def stage3():
+    crawler()
+    light_eater()
+    humanoid_skin("entity/blind.png", (150, 140, 135), (175, 165, 160), (120, 40, 40), 63)
+    img = Image.open(os.path.join(ROOT, "entity/blind.png"))
+    px = img.load()
+    for x in range(8, 16):  # stitched eyes
+        px[x, 12] = (60, 20, 20, 255)
+    save(img, "entity/blind.png")
+    rnd = random.Random(64)
+    patches = [(120, 90, 60), (40, 40, 40), (220, 220, 210), (160, 110, 80), (90, 120, 70)]
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x0, y0, x1, y1) in [(0, 0, 32, 16), (16, 16, 40, 32), (40, 16, 56, 32), (0, 16, 16, 32), (32, 48, 48, 64), (16, 48, 32, 64)]:
+        for x in range(x0, x1):
+            for y in range(y0, y1):
+                c = patches[((x // 4) + (y // 4) * 3 + rnd.randint(0, 1)) % len(patches)]
+                px[x, y] = c + (255,)
+    for (ex, ey) in [(9, 11), (10, 11), (13, 13), (14, 13)]:
+        px[ex, ey] = (0, 0, 0, 255)
+    save(img, "entity/mimicker.png")
+    humanoid_skin("entity/shade.png", (8, 8, 12), None, (240, 240, 255), 65)
+    eggs = {"crawler": ((190, 188, 180), (30, 30, 30)), "blind": ((150, 140, 135), (120, 40, 40)),
+            "light_eater": ((230, 230, 238), (60, 50, 50)), "mimicker": ((120, 90, 60), (220, 220, 210)),
+            "shade": ((15, 15, 20), (230, 230, 255))}
+    for name, (base, spot) in eggs.items():
+        img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        px = img.load()
+        rnd = random.Random(name)
+        for y in range(16):
+            for x in range(16):
+                if ((x - 7.5) / 5.2) ** 2 + ((y - 8.5) / 6.8) ** 2 <= 1:
+                    px[x, y] = (spot if rnd.random() < 0.18 else base) + (255,)
+        save(img, f"item/{name}_spawn_egg.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -356,4 +426,5 @@ if __name__ == "__main__":
     item_dispeller()
     humanoid_skin("entity/hallucination.png", (18, 18, 22), (205, 205, 200), (5, 5, 5), 4)
     stage2()
+    stage3()
     print("textures written")

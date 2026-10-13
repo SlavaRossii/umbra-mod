@@ -68,5 +68,15 @@
   "biome.umbra.quantum_ruins": "Quantum Ruins",
   "biome.umbra.abyss": "Abyss",
   "message.umbra.bad_frame": "The frame must be a closed rectangle of dusk stone (inside 2-6 wide, 3-8 tall).",
-  "command.umbra.rift": "A rift to the Underside opened in front of you."
+  "command.umbra.rift": "A rift to the Underside opened in front of you.",
+  "entity.umbra.crawler": "Crawler",
+  "entity.umbra.blind": "Blind One",
+  "entity.umbra.light_eater": "Light Eater",
+  "entity.umbra.mimicker": "Mimicker",
+  "entity.umbra.shade": "Shade",
+  "item.umbra.crawler_spawn_egg": "Crawler Spawn Egg",
+  "item.umbra.blind_spawn_egg": "Blind One Spawn Egg",
+  "item.umbra.light_eater_spawn_egg": "Light Eater Spawn Egg",
+  "item.umbra.mimicker_spawn_egg": "Mimicker Spawn Egg",
+  "item.umbra.shade_spawn_egg": "Shade Spawn Egg"
 }

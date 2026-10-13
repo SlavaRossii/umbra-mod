@@ -9,6 +9,13 @@ import dev.umbra.quantum.QuantumBlock;
 import dev.umbra.registry.ModItems;
 import dev.umbra.sanity.Hallucinations;
 import dev.umbra.sanity.Sanity;
+import dev.umbra.mob.Blind;
+import dev.umbra.mob.Crawler;
+import dev.umbra.mob.LightEater;
+import dev.umbra.mob.Mimicker;
+import dev.umbra.mob.Shade;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
 import dev.umbra.underside.RiftFrame;
 import dev.umbra.underside.RiftTravel;
 import dev.umbra.underside.Underside;
@@ -89,7 +96,11 @@ final class SmokeTest {
                 case 300 -> testOre(level);
                 case 310 -> testFrame(level);
                 case 320 -> testUnderside(server, level);
-                case 340 -> finish(server);
+                case 340 -> spawnMobs(level);
+                case 350 -> testShadeLit(level);
+                case 460 -> checkMobs(level);
+                case 470 -> testDrops(level);
+                case 490 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -228,6 +239,60 @@ final class SmokeTest {
             TeleportTransition again = RiftTravel.destination(overworld, fake, new BlockPos(300, 80, 300));
             check(again != null && again.position().distanceTo(t.position()) < 1.0, "the same rift is reused next time");
         }
+    }
+
+    private static Crawler crawler;
+    private static Blind blind;
+    private static LightEater eater;
+    private static Mimicker mimicker;
+    private static final BlockPos TORCH = PLATFORM.offset(8, 0, 0);
+
+    private static <T extends Mob> T spawn(ServerLevel level, net.minecraft.world.entity.EntityType<T> type, BlockPos at) {
+        T mob = type.create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (mob == null) return null;
+        mob.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+        mob.setPersistenceRequired();
+        level.addFreshEntity(mob);
+        return mob;
+    }
+
+    private static void spawnMobs(ServerLevel level) {
+        crawler = spawn(level, ModEntities.CRAWLER.get(), PLATFORM.offset(-10, 0, -10));
+        blind = spawn(level, ModEntities.BLIND.get(), PLATFORM.offset(-10, 0, 10));
+        mimicker = spawn(level, ModEntities.MIMICKER.get(), PLATFORM.offset(10, 0, 10));
+        level.setBlock(TORCH, Blocks.TORCH.defaultBlockState(), Block.UPDATE_ALL);
+        eater = spawn(level, ModEntities.LIGHT_EATER.get(), PLATFORM.offset(3, 1, 0));
+        check(crawler != null && blind != null && mimicker != null && eater != null, "all creatures can be created");
+        check(mimicker != null && mimicker.isHidden(), "the mimicker starts invisible");
+    }
+
+    private static void testShadeLit(ServerLevel level) {
+        Shade shade = spawn(level, ModEntities.SHADE.get(), PLATFORM.offset(0, 0, -6));
+        check(shade != null, "a shade can be created");
+        if (shade != null) {
+            DispellerItem.flash(level, null, Vec3.atCenterOf(PLATFORM.offset(0, 1, 0)), new Vec3(0, 0, -1));
+            check(!shade.isAlive(), "the Dispeller destroys a shade");
+        }
+    }
+
+    private static void checkMobs(ServerLevel level) {
+        check(crawler != null && crawler.isAlive(), "crawler lives and ticks");
+        check(blind != null && blind.isAlive() && blind.getTarget() == null, "the blind one does not see anyone");
+        check(mimicker != null && mimicker.isAlive(), "mimicker lives and ticks");
+        check(eater != null && eater.isAlive(), "light eater lives and ticks");
+        check(!level.getBlockState(TORCH).is(Blocks.TORCH), "the light eater ate the torch");
+    }
+
+    private static void testDrops(ServerLevel level) {
+        int ok = 0;
+        BlockPos[] spots = {PLATFORM.offset(-5, 0, 5), PLATFORM.offset(-3, 0, 5), PLATFORM.offset(-1, 0, 5)};
+        Block[] blocks = {ModBlocks.LUMINITE_LAMP.get(), ModBlocks.ETERNAL_TORCH.get(), ModBlocks.DEAD_LOG.get()};
+        for (int i = 0; i < spots.length; i++) {
+            level.setBlock(spots[i], blocks[i].defaultBlockState(), Block.UPDATE_ALL);
+            level.destroyBlock(spots[i], true);
+            if (!level.getEntitiesOfClass(ItemEntity.class, new AABB(spots[i]).inflate(1.5)).isEmpty()) ok++;
+        }
+        check(ok == spots.length, "blocks drop themselves when broken (" + ok + "/" + spots.length + ")");
     }
 
     private static void testOre(ServerLevel level) {

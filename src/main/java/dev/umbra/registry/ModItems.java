@@ -69,5 +69,12 @@ public final class ModItems {
     public static final DeferredItem<Item> GLOOM_LEGGINGS = ITEMS.registerSimpleItem("gloom_leggings", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.LEGGINGS));
     public static final DeferredItem<Item> GLOOM_BOOTS = ITEMS.registerSimpleItem("gloom_boots", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.BOOTS));
 
+    // --- Spawn eggs ---
+    public static final DeferredItem<Item> CRAWLER_SPAWN_EGG = ITEMS.registerSimpleItem("crawler_spawn_egg", p -> p.spawnEgg(ModEntities.CRAWLER.get()));
+    public static final DeferredItem<Item> BLIND_SPAWN_EGG = ITEMS.registerSimpleItem("blind_spawn_egg", p -> p.spawnEgg(ModEntities.BLIND.get()));
+    public static final DeferredItem<Item> LIGHT_EATER_SPAWN_EGG = ITEMS.registerSimpleItem("light_eater_spawn_egg", p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));
+    public static final DeferredItem<Item> MIMICKER_SPAWN_EGG = ITEMS.registerSimpleItem("mimicker_spawn_egg", p -> p.spawnEgg(ModEntities.MIMICKER.get()));
+    public static final DeferredItem<Item> SHADE_SPAWN_EGG = ITEMS.registerSimpleItem("shade_spawn_egg", p -> p.spawnEgg(ModEntities.SHADE.get()));
+
     private ModItems() {}
 }

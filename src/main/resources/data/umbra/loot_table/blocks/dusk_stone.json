@@ -9,11 +9,9 @@
           "name": "umbra:dusk_stone"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "umbra:blocks/dusk_stone"

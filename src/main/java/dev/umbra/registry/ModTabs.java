@@ -43,6 +43,11 @@ public final class ModTabs {
                 out.accept(ModItems.GLOOM_CHESTPLATE.get());
                 out.accept(ModItems.GLOOM_LEGGINGS.get());
                 out.accept(ModItems.GLOOM_BOOTS.get());
+                out.accept(ModItems.CRAWLER_SPAWN_EGG.get());
+                out.accept(ModItems.BLIND_SPAWN_EGG.get());
+                out.accept(ModItems.LIGHT_EATER_SPAWN_EGG.get());
+                out.accept(ModItems.MIMICKER_SPAWN_EGG.get());
+                out.accept(ModItems.SHADE_SPAWN_EGG.get());
                 out.accept(ModItems.QUANTUM_BLOCK.get());
                 out.accept(ModItems.MAZE_WALL.get());
             })

@@ -19,7 +19,44 @@
       ],
       "modifier": "append"
     },
-    "minecraft:visual/fog_color": "#1c1530"
+    "minecraft:visual/fog_color": "#1c1530",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "umbra:mimicker",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 1
+              },
+              "weight": 40
+            },
+            {
+              "type": "umbra:blind",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 1
+              },
+              "weight": 30
+            },
+            {
+              "type": "umbra:shade",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 3,
+                "max_inclusive": 4
+              },
+              "weight": 20
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    }
   },
   "carvers": "minecraft:nether_cave",
   "downfall": 0.0,

@@ -4,6 +4,15 @@ import com.mojang.logging.LogUtils;
 import dev.umbra.command.UmbraCommand;
 import dev.umbra.darkness.DarknessManager;
 import dev.umbra.mimic.MimicManager;
+import dev.umbra.mob.Blind;
+import dev.umbra.mob.Crawler;
+import dev.umbra.mob.LightEater;
+import dev.umbra.mob.Mimicker;
+import dev.umbra.mob.Shade;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import dev.umbra.registry.ModAttachments;
 import dev.umbra.registry.ModBlocks;
 import dev.umbra.registry.ModEntities;
@@ -50,6 +59,7 @@ public class Umbra {
         container.registerConfig(ModConfig.Type.LOCAL, UmbraConfig.SPEC, "umbra.toml");
 
         modBus.addListener(Umbra::onAttributes);
+        modBus.addListener(Umbra::onSpawnPlacements);
 
         NeoForge.EVENT_BUS.addListener(Umbra::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(Umbra::onSetSpawn);
@@ -65,6 +75,21 @@ public class Umbra {
     private static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.SHADOW.get(), ShadowEntity.createAttributes().build());
         event.put(ModEntities.HALLUCINATION.get(), HallucinationEntity.createAttributes().build());
+        event.put(ModEntities.CRAWLER.get(), Crawler.createAttributes().build());
+        event.put(ModEntities.BLIND.get(), Blind.createAttributes().build());
+        event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
+        event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
+        event.put(ModEntities.SHADE.get(), Shade.createAttributes().build());
+    }
+
+    private static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        var ground = SpawnPlacementTypes.ON_GROUND;
+        var heightmap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
+        event.register(ModEntities.CRAWLER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.BLIND.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.MIMICKER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.SHADE.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.LIGHT_EATER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {

@@ -1,6 +1,11 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.mob.Blind;
+import dev.umbra.mob.Crawler;
+import dev.umbra.mob.LightEater;
+import dev.umbra.mob.Mimicker;
+import dev.umbra.mob.Shade;
 import dev.umbra.sanity.HallucinationEntity;
 import dev.umbra.shadow.ShadowEntity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +23,18 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<HallucinationEntity>> HALLUCINATION = ENTITIES.registerEntityType("hallucination",
             HallucinationEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());
+
+    // --- Creatures of the Underside ---
+    public static final DeferredHolder<EntityType<?>, EntityType<Crawler>> CRAWLER = ENTITIES.registerEntityType("crawler",
+            Crawler::new, MobCategory.MONSTER, b -> b.sized(1.3F, 0.8F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Blind>> BLIND = ENTITIES.registerEntityType("blind",
+            Blind::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.1F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<LightEater>> LIGHT_EATER = ENTITIES.registerEntityType("light_eater",
+            LightEater::new, MobCategory.MONSTER, b -> b.sized(0.5F, 0.8F).clientTrackingRange(8).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<Mimicker>> MIMICKER = ENTITIES.registerEntityType("mimicker",
+            Mimicker::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Shade>> SHADE = ENTITIES.registerEntityType("shade",
+            Shade::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
 
     private ModEntities() {}
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "umbra:item/mimicker_spawn_egg"
+  }
+}

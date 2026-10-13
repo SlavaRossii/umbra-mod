@@ -68,5 +68,15 @@
   "biome.umbra.quantum_ruins": "Квантовые руины",
   "biome.umbra.abyss": "Бездна",
   "message.umbra.bad_frame": "Рамка должна быть замкнутым прямоугольником из сумрачного камня (внутри 2–6 в ширину и 3–8 в высоту).",
-  "command.umbra.rift": "Перед тобой открылся разлом в Изнанку."
+  "command.umbra.rift": "Перед тобой открылся разлом в Изнанку.",
+  "entity.umbra.crawler": "Ползун",
+  "entity.umbra.blind": "Слепец",
+  "entity.umbra.light_eater": "Пожиратель света",
+  "entity.umbra.mimicker": "Подражатель",
+  "entity.umbra.shade": "Тень",
+  "item.umbra.crawler_spawn_egg": "Яйцо призыва: Ползун",
+  "item.umbra.blind_spawn_egg": "Яйцо призыва: Слепец",
+  "item.umbra.light_eater_spawn_egg": "Яйцо призыва: Пожиратель света",
+  "item.umbra.mimicker_spawn_egg": "Яйцо призыва: Подражатель",
+  "item.umbra.shade_spawn_egg": "Яйцо призыва: Тень"
 }
