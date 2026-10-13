@@ -12,7 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -106,7 +106,7 @@ public class MimicBlock extends Block {
         level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 40, 0.5, 0.5, 0.5, 0.1);
         level.playSound(null, pos, SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.0F, 0.7F);
         for (int i = 0; i < 4; i++) {
-            EntityType.SILVERFISH.spawn(level, pos, EntitySpawnReason.MOB_SUMMONED);
+            EntityTypes.SILVERFISH.spawn(level, pos, EntitySpawnReason.MOB_SUMMONED);
         }
         for (Player p : level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(6.0))) {
             p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));

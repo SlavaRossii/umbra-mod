@@ -143,7 +143,7 @@ public final class ShadowManager {
         s.shadowId = shadow.getUUID();
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 0.35F, 0.5F);
-        player.displayClientMessage(Component.translatable("message.umbra.shadow_detached"), true);
+        player.sendOverlayMessage(Component.translatable("message.umbra.shadow_detached"));
         Umbra.LOGGER.debug("Shadow detached for {} at {}", player.getName().getString(), start);
         return true;
     }
@@ -198,7 +198,7 @@ public final class ShadowManager {
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 12, 0));
         player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20 * 6, 1));
         player.hurtServer(level, level.damageSources().magic(), 7.0F);
-        player.displayClientMessage(Component.translatable("message.umbra.shadow_caught"), true);
+        player.sendOverlayMessage(Component.translatable("message.umbra.shadow_caught"));
         shadow.dissipate();
         s.shadowId = null;
         s.trail.clear();

@@ -151,7 +151,7 @@ public class QuantumBlock extends Block {
     }
 
     @Override
-    protected int getLightBlock(BlockState state) {
+    protected int getLightDampening(BlockState state) {
         return state.getValue(OPEN) ? 0 : 15;
     }
 }

@@ -31,7 +31,7 @@ public final class ModBlocks {
                     .randomTicks()
                     .noLootTable()
                     .strength(-1.0F, 0.0F)
-                    .pushReaction(PushReaction.DESTROY)
+                    .pushReaction(PushReaction.POPPED)
                     .isSuffocating((s, l, p) -> false)
                     .isViewBlocking((s, l, p) -> false)
                     .sound(SoundType.WOOL));
@@ -43,7 +43,7 @@ public final class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .noLootTable()
                     .randomTicks()
-                    .pushReaction(PushReaction.BLOCK)
+                    .pushReaction(PushReaction.IMMOVEABLE)
                     .isSuffocating((s, l, p) -> !s.getValue(QuantumBlock.OPEN))
                     .isViewBlocking((s, l, p) -> !s.getValue(QuantumBlock.OPEN))
                     .isRedstoneConductor((s, l, p) -> false));
@@ -52,7 +52,7 @@ public final class ModBlocks {
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
                     .strength(-1.0F, 3600000.0F)
                     .noLootTable()
-                    .pushReaction(PushReaction.BLOCK));
+                    .pushReaction(PushReaction.IMMOVEABLE));
 
     // --- Mimics: each mimic pretends to be one vanilla block ---
     public static final Map<String, DeferredBlock<MimicBlock>> MIMICS = new LinkedHashMap<>();
