@@ -1,6 +1,7 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.boss.SummonSealItem;
 import dev.umbra.item.MirrorItem;
 import dev.umbra.item.PillItem;
 import dev.umbra.light.DispellerItem;
@@ -75,6 +76,21 @@ public final class ModItems {
     public static final DeferredItem<Item> LIGHT_EATER_SPAWN_EGG = ITEMS.registerSimpleItem("light_eater_spawn_egg", p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));
     public static final DeferredItem<Item> MIMICKER_SPAWN_EGG = ITEMS.registerSimpleItem("mimicker_spawn_egg", p -> p.spawnEgg(ModEntities.MIMICKER.get()));
     public static final DeferredItem<Item> SHADE_SPAWN_EGG = ITEMS.registerSimpleItem("shade_spawn_egg", p -> p.spawnEgg(ModEntities.SHADE.get()));
+
+    // --- Minibosses: seals, trophies, the key ---
+    public static final DeferredItem<SummonSealItem> SEAL_OF_WATCHING = ITEMS.registerItem("seal_of_watching",
+            p -> new SummonSealItem(p, ModEntities.WATCHER), p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<SummonSealItem> SEAL_OF_MIMICRY = ITEMS.registerItem("seal_of_mimicry",
+            p -> new SummonSealItem(p, ModEntities.MIMIC_QUEEN), p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<SummonSealItem> SEAL_OF_HERDING = ITEMS.registerItem("seal_of_herding",
+            p -> new SummonSealItem(p, ModEntities.SHEPHERD), p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<SummonSealItem> SEAL_OF_REFLECTION = ITEMS.registerItem("seal_of_reflection",
+            p -> new SummonSealItem(p, ModEntities.DOPPELGANGER), p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<Item> WATCHER_EYE = ITEMS.registerSimpleItem("watcher_eye", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> MIMIC_CROWN = ITEMS.registerSimpleItem("mimic_crown", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> SHEPHERD_CROOK = ITEMS.registerSimpleItem("shepherd_crook", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> MIRROR_MASK = ITEMS.registerSimpleItem("mirror_mask", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> UNDERSIDE_KEY = ITEMS.registerSimpleItem("underside_key", p -> p.stacksTo(1).rarity(Rarity.EPIC));
 
     private ModItems() {}
 }

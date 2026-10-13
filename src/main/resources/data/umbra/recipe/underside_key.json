@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "umbra:watcher_eye",
+    "umbra:mimic_crown",
+    "umbra:shepherd_crook",
+    "umbra:mirror_mask",
+    "umbra:gloom_block"
+  ],
+  "result": {
+    "id": "umbra:underside_key"
+  }
+}

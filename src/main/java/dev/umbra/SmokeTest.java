@@ -9,6 +9,11 @@ import dev.umbra.quantum.QuantumBlock;
 import dev.umbra.registry.ModItems;
 import dev.umbra.sanity.Hallucinations;
 import dev.umbra.sanity.Sanity;
+import dev.umbra.boss.Doppelganger;
+import dev.umbra.boss.MimicQueen;
+import dev.umbra.boss.Shepherd;
+import dev.umbra.boss.SummonSealItem;
+import dev.umbra.boss.Watcher;
 import dev.umbra.mob.Blind;
 import dev.umbra.mob.Crawler;
 import dev.umbra.mob.LightEater;
@@ -100,7 +105,9 @@ final class SmokeTest {
                 case 350 -> testShadeLit(level);
                 case 460 -> checkMobs(level);
                 case 470 -> testDrops(level);
-                case 490 -> finish(server);
+                case 480 -> spawnBosses(level);
+                case 540 -> checkBosses(level);
+                case 560 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -293,6 +300,55 @@ final class SmokeTest {
             if (!level.getEntitiesOfClass(ItemEntity.class, new AABB(spots[i]).inflate(1.5)).isEmpty()) ok++;
         }
         check(ok == spots.length, "blocks drop themselves when broken (" + ok + "/" + spots.length + ")");
+    }
+
+    private static final BlockPos ARENA = new BlockPos(220, Y + 20, 0);
+    private static Watcher watcher;
+    private static MimicQueen queen;
+    private static Shepherd shepherd;
+    private static Doppelganger doppel;
+
+    private static void spawnBosses(ServerLevel level) {
+        for (int x = -12; x <= 12; x++)
+            for (int z = -12; z <= 12; z++)
+                level.setBlock(ARENA.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY(), ARENA.getZ() + 0.5, 0, 0);
+        watcher = SummonSealItem.summon(level, fake, ModEntities.WATCHER.get());
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY(), ARENA.getZ() + 0.5, 90, 0);
+        queen = SummonSealItem.summon(level, fake, ModEntities.MIMIC_QUEEN.get());
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY(), ARENA.getZ() + 0.5, 180, 0);
+        shepherd = SummonSealItem.summon(level, fake, ModEntities.SHEPHERD.get());
+        fake.snapTo(ARENA.getX() + 0.5, ARENA.getY(), ARENA.getZ() + 0.5, 270, 0);
+        doppel = SummonSealItem.summon(level, fake, ModEntities.DOPPELGANGER.get());
+        check(watcher != null && queen != null && shepherd != null && doppel != null, "seals summon all four minibosses");
+        if (watcher != null) {
+            watcher.setTarget(null);
+            check(watcher.getMaxHealth() >= 100, "the Watcher is a boss (" + watcher.getMaxHealth() + " hp)");
+        }
+        if (queen != null) queen.setTarget(null);
+        if (shepherd != null) shepherd.setTarget(null);
+        if (doppel != null) doppel.setTarget(null);
+    }
+
+    private static void checkBosses(ServerLevel level) {
+        check(watcher != null && watcher.isAlive() && !watcher.isWatched(level), "the Watcher waits, unseen");
+        check(queen != null && queen.isAlive() && !queen.isDisguised(), "the Queen lives");
+        check(doppel != null && doppel.isAlive(), "the Doppelganger lives");
+        if (shepherd != null && shepherd.isAlive()) {
+            check(shepherd.shrouded(level), "the Shepherd wraps himself in darkness");
+            float hp = shepherd.getHealth();
+            shepherd.hurtServer(level, level.damageSources().magic(), 10.0F);
+            check(shepherd.getHealth() == hp, "the shroud makes him untouchable");
+            Vec3 from = shepherd.position().add(4, 1.5, 0);
+            DispellerItem.flash(level, null, from, shepherd.position().add(0, 1, 0).subtract(from));
+            shepherd.onLit(level, null);
+            check(!shepherd.shrouded(level), "light burns the shroud away");
+            shepherd.hurtServer(level, level.damageSources().magic(), 10.0F);
+            check(shepherd.getHealth() < hp, "without the shroud he can be hurt");
+        } else {
+            check(false, "the Shepherd lives");
+        }
     }
 
     private static void testOre(ServerLevel level) {

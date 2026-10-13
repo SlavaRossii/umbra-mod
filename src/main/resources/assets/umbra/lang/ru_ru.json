@@ -78,5 +78,19 @@
   "item.umbra.blind_spawn_egg": "Яйцо призыва: Слепец",
   "item.umbra.light_eater_spawn_egg": "Яйцо призыва: Пожиратель света",
   "item.umbra.mimicker_spawn_egg": "Яйцо призыва: Подражатель",
-  "item.umbra.shade_spawn_egg": "Яйцо призыва: Тень"
+  "item.umbra.shade_spawn_egg": "Яйцо призыва: Тень",
+  "entity.umbra.watcher": "Смотрящий",
+  "entity.umbra.mimic_queen": "Королева подмен",
+  "entity.umbra.shepherd": "Пастух тьмы",
+  "entity.umbra.doppelganger": "Двойник",
+  "item.umbra.seal_of_watching": "Печать взгляда",
+  "item.umbra.seal_of_mimicry": "Печать подмены",
+  "item.umbra.seal_of_herding": "Печать пастуха",
+  "item.umbra.seal_of_reflection": "Печать отражения",
+  "item.umbra.watcher_eye": "Глаз Смотрящего",
+  "item.umbra.mimic_crown": "Корона подмен",
+  "item.umbra.shepherd_crook": "Посох пастуха",
+  "item.umbra.mirror_mask": "Зеркальная маска",
+  "item.umbra.underside_key": "Ключ Изнанки",
+  "message.umbra.no_room": "Здесь ему негде появиться."
 }

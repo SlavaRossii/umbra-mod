@@ -78,5 +78,19 @@
   "item.umbra.blind_spawn_egg": "Blind One Spawn Egg",
   "item.umbra.light_eater_spawn_egg": "Light Eater Spawn Egg",
   "item.umbra.mimicker_spawn_egg": "Mimicker Spawn Egg",
-  "item.umbra.shade_spawn_egg": "Shade Spawn Egg"
+  "item.umbra.shade_spawn_egg": "Shade Spawn Egg",
+  "entity.umbra.watcher": "The Watcher",
+  "entity.umbra.mimic_queen": "Queen of Mimics",
+  "entity.umbra.shepherd": "Shepherd of Darkness",
+  "entity.umbra.doppelganger": "Doppelganger",
+  "item.umbra.seal_of_watching": "Seal of Watching",
+  "item.umbra.seal_of_mimicry": "Seal of Mimicry",
+  "item.umbra.seal_of_herding": "Seal of Herding",
+  "item.umbra.seal_of_reflection": "Seal of Reflection",
+  "item.umbra.watcher_eye": "Eye of the Watcher",
+  "item.umbra.mimic_crown": "Crown of Mimicry",
+  "item.umbra.shepherd_crook": "Shepherd's Crook",
+  "item.umbra.mirror_mask": "Mirror Mask",
+  "item.umbra.underside_key": "Key of the Underside",
+  "message.umbra.no_room": "There is no room for it to appear here."
 }

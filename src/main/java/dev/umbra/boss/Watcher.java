@@ -1,0 +1,99 @@
+package dev.umbra.boss;
+
+import dev.umbra.light.LightSensitive;
+import dev.umbra.sanity.Sanity;
+import dev.umbra.util.UmbraUtil;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * Смотрящий: it moves only while you look at it. Look away and it freezes — but ignore it for too long
+ * and it steps right in front of your eyes.
+ */
+public class Watcher extends UmbraBoss implements LightSensitive {
+    private int unseenTicks;
+    private int attackCooldown;
+
+    public Watcher(EntityType<? extends Watcher> type, Level level) {
+        super(type, level, BossEvent.BossBarColor.WHITE);
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 120.0)
+                .add(Attributes.MOVEMENT_SPEED, 0.42)
+                .add(Attributes.ATTACK_DAMAGE, 10.0)
+                .add(Attributes.FOLLOW_RANGE, 48.0)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+                .add(Attributes.SCALE, 1.5);
+    }
+
+    @Override
+    protected void registerGoals() {
+    }
+
+    /** True if any opponent is looking at us. */
+    public boolean isWatched(ServerLevel level) {
+        for (ServerPlayer p : opponents(level)) {
+            Vec3 to = this.getEyePosition().subtract(p.getEyePosition()).normalize();
+            if (p.getViewVector(1.0F).dot(to) > 0.6 && p.hasLineOfSight(this)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void bossTick(ServerLevel level) {
+        if (attackCooldown > 0) attackCooldown--;
+        ServerPlayer target = null;
+        double best = Double.MAX_VALUE;
+        for (ServerPlayer p : opponents(level)) {
+            double d = p.distanceTo(this);
+            if (d < best) {
+                best = d;
+                target = p;
+            }
+        }
+        if (target == null) return;
+        this.setTarget(target);
+
+        if (isWatched(level)) {
+            unseenTicks = 0;
+            this.getNavigation().moveTo(target, 1.4);
+            if (best < 2.6 && attackCooldown == 0) {
+                this.doHurtTarget(level, target);
+                attackCooldown = 20;
+            }
+        } else {
+            this.getNavigation().stop();
+            this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
+            if (++unseenTicks > 20 * 8) {
+                // you cannot ignore it forever
+                Vec3 ahead = UmbraUtil.horizontal(target.getLookAngle()).scale(6.0).add(target.position());
+                level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1, this.getZ(), 20, 0.3, 1, 0.3, 0.02);
+                this.teleportTo(ahead.x, target.getY(), ahead.z);
+                level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.ENDERMAN_STARE, SoundSource.HOSTILE, 1.0F, 0.5F);
+                Sanity.add(target, -4.0F);
+                unseenTicks = 0;
+            }
+        }
+    }
+
+    @Override
+    public void onLit(ServerLevel level, Player source) {
+        this.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 2));
+        this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 6.0F);
+    }
+}

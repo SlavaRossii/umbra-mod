@@ -48,6 +48,15 @@ public final class ModTabs {
                 out.accept(ModItems.LIGHT_EATER_SPAWN_EGG.get());
                 out.accept(ModItems.MIMICKER_SPAWN_EGG.get());
                 out.accept(ModItems.SHADE_SPAWN_EGG.get());
+                out.accept(ModItems.SEAL_OF_WATCHING.get());
+                out.accept(ModItems.SEAL_OF_MIMICRY.get());
+                out.accept(ModItems.SEAL_OF_HERDING.get());
+                out.accept(ModItems.SEAL_OF_REFLECTION.get());
+                out.accept(ModItems.WATCHER_EYE.get());
+                out.accept(ModItems.MIMIC_CROWN.get());
+                out.accept(ModItems.SHEPHERD_CROOK.get());
+                out.accept(ModItems.MIRROR_MASK.get());
+                out.accept(ModItems.UNDERSIDE_KEY.get());
                 out.accept(ModItems.QUANTUM_BLOCK.get());
                 out.accept(ModItems.MAZE_WALL.get());
             })

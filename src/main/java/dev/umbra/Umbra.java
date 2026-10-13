@@ -4,6 +4,10 @@ import com.mojang.logging.LogUtils;
 import dev.umbra.command.UmbraCommand;
 import dev.umbra.darkness.DarknessManager;
 import dev.umbra.mimic.MimicManager;
+import dev.umbra.boss.Doppelganger;
+import dev.umbra.boss.MimicQueen;
+import dev.umbra.boss.Shepherd;
+import dev.umbra.boss.Watcher;
 import dev.umbra.mob.Blind;
 import dev.umbra.mob.Crawler;
 import dev.umbra.mob.LightEater;
@@ -80,6 +84,10 @@ public class Umbra {
         event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
         event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
         event.put(ModEntities.SHADE.get(), Shade.createAttributes().build());
+        event.put(ModEntities.WATCHER.get(), Watcher.createAttributes().build());
+        event.put(ModEntities.MIMIC_QUEEN.get(), MimicQueen.createAttributes().build());
+        event.put(ModEntities.SHEPHERD.get(), Shepherd.createAttributes().build());
+        event.put(ModEntities.DOPPELGANGER.get(), Doppelganger.createAttributes().build());
     }
 
     private static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {

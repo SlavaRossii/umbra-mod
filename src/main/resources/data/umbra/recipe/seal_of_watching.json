@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": "umbra:echo_quartz",
+    "G": "umbra:gloom_ingot",
+    "X": "minecraft:ender_eye"
+  },
+  "pattern": [
+    "GEG",
+    "EXE",
+    "GEG"
+  ],
+  "result": {
+    "id": "umbra:seal_of_watching"
+  }
+}

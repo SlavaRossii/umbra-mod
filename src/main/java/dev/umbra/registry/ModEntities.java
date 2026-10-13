@@ -1,6 +1,10 @@
 package dev.umbra.registry;
 
 import dev.umbra.Umbra;
+import dev.umbra.boss.Doppelganger;
+import dev.umbra.boss.MimicQueen;
+import dev.umbra.boss.Shepherd;
+import dev.umbra.boss.Watcher;
 import dev.umbra.mob.Blind;
 import dev.umbra.mob.Crawler;
 import dev.umbra.mob.LightEater;
@@ -35,6 +39,16 @@ public final class ModEntities {
             Mimicker::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Shade>> SHADE = ENTITIES.registerEntityType("shade",
             Shade::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
+
+    // --- Minibosses ---
+    public static final DeferredHolder<EntityType<?>, EntityType<Watcher>> WATCHER = ENTITIES.registerEntityType("watcher",
+            Watcher::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<MimicQueen>> MIMIC_QUEEN = ENTITIES.registerEntityType("mimic_queen",
+            MimicQueen::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Shepherd>> SHEPHERD = ENTITIES.registerEntityType("shepherd",
+            Shepherd::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<Doppelganger>> DOPPELGANGER = ENTITIES.registerEntityType("doppelganger",
+            Doppelganger::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.8F).clientTrackingRange(10));
 
     private ModEntities() {}
 }

@@ -413,6 +413,97 @@ def stage3():
         save(img, f"item/{name}_spawn_egg.png")
 
 
+# ------------------------------------------------------------------ stage 4: minibosses
+
+def icon(name, draw, seed=0):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    draw(px, random.Random(seed))
+    save(img, f"item/{name}.png")
+
+
+def disc(px, cx, cy, r, color):
+    for x in range(16):
+        for y in range(16):
+            if (x - cx) ** 2 + (y - cy) ** 2 <= r * r:
+                px[x, y] = color
+
+
+def seal(color):
+    def d(px, rnd):
+        disc(px, 7.5, 7.5, 6.5, (40, 30, 50, 255))
+        disc(px, 7.5, 7.5, 5.2, color)
+        for (x, y) in [(7, 4), (8, 4), (5, 7), (10, 7), (7, 11), (8, 11), (7, 7), (8, 8)]:
+            px[x, y] = (30, 20, 40, 255)
+    return d
+
+
+def stage4():
+    humanoid_skin("entity/watcher.png", (225, 225, 220), (245, 245, 240), (10, 10, 10), 71)
+    img = Image.open(os.path.join(ROOT, "entity/watcher.png"))
+    px = img.load()
+    for (ex, ey) in [(9, 11), (10, 11), (9, 12), (10, 12), (13, 11), (14, 11), (13, 12), (14, 12)]:
+        px[ex, ey] = (0, 0, 0, 255)
+    save(img, "entity/watcher.png")
+    src = Image.open(os.path.join(ROOT, "entity/mimicker.png")).convert("RGBA")
+    px = src.load()
+    for x in range(8, 16):  # golden crown band on the forehead
+        px[x, 8] = (230, 190, 60, 255)
+        if x % 2 == 0:
+            px[x, 7] = (230, 190, 60, 255) if 7 >= 0 else px[x, 7]
+    save(src, "entity/mimic_queen.png")
+    humanoid_skin("entity/shepherd.png", (25, 18, 35), (60, 50, 70), (170, 120, 255), 72)
+    humanoid_skin("entity/doppelganger.png", (150, 160, 175), (190, 200, 210), (40, 60, 90), 73)
+    icon("seal_of_watching", seal((235, 235, 230, 255)))
+    icon("seal_of_mimicry", seal((120, 170, 80, 255)))
+    icon("seal_of_herding", seal((110, 70, 170, 255)))
+    icon("seal_of_reflection", seal((120, 160, 220, 255)))
+
+    def eye(px, rnd):
+        disc(px, 7.5, 7.5, 6, (235, 235, 228, 255))
+        disc(px, 7.5, 7.5, 3, (20, 20, 20, 255))
+        px[6, 6] = (255, 255, 255, 255)
+    icon("watcher_eye", eye)
+
+    def crown(px, rnd):
+        for x in range(2, 14):
+            for y in range(8, 12):
+                px[x, y] = (220, 180, 60, 255)
+        for x in (2, 5, 8, 11, 13):
+            for y in range(4, 8):
+                if y >= 4 + abs(x % 3):
+                    px[x, y] = (220, 180, 60, 255)
+        for x in (4, 8, 12):
+            px[x, 10] = (110, 160, 80, 255)
+    icon("mimic_crown", crown)
+
+    def crook(px, rnd):
+        for i in range(4, 15):
+            px[16 - i, i] = (80, 50, 110, 255)
+        for (x, y) in [(11, 2), (12, 2), (13, 3), (13, 4), (12, 5), (10, 3)]:
+            px[x, y] = (80, 50, 110, 255)
+        px[12, 3] = (190, 140, 255, 255)
+    icon("shepherd_crook", crook)
+
+    def mask(px, rnd):
+        for x in range(3, 13):
+            for y in range(3, 13):
+                if ((x - 7.5) / 5) ** 2 + ((y - 7.5) / 5.5) ** 2 <= 1:
+                    px[x, y] = (190, 205, 220, 255) if (x + y) % 4 else (230, 240, 250, 255)
+        for (x, y) in [(5, 7), (6, 7), (9, 7), (10, 7), (7, 10), (8, 10)]:
+            px[x, y] = (20, 25, 35, 255)
+    icon("mirror_mask", mask)
+
+    def key(px, rnd):
+        disc(px, 4.5, 4.5, 3.2, (70, 50, 100, 255))
+        disc(px, 4.5, 4.5, 1.5, (0, 0, 0, 0))
+        for i in range(6, 14):
+            px[i, i] = (70, 50, 100, 255)
+        for (x, y) in [(11, 13), (12, 12), (13, 11), (10, 12)]:
+            px[x, y] = (170, 130, 230, 255)
+    icon("underside_key", key)
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -427,4 +518,5 @@ if __name__ == "__main__":
     humanoid_skin("entity/hallucination.png", (18, 18, 22), (205, 205, 200), (5, 5, 5), 4)
     stage2()
     stage3()
+    stage4()
     print("textures written")
