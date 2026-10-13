@@ -17,7 +17,7 @@ public final class SanityHud {
     public static void render(GuiGraphicsExtractor g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        if (player == null || player.isCreative() || player.isSpectator() || mc.options.hideGui) return;
+        if (player == null || player.isCreative() || player.isSpectator()) return;
         if (!Sanity.enabled()) return;
         float sanity = player.getData(ModAttachments.SANITY);
 

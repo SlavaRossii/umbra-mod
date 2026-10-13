@@ -7,7 +7,7 @@ Minecraft 26.3, NeoForge 26.3.0.76, Java 25. Mojang names (the game is no longer
 | Package | What lives there |
 |---|---|
 | `Umbra` | Entry point. Registers everything and routes game events to the managers below. |
-| `UmbraConfig` | `config/umbra-common.toml`: feature switches and difficulty knobs. |
+| `UmbraConfig` | `config/umbra.toml`: feature switches and difficulty knobs. |
 | `registry` | All `DeferredRegister`s: blocks, items, entities, attachments, world-gen feature types, creative tab. |
 | `shadow` | The shadow entity and `ShadowManager` (trail recording, spawning, chasing). |
 | `steps` | Footsteps behind you. |

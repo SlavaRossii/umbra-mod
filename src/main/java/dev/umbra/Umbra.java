@@ -47,7 +47,7 @@ public class Umbra {
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);
         ModTabs.TABS.register(modBus);
-        container.registerConfig(ModConfig.Type.COMMON, UmbraConfig.SPEC);
+        container.registerConfig(ModConfig.Type.LOCAL, UmbraConfig.SPEC, "umbra.toml");
 
         modBus.addListener(Umbra::onAttributes);
 

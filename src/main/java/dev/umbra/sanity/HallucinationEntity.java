@@ -27,7 +27,6 @@ public class HallucinationEntity extends Monster implements LightSensitive {
     public HallucinationEntity(EntityType<? extends HallucinationEntity> type, Level level) {
         super(type, level);
         this.setSilent(true);
-        this.setInvulnerable(true);
         this.setPersistenceRequired();
     }
 

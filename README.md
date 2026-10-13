@@ -25,4 +25,4 @@
 `/umbra shadow`, `/umbra steps`, `/umbra mimic` (смотри на подходящий блок), `/umbra darkness`, `/umbra maze`,
 `/umbra mazepattern <режим>` (внутри лабиринта), `/umbra sanity <0-100>`, `/umbra hallucinate`, `/umbra home`, `/umbra status`.
 
-Настройки: `config/umbra-common.toml`. Планы: [docs/ROADMAP.md](docs/ROADMAP.md). Устройство кода: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Настройки: `config/umbra.toml`. Планы: [docs/ROADMAP.md](docs/ROADMAP.md). Устройство кода: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

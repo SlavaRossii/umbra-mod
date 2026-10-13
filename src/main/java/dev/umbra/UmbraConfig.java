@@ -3,7 +3,7 @@ package dev.umbra;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * config/umbra-common.toml — feature switches and difficulty knobs.
+ * config/umbra.toml — feature switches and difficulty knobs.
  * New features should add their switch here so players can turn them off without removing the mod.
  */
 public final class UmbraConfig {
