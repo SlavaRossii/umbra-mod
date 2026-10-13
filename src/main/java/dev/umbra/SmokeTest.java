@@ -123,7 +123,7 @@ final class SmokeTest {
     }
 
     private static void setup(ServerLevel level) {
-        for (int cx = -2; cx <= 11; cx++) {
+        for (int cx = -2; cx <= 16; cx++) {
             for (int cz = -2; cz <= 2; cz++) {
                 level.setChunkForced(cx, cz, true);
                 level.getChunk(cx, cz);
