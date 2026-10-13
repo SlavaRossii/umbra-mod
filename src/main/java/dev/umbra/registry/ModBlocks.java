@@ -33,7 +33,6 @@ public final class ModBlocks {
                     .strength(-1.0F, 0.0F)
                     .pushReaction(PushReaction.POPPED)
                     .isSuffocating((s, l, p) -> false)
-                    .isViewBlocking((s, l, p) -> false)
                     .sound(SoundType.WOOL));
 
     // --- Quantum maze ---
@@ -45,7 +44,6 @@ public final class ModBlocks {
                     .randomTicks()
                     .pushReaction(PushReaction.IMMOVEABLE)
                     .isSuffocating((s, l, p) -> !s.getValue(QuantumBlock.OPEN))
-                    .isViewBlocking((s, l, p) -> !s.getValue(QuantumBlock.OPEN))
                     .isRedstoneConductor((s, l, p) -> false));
 
     public static final DeferredBlock<Block> MAZE_WALL = BLOCKS.registerSimpleBlock("maze_wall",
