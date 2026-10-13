@@ -67,7 +67,7 @@ jobs:
           {
             echo "jar: $JAR"
             if [ -n "$GREP" ]; then echo "=== classes matching $GREP"; jar tf "$JAR" | grep -E -- "$GREP" | grep -v '\$[0-9]' | head -300; fi
-            for f in $FILES; do echo "=================== file $f"; unzip -p "$JAR" "$f" 2>&1 | head -300; done
+            for f in $FILES; do echo "=================== file $f"; unzip -p "$JAR" "$f" 2>&1 | head -6000; done
             for c in $CLASSES; do
               echo "=================== $c"
               javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -3000
