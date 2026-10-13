@@ -87,6 +87,7 @@ public class MimicBlock extends Block {
     @Override
     protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level instanceof ServerLevel sl) expose(sl, pos);
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
     }
 
     /** The player noticed: the mimic flees and leaves the real block plus a reward. */
@@ -112,6 +113,7 @@ public class MimicBlock extends Block {
         for (Player p : level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(6.0))) {
             p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));
             Sanity.add(p, Sanity.Shock.MIMIC_SPRUNG);
+            if (p instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
         }
     }
 }

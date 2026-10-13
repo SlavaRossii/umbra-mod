@@ -89,6 +89,7 @@ public class ShadowEntity extends Monster implements LightSensitive {
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 0.6F);
         level.addFreshEntity(new ItemEntity(level, this.getX(), this.getY() + 1.0, this.getZ(), new ItemStack(ModItems.SHADOW_SHARD.get())));
         if (source != null) Sanity.add(source, Sanity.Shock.SHADOW_DISPELLED);
+        if (source instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "shadow_dispelled");
         this.dissipate();
     }
 

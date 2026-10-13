@@ -5,6 +5,9 @@ import dev.umbra.boss.BossSummonItems;
 import dev.umbra.boss.SummonSealItem;
 import dev.umbra.light.DawnLanternItem;
 import dev.umbra.item.MirrorItem;
+import dev.umbra.item.QuantumCompassItem;
+import dev.umbra.journal.JournalItem;
+import dev.umbra.light.LightArrowItem;
 import dev.umbra.item.PillItem;
 import dev.umbra.light.DispellerItem;
 import dev.umbra.underside.ShadowShardItem;
@@ -96,6 +99,11 @@ public final class ModItems {
     public static final DeferredItem<BossSummonItems.Heart> ABYSS_HEART = ITEMS.registerItem("abyss_heart", BossSummonItems.Heart::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<DawnLanternItem> DAWN_LANTERN = ITEMS.registerItem("dawn_lantern", DawnLanternItem::new,
             p -> p.durability(512).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
+
+    // --- Polish ---
+    public static final DeferredItem<JournalItem> JOURNAL = ITEMS.registerItem("journal", JournalItem::new, p -> p.stacksTo(1));
+    public static final DeferredItem<QuantumCompassItem> QUANTUM_COMPASS = ITEMS.registerItem("quantum_compass", QuantumCompassItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<LightArrowItem> LIGHT_ARROW = ITEMS.registerItem("light_arrow", LightArrowItem::new);
 
     private ModItems() {}
 }

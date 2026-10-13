@@ -131,6 +131,18 @@ public final class MazeController {
         return changed;
     }
 
+    /** Current pattern id, or null if the maze is idle. */
+    public static String patternId(ServerLevel level, BlockPos core) {
+        Runtime rt = RUNTIMES.get(key(level, core));
+        return rt == null || rt.pattern == null ? null : rt.pattern.id();
+    }
+
+    public static int secondsLeft(ServerLevel level, BlockPos core) {
+        Runtime rt = RUNTIMES.get(key(level, core));
+        if (rt == null) return 0;
+        return Math.max(0, (UmbraConfig.num(UmbraConfig.MAZE_PATTERN_SECONDS) * 20 - rt.ticksInPattern) / 20);
+    }
+
     /** For /umbra status and tests. */
     public static String describe(ServerLevel level, BlockPos core) {
         Runtime rt = RUNTIMES.get(key(level, core));

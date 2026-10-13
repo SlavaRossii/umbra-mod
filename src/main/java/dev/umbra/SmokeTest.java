@@ -112,7 +112,8 @@ final class SmokeTest {
                 case 480 -> spawnBosses(level);
                 case 540 -> checkBosses(level);
                 case 560 -> testFinalBosses(level);
-                case 580 -> finish(server);
+                case 570 -> testPolish(level);
+                case 590 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -384,6 +385,16 @@ final class SmokeTest {
         }
         ShadowManager.free(fake);
         check(ShadowManager.isFreed(fake), "defeating her frees your shadow");
+    }
+
+    private static void testPolish(ServerLevel level) {
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        dev.umbra.journal.Journal.unlock(fake, "shadow");
+        dev.umbra.journal.Journal.unlock(fake, "shadow");
+        check(dev.umbra.journal.Journal.has(fake, "shadow"), "journal entries unlock");
+        check(fake.getData(dev.umbra.registry.ModAttachments.JOURNAL).stream().filter("shadow"::equals).count() == 1, "an entry is written only once");
+        check(new ItemStack(ModItems.LIGHT_ARROW.get()).is(net.minecraft.tags.ItemTags.ARROWS), "light arrows fit in a bow");
+        check(dev.umbra.item.QuantumCompassItem.findCore(level, MAZE.offset(5, 2, 5)) != null, "the quantum compass finds the maze core");
     }
 
     private static void testOre(ServerLevel level) {

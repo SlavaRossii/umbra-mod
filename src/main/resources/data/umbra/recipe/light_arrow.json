@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "minecraft:arrow",
+    "C": "umbra:luminite_crystal"
+  },
+  "pattern": [
+    " A ",
+    "ACA",
+    " A "
+  ],
+  "result": {
+    "count": 4,
+    "id": "umbra:light_arrow"
+  }
+}

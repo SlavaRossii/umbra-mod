@@ -15,7 +15,10 @@ public final class ModTabs {
             .title(Component.translatable("itemGroup.umbra"))
             .icon(() -> ModItems.DISPELLER.get().getDefaultInstance())
             .displayItems((params, out) -> {
+                out.accept(ModItems.JOURNAL.get());
                 out.accept(ModItems.DISPELLER.get());
+                out.accept(ModItems.LIGHT_ARROW.get());
+                out.accept(ModItems.QUANTUM_COMPASS.get());
                 out.accept(ModItems.MIRROR.get());
                 out.accept(ModItems.ETERNAL_TORCH.get());
                 out.accept(ModItems.LUMINITE_LAMP.get());

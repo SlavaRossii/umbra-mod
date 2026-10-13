@@ -545,6 +545,37 @@ def stage5():
     icon("dawn_lantern", lantern)
 
 
+# ------------------------------------------------------------------ stage 6: polish
+
+def stage6():
+    def journal(px, rnd):
+        for x in range(3, 13):
+            for y in range(2, 14):
+                px[x, y] = (60, 30, 50, 255) if x > 3 else (35, 15, 30, 255)
+        for y in range(3, 13):
+            px[12, y] = (225, 215, 195, 255)
+        for (x, y) in [(7, 6), (8, 6), (7, 7), (8, 8), (9, 7)]:
+            px[x, y] = (170, 120, 255, 255)
+    icon("journal", journal)
+
+    def compass(px, rnd):
+        disc(px, 7.5, 7.5, 6.5, (70, 70, 80, 255))
+        disc(px, 7.5, 7.5, 5.2, (30, 25, 45, 255))
+        for i in range(-4, 5):
+            px[int(7.5 + i * 0.6), int(7.5 - i * 0.6)] = (120, 255, 235, 255) if i > 0 else (200, 80, 255, 255)
+        px[7, 7] = (255, 255, 255, 255)
+    icon("quantum_compass", compass)
+
+    def arrow(px, rnd):
+        for i in range(3, 13):
+            px[i, 15 - i] = (120, 90, 60, 255)
+        for (x, y) in [(12, 3), (13, 2), (11, 2), (13, 4), (12, 2)]:
+            px[x, y] = (190, 245, 255, 255)
+        for (x, y) in [(2, 12), (3, 13), (2, 13), (4, 13), (3, 12)]:
+            px[x, y] = (230, 230, 230, 255)
+    icon("light_arrow", arrow)
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -561,4 +592,5 @@ if __name__ == "__main__":
     stage3()
     stage4()
     stage5()
+    stage6()
     print("textures written")

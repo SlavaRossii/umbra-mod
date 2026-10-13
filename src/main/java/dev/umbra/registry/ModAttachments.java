@@ -34,5 +34,19 @@ public final class ModAttachments {
                     .copyOnDeath()
                     .build());
 
+    /** Journal entries the player has unlocked, in order. */
+    public static final Supplier<AttachmentType<java.util.List<String>>> JOURNAL = ATTACHMENTS.register("journal",
+            () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
+                    .serialize(Codec.STRING.listOf().fieldOf("entries"))
+                    .copyOnDeath()
+                    .build());
+
+    /** Whether the player already received the journal. */
+    public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENTS.register("got_journal",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL.fieldOf("value"))
+                    .copyOnDeath()
+                    .build());
+
     private ModAttachments() {}
 }

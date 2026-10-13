@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": "umbra:echo_quartz",
+    "C": "minecraft:compass"
+  },
+  "pattern": [
+    " E ",
+    "ECE",
+    " E "
+  ],
+  "result": {
+    "id": "umbra:quantum_compass"
+  }
+}

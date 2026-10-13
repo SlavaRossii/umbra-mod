@@ -108,6 +108,7 @@ public final class ShadowManager {
     /** Called when the Primordial Shadow falls: this player's shadow becomes an ally. */
     public static void free(ServerPlayer player) {
         player.setData(ModAttachments.FREED, true);
+        dev.umbra.journal.Journal.unlock(player, "freed");
         State s = STATES.get(player.getUUID());
         if (s != null) {
             ShadowEntity old = find(player.level(), s);
@@ -215,6 +216,7 @@ public final class ShadowManager {
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 0.35F, 0.5F);
         player.sendOverlayMessage(Component.translatable("message.umbra.shadow_detached"));
         Sanity.add(player, Sanity.Shock.SHADOW_DETACHED);
+        dev.umbra.journal.Journal.unlock(player, "shadow");
         Umbra.LOGGER.debug("Shadow detached for {} at {}", player.getName().getString(), start);
         return true;
     }

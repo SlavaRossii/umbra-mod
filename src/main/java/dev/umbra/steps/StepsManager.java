@@ -93,6 +93,7 @@ public final class StepsManager {
         // Turned around? The steps stop. There is nobody there.
         Vec3 look = UmbraUtil.horizontal(player.getLookAngle());
         if (s.moveDir != Vec3.ZERO && look.dot(s.moveDir) < -0.5) {
+            if (s.stepsDone > 4) dev.umbra.journal.Journal.unlock(player, "steps");
             stop(s);
             return;
         }
@@ -143,6 +144,7 @@ public final class StepsManager {
         level.playSound(null, p.x, p.y, p.z, SoundEvents.WARDEN_NEARBY_CLOSEST, SoundSource.HOSTILE, 0.6F, 1.6F);
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 4, 0));
         Sanity.add(player, Sanity.Shock.STEPS_FINALE);
+        dev.umbra.journal.Journal.unlock(player, "steps");
         stop(s);
     }
 
