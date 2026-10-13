@@ -25,7 +25,9 @@ public final class JournalEvents {
         if (!player.getData(ModAttachments.GOT_JOURNAL)) {
             player.setData(ModAttachments.GOT_JOURNAL, true);
             ItemStack book = new ItemStack(ModItems.JOURNAL.get());
-            if (!player.getInventory().add(book)) player.drop(book, false);
+            if (!player.getInventory().add(book)) {
+                player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), book));
+            }
         }
         Journal.unlock(player, "start");
     }
