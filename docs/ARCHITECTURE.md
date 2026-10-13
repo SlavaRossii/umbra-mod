@@ -17,6 +17,7 @@ Minecraft 26.3, NeoForge 26.3.0.76, Java 25. Mojang names (the game is no longer
 | `sanity` | Sanity meter, hallucinations, hallucination entity. |
 | `light` | Everything light-based: Dispeller, eternal torch, `LightSensitive`, `DarknessProof`. |
 | `item` | Plain items with behaviour (pills, mirror). |
+| `underside` | The Underside dimension: rift portal block, frame detection, travel, world-gen features (hanging trees, mazes in the rock). The terrain itself is data: `data/umbra/dimension`, `dimension_type`, `worldgen/noise_settings`, `worldgen/material_rule`, `worldgen/biome`. |
 | `client` | Client-only: renderers, HUD. Never reference it from common code. |
 | `command` | `/umbra …` debug commands. |
 | `SmokeTest` | CI self-test, runs only with `-Dumbra.smoketest=true`. |
@@ -33,6 +34,9 @@ Resources: `assets/umbra` (models, textures, lang en_us + ru_ru), `data/umbra` (
 - **Something that scares the player**: call `Sanity.add(player, Sanity.Shock.X)`; add the constant to
   `Sanity.Shock` so all balance numbers stay in one place. `Sanity.dread(player)` (1.0–3.0) makes things
   more frequent as sanity drops.
+- **New Underside biome**: add `data/umbra/worldgen/biome/<name>.json` and an entry with climate parameters to
+  `data/umbra/dimension/underside.json`.
+- **Gear tiers**: materials live in `registry/ModMaterials`; armour textures in `textures/entity/equipment/`.
 - **Light source the darkness must not eat**: implement `light.DarknessProof`.
 - **Feature switch**: add a `BooleanValue` to `UmbraConfig` and check it with `UmbraConfig.on(...)`.
 - **New item/block**: register in `registry`, add it to `ModTabs`, add model + `items/<name>.json`, lang lines,
