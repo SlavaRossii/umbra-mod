@@ -550,7 +550,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 49, "journal has 49 entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 55 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 55, "journal has 55 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
