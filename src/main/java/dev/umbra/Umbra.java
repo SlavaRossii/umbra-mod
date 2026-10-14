@@ -61,6 +61,7 @@ public class Umbra {
         ModEntities.ENTITIES.register(modBus);
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);
+        dev.umbra.registry.ModComponents.COMPONENTS.register(modBus);
         dev.umbra.registry.ModSounds.SOUNDS.register(modBus);
         dev.umbra.registry.ModEffects.MOB_EFFECTS.register(modBus);
         ModTabs.TABS.register(modBus);
@@ -86,6 +87,14 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.SmolderingTorchBlock::onPlaced);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onRightClick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDamage);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onServerTick);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDrops);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDeath);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onImpact);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onFall);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onAnvil);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onTooltip);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
     }
@@ -138,6 +147,7 @@ public class Umbra {
         DarknessManager.tick(player);
         Sanity.tick(player);
         dev.umbra.registry.ModEffects.tick(player);
+        dev.umbra.gear.Gear.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);

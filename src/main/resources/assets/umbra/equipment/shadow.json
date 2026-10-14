@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "umbra:shadow"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "umbra:shadow"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "umbra:shadow"
+      }
+    ]
+  }
+}

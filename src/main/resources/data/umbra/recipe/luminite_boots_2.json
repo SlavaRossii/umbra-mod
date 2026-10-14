@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "umbra:echo_quartz",
+  "base": "umbra:luminite_boots",
+  "addition": "umbra:luminite_crystal",
+  "result": {
+    "id": "umbra:luminite_boots_2"
+  }
+}

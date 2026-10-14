@@ -55,6 +55,8 @@ public final class MazeController {
         List<ServerPlayer> inside = new ArrayList<>();
         for (ServerPlayer p : level.players()) if (!p.isSpectator() && bounds.contains(p.position())) inside.add(p);
         if (inside.isEmpty()) return IDLE_INTERVAL;
+        // the Architect's seal: the maze stays as it is while its bearer is inside
+        for (ServerPlayer p : inside) if (dev.umbra.gear.Gear.hasArtifact(p, dev.umbra.gear.Gear.ARCHITECT_SEAL)) return ACTIVE_INTERVAL;
 
         Runtime rt = RUNTIMES.computeIfAbsent(key(level, core), k -> new Runtime());
         rt.sinceScan += ACTIVE_INTERVAL;

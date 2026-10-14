@@ -1,0 +1,33 @@
+{
+  "type": "neoforge:add_table",
+  "condition": {
+    "type": "minecraft:any_of",
+    "terms": [
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/citadel_library"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/citadel_secret"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/maze_prize"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/sunken_temple"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/lighthouse_house"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/mimic_hoard"
+      }
+    ]
+  },
+  "table": "umbra:chests/umbra_books"
+}

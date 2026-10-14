@@ -55,6 +55,9 @@ public final class ModTabs {
                 out.accept(ModItems.GLOOM_CHESTPLATE.get());
                 out.accept(ModItems.GLOOM_LEGGINGS.get());
                 out.accept(ModItems.GLOOM_BOOTS.get());
+                for (var piece : ModItems.ARMOR_PIECES) out.accept(piece.get());
+                out.accept(ModItems.ASH_CLASP.get());
+                out.accept(ModItems.ARCHITECT_SEAL.get());
                 out.accept(ModItems.CRAWLER_SPAWN_EGG.get());
                 out.accept(ModItems.LURKER_SPAWN_EGG.get());
                 out.accept(ModItems.BLIND_SPAWN_EGG.get());

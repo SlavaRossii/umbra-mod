@@ -1,5 +1,13 @@
 {
   "values": [
-    "umbra:gloom_chestplate"
+    "umbra:gloom_chestplate",
+    "umbra:gloom_chestplate_2",
+    "umbra:gloom_chestplate_3",
+    "umbra:luminite_chestplate",
+    "umbra:luminite_chestplate_2",
+    "umbra:luminite_chestplate_3",
+    "umbra:shadow_chestplate",
+    "umbra:shadow_chestplate_2",
+    "umbra:shadow_chestplate_3"
   ]
 }

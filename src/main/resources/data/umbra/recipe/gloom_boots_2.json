@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "umbra:echo_quartz",
+  "base": "umbra:gloom_boots",
+  "addition": "umbra:gloom_ingot",
+  "result": {
+    "id": "umbra:gloom_boots_2"
+  }
+}

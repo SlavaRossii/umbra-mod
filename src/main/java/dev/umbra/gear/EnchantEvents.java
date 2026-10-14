@@ -1,0 +1,163 @@
+package dev.umbra.gear;
+
+import dev.umbra.journal.Bestiary;
+import dev.umbra.light.LightSensitive;
+import dev.umbra.registry.ModComponents;
+import dev.umbra.registry.ModItems;
+import dev.umbra.sanity.Sanity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.EntityHitResult;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
+/** Behaviour of the mod's enchantments and of the artifacts that are pinned to a chestplate. */
+public final class EnchantEvents {
+    private record Echo(ServerLevel level, UUID target, UUID owner, long due, float damage) {}
+
+    private static final List<Echo> ECHOES = new ArrayList<>();
+    private static boolean echoing;
+
+    private EnchantEvents() {}
+
+    /** Forget everything (tests). */
+    public static void clear() {
+        ECHOES.clear();
+        echoing = false;
+    }
+
+    public static int pendingEchoes() {
+        return ECHOES.size();
+    }
+
+    // ---- Echo: a melee blow sounds again a moment later
+
+    public static void onDamage(LivingDamageEvent.Post event) {
+        if (echoing) return;
+        DamageSource src = event.getSource();
+        if (!(src.getEntity() instanceof ServerPlayer player) || src.getDirectEntity() != player) return;
+        if (!(event.getEntity().level() instanceof ServerLevel level)) return;
+        int lvl = Gear.level(level, player.getMainHandItem(), Gear.ECHO);
+        if (lvl <= 0 || event.getHealthDamage() <= 0) return;
+        ECHOES.add(new Echo(level, event.getEntity().getUUID(), player.getUUID(), level.getGameTime() + 12, event.getHealthDamage() * 0.35F * lvl));
+    }
+
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if (ECHOES.isEmpty()) return;
+        Iterator<Echo> it = ECHOES.iterator();
+        List<Echo> due = new ArrayList<>();
+        while (it.hasNext()) {
+            Echo e = it.next();
+            if (e.level.getGameTime() >= e.due) {
+                due.add(e);
+                it.remove();
+            }
+        }
+        for (Echo e : due) {
+            if (!(e.level.getEntity(e.target) instanceof LivingEntity target) || !target.isAlive()) continue;
+            Player owner = e.level.getPlayerByUUID(e.owner);
+            echoing = true;
+            try {
+                target.hurtServer(e.level, owner != null ? e.level.damageSources().playerAttack(owner) : e.level.damageSources().magic(), e.damage);
+            } finally {
+                echoing = false;
+            }
+            e.level.sendParticles(ParticleTypes.SCULK_SOUL, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.2, 0.3, 0.2, 0.02);
+            e.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.8F, 0.6F);
+        }
+    }
+
+    // ---- Harvest: the dark leaves more behind
+
+    public static void onDrops(LivingDropsEvent event) {
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
+        LivingEntity dead = event.getEntity();
+        if (!Bestiary.ids().containsKey(dead.getType()) || !(dead.level() instanceof ServerLevel level)) return;
+        int lvl = Gear.level(level, player.getMainHandItem(), Gear.HARVEST);
+        if (lvl <= 0) return;
+        var r = level.getRandom();
+        if (r.nextFloat() < 0.25F * lvl) event.getDrops().add(new ItemEntity(level, dead.getX(), dead.getY() + 0.5, dead.getZ(), new ItemStack(ModItems.SHADOW_SHARD.get())));
+        if (r.nextFloat() < 0.08F * lvl) event.getDrops().add(new ItemEntity(level, dead.getX(), dead.getY() + 0.5, dead.getZ(), new ItemStack(ModItems.ECHO_QUARTZ.get())));
+        if (r.nextFloat() < 0.06F * lvl) event.getDrops().add(new ItemEntity(level, dead.getX(), dead.getY() + 0.5, dead.getZ(), new ItemStack(ModItems.LUMINITE_CRYSTAL.get())));
+    }
+
+    // ---- Taste of Darkness: kills of the dark feed you, at a price
+
+    public static void onDeath(LivingDeathEvent event) {
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
+        if (!Bestiary.ids().containsKey(event.getEntity().getType())) return;
+        int lvl = Gear.level(player.level(), player.getMainHandItem(), Gear.TASTE);
+        if (lvl <= 0) return;
+        player.heal(2.0F * lvl);
+        if (Sanity.enabled()) Sanity.add(player, -1.0F * lvl);
+    }
+
+    // ---- Flash: arrows light up what they hit
+
+    public static void onImpact(ProjectileImpactEvent event) {
+        if (!(event.getProjectile() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow)) return;
+        if (!(arrow.level() instanceof ServerLevel level) || !(event.getRayTraceResult() instanceof EntityHitResult hit)) return;
+        ItemStack weapon = arrow.getWeaponItem();
+        if (weapon == null) return;
+        int lvl = Gear.level(level, weapon, Gear.FLASH);
+        if (lvl <= 0 || level.getRandom().nextFloat() >= 0.34F * lvl) return;
+        if (hit.getEntity() instanceof LightSensitive ls) {
+            ls.onLit(level, arrow.getOwner() instanceof Player p ? p : null);
+            level.sendParticles(ParticleTypes.END_ROD, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 12, 0.2, 0.2, 0.2, 0.05);
+        }
+    }
+
+    // ---- the ash clasp: soft landings
+
+    public static void onFall(LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player && Gear.hasArtifact(player, Gear.ASH_CLASP)) event.setDamageMultiplier(0.0F);
+    }
+
+    // ---- pinning an artifact to a chestplate at the anvil
+
+    public static void onAnvil(AnvilUpdateEvent event) {
+        ItemStack left = event.getLeft(), right = event.getRight();
+        String artifact = right.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : right.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : null;
+        if (artifact == null || !left.is(ItemTags.CHEST_ARMOR)) return;
+        ItemStack out = left.copy();
+        out.set(ModComponents.ARTIFACT.get(), artifact);
+        event.setOutput(out);
+        event.setXpCost(3);
+        event.setMaterialCost(1);
+    }
+
+    public static void onTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        String a = stack.get(ModComponents.ARTIFACT.get());
+        if (a != null) {
+            event.getToolTip().add(Component.translatable("artifact.umbra." + a).withStyle(ChatFormatting.GOLD));
+        } else if (stack.is(ModItems.ASH_CLASP.get()) || stack.is(ModItems.ARCHITECT_SEAL.get())) {
+            String id = stack.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : Gear.ARCHITECT_SEAL;
+            event.getToolTip().add(Component.translatable("artifact.umbra." + id + ".effect").withStyle(ChatFormatting.GRAY));
+            event.getToolTip().add(Component.translatable("artifact.umbra.how").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+        }
+    }
+}

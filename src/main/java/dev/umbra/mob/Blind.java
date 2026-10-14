@@ -59,10 +59,11 @@ public class Blind extends Monster implements LightSensitive {
     /** How far away the player can be heard right now. */
     static double noiseRange(Player player, Vec3 previous) {
         double moved = previous == null ? 0 : player.position().distanceTo(previous);
-        if (player.isSprinting()) return SPRINT_RANGE;
-        if (player.isShiftKeyDown()) return SNEAK_RANGE;
-        if (moved > 0.05 * 5) return WALK_RANGE;
-        return SNEAK_RANGE;
+        double quiet = 1.0 - dev.umbra.gear.Gear.stealth(player);   // shadow gear, boots of silence, the ash clasp
+        if (player.isSprinting()) return SPRINT_RANGE * quiet;
+        if (player.isShiftKeyDown()) return SNEAK_RANGE * quiet;
+        if (moved > 0.05 * 5) return WALK_RANGE * quiet;
+        return SNEAK_RANGE * quiet;
     }
 
     @Override

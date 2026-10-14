@@ -29,6 +29,7 @@ public class PhantomWallBlock extends Block {
 
     public static boolean seesThrough(Player player) {
         if (player.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.MADMAN_MASK.get())) return true;
+        if (dev.umbra.gear.Gear.hasArtifact(player, dev.umbra.gear.Gear.ARCHITECT_SEAL)) return true;
         return Sanity.enabled() && Sanity.get(player) < BELOW;
     }
 

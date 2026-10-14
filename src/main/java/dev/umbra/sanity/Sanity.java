@@ -120,7 +120,7 @@ public final class Sanity {
         drain += Math.min(0.4F, monsters * 0.1F);
         if (Underside.is(level)) drain += Underside.SANITY_DRAIN;
         // gloom armour steadies the mind: each piece takes 12% off the drain
-        drain *= 1.0F - 0.12F * gloomPieces(player);
+        drain *= 1.0F - dev.umbra.gear.Gear.sanityShield(player);
 
         if (isCalm(player)) drain = 0.0F;
         // inside a burning ward the mind rests

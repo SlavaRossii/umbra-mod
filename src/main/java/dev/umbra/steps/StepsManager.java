@@ -104,7 +104,7 @@ public final class StepsManager {
         }
 
         if (player.onGround() && !player.isShiftKeyDown()) {
-            s.walked += horiz;
+            s.walked += horiz * (1.0 - dev.umbra.gear.Gear.stealth(player));
         }
         if (s.walked >= STRIDE) {
             s.walked = 0;

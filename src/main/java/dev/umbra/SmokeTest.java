@@ -24,6 +24,7 @@ import dev.umbra.mob.LightEater;
 import dev.umbra.mob.Mimicker;
 import dev.umbra.mob.Shade;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.item.ItemEntity;
 import dev.umbra.underside.RiftFrame;
 import dev.umbra.underside.RiftTravel;
@@ -130,6 +131,9 @@ final class SmokeTest {
                 case 667 -> profileUnderside(server);
                 case 668 -> testLighthouse19(server, level);
                 case 669 -> testLighthouseWorldgen(server);
+                case 671 -> testGear20(server, level);
+                case 672 -> startEchoTest(level);
+                case 678 -> finishEchoTest();
                 case 679 -> testLighthouseKeeper(server);
                 case LIFE_END -> finish(server);
                 default -> {
@@ -1002,6 +1006,139 @@ final class SmokeTest {
             }
             check(missing.isEmpty(), "language " + lang + " has all journal texts " + (missing.isEmpty() ? "" : missing.subList(0, Math.min(5, missing.size()))));
         }
+    }
+
+    // ---------------------------------------------------------------- 2.0
+    private static net.minecraft.world.item.Item mod(String name) {
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, name));
+    }
+
+    private static void wear(FakePlayer p, String set, int tier) {
+        String[] pieces = {"helmet", "chestplate", "leggings", "boots"};
+        net.minecraft.world.entity.EquipmentSlot[] slots = dev.umbra.gear.Gear.ARMOR;
+        for (int i = 0; i < 4; i++) p.setItemSlot(slots[i], set == null ? ItemStack.EMPTY : new ItemStack(mod(set + "_" + pieces[i] + (tier == 1 ? "" : "_" + tier))));
+    }
+
+    private static void testGear20(MinecraftServer server, ServerLevel level) {
+        check(ModItems.ARMOR_PIECES.size() == 32, "the three armour sets have all their pieces (" + ModItems.ARMOR_PIECES.size() + " new)");
+        boolean all = true;
+        for (String set : dev.umbra.gear.Gear.SETS)
+            for (String piece : dev.umbra.gear.Gear.PIECES)
+                for (int tier = 1; tier <= 3; tier++) {
+                    var item = mod(set + "_" + piece + (tier == 1 ? "" : "_" + tier));
+                    int[] id = dev.umbra.gear.Gear.piece(new ItemStack(item));
+                    all &= item != Items.AIR && id != null && id[0] == java.util.Arrays.asList(dev.umbra.gear.Gear.SETS).indexOf(set) && id[1] == tier;
+                }
+        check(all, "every armour piece is recognised by set and tier");
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        wear(fake, null, 1);
+        check(dev.umbra.gear.Gear.stealth(fake) == 0 && dev.umbra.gear.Gear.sanityShield(fake) == 0, "bare, you have no gear bonuses");
+        wear(fake, "gloom", 1);
+        check(Math.abs(dev.umbra.gear.Gear.sanityShield(fake) - 0.48F) < 0.001F && Sanity.gloomPieces(fake) == 4, "tier I gloom armour keeps its 12% per piece");
+        wear(fake, "gloom", 3);
+        check(Math.abs(dev.umbra.gear.Gear.sanityShield(fake) - 0.72F) < 0.001F, "tier III gloom armour shields 18% per piece");
+        wear(fake, "shadow", 3);
+        float shadowStealth = dev.umbra.gear.Gear.stealth(fake);
+        wear(fake, "shadow", 1);
+        check(shadowStealth > dev.umbra.gear.Gear.stealth(fake) && dev.umbra.gear.Gear.stealth(fake) > 0, "higher tiers of shadow gear are quieter");
+
+        // enchantments exist and can be put on items
+        var reg = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        int found = 0;
+        for (var key : dev.umbra.gear.Gear.ALL_ENCHANTS) if (reg.get(key).isPresent()) found++;
+        check(found == 9, "all nine enchantments are loaded (" + found + ")");
+        ItemStack sword = new ItemStack(Items.IRON_SWORD);
+        reg.get(dev.umbra.gear.Gear.ECHO).ifPresent(h -> sword.enchant(h, 2));
+        check(dev.umbra.gear.Gear.level(level, sword, dev.umbra.gear.Gear.ECHO) == 2, "a sword can carry Echo");
+        ItemStack boots = new ItemStack(mod("shadow_boots"));
+        reg.get(dev.umbra.gear.Gear.SILENCE).ifPresent(h -> boots.enchant(h, 2));
+        wear(fake, "shadow", 1);
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, boots);
+        check(dev.umbra.gear.Gear.stealth(fake) > 0.4F, "boots of silence add to the quiet");
+        wear(fake, null, 1);
+
+        // luminite burns shades next to you
+        wear(fake, "luminite", 3);
+        BlockPos c = new BlockPos(160, Y + 60, 30);
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (shade != null) {
+            shade.snapTo(c.getX() + 1.5, c.getY(), c.getZ() + 0.5, 0, 0);
+            level.addFreshEntity(shade);
+            float before = shade.getHealth();
+            fake.tickCount = 3;
+            dev.umbra.gear.Gear.tick(fake);
+            check(!shade.isAlive() || shade.getHealth() < before, "luminite armour burns shades that come close");
+            shade.discard();
+        }
+        wear(fake, null, 1);
+
+        // artifacts
+        ItemStack plate = new ItemStack(Items.IRON_CHESTPLATE);
+        var ev = new net.neoforged.neoforge.event.AnvilUpdateEvent(plate, new ItemStack(ModItems.ASH_CLASP.get()), null, ItemStack.EMPTY, 0, 0, fake);
+        dev.umbra.gear.EnchantEvents.onAnvil(ev);
+        check(dev.umbra.gear.Gear.ASH_CLASP.equals(ev.getOutput().get(dev.umbra.registry.ModComponents.ARTIFACT.get())), "the anvil pins the ash clasp to a chestplate");
+        var ev2 = new net.neoforged.neoforge.event.AnvilUpdateEvent(new ItemStack(Items.IRON_HELMET), new ItemStack(ModItems.ASH_CLASP.get()), null, ItemStack.EMPTY, 0, 0, fake);
+        dev.umbra.gear.EnchantEvents.onAnvil(ev2);
+        check(ev2.getOutput().isEmpty(), "an artifact only goes on a chestplate");
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ev.getOutput());
+        check(dev.umbra.gear.Gear.hasArtifact(fake, dev.umbra.gear.Gear.ASH_CLASP) && dev.umbra.gear.Gear.stealth(fake) >= 0.3F, "the clasp quiets your steps");
+        var fall = new net.neoforged.neoforge.event.entity.living.LivingFallEvent(fake, 10.0, 1.0F);
+        dev.umbra.gear.EnchantEvents.onFall(fall);
+        check(fall.getDamageMultiplier() == 0.0F, "the clasp takes the fall away");
+        ItemStack sealed = new ItemStack(Items.IRON_CHESTPLATE);
+        sealed.set(dev.umbra.registry.ModComponents.ARTIFACT.get(), dev.umbra.gear.Gear.ARCHITECT_SEAL);
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, sealed);
+        check(dev.umbra.citadel.PhantomWallBlock.seesThrough(fake), "the Architect's seal sees through phantom walls");
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ItemStack.EMPTY);
+        check(!dev.umbra.gear.Gear.hasArtifact(fake, dev.umbra.gear.Gear.ARCHITECT_SEAL), "no seal, no sight");
+
+        // texts
+        for (String lang : new String[]{"en_us", "ru_ru"}) {
+            java.util.List<String> missing = new java.util.ArrayList<>();
+            try (var in = Umbra.class.getResourceAsStream("/assets/umbra/lang/" + lang + ".json")) {
+                var obj = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                for (String n : new String[]{"echo", "silence", "void", "harvest", "taste_of_darkness", "flash", "anchor", "instinct", "whisper_curse"}) if (!obj.has("enchantment.umbra." + n)) missing.add(n);
+                for (String set : dev.umbra.gear.Gear.SETS)
+                    for (String piece : dev.umbra.gear.Gear.PIECES)
+                        for (int tier = 1; tier <= 3; tier++) if (!obj.has("item.umbra." + set + "_" + piece + (tier == 1 ? "" : "_" + tier))) missing.add(set + piece + tier);
+            } catch (Exception e) {
+                missing.add("(" + e + ")");
+            }
+            check(missing.isEmpty(), "language " + lang + " names the 2.0 gear " + (missing.isEmpty() ? "" : missing.subList(0, Math.min(5, missing.size()))));
+        }
+    }
+
+    private static Mob echoTarget;
+
+    private static void startEchoTest(ServerLevel level) {
+        BlockPos c = new BlockPos(160, Y + 60, 30);
+        for (int x = -4; x <= 4; x++)
+            for (int z = -4; z <= 4; z++) level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+        level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).get(dev.umbra.gear.Gear.ECHO).ifPresent(h -> sword.enchant(h, 3));
+        fake.setItemInHand(InteractionHand.MAIN_HAND, sword);
+        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (zombie == null) return;
+        zombie.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 1.5, 0, 0);
+        zombie.setNoAi(true);
+        level.addFreshEntity(zombie);
+        echoTarget = zombie;
+        dev.umbra.gear.EnchantEvents.clear();
+        fake.resetAttackStrengthTicker();
+        fake.attack(zombie);
+        check(dev.umbra.gear.EnchantEvents.pendingEchoes() > 0, "a blow with Echo queues its echo");
+    }
+
+    private static void finishEchoTest() {
+        if (echoTarget == null) return;
+        check(dev.umbra.gear.EnchantEvents.pendingEchoes() == 0, "the echo has sounded");
+        echoTarget.discard();
+        echoTarget = null;
     }
 
     /** The real thing: generate the chunk the world seed picked for the nearest lighthouse. */

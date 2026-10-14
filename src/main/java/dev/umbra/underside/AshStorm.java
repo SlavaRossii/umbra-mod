@@ -34,7 +34,8 @@ public final class AshStorm {
         Level level = player.level();
         BlockPos pos = player.blockPosition();
         if (!UndersideBiomes.in(level, pos, UndersideBiomes.ASH_PLAINS)) return 0.0F;
-        if (player.getData(ModAttachments.STORM_TEST)) return 1.0F;
-        return strength(level.getGameTime());
+        float s = player.getData(ModAttachments.STORM_TEST) ? 1.0F : strength(level.getGameTime());
+        // the ash clasp: the storm is only a grey haze
+        return dev.umbra.gear.Gear.hasArtifact(player, dev.umbra.gear.Gear.ASH_CLASP) ? s * 0.25F : s;
     }
 }

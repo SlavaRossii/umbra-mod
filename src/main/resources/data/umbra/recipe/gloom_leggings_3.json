@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "umbra:echo_quartz",
+  "base": "umbra:gloom_leggings_2",
+  "addition": "umbra:gloom_block",
+  "result": {
+    "id": "umbra:gloom_leggings_3"
+  }
+}

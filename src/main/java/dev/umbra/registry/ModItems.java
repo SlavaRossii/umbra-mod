@@ -75,6 +75,24 @@ public final class ModItems {
     public static final DeferredItem<Item> GLOOM_PICKAXE = ITEMS.registerSimpleItem("gloom_pickaxe", p -> p.pickaxe(ModMaterials.GLOOM_TOOLS, 1.0F, -2.8F));
     public static final DeferredItem<Item> GLOOM_AXE = ITEMS.registerSimpleItem("gloom_axe", p -> p.axe(ModMaterials.GLOOM_TOOLS, 5.0F, -3.0F));
     public static final DeferredItem<Item> GLOOM_SHOVEL = ITEMS.registerSimpleItem("gloom_shovel", p -> p.shovel(ModMaterials.GLOOM_TOOLS, 1.5F, -3.0F));
+    /** All 36 armour pieces of the three sets (gloom_helmet, gloom_helmet_2, luminite_boots_3, ...), in creative-tab order. */
+    public static final java.util.List<DeferredItem<Item>> ARMOR_PIECES = new java.util.ArrayList<>();
+
+    static {
+        net.minecraft.world.item.equipment.ArmorType[] types = {ArmorType.HELMET, ArmorType.CHESTPLATE, ArmorType.LEGGINGS, ArmorType.BOOTS};
+        for (int set = 0; set < 3; set++)
+            for (int tier = 1; tier <= 3; tier++)
+                for (int i = 0; i < 4; i++) {
+                    final int fs = set, ft = tier, fi = i;
+                    String name = dev.umbra.gear.Gear.SETS[set] + "_" + dev.umbra.gear.Gear.PIECES[i] + (tier == 1 ? "" : "_" + tier);
+                    if (set == 0 && tier == 1) continue;   // the original gloom armour is registered by hand below
+                    ARMOR_PIECES.add(ITEMS.registerSimpleItem(name, p -> p.humanoidArmor(ModMaterials.armor(fs, ft), types[fi])));
+                }
+    }
+
+    public static final DeferredItem<Item> ASH_CLASP = ITEMS.registerSimpleItem("ash_clasp", p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<Item> ARCHITECT_SEAL = ITEMS.registerSimpleItem("architect_seal", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+
     public static final DeferredItem<Item> GLOOM_HELMET = ITEMS.registerSimpleItem("gloom_helmet", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.HELMET));
     public static final DeferredItem<Item> GLOOM_CHESTPLATE = ITEMS.registerSimpleItem("gloom_chestplate", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.CHESTPLATE));
     public static final DeferredItem<Item> GLOOM_LEGGINGS = ITEMS.registerSimpleItem("gloom_leggings", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.LEGGINGS));

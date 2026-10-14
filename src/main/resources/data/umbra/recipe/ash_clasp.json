@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "umbra:shadow_shard",
+    "G": "umbra:gloom_ingot",
+    "Q": "umbra:echo_quartz"
+  },
+  "pattern": [
+    " S ",
+    "GQG",
+    " S "
+  ],
+  "result": {
+    "id": "umbra:ash_clasp"
+  }
+}
