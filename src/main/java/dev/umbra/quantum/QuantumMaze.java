@@ -120,6 +120,7 @@ public final class QuantumMaze {
         // prizes: three common chests downstairs (centre and two far corners), upstairs one more and the real prize.
         // Common chests can be mimics (see MimicChests).
         int far = SIZE - 2;
+        var COMMON = dev.umbra.underside.Underside.is(level.getLevel()) ? COMMON_UNDERSIDE : QuantumMaze.COMMON;
         placeChest(level, random, corner.offset(mid, 1, mid), COMMON);
         placeChestIfFree(level, random, ladders, corner, 1, 1, 1, COMMON);
         placeChestIfFree(level, random, ladders, corner, far, 1, far, COMMON);
@@ -134,6 +135,8 @@ public final class QuantumMaze {
 
     public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> COMMON = lootKey("chests/maze_common");
     public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> PRIZE = lootKey("chests/maze_prize");
+    /** Underside mazes: the same, plus the explorers' notes (which only exist down there). */
+    public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> COMMON_UNDERSIDE = lootKey("chests/maze_common_underside");
 
     private static net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootKey(String path) {
         return net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,

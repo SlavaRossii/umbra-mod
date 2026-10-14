@@ -46,6 +46,8 @@ public final class Nightmares {
     public static final float BELOW = 35.0F;
     public static final float CHANCE = 0.35F;
     public static final int DURATION = 20 * 60 * 3;
+    public static final float ESCAPE_REWARD = 50.0F;
+    public static final float FAIL_PENALTY = 15.0F;
     private static final int ARENA_Y = 150;
     private static final int ARENA_X = 3_000_000;
     private static final int ARENA_Z = 3_000_000;
@@ -83,7 +85,7 @@ public final class Nightmares {
         player.setData(ModAttachments.NIGHTMARE, player.blockPosition().asLong());
         LEFT.put(player.getUUID(), DURATION);
         int mid = QuantumMaze.SIZE / 2;
-        Vec3 at = Vec3.atBottomCenterOf(corner.offset(-1, 1, mid));
+        Vec3 at = Vec3.atBottomCenterOf(corner.offset(1, 1, mid));
         player.teleport(new TeleportTransition(under, at, Vec3.ZERO, -90.0F, 0.0F, TeleportTransition.DO_NOTHING));
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 12, 0, false, false));
         Sanity.add(player, -5.0F);
@@ -101,15 +103,18 @@ public final class Nightmares {
         for (int x = -2; x <= size + 1; x++)
             for (int z = -2; z <= size + 1; z++)
                 for (int y = -9; y <= height + 4; y++) {
-                    boolean shell = x == -2 || z == -2 || x == size + 1 || z == size + 1 || y == -9 || y == height + 4;
-                    level.setBlock(corner.offset(x, y, z), shell ? wall : air, Block.UPDATE_CLIENTS);
+                    // solid all round: the maze carves its own corridors out of it, nothing to fall into
+                    level.setBlock(corner.offset(x, y, z), wall, Block.UPDATE_CLIENTS);
                 }
         for (Entity e : level.getEntities((Entity) null, AABB.encapsulatingFullBlocks(corner.offset(-2, -9, -2), corner.offset(size + 1, height + 4, size + 1)), e -> !(e instanceof ServerPlayer))) {
             e.discard();
         }
         QuantumMaze.build(level, corner, random);
-        for (BlockPos p : BlockPos.betweenClosed(corner, corner.offset(size - 1, height, size - 1))) {
-            if (level.getBlockState(p).is(Blocks.CHEST)) level.setBlock(p, air, Block.UPDATE_CLIENTS);
+        for (BlockPos p : BlockPos.betweenClosed(corner.offset(-2, -2, -2), corner.offset(size + 1, height + 2, size + 1))) {
+            if (level.getBlockState(p).is(Blocks.CHEST)) {
+                if (level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity c) c.setLootTable(null);
+                level.setBlock(p, air, Block.UPDATE_CLIENTS);
+            }
         }
         int mid = size / 2;
         level.setBlock(corner.offset(mid, QuantumMaze.floorBase(1) + 1, mid), ModBlocks.DREAM_EXIT.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -152,12 +157,12 @@ public final class Nightmares {
         player.teleport(new TeleportTransition(overworld, home, Vec3.ZERO, player.getYRot(), 0.0F, TeleportTransition.DO_NOTHING));
         player.removeEffect(MobEffects.DARKNESS);
         if (escaped) {
-            Sanity.add(player, 35.0F);
+            Sanity.add(player, ESCAPE_REWARD);
             UmbraUtil.give(player, new ItemStack(ModItems.SHADOW_SHARD.get()));
             player.sendSystemMessage(Component.translatable("message.umbra.nightmare.escaped").withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.ITALIC));
             overworld.playSound(null, home.x, home.y, home.z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
         } else {
-            Sanity.add(player, -8.0F);
+            Sanity.add(player, -FAIL_PENALTY);
             player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 20 * 8, 0, false, false));
             player.sendSystemMessage(Component.translatable("message.umbra.nightmare.failed").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }

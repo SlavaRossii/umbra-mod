@@ -71,32 +71,65 @@ public record CitadelGateFeature() implements Feature {
     public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
         int cx = origin.getX() >> 4, cz = origin.getZ() >> 4;
         if (!chosenChunk(level.getSeed(), cx, cz)) return false;
-        BlockPos floor = dev.umbra.village.ShadowVillageFeature.findFloor(level, new BlockPos(cx * 16 + 8, 120, cz * 16 + 8), 120, 10);
-        if (floor == null) floor = new BlockPos(cx * 16 + 8, dev.umbra.underside.Underside.FALLBACK_Y, cz * 16 + 8);
-        build(level, floor, random);
+        build(level, findSolidGround(level, cx * 16 + 8, cz * 16 + 8), random);
         return true;
     }
 
-    /** The arch faces south (z+); its doorway is 3 wide, 4 high, centred on {@code floor}. */
+    /**
+     * A cave floor with room above and solid ground under most of a 9x9 square, so the altar never hangs in the air.
+     * If there is none in this column, a chamber is carved out at the usual height.
+     */
+    public static BlockPos findSolidGround(WorldGenLevel level, int x, int z) {
+        for (int y = 105; y > 14; y--) {
+            BlockPos p = new BlockPos(x, y, z);
+            if (!level.getBlockState(p).isAir() || level.getBlockState(p.below()).isAir()) continue;
+            boolean room = true;
+            for (int dy = 0; dy < 6 && room; dy++) room = level.getBlockState(p.above(dy)).isAir();
+            if (!room) continue;
+            int solid = 0;
+            for (int dx = -4; dx <= 4; dx += 2)
+                for (int dz = -4; dz <= 4; dz += 2)
+                    for (int dy = 1; dy <= 3; dy++)
+                        if (!level.getBlockState(p.offset(dx, -dy, dz)).isAir()) {
+                            solid++;
+                            break;
+                        }
+            if (solid >= 22) return p;
+        }
+        return new BlockPos(x, dev.umbra.underside.Underside.FALLBACK_Y, z);
+    }
+
+    /**
+     * The altar: a stepped platform of dusk stone with four lantern pillars, the gate standing on top.
+     * The doorway faces south (z+), 3 wide and 4 high, centred one block above {@code floor}.
+     */
     public static void build(WorldGenLevel level, BlockPos floor, RandomSource random) {
         BlockState wall = ModBlocks.MAZE_WALL.get().defaultBlockState();
+        BlockState dusk = ModBlocks.DUSK_STONE.get().defaultBlockState();
         BlockState gate = ModBlocks.CITADEL_GATE.get().defaultBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
-        // a small clearing with a floor
-        for (int x = -4; x <= 4; x++)
-            for (int z = -3; z <= 4; z++) {
-                level.setBlock(floor.offset(x, -1, z), wall, FLAGS);
-                for (int y = 0; y <= 5; y++) level.setBlock(floor.offset(x, y, z), air, FLAGS);
+        // a chamber of air above, solid ground below
+        for (int x = -6; x <= 6; x++)
+            for (int z = -6; z <= 6; z++) {
+                for (int y = 0; y <= 8; y++) level.setBlock(floor.offset(x, y, z), air, FLAGS);
+                dev.umbra.village.ShadowVillageFeature.foundation(level, floor.offset(x, -1, z), ModBlocks.ASH_STONE.get().defaultBlockState());
             }
+        // two steps of dusk stone
+        for (int x = -4; x <= 4; x++)
+            for (int z = -4; z <= 4; z++) {
+                level.setBlock(floor.offset(x, 0, z), dusk, FLAGS);
+                if (Math.abs(x) <= 3 && Math.abs(z) <= 3) level.setBlock(floor.offset(x, 1, z), dusk, FLAGS);
+            }
+        BlockPos top = floor.above(2);
         for (int x = -2; x <= 2; x++)
             for (int y = 0; y <= 5; y++) {
                 boolean frame = Math.abs(x) == 2 || y == 5;
-                level.setBlock(floor.offset(x, y, 0), frame ? wall : (y <= 3 ? gate : wall), FLAGS);
+                level.setBlock(top.offset(x, y, 0), frame ? wall : (y <= 3 ? gate : wall), FLAGS);
             }
-        // broken quantum pillars around it
-        for (int[] p : new int[][]{{-4, -2}, {4, -2}, {-4, 3}, {4, 3}}) {
-            int h = 1 + random.nextInt(4);
-            for (int y = 0; y < h; y++) level.setBlock(floor.offset(p[0], y, p[1]), wall, FLAGS);
+        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState();
+        for (int[] p : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) {
+            for (int y = 0; y < 3; y++) level.setBlock(top.offset(p[0], y, p[1]), wall, FLAGS);
+            level.setBlock(top.offset(p[0], 3, p[1]), lantern, FLAGS);
         }
     }
 }

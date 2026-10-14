@@ -114,7 +114,7 @@ public final class ModItems {
     public static final DeferredItem<dev.umbra.madness.MadmanMaskItem> MADMAN_MASK = ITEMS.registerItem("madman_mask",
             dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
     public static final DeferredItem<dev.umbra.madness.DespairBladeItem> DESPAIR_BLADE = ITEMS.registerItem("despair_blade",
-            dev.umbra.madness.DespairBladeItem::new, p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.4F).rarity(Rarity.EPIC));
+            dev.umbra.madness.DespairBladeItem::new, p -> p.sword(ModMaterials.GLOOM_TOOLS, 4.0F, -2.4F).rarity(Rarity.EPIC));
 
     // --- Underside decoration (1.5) ---
     public static final DeferredItem<BlockItem> LUMINITE_CLUSTER = ITEMS.registerSimpleBlockItem("luminite_cluster", ModBlocks.LUMINITE_CLUSTER);

@@ -91,7 +91,7 @@ public record UndersideDecorFeature() implements Feature {
     private static void mushrooms(WorldGenLevel level, BlockPos f, RandomSource random) {
         for (int i = 0; i < 2 + random.nextInt(5); i++) {
             BlockPos p = floor(level, f.offset(random.nextInt(5) - 2, 2, random.nextInt(5) - 2), 5);
-            if (p != null) level.setBlock(p, ModBlocks.GLOOM_MUSHROOM.get().defaultBlockState(), FLAGS);
+            if (p != null && level.getBlockState(p.below()).isSolidRender()) level.setBlock(p, ModBlocks.GLOOM_MUSHROOM.get().defaultBlockState(), FLAGS);
         }
     }
 

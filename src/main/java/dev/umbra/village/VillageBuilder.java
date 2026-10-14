@@ -36,7 +36,7 @@ public final class VillageBuilder {
             case HAMLET -> hamlet(level, centre, random);
         };
         scatter(level, centre, random, 26);
-        int folk = 4 + random.nextInt(4);
+        int folk = 6 + random.nextInt(5);
         for (int i = 0; i < folk; i++) {
             ShadowVillager v = ModEntities.SHADOW_VILLAGER.get().create(level.getLevel(), EntitySpawnReason.STRUCTURE);
             if (v == null) continue;
@@ -49,6 +49,7 @@ public final class VillageBuilder {
 
     private static BlockPos floorNear(WorldGenLevel level, BlockPos at) {
         BlockPos f = ShadowVillageFeature.findFloor(level, at.above(6), at.getY() + 6, at.getY() - 8);
+        if (f == null) f = ShadowVillageFeature.findFloor(level, at.above(12), at.getY() + 12, at.getY() - 30);
         return f == null ? at : f;
     }
 

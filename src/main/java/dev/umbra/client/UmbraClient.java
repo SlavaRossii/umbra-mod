@@ -6,6 +6,7 @@ import dev.umbra.client.model.GeneratedModels;
 import dev.umbra.client.model.ModLayers;
 import dev.umbra.client.model.UmbraRenderer;
 import dev.umbra.registry.ModEntities;
+import dev.umbra.boss.Doppelganger;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -40,7 +41,7 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null));
-        event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new SilhouetteRenderer<>(ctx, "doppelganger"));
+        event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new SilhouetteRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));
         event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null));
         event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.PRIMORDIAL_SHADOW, "primordial_shadow", 1.0F, Animations::primordialShadow, null));
         event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LIGHT_EATER, "light_eater", 0.3F,
@@ -61,6 +62,20 @@ public final class UmbraClient {
         event.registerLayerDefinition(ModLayers.ARCHITECT, GeneratedModels::architect);
         event.registerLayerDefinition(ModLayers.PRIMORDIAL_SHADOW, GeneratedModels::primordialShadow);
         event.registerLayerDefinition(ModLayers.SHADOW_VILLAGER, GeneratedModels::shadowVillager);
+    }
+
+    /** Game-bus client events. */
+    @EventBusSubscriber(modid = Umbra.MODID, value = Dist.CLIENT)
+    public static final class Game {
+        private Game() {}
+
+        @SubscribeEvent
+        static void tooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
+            if (!(event.getItemStack().getItem() instanceof dev.umbra.madness.DespairBladeItem) || event.getEntity() == null) return;
+            float bonus = dev.umbra.madness.DespairBladeItem.bonus(event.getEntity());
+            event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.umbra.despair_blade.bonus", String.format("%.1f", bonus))
+                    .withStyle(net.minecraft.ChatFormatting.DARK_PURPLE));
+        }
     }
 
     @SubscribeEvent

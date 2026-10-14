@@ -43,7 +43,7 @@ public final class Sanity {
         public static final float SHADOW_CAUGHT = -15.0F;
         public static final float MIMIC_SPRUNG = -10.0F;
         public static final float STEPS_FINALE = -8.0F;
-        public static final float SLEEP = 40.0F;
+        public static final float SLEEP = 25.0F;
         public static final float FOOD = 2.0F;
         public static final float DISPELLER = 4.0F;
         public static final float SHADOW_DISPELLED = 6.0F;

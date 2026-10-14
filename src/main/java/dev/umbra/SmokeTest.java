@@ -407,6 +407,8 @@ final class SmokeTest {
     // ---------------------------------------------------------------- 1.1
     private static final BlockPos WARD = new BlockPos(230, Y + 20, 0);
     private static net.minecraft.world.entity.Mob spider;
+    private static dev.umbra.citadel.CitadelStatue statue;
+    private static Vec3 statueStart;
     private static BlockPos lightPos;
 
     private static void setupWard(ServerLevel level) {
@@ -420,6 +422,17 @@ final class SmokeTest {
             level.addFreshEntity(spider);
         }
         check(spider != null, "spider for the ward test");
+        statue = ModEntities.CITADEL_STATUE.get().create(level, EntitySpawnReason.COMMAND);
+        net.minecraft.world.entity.LivingEntity bait = net.minecraft.world.entity.EntityTypes.PIG.create(level, EntitySpawnReason.COMMAND);
+        if (statue != null && bait != null) {
+            statue.snapTo(WARD.getX() + 40.5, WARD.getY() + 30, WARD.getZ() + 0.5, 0, 0);
+            bait.snapTo(WARD.getX() + 48.5, WARD.getY() + 30, WARD.getZ() + 0.5, 0, 0);
+            for (int x = 35; x <= 55; x++) for (int z = -4; z <= 4; z++) level.setBlock(WARD.offset(x, 29, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.addFreshEntity(statue);
+            level.addFreshEntity(bait);
+            statue.setTarget(bait);
+            statueStart = statue.position();
+        }
     }
 
     private static void testUpdate11(ServerLevel level) {
@@ -604,6 +617,8 @@ final class SmokeTest {
                 if (under.getBlockState(p).is(Blocks.CHEST)) chests++;
             check(chests == 0, "a nightmare has no chests");
             check(under.getBlockState(corner.offset(-2, 3, mid)).is(ModBlocks.MAZE_WALL.get()), "a nightmare is sealed");
+            check(under.getBlockState(corner.offset(1, 1, mid)).isAir() && !under.getBlockState(corner.offset(1, 0, mid)).isAir()
+                    && !under.getBlockState(corner.offset(-1, 0, mid)).isAir(), "you wake inside the nightmare maze, on solid floor");
         } else {
             check(false, "underside level for the nightmare test");
         }
@@ -698,7 +713,7 @@ final class SmokeTest {
         int quantum = 0;
         for (BlockPos p : BlockPos.betweenClosed(o.offset(dev.umbra.citadel.Citadel.MAZE_1, 0, -18), o.offset(dev.umbra.citadel.Citadel.MAZE_1 + 36, 0, 18)))
             if (level.getBlockState(p).is(ModBlocks.QUANTUM_BLOCK.get())) quantum++;
-        check(quantum > 15, "the wide maze has quantum walls (" + quantum + " columns)");
+        check(quantum == 0, "the wide maze holds still (" + quantum + " quantum columns)");
         check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1, 1, 1)).isAir() && level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1 + 36, 1, 1)).isAir(),
                 "the wide maze has a way in and a way out");
         check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 0)).is(ModBlocks.CITADEL_SEAL.get()), "the throne is sealed");
@@ -713,7 +728,7 @@ final class SmokeTest {
                 if (dev.umbra.mimic.MimicChests.isMimic(level, p)) mimics++;
             }
         }
-        check(cores == 1, "the Architect's maze has its core (" + cores + ")");
+        check(cores == 0 && level.getBlockState(o.offset(dev.umbra.citadel.Citadel.THRONE + 5, 3, 0)).isAir(), "the Architect waits in an open hall");
         check(dark > 500, "the hall of living darkness is full (" + dark + ")");
         check(chests >= 20 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
         check(phantom == 36, "the library hides a phantom wall (" + phantom + ")");
@@ -742,7 +757,7 @@ final class SmokeTest {
         check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 0)).isAir(), "the seal is gone");
         if (boss != null) {
             int mid = QuantumMaze.SIZE / 2;
-            check(Math.abs(boss.getX() - (o.getX() + dev.umbra.citadel.Citadel.THRONE + mid + 0.5)) < 1.0, "the Architect is in his maze");
+            check(boss.getX() > o.getX() + dev.umbra.citadel.Citadel.THRONE, "the Architect is in his hall");
             boss.discard();
         }
         for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, dev.umbra.citadel.Citadel.bounds(o))) e.discard();
@@ -752,7 +767,7 @@ final class SmokeTest {
         for (int x = -5; x <= 5; x++) for (int z = -4; z <= 5; z++) overworld.setBlock(g.offset(x, -2, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
         dev.umbra.citadel.CitadelGateFeature.build(overworld, g, overworld.getRandom());
         int gates = 0;
-        for (BlockPos p : BlockPos.betweenClosed(g.offset(-2, 0, 0), g.offset(2, 4, 0))) if (overworld.getBlockState(p).is(ModBlocks.CITADEL_GATE.get())) gates++;
+        for (BlockPos p : BlockPos.betweenClosed(g.offset(-2, 2, 0), g.offset(2, 6, 0))) if (overworld.getBlockState(p).is(ModBlocks.CITADEL_GATE.get())) gates++;
         check(gates == 12, "a citadel gate has a 3x4 doorway (" + gates + ")");
         int minGap = Integer.MAX_VALUE;
         List<int[]> at = new ArrayList<>();
@@ -812,6 +827,11 @@ final class SmokeTest {
         double d = spider == null ? 0 : spider.position().distanceTo(Vec3.atCenterOf(WARD));
         check(spider != null && d > 7.0, "the ward drives a spider away (" + String.format("%.1f", d) + " blocks)");
         if (spider != null) spider.discard();
+        if (statue != null) {
+            double moved = statue.position().distanceTo(statueStart);
+            check(moved > 1.0, "an unwatched statue moves (" + String.format("%.1f", moved) + " blocks)");
+            statue.discard();
+        }
         check(lightPos == null || !level.getBlockState(lightPos).is(ModBlocks.HELD_LIGHT.get()), "lantern light disappears without its lantern");
     }
 

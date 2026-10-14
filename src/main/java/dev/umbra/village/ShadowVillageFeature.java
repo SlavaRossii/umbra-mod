@@ -163,7 +163,7 @@ public record ShadowVillageFeature() implements Feature {
     public static void foundation(WorldGenLevel level, BlockPos top, BlockState state) {
         level.setBlock(top, state, FLAGS);
         BlockState ash = ModBlocks.ASH_STONE.get().defaultBlockState();
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 24; i++) {
             BlockPos p = top.below(i);
             BlockState s = level.getBlockState(p);
             if (!s.isAir() && s.getFluidState().isEmpty() && !s.canBeReplaced()) break;

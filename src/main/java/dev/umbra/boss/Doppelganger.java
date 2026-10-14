@@ -50,7 +50,7 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
     @Override
     protected void bossTick(ServerLevel level) {
         if (!(this.getTarget() instanceof Player target)) return;
-        if (!copied) {
+        if (!copied || this.tickCount % 200 == 0) {
             copied = true;
             for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
                 this.setItemSlot(slot, target.getItemBySlot(slot).copy());

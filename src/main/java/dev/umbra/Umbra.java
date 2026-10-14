@@ -80,7 +80,6 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.LightArrowItem::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.WardBlock::onFinalizeSpawn);
         NeoForge.EVENT_BUS.addListener(dev.umbra.nightmare.Nightmares::onHurt);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.madness.DespairBladeItem::onHurt);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.SmolderingTorchBlock::onPlaced);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onRightClick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);

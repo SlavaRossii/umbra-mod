@@ -182,11 +182,6 @@
           "type": "minecraft:item",
           "name": "minecraft:name_tag",
           "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "name": "umbra:explorer_note",
-          "weight": 2
         }
       ]
     }

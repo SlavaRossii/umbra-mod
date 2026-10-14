@@ -23,6 +23,14 @@ public class SilhouetteRenderer<T extends Mob> extends HumanoidMobRenderer<T, Hu
         this.texture = texture;
     }
 
+    /** Draws the armour the mob wears (the Doppelganger wears yours). */
+    public SilhouetteRenderer<T> withArmor(EntityRendererProvider.Context context) {
+        this.addLayer(new net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer<>(this,
+                net.minecraft.client.renderer.entity.ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, context.getModelSet(), HumanoidModel::new),
+                context.getEquipmentRenderer()));
+        return this;
+    }
+
     @Override
     public HumanoidRenderState createRenderState() {
         return new HumanoidRenderState();

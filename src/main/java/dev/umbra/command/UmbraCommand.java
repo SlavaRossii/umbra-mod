@@ -176,7 +176,7 @@ public final class UmbraCommand {
         ServerLevel under = player.level().getServer().getLevel(dev.umbra.underside.Underside.LEVEL);
         if (under == null) return 0;
         int[] c = dev.umbra.citadel.CitadelGateFeature.nearest(under.getSeed(), (int) player.getX(), (int) player.getZ());
-        BlockPos gate = new BlockPos(c[0] * 16 + 8, dev.umbra.underside.Underside.FALLBACK_Y, c[1] * 16 + 8);
+        BlockPos gate = dev.umbra.citadel.CitadelGateFeature.findSolidGround(under, c[0] * 16 + 8, c[1] * 16 + 8).above(2);
         player.teleport(dev.umbra.citadel.Citadel.enter(under, player, gate));
         return 1;
     }

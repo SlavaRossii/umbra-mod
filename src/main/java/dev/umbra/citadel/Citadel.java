@@ -50,7 +50,7 @@ public final class Citadel {
     /** The citadel hangs right above its gate, high over the caves, out of reach of the terrain. */
     public static final int POCKET_Y = 200;
     public static final int WEST = 113;
-    public static final int LENGTH = 226;
+    public static final int LENGTH = 230;
     public static final int HALF_WIDTH = 20;
 
     // wing offsets (x relative to the origin), all at floor level y = 0. Corridors are 5 wide and 4 high.
@@ -62,6 +62,8 @@ public final class Citadel {
     public static final int GARDEN_FROM = 173, GARDEN_TO = 195;
     public static final int SEAL_X = 200;
     public static final int THRONE = 201;
+    /** The Architect's hall behind the seal: x THRONE..THRONE+HALL, z -HALL/2..HALL/2. */
+    public static final int HALL = 26;
     public static final BlockPos ARRIVAL = new BlockPos(5, 0, 0);
 
     public static final ResourceKey<LootTable> LIBRARY_LOOT = key("chests/citadel_library");
@@ -124,10 +126,10 @@ public final class Citadel {
         }
         if (back == null) {
             BlockPos o = originAt(underside.getSeed(), entity.position());
-            back = o == null ? new BlockPos((int) entity.getX(), Underside.FALLBACK_Y, (int) entity.getZ())
-                    : new BlockPos(o.getX() + WEST, Underside.FALLBACK_Y, o.getZ());
+            int gx = o == null ? (int) entity.getX() : o.getX() + WEST, gz = o == null ? (int) entity.getZ() : o.getZ();
+            back = CitadelGateFeature.findSolidGround(underside, gx, gz).above(2);
         }
-        // step out in front of the gate (the arch faces south)
+        // step out in front of the gate onto the altar (the arch faces south)
         Vec3 at = Vec3.atBottomCenterOf(back.relative(Direction.SOUTH, 2));
         return new TeleportTransition(underside, at, Vec3.ZERO, 0.0F, 0.0F, TeleportTransition.PLAY_PORTAL_SOUND);
     }
@@ -156,9 +158,7 @@ public final class Citadel {
                     level.sendParticles(ParticleTypes.REVERSE_PORTAL, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 12, 0.3, 0.3, 0.3, 0.05);
                 }
             }
-        BlockPos corner = o.offset(THRONE, -1, -QuantumMaze.SIZE / 2);
-        int mid = QuantumMaze.SIZE / 2;
-        BlockPos spawn = corner.offset(mid, 1, mid + 2);
+        BlockPos spawn = o.offset(THRONE + HALL - 6, 0, 0);
         Architect boss = ModEntities.ARCHITECT.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (boss == null) return null;
         boss.snapTo(spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5, 0, 0);
@@ -260,13 +260,33 @@ public final class Citadel {
         for (int i = 0; i < 3; i++) spawn(level, ModEntities.CRAWLER.get(), o.offset(GARDEN_FROM + 4 + i * 7, 0, random.nextInt(9) - 4));
         corridor(level, o, GARDEN_TO + 1, SEAL_X - 1);
 
-        // 8. the Architect's maze behind the seal
-        QuantumMaze.build(level, o.offset(THRONE, -1, -QuantumMaze.SIZE / 2), random);
+        // 8. the Architect's hall behind the seal: pillars of quantum stone, soul fire, his throne
+        hall(level, o, random);
         for (int y = 0; y <= 2; y++)
             for (int z = -1; z <= 1; z++) level.setBlock(o.offset(SEAL_X, y, z), ModBlocks.CITADEL_SEAL.get().defaultBlockState(), FLAGS);
     }
 
     public static final int SECRET_X = (LIBRARY_FROM + LIBRARY_TO) / 2;
+
+    private static void hall(ServerLevel level, BlockPos o, RandomSource random) {
+        int h = HALL / 2;
+        fill(level, o.offset(THRONE, 0, -h), o.offset(THRONE + HALL, 9, h), Blocks.AIR.defaultBlockState());
+        fill(level, o.offset(THRONE, -1, -h), o.offset(THRONE + HALL, -1, h), Blocks.POLISHED_DEEPSLATE.defaultBlockState());
+        BlockState pillar = ModBlocks.QUANTUM_BLOCK.get().defaultBlockState().setValue(dev.umbra.quantum.QuantumBlock.LINKED, true);
+        for (int x = THRONE + 4; x <= THRONE + HALL - 4; x += 6)
+            for (int z : new int[]{-h + 3, h - 3})
+                fill(level, o.offset(x, 0, z), o.offset(x, 9, z), pillar);
+        for (int x = THRONE + 2; x <= THRONE + HALL - 2; x += 6) {
+            level.setBlock(o.offset(x, 0, -h + 1), Blocks.SOUL_CAMPFIRE.defaultBlockState(), FLAGS);
+            level.setBlock(o.offset(x, 0, h - 1), Blocks.SOUL_CAMPFIRE.defaultBlockState(), FLAGS);
+        }
+        // the throne at the far end
+        int tx = THRONE + HALL - 2;
+        fill(level, o.offset(tx - 1, 0, -2), o.offset(tx, 0, 2), ModBlocks.DUSK_STONE.get().defaultBlockState());
+        fill(level, o.offset(tx, 1, -1), o.offset(tx, 3, 1), ModBlocks.MAZE_WALL.get().defaultBlockState());
+        level.setBlock(o.offset(tx - 1, 1, 0), Blocks.POLISHED_DEEPSLATE_STAIRS.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.StairBlock.FACING, Direction.EAST), FLAGS);
+    }
 
     /** A 5-wide, 4-high corridor along x at z = -2..2. */
     private static void corridor(ServerLevel level, BlockPos o, int x0, int x1) {
@@ -332,7 +352,7 @@ public final class Citadel {
     /** The 3-wide wall between two cells: open passage, solid wall, or (sometimes) quantum either way. */
     private static void wallStrip(ServerLevel level, BlockPos corner, int x, int z, boolean alongZ, boolean open, RandomSource random,
                                   BlockState air, BlockState quantum) {
-        boolean q = random.nextInt(open ? 5 : 4) == 0;
+        boolean q = false; // since 1.6.1 the wide maze holds still: shifting 3-wide walls only confused the way
         for (int k = 0; k < MAZE_PITCH - 1; k++) {
             BlockPos base = alongZ ? corner.offset(x, 0, z + k) : corner.offset(x + k, 0, z);
             for (int y = 0; y <= 3; y++) {

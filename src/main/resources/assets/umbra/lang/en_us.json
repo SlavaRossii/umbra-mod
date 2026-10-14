@@ -301,5 +301,6 @@
   "journal.umbra.note_7.title": "Note: \"The library\"",
   "journal.umbra.note_7.text": "One wall in the library whispers. Marta walked through it; she was already unwell then. I could not: I am still too much myself. She came back with a key drawn on her palm.",
   "journal.umbra.note_8.title": "Note: \"The last one\"",
-  "journal.umbra.note_8.text": "There are two of us left, and Marta is no longer Marta: she looks at me the way that villager looked at Jan. If you are reading this, shine a light in her face. If that does not help, run to the seal. The key has four parts. I am sorry."
+  "journal.umbra.note_8.text": "There are two of us left, and Marta is no longer Marta: she looks at me the way that villager looked at Jan. If you are reading this, shine a light in her face. If that does not help, run to the seal. The key has four parts. I am sorry.",
+  "item.umbra.despair_blade.bonus": "Right now: +%s damage from lost sanity"
 }

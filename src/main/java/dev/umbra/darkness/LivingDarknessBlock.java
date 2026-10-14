@@ -52,7 +52,8 @@ public class LivingDarknessBlock extends Block {
             level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 4, 0.3, 0.3, 0.3, 0.01);
             return;
         }
-        // creep
+        // creep (not inside a citadel: there the darkness keeps to its own hall)
+        if (dev.umbra.underside.Underside.is(level) && pos.getY() > dev.umbra.citadel.Citadel.POCKET_Y - 15) return;
         for (int i = 0; i < 2; i++) {
             BlockPos target = pos.relative(SPREAD_DIRS[random.nextInt(SPREAD_DIRS.length)]);
             if (level.isLoaded(target) && level.getBlockState(target).isAir() && canExist(level, target)) {
