@@ -1122,7 +1122,7 @@ final class SmokeTest {
         ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
         level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).get(dev.umbra.gear.Gear.ECHO).ifPresent(h -> sword.enchant(h, 3));
         fake.setItemInHand(InteractionHand.MAIN_HAND, sword);
-        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, EntitySpawnReason.MOB_SUMMONED);
+        var zombie = ModEntities.BLIND.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (zombie == null) return;
         zombie.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 1.5, 0, 0);
         zombie.setNoAi(true);
