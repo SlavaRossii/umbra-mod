@@ -132,6 +132,9 @@ public final class VillageBuilder {
         for (int z = -2; z <= 3; z += 2)
             for (int x : new int[]{-2, -1, 1, 2}) level.setBlock(c.offset(x, 0, z), Blocks.PALE_OAK_SLAB.defaultBlockState(), FLAGS);
         level.setBlock(c.offset(0, 0, -4), Blocks.LECTERN.defaultBlockState(), FLAGS);
+        BlockPos chest = c.offset(3, 0, -4);
+        level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
+        net.minecraft.world.RandomizableContainer.setBlockEntityLootTable(level, random, chest, ShadowVillageFeature.HUT_LOOT);
         candles(level, c.offset(-2, 0, -4), random);
         candles(level, c.offset(2, 0, -4), random);
         // the tower
