@@ -122,7 +122,8 @@ jobs:
       - name: Publish smoke-test results
         if: always()
         run: |
-          { cat run-smoke/umbra-smoketest.txt 2>/dev/null; echo; echo "----- log excerpts -----";
+          set +e
+          { cat run-smoke/umbra-smoketest.txt 2>/dev/null; echo; echo "----- crash reports -----"; cat run-smoke/crash-reports/*.txt 2>/dev/null | head -400; echo "----- log excerpts -----";
             grep -nE -B2 -A12 'ERROR|Exception|umbra|UMBRA' run-smoke/logs/latest.log 2>/dev/null | head -3000; } > smoke.txt
           { head -c 3000000 run-smoke/logs/latest.log; echo; echo '----- tail -----'; tail -c 6000000 run-smoke/logs/latest.log; } > server.log 2>/dev/null || true
           ls -la run-smoke/logs || true
