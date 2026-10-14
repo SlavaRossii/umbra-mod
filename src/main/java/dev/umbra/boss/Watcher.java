@@ -26,6 +26,8 @@ import net.minecraft.world.phys.Vec3;
 public class Watcher extends UmbraBoss implements LightSensitive {
     private int unseenTicks;
     private int attackCooldown;
+    private int fangTimer;
+    private int gaze;
 
     public Watcher(EntityType<? extends Watcher> type, Level level) {
         super(type, level, BossEvent.BossBarColor.WHITE);
@@ -68,24 +70,42 @@ public class Watcher extends UmbraBoss implements LightSensitive {
         }
         if (target == null) return;
         this.setTarget(target);
+        int phase = trackPhase(level);
 
         if (isWatched(level)) {
             unseenTicks = 0;
             this.getNavigation().moveTo(target, 1.4);
             if (best < 2.6 && attackCooldown == 0) {
                 this.doHurtTarget(level, target);
-                attackCooldown = 20;
+                attackCooldown = phase == 1 ? 20 : 12;
+            }
+            // jaws snap out of the floor along its gaze
+            if (++fangTimer >= (phase == 1 ? 120 : 70) && best > 3 && best < 18) {
+                fangTimer = 0;
+                BossMoves.fangsLine(level, this, target, 14);
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.EVOKER_PREPARE_ATTACK, SoundSource.HOSTILE, 1.0F, 0.6F);
+            }
+            // phase 2: staring back at it too long hurts the mind
+            if (phase == 2 && ++gaze % 40 == 0) {
+                for (ServerPlayer p : opponents(level)) {
+                    Vec3 to = this.getEyePosition().subtract(p.getEyePosition()).normalize();
+                    if (p.getViewVector(1.0F).dot(to) > 0.9) {
+                        Sanity.add(p, -1.5F);
+                        p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 0));
+                    }
+                }
             }
         } else {
             this.getNavigation().stop();
             this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
-            if (++unseenTicks > 20 * 8) {
+            if (++unseenTicks > (phase == 1 ? 20 * 8 : 20 * 5)) {
                 // you cannot ignore it forever
                 Vec3 ahead = UmbraUtil.horizontal(target.getLookAngle()).scale(6.0).add(target.position());
                 level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1, this.getZ(), 20, 0.3, 1, 0.3, 0.02);
                 this.teleportTo(ahead.x, target.getY(), ahead.z);
                 level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.ENDERMAN_STARE, SoundSource.HOSTILE, 1.0F, 0.5F);
                 Sanity.add(target, -4.0F);
+                if (phase == 2) BossMoves.fangsRing(level, this, target.position(), 2.5, 10, 25);
                 unseenTicks = 0;
             }
         }

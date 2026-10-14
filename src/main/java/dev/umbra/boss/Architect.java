@@ -34,6 +34,10 @@ public class Architect extends UmbraBoss implements LightSensitive {
     private int patternTimer;
     private int shadeTimer;
     private int stunned;
+    private int quakeTimer;
+    private int cageTimer;
+    private final BossMoves.Bursts quake = new BossMoves.Bursts();
+    private final BossMoves.TempBlocks cage = new BossMoves.TempBlocks();
 
     public Architect(EntityType<? extends Architect> type, Level level) {
         super(type, level, BossEvent.BossBarColor.YELLOW);
@@ -59,6 +63,9 @@ public class Architect extends UmbraBoss implements LightSensitive {
 
     @Override
     protected void bossTick(ServerLevel level) {
+        int phase = trackPhase(level);
+        quake.tick(level, this, 8.0F);
+        cage.tick(level);
         if (stunned > 0) {
             stunned--;
             this.getNavigation().stop();
@@ -67,7 +74,32 @@ public class Architect extends UmbraBoss implements LightSensitive {
         LivingEntity target = this.getTarget();
         if (target == null) return;
 
-        if (++stepTimer >= 100) { // step through the walls to your side
+        // the floor gives way: a cross of cracks around you
+        if (++quakeTimer >= (phase == 1 ? 140 : 90)) {
+            quakeTimer = 0;
+            BlockPos t = target.blockPosition();
+            quake.mark(level, t, 30);
+            for (int i = 2; i <= (phase == 1 ? 4 : 6); i += 2) {
+                quake.mark(level, t.offset(i, 0, 0), 30 + i * 3);
+                quake.mark(level, t.offset(-i, 0, 0), 30 + i * 3);
+                quake.mark(level, t.offset(0, 0, i), 30 + i * 3);
+                quake.mark(level, t.offset(0, 0, -i), 30 + i * 3);
+            }
+            level.playSound(null, t, SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 0.6F, 0.5F);
+        }
+        // phase 2: walls him into a cell for a few seconds, then walks in
+        if (phase == 2 && ++cageTimer >= 320) {
+            cageTimer = 0;
+            BlockPos t = target.blockPosition();
+            var wall = dev.umbra.registry.ModBlocks.MAZE_WALL.get().defaultBlockState();
+            for (int x = -2; x <= 2; x++)
+                for (int z = -2; z <= 2; z++)
+                    if (Math.abs(x) == 2 || Math.abs(z) == 2)
+                        for (int y = 0; y < 3; y++) cage.place(level, t.offset(x, y, z), wall, 20 * 5);
+            level.playSound(null, t, SoundEvents.IRON_DOOR_CLOSE, SoundSource.HOSTILE, 1.0F, 0.5F);
+            this.teleportTo(t.getX() + 1.5, t.getY(), t.getZ() + 0.5);
+        }
+        if (++stepTimer >= (phase == 1 ? 100 : 60)) { // step through the walls to your side
             stepTimer = 0;
             BlockPos spot = Hallucinations.findStandable(level, target.blockPosition().offset(this.random.nextInt(7) - 3, 0, this.random.nextInt(7) - 3), 3);
             if (spot != null && spot.distSqr(target.blockPosition()) > 2) {
@@ -91,6 +123,12 @@ public class Architect extends UmbraBoss implements LightSensitive {
                 shade.setTarget(target);
             }
         }
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (this.level() instanceof ServerLevel level) cage.clear(level);
+        super.remove(reason);
     }
 
     @Override

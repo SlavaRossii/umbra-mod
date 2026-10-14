@@ -39,6 +39,9 @@ import net.minecraft.world.level.block.Block;
 public class PrimordialShadow extends UmbraBoss implements LightSensitive {
     private int timer;
     private int noShroud;
+    private boolean dashing;
+    private int dashTimer;
+    private final BossMoves.Bursts bursts = new BossMoves.Bursts();
 
     public PrimordialShadow(EntityType<? extends PrimordialShadow> type, Level level) {
         super(type, level, BossEvent.BossBarColor.PURPLE);
@@ -81,7 +84,26 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         LivingEntity target = this.getTarget();
         if (noShroud > 0) noShroud--;
         timer++;
-        switch (phase()) {
+        int phase = trackPhase(level);
+        bursts.tick(level, this, 9.0F);
+        // a dash through the arena, ending in a blow on the ground
+        if (dashing && this.onGround() && dashTimer > 5) {
+            dashing = false;
+            BossMoves.shockwave(level, this, 3.5, 8.0F, 1.2);
+        }
+        dashTimer++;
+        if (!dashing && target != null && dashTimer >= (phase == 3 ? 80 : 140) && this.distanceTo(target) > 5) {
+            dashTimer = 0;
+            dashing = true;
+            BossMoves.leap(this, target, 1.6);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 1.0F, 1.6F);
+        }
+        if (phase >= 2 && timer % 220 == 0) BossMoves.pull(level, this, 16, 1.4);
+        if (phase == 3) {
+            if (timer % 80 == 0) for (ServerPlayer p : opponents(level)) bursts.mark(level, p.blockPosition(), 25);
+            if (timer % 120 == 60) BossMoves.fangsRing(level, this, this.position(), 3.5, 14, 20);
+        }
+        switch (phase) {
             case 1 -> {
                 if (timer % 300 == 0 && target != null) {
                     for (int i = 0; i < 4; i++) {

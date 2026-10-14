@@ -27,6 +27,8 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
     private static final int ECHO_DELAY = 60;
     private final ArrayDeque<Vec3> trail = new ArrayDeque<>();
     private boolean copied;
+    private int swapTimer;
+    private int decoyTimer;
 
     public Doppelganger(EntityType<? extends Doppelganger> type, Level level) {
         super(type, level, BossEvent.BossBarColor.BLUE);
@@ -50,6 +52,25 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
     @Override
     protected void bossTick(ServerLevel level) {
         if (!(this.getTarget() instanceof Player target)) return;
+        int phase = trackPhase(level);
+        // swaps places with you — suddenly you stand where it stood
+        if (++swapTimer >= (phase == 1 ? 180 : 120) && this.distanceTo(target) < 20) {
+            swapTimer = 0;
+            Vec3 me = this.position(), you = target.position();
+            level.sendParticles(ParticleTypes.REVERSE_PORTAL, me.x, me.y + 1, me.z, 30, 0.3, 0.8, 0.3, 0.05);
+            level.sendParticles(ParticleTypes.REVERSE_PORTAL, you.x, you.y + 1, you.z, 30, 0.3, 0.8, 0.3, 0.05);
+            this.teleportTo(you.x, you.y, you.z);
+            target.teleportTo(me.x, me.y, me.z);
+            level.playSound(null, me.x, me.y, me.z, net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.8F);
+            target.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 60, 0));
+        }
+        // phase 2: copies of the copy
+        if (phase == 2 && ++decoyTimer >= 240) {
+            decoyTimer = 0;
+            for (var m : BossMoves.summon(level, this, dev.umbra.registry.ModEntities.PHANTOM_STEVE.get(), 2, target)) {
+                if (m instanceof dev.umbra.sanity.PhantomEntity ph) ph.setup(dev.umbra.sanity.PhantomEntity.Mode.SHADOW, target);
+            }
+        }
         if (!copied || this.tickCount % 200 == 0) {
             copied = true;
             for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {

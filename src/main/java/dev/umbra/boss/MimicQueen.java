@@ -15,6 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -38,6 +39,10 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
     private int timer;
     private int hidden;
     private final List<UUID> brood = new ArrayList<>();
+    private final BossMoves.Bursts spit = new BossMoves.Bursts();
+    private int leapTimer;
+    private boolean leaping;
+    private int spitTimer;
 
     public MimicQueen(EntityType<? extends MimicQueen> type, Level level) {
         super(type, level, BossEvent.BossBarColor.GREEN);
@@ -66,6 +71,8 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
 
     @Override
     protected void bossTick(ServerLevel level) {
+        int phase = trackPhase(level);
+        spit.tick(level, this, 6.0F);
         if (isDisguised()) {
             hidden++;
             this.getNavigation().stop();
@@ -76,7 +83,28 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
             if (brood.isEmpty() || hidden > HIDE_MAX) reveal(level);
             return;
         }
-        if (++timer >= CYCLE && this.getTarget() != null) {
+        LivingEntity target = this.getTarget();
+        // leap and bite: lands with a slam
+        if (leaping && this.onGround() && leapTimer > 5) {
+            leaping = false;
+            BossMoves.shockwave(level, this, 3.0, 7.0F, 0.9);
+        }
+        leapTimer++;
+        if (!leaping && target != null && leapTimer >= (phase == 1 ? 100 : 60)) {
+            double d = this.distanceTo(target);
+            if (d > 4 && d < 14) {
+                leapTimer = 0;
+                leaping = true;
+                BossMoves.leap(this, target, Math.min(1.4, d / 8));
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 1.0F, 1.5F);
+            }
+        }
+        // phase 2: spits mimic bile — the floor under you bursts a second later
+        if (phase == 2 && target != null && ++spitTimer >= 70) {
+            spitTimer = 0;
+            for (ServerPlayer p : opponents(level)) spit.mark(level, p.blockPosition(), 25);
+        }
+        if (++timer >= (phase == 1 ? CYCLE : CYCLE * 2 / 3) && target != null) {
             timer = 0;
             disguise(level);
         }
@@ -89,7 +117,7 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.0F, 1.4F);
         brood.clear();
         Player target = this.getTarget() instanceof Player p ? p : null;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < (phase() == 1 ? 4 : 6); i++) {
             Mimicker m = ModEntities.MIMICKER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             if (m == null) continue;
             m.snapTo(this.getX() + this.random.nextGaussian() * 3, this.getY(), this.getZ() + this.random.nextGaussian() * 3, 0, 0);

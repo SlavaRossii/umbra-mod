@@ -31,6 +31,27 @@ public abstract class UmbraBoss extends Monster {
 
     protected abstract void bossTick(ServerLevel level);
 
+    /** Fight phase from health: 1 above half, 2 below. Bosses with more phases override this. */
+    public int phase() {
+        return this.getHealth() > this.getMaxHealth() * 0.5F ? 1 : 2;
+    }
+
+    private int lastPhase = 1;
+
+    /** Call from bossTick: announces when the phase changes. */
+    protected int trackPhase(ServerLevel level) {
+        int p = phase();
+        if (p != lastPhase) {
+            lastPhase = p;
+            BossMoves.phase(level, this, p);
+            onPhase(level, p);
+        }
+        return p;
+    }
+
+    protected void onPhase(ServerLevel level, int phase) {
+    }
+
     @Override
     public void startSeenByPlayer(ServerPlayer player) {
         super.startSeenByPlayer(player);
@@ -54,7 +75,7 @@ public abstract class UmbraBoss extends Monster {
     }
 
     /** Players this boss is fighting (within 32 blocks, survival). */
-    protected java.util.List<ServerPlayer> opponents(ServerLevel level) {
+    public java.util.List<ServerPlayer> opponents(ServerLevel level) {
         java.util.List<ServerPlayer> list = new java.util.ArrayList<>();
         for (ServerPlayer p : level.players()) {
             if (!p.isSpectator() && !p.isCreative() && p.distanceTo(this) < 32) list.add(p);

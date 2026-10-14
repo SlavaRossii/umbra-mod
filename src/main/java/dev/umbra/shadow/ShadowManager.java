@@ -47,6 +47,8 @@ public final class ShadowManager {
         Vec3 last;
         UUID shadowId;
         int cooldown;
+        /** Freed shadow told to stay: where it guards. */
+        Vec3 stayAt;
     }
 
     private ShadowManager() {}
@@ -118,6 +120,25 @@ public final class ShadowManager {
         }
     }
 
+    /** Shift + right-click on your freed shadow: stay here / follow me. Returns true if it now stays. */
+    public static boolean toggleStay(ServerPlayer player, ShadowEntity shadow) {
+        State s = STATES.get(player.getUUID());
+        if (s == null || !shadow.getUUID().equals(s.shadowId)) return false;
+        s.stayAt = s.stayAt == null ? shadow.position() : null;
+        boolean stay = s.stayAt != null;
+        player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(stay ? "message.umbra.ally.stay" : "message.umbra.ally.follow"));
+        if (player.level() instanceof ServerLevel level) {
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.SQUID_INK, shadow.getX(), shadow.getY() + 1, shadow.getZ(), 15, 0.3, 0.6, 0.3, 0.02);
+            level.playSound(null, shadow.getX(), shadow.getY(), shadow.getZ(), net.minecraft.sounds.SoundEvents.SOUL_ESCAPE.value(), net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, stay ? 0.7F : 1.3F);
+        }
+        return stay;
+    }
+
+    public static boolean isStaying(ServerPlayer player) {
+        State s = STATES.get(player.getUUID());
+        return s != null && s.stayAt != null;
+    }
+
     /** The freed shadow walks beside you at night and in the Underside, and strikes monsters that come close. */
     private static void allyTick(ServerLevel level, ServerPlayer player, State s) {
         boolean active = UmbraUtil.isNight(level) || Underside.is(level);
@@ -125,8 +146,11 @@ public final class ShadowManager {
         if (!active || player.isSpectator()) {
             if (ally != null) ally.dissipate();
             s.shadowId = null;
+            s.stayAt = null;
             return;
         }
+        // too far from its guard post: it comes back to you
+        if (s.stayAt != null && s.stayAt.distanceToSqr(player.position()) > 64 * 64) s.stayAt = null;
         if (ally == null) {
             ally = ModEntities.SHADOW.get().create(level, EntitySpawnReason.EVENT);
             if (ally == null) return;
@@ -137,18 +161,22 @@ public final class ShadowManager {
         }
         ally.markManaged();
         ally.makeAlly();
-        Vec3 side = UmbraUtil.horizontal(player.getLookAngle()).scale(-1.5).add(player.position());
-        Vec3 pos = ally.position().lerp(side, 0.25);
-        ally.setPos(pos.x, side.y, pos.z);
-        ally.setYRot(player.getYRot());
-        ally.setYHeadRot(player.getYHeadRot());
-        ally.setYBodyRot(player.getYRot());
+        if (s.stayAt != null) {
+            ally.setPos(s.stayAt.x, s.stayAt.y, s.stayAt.z);
+        } else {
+            Vec3 side = UmbraUtil.horizontal(player.getLookAngle()).scale(-1.5).add(player.position());
+            Vec3 pos = ally.position().lerp(side, 0.25);
+            ally.setPos(pos.x, side.y, pos.z);
+            ally.setYRot(player.getYRot());
+            ally.setYHeadRot(player.getYHeadRot());
+            ally.setYBodyRot(player.getYRot());
+        }
         if (player.tickCount % 20 == 0) {
             Monster prey = null;
             double best = 36.0;
-            for (Monster m : level.getEntitiesOfClass(Monster.class, player.getBoundingBox().inflate(6.0))) {
+            for (Monster m : level.getEntitiesOfClass(Monster.class, ally.getBoundingBox().inflate(6.0))) {
                 if (m instanceof ShadowEntity) continue;
-                double d = m.distanceToSqr(player);
+                double d = m.distanceToSqr(ally);
                 if (d < best) {
                     best = d;
                     prey = m;

@@ -31,6 +31,9 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
     private int waveTimer;
     private int shadeTimer;
     private int noShroud;
+    private int sweepTimer;
+    private int pulseTimer;
+    private final BossMoves.Bursts bursts = new BossMoves.Bursts();
 
     public Shepherd(EntityType<? extends Shepherd> type, Level level) {
         super(type, level, BossEvent.BossBarColor.PURPLE);
@@ -74,9 +77,27 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         if (noShroud > 0) noShroud--;
         else if (this.tickCount % 40 == 0) weaveShroud(level);
 
+        int phase = trackPhase(level);
+        bursts.tick(level, this, 7.0F);
         LivingEntity target = this.getTarget();
         if (target == null) return;
-        if (++waveTimer >= 120) {
+        // crook sweep: too close and you are thrown away
+        if (++sweepTimer >= 70 && this.distanceTo(target) < 4.5) {
+            sweepTimer = 0;
+            this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+            BossMoves.shockwave(level, this, 4.5, 6.0F, 1.5);
+        }
+        // phase 2: the herd is called home — pulled in, then the darkness bursts around him
+        if (phase == 2 && ++pulseTimer >= 180) {
+            pulseTimer = 0;
+            BossMoves.pull(level, this, 14, 1.3);
+            BlockPos c = this.blockPosition();
+            for (int a = 0; a < 8; a++) {
+                double rad = a * Math.PI / 4;
+                bursts.mark(level, c.offset((int) Math.round(Math.cos(rad) * 3), 0, (int) Math.round(Math.sin(rad) * 3)), 30);
+            }
+        }
+        if (++waveTimer >= (phase == 1 ? 120 : 90)) {
             waveTimer = 0;
             BlockPos t = target.blockPosition();
             int r = 3 + this.random.nextInt(3);
@@ -89,9 +110,9 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
             }
             level.playSound(null, t, SoundEvents.WARDEN_HEARTBEAT, SoundSource.HOSTILE, 1.0F, 0.5F);
         }
-        if (++shadeTimer >= 400) {
+        if (++shadeTimer >= (phase == 1 ? 400 : 260)) {
             shadeTimer = 0;
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < (phase == 1 ? 3 : 4); i++) {
                 var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
                 if (shade == null) continue;
                 shade.snapTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2, 0, 0);

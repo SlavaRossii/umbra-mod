@@ -100,6 +100,16 @@ public class ShadowEntity extends Monster implements LightSensitive {
         this.discard();
     }
 
+    /** Shift + right-click on your freed shadow: stay / follow. */
+    @Override
+    protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+        if (ally && player.isShiftKeyDown() && hand == net.minecraft.world.InteractionHand.MAIN_HAND) {
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) ShadowManager.toggleStay(sp, this);
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
+        return super.mobInteract(player, hand);
+    }
+
     @Override
     public boolean isPushable() {
         return false;

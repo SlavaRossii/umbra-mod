@@ -38,6 +38,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> JOURNAL = ATTACHMENTS.register("journal",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("entries"))
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
