@@ -686,7 +686,7 @@ final class SmokeTest {
         check(cores == 2, "the citadel has two quantum mazes (" + cores + ")");
         check(dark > 500, "the hall of living darkness is full (" + dark + ")");
         check(chests >= 20 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
-        check(phantom == 9, "the library hides a phantom wall (" + phantom + ")");
+        check(phantom == 27, "the library hides a phantom wall (" + phantom + ")");
         int statues = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelStatue.class);
         int keepers = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelKeeper.class);
         check(statues == 3 && keepers == 2, "statues and keepers stand guard (" + statues + ", " + keepers + ")");
