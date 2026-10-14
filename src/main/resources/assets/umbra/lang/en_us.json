@@ -215,5 +215,9 @@
   "item.umbra.silence_tincture": "Tincture of Silence",
   "item.umbra.silence_tincture.drunk": "Silence settles in your head. For a while.",
   "item.umbra.madman_mask": "Madman's Mask",
-  "item.umbra.despair_blade": "Blade of Despair"
+  "item.umbra.despair_blade": "Blade of Despair",
+  "entity.umbra.shadow_villager": "Shadow Villager",
+  "item.umbra.shadow_villager_spawn_egg": "Shadow Villager Spawn Egg",
+  "journal.umbra.shadow_village.title": "A village that isn't",
+  "journal.umbra.shadow_village.text": "Houses stand in the ash: crooked, roofless, around a well with no water. They live there. Long noses, quiet voices, all grey, like the shadows of people. They trade for shadow shards and echo quartz; there is even bread. Only, one of them did not blink for far too long. Mirror, flash, or strike first: there are changelings here too. But hit a real one by mistake and it will be hard to forget."
 }

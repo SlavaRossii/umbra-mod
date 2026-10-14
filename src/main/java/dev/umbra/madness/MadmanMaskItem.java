@@ -34,6 +34,9 @@ public class MadmanMaskItem extends Item {
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(SEE), e -> e.isInvisible() && e != player)) {
             e.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30, 0, false, false));
         }
+        for (var v : level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, player.getBoundingBox().inflate(SEE), dev.umbra.village.ShadowVillager::isMimic)) {
+            v.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30, 0, false, false));
+        }
         BlockPos c = player.blockPosition();
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-8, -4, -8), c.offset(8, 4, 8))) {
             var state = level.getBlockState(p);

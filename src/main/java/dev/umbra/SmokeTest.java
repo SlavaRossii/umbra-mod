@@ -117,7 +117,8 @@ final class SmokeTest {
                 case 580 -> testUpdate11(level);
                 case 620 -> checkWard(level);
                 case 625 -> testMadness(server, level);
-                case 640 -> finish(server);
+                case 630 -> testVillage(level);
+                case 650 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -532,7 +533,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 26, "journal has 26 entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 27, "journal has 27 entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -587,6 +588,73 @@ final class SmokeTest {
         } else {
             check(false, "underside level for the nightmare test");
         }
+    }
+
+    // ---------------------------------------------------------------- 1.3
+    private static void testVillage(ServerLevel level) {
+        BlockPos v = new BlockPos(185, Y + 40, 0);
+        for (int x = -20; x <= 20; x++)
+            for (int z = -20; z <= 20; z++)
+                level.setBlock(v.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.village.ShadowVillageFeature.build(level, v, level.getRandom());
+        int containers = 0, lanterns = 0, logs = 0;
+        for (BlockPos p : BlockPos.betweenClosed(v.offset(-20, -1, -20), v.offset(20, 5, 20))) {
+            BlockState s = level.getBlockState(p);
+            if (s.is(Blocks.CHEST) || s.is(Blocks.BARREL)) containers++;
+            if (s.is(Blocks.SOUL_LANTERN) || s.is(Blocks.LANTERN)) lanterns++;
+            if (s.is(ModBlocks.DEAD_LOG.get())) logs++;
+        }
+        check(containers >= 4, "a shadow village has a chest or barrel in every hut (" + containers + ")");
+        check(lanterns >= 4 && logs >= 16, "a shadow village has lantern posts and hut frames (" + lanterns + " lanterns, " + logs + " logs)");
+        var folk = level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, new AABB(v).inflate(10));
+        check(folk.size() >= 3, "shadow folk live in the village (" + folk.size() + ")");
+        if (!folk.isEmpty()) {
+            check(folk.get(0).getOffers().size() == 6, "a shadow villager has six trades (" + folk.get(0).getOffers().size() + ")");
+        }
+        folk.forEach(net.minecraft.world.entity.Entity::discard);
+
+        int mimics = 0;
+        dev.umbra.village.ShadowVillager mimic = null, real = null;
+        for (int i = 0; i < 300; i++) {
+            var e = ModEntities.SHADOW_VILLAGER.get().create(level, EntitySpawnReason.COMMAND);
+            if (e == null) continue;
+            if (e.isMimic()) {
+                mimics++;
+                if (mimic == null) mimic = e;
+            } else if (real == null) {
+                real = e;
+            }
+        }
+        check(mimics > 15 && mimics < 90, "about one in seven shadow villagers is a mimic (" + mimics + "/300)");
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(v.getX() + 0.5, v.getY(), v.getZ() + 3.5, 0, 0);
+        if (mimic != null && real != null) {
+            mimic.snapTo(v.getX() + 2.5, v.getY(), v.getZ() + 2.5, 0, 0);
+            real.snapTo(v.getX() - 2.5, v.getY(), v.getZ() + 2.5, 0, 0);
+            level.addFreshEntity(mimic);
+            level.addFreshEntity(real);
+            mimic.hurtServer(level, level.damageSources().playerAttack(fake), 1.0F);
+            check(!mimic.isAlive(), "hitting a mimic villager first exposes it");
+            int shards = 0;
+            for (var it : level.getEntitiesOfClass(ItemEntity.class, new AABB(v).inflate(6))) if (it.getItem().is(ModItems.SHADOW_SHARD.get())) shards += it.getItem().getCount();
+            check(shards >= 2, "an exposed mimic villager drops shards (" + shards + ")");
+            real.hurtServer(level, level.damageSources().playerAttack(fake), 2.0F);
+            check(real.isAlive() && real.getHealth() < real.getMaxHealth(), "a real villager just gets hurt");
+            real.discard();
+        } else {
+            check(false, "villagers for the mimic test");
+        }
+
+        int villages = 0, minGap = Integer.MAX_VALUE;
+        List<int[]> at = new ArrayList<>();
+        for (int cx = -90; cx < 90; cx++)
+            for (int cz = -90; cz < 90; cz++)
+                if (dev.umbra.village.ShadowVillageFeature.chosenChunk(777L, cx, cz)) at.add(new int[]{cx, cz});
+        villages = at.size();
+        for (int i = 0; i < at.size(); i++)
+            for (int j = i + 1; j < at.size(); j++)
+                minGap = Math.min(minGap, Math.max(Math.abs(at.get(i)[0] - at.get(j)[0]), Math.abs(at.get(i)[1] - at.get(j)[1])));
+        check(villages == 100 && minGap >= 7, "shadow villages are spaced out (" + villages + " in 180x180 chunks, min gap " + minGap + ")");
     }
 
     private static void checkWard(ServerLevel level) {

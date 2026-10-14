@@ -709,6 +709,29 @@ def stage8():
     icon("despair_blade", blade)
 
 
+# ------------------------------------------------------------------ 1.3: shadow villages
+
+def stage9():
+    humanoid_skin("entity/shadow_villager.png", (52, 46, 60), (32, 28, 38), (150, 220, 210), 90)
+    img = Image.open(os.path.join(ROOT, "entity/shadow_villager.png")).convert("RGBA")
+    px = img.load()
+    for x in range(8, 16):            # a long grey nose, like the villagers they used to be
+        for y in range(8, 16):
+            if x in (11, 12) and y >= 12:
+                px[x, y] = (70, 64, 78, 255)
+    for x in range(20, 28):           # a pale sash on the robe
+        px[x, 24] = px[x, 25] = (120, 110, 130, 255)
+    img.save(os.path.join(ROOT, "entity/shadow_villager.png"))
+    egg = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    ep = egg.load()
+    rnd = random.Random("shadow_villager")
+    for y in range(16):
+        for x in range(16):
+            if ((x - 7.5) / 5.2) ** 2 + ((y - 8.5) / 6.8) ** 2 <= 1:
+                ep[x, y] = ((150, 220, 210) if rnd.random() < 0.18 else (52, 46, 60)) + (255,)
+    save(egg, "item/shadow_villager_spawn_egg.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -728,4 +751,5 @@ if __name__ == "__main__":
     stage6()
     stage7()
     stage8()
+    stage9()
     print("textures written")

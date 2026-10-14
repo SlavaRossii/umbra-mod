@@ -67,7 +67,7 @@ public final class MimicChests {
         if (loot == null) return false;
         Identifier id = loot.identifier();
         if (id.getNamespace().equals("minecraft")) return id.getPath().startsWith("chests/");
-        return id.getNamespace().equals(Umbra.MODID) && id.getPath().equals("chests/maze_common");
+        return id.getNamespace().equals(Umbra.MODID) && (id.getPath().equals("chests/maze_common") || id.getPath().equals("chests/shadow_village"));
     }
 
     private static boolean rolls(ServerLevel level, BlockPos pos) {

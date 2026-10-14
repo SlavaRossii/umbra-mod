@@ -154,6 +154,7 @@ public class WardBlock extends Block implements DarknessProof {
         int affected = 0;
         for (Entity e : level.getEntities((Entity) null, new AABB(pos).inflate(r), e -> e instanceof Enemy || e instanceof LightSensitive)) {
             if (e instanceof UmbraBoss || !e.isAlive()) continue;
+            if (e instanceof dev.umbra.village.ShadowVillager sv && !sv.isMimic()) continue;
             if (e instanceof ShadowEntity s && s.isAlly()) continue;
             if (e.position().distanceToSqr(c) > (double) r * r) continue;
             affected++;

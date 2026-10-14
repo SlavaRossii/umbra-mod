@@ -84,6 +84,7 @@ public final class ModItems {
     public static final DeferredItem<Item> BLIND_SPAWN_EGG = ITEMS.registerSimpleItem("blind_spawn_egg", p -> p.spawnEgg(ModEntities.BLIND.get()));
     public static final DeferredItem<Item> LIGHT_EATER_SPAWN_EGG = ITEMS.registerSimpleItem("light_eater_spawn_egg", p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));
     public static final DeferredItem<Item> MIMICKER_SPAWN_EGG = ITEMS.registerSimpleItem("mimicker_spawn_egg", p -> p.spawnEgg(ModEntities.MIMICKER.get()));
+    public static final DeferredItem<Item> SHADOW_VILLAGER_SPAWN_EGG = ITEMS.registerSimpleItem("shadow_villager_spawn_egg", p -> p.spawnEgg(ModEntities.SHADOW_VILLAGER.get()));
     public static final DeferredItem<Item> SHADE_SPAWN_EGG = ITEMS.registerSimpleItem("shade_spawn_egg", p -> p.spawnEgg(ModEntities.SHADE.get()));
 
     // --- Minibosses: seals, trophies, the key ---

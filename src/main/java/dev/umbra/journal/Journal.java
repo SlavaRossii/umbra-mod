@@ -18,7 +18,7 @@ import java.util.Map;
 public final class Journal {
     public static final List<String> ENTRIES = List.of(
             "start", "sanity", "insight_1", "nightmare", "luminite", "shadow", "shadow_dispelled", "steps", "mimic",
-            "darkness", "maze", "underside", "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade",
+            "darkness", "maze", "underside", "shadow_village", "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade",
             "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "freed");
 
     /** Insights: thoughts that only come when the mind is slipping. Sanity thresholds, in order. */

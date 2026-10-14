@@ -95,6 +95,7 @@ public class Umbra {
         event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
         event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
         event.put(ModEntities.SHADE.get(), Shade.createAttributes().build());
+        event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());
         event.put(ModEntities.WATCHER.get(), Watcher.createAttributes().build());
         event.put(ModEntities.MIMIC_QUEEN.get(), MimicQueen.createAttributes().build());
         event.put(ModEntities.SHEPHERD.get(), Shepherd.createAttributes().build());

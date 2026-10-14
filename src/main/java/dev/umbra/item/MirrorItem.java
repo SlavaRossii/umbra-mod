@@ -24,6 +24,9 @@ public class MirrorItem extends Item {
         if (slot != EquipmentSlot.MAINHAND && slot != EquipmentSlot.OFFHAND) return;
         if (player.tickCount % 20 != 0) return;
         BlockPos c = player.blockPosition();
+        for (var v : level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, player.getBoundingBox().inflate(RADIUS), dev.umbra.village.ShadowVillager::isMimic)) {
+            level.sendParticles(player, ParticleTypes.WITCH, true, true, v.getX(), v.getY() + 1.0, v.getZ(), 8, 0.3, 0.6, 0.3, 0.0);
+        }
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-RADIUS, -RADIUS / 2, -RADIUS), c.offset(RADIUS, RADIUS / 2, RADIUS))) {
             var state = level.getBlockState(p);
             if (state.getBlock() instanceof MimicBlock

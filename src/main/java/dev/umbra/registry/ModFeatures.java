@@ -21,5 +21,8 @@ public final class ModFeatures {
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<UndersideMazeFeature>> UNDERSIDE_MAZE =
             FEATURES.register("underside_maze", () -> UndersideMazeFeature.CODEC);
 
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.village.ShadowVillageFeature>> SHADOW_VILLAGE =
+            FEATURES.register("shadow_village", () -> dev.umbra.village.ShadowVillageFeature.CODEC);
+
     private ModFeatures() {}
 }

@@ -26,6 +26,10 @@ public final class ModEntities {
             ShadowEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.8F).clientTrackingRange(10).updateInterval(1).fireImmune().noSummon());
 
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.village.ShadowVillager>> SHADOW_VILLAGER = ENTITIES.registerEntityType("shadow_villager",
+            dev.umbra.village.ShadowVillager::new, MobCategory.MISC,
+            b -> b.sized(0.6F, 1.95F).clientTrackingRange(10));
+
     public static final DeferredHolder<EntityType<?>, EntityType<HallucinationEntity>> HALLUCINATION = ENTITIES.registerEntityType("hallucination",
             HallucinationEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());
