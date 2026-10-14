@@ -100,7 +100,7 @@ public final class MimicChests {
 
     /** Every couple of seconds: decide nearby chests and let the mimics breathe, so a careful player can hear them. */
     public static void tick(ServerPlayer player) {
-        if (player.tickCount % 40 != 7 || player.isCreative()) return;
+        if (player.tickCount % 40 != 7 || player.isSpectator()) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         int pcx = player.blockPosition().getX() >> 4, pcz = player.blockPosition().getZ() >> 4;
         for (int cx = pcx - SCAN_RADIUS_CHUNKS; cx <= pcx + SCAN_RADIUS_CHUNKS; cx++) {
@@ -155,7 +155,7 @@ public final class MimicChests {
     // --- events ---
 
     public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || event.getEntity().isCreative()) return;
+        if (!(event.getLevel() instanceof ServerLevel level) || event.getEntity().isSpectator()) return;
         if (!decide(level, event.getPos())) return;
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);

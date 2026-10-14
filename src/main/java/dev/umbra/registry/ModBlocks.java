@@ -162,6 +162,21 @@ public final class ModBlocks {
                     .isSuffocating((s, l, p) -> false)
                     .pushReaction(PushReaction.IMMOVEABLE));
 
+    public static final DeferredBlock<dev.umbra.citadel.ShadowNestBlock> SHADOW_NEST = BLOCKS.registerBlock("shadow_nest",
+            dev.umbra.citadel.ShadowNestBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(6.0F, 3600000.0F)
+                    .noLootTable()
+                    .randomTicks()
+                    .lightLevel(s -> 3)
+                    .pushReaction(PushReaction.IMMOVEABLE));
+    public static final DeferredBlock<dev.umbra.citadel.TrapPlateBlock> TRAP_PLATE = BLOCKS.registerBlock("trap_plate",
+            dev.umbra.citadel.TrapPlateBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .pushReaction(PushReaction.IMMOVEABLE));
+
     // --- Underside decoration (1.5) ---
     public static final DeferredBlock<net.minecraft.world.level.block.AmethystClusterBlock> LUMINITE_CLUSTER = BLOCKS.registerBlock("luminite_cluster",
             p -> new net.minecraft.world.level.block.AmethystClusterBlock(7.0F, 3.0F, p),

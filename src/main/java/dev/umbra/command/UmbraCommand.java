@@ -51,7 +51,8 @@ public final class UmbraCommand {
                 .then(Commands.literal("home").executes(UmbraCommand::home))
                 .then(Commands.literal("status").executes(UmbraCommand::status))
                 .then(Commands.literal("nightmare").executes(UmbraCommand::nightmare))
-                .then(Commands.literal("citadel").executes(UmbraCommand::citadel))
+                .then(Commands.literal("citadel").executes(UmbraCommand::citadel)
+                        .then(Commands.literal("rebuild").executes(UmbraCommand::citadelRebuild)))
                 .then(Commands.literal("storm").executes(UmbraCommand::storm))
                 .then(Commands.literal("temple").executes(UmbraCommand::temple))
                 .then(Commands.literal("forest").executes(UmbraCommand::forest))
@@ -197,6 +198,25 @@ public final class UmbraCommand {
         int[] c = dev.umbra.citadel.CitadelGateFeature.nearest(under.getSeed(), (int) player.getX(), (int) player.getZ());
         BlockPos gate = dev.umbra.citadel.CitadelGateFeature.findSolidGround(under, c[0] * 16 + 8, c[1] * 16 + 8).above(2);
         player.teleport(dev.umbra.citadel.Citadel.enter(under, player, gate));
+        return 1;
+    }
+
+    /** Builds the citadel you stand in anew (its contents are random each time), for testing. */
+    private static int citadelRebuild(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        if (!(player.level() instanceof ServerLevel level) || !dev.umbra.underside.Underside.is(level)) {
+            reply(ctx, "command.umbra.citadel.outside");
+            return 0;
+        }
+        BlockPos o = dev.umbra.citadel.Citadel.originAt(level.getSeed(), player.position());
+        if (o == null || player.getY() < dev.umbra.citadel.Citadel.POCKET_Y - 15) {
+            reply(ctx, "command.umbra.citadel.outside");
+            return 0;
+        }
+        for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, dev.umbra.citadel.Citadel.bounds(o))) e.discard();
+        dev.umbra.citadel.Citadel.build(level, o, level.getRandom());
+        player.teleportTo(o.getX() + 5.5, o.getY(), o.getZ() + 0.5);
+        reply(ctx, "command.umbra.citadel.rebuilt");
         return 1;
     }
 

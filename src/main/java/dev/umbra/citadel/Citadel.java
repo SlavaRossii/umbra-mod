@@ -181,11 +181,16 @@ public final class Citadel {
         for (int y = 0; y <= 3; y++)
             for (int z = -1; z <= 1; z++) level.setBlock(o.offset(0, y, z), ModBlocks.CITADEL_GATE.get().facing(Direction.Axis.Z), FLAGS);
         lanterns(level, o, 2, HALL_TO, -8, 8, 5);
+        // 1.8.2: the way in is guarded. Two nests in the far corners, and floor tiles that are a little too cracked.
+        nest(level, o.offset(HALL_TO - 1, 0, -7));
+        nest(level, o.offset(HALL_TO - 1, 0, 7));
+        for (int x : new int[]{6, 9, 12}) plate(level, o.offset(x, -1, random.nextInt(11) - 5));
         corridor(level, o, HALL_TO + 1, MAZE_1 - 1);
 
         // 3. a wide quantum maze: 9×9 cells, passages 3 blocks wide
         wideMaze(level, o.offset(MAZE_1, 0, -MAZE_SIZE / 2), random);
         corridor(level, o, MAZE_1 + MAZE_SIZE, DARK_FROM - 1);
+        forks(level, o, random);
 
         // 4. the hall of living darkness: pillars, statues
         fill(level, o.offset(DARK_FROM, 0, -5), o.offset(DARK_TO, 4, 5), ModBlocks.LIVING_DARKNESS.get().defaultBlockState());
@@ -194,21 +199,24 @@ public final class Citadel {
                 fill(level, o.offset(x, 0, z), o.offset(x, 4, z), wall);
         for (int x = DARK_FROM + 10; x < DARK_TO; x += 12) spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(x, 0, random.nextInt(5) - 2));
 
-        // 5. the vault: half the chests are hungry
+        // 5. the vault: every other chest is hungry (not the dice: the same ones every time you count)
         fill(level, o.offset(VAULT_FROM, 0, -11), o.offset(VAULT_TO, 5, 11), air);
         int n = 0;
         for (int x = VAULT_FROM + 2; x <= VAULT_TO - 2; x += 3) {
             for (int z : new int[]{-10, 10}) {
                 BlockPos c = o.offset(x, 0, z);
-                if (random.nextBoolean()) {
+                if (n % 2 == 1) {
                     MimicChests.plant(level, c);
                 } else {
                     level.setBlock(c, Blocks.CHEST.defaultBlockState(), FLAGS);
-                    RandomizableContainer.setBlockEntityLootTable(level, random, c, n % 3 == 0 ? QuantumMaze.PRIZE : QuantumMaze.COMMON);
+                    RandomizableContainer.setBlockEntityLootTable(level, random, c, n % 4 == 0 ? QuantumMaze.PRIZE : QuantumMaze.COMMON);
                 }
                 n++;
             }
         }
+        plate(level, o.offset(VAULT_FROM + 6, -1, -4));
+        plate(level, o.offset(VAULT_FROM + 12, -1, 4));
+        nest(level, o.offset(VAULT_FROM + 10, 0, -6));
         lanterns(level, o, VAULT_FROM, VAULT_TO, -11, 11, 5);
         spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset((VAULT_FROM + VAULT_TO) / 2, 0, 0));
         spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(VAULT_TO - 3, 0, 6));
@@ -267,6 +275,49 @@ public final class Citadel {
     }
 
     public static final int SECRET_X = (LIBRARY_FROM + LIBRARY_TO) / 2;
+
+    // ------------------------------------------------------------------ 1.8.2: nests, traps, forks
+
+    private static void nest(ServerLevel level, BlockPos at) {
+        level.setBlock(at, ModBlocks.SHADOW_NEST.get().defaultBlockState(), FLAGS);
+    }
+
+    private static void plate(ServerLevel level, BlockPos at) {
+        level.setBlock(at, ModBlocks.TRAP_PLATE.get().defaultBlockState(), FLAGS);
+    }
+
+    /**
+     * After the maze the road forks. North: a long bypass around the hall of living darkness (no statues, but a nest,
+     * plates and a side room with a chest). South: a dead end with a chest that bites. Both are 3 wide.
+     */
+    private static void forks(ServerLevel level, BlockPos o, RandomSource random) {
+        BlockState air = Blocks.AIR.defaultBlockState();
+        int x0 = MAZE_1 + MAZE_SIZE + 1;                       // 60: just past the maze corridor's start
+        // north bypass: link up from the corridor, run east beside the dark hall, link down into the vault
+        fill(level, o.offset(x0, 0, -16), o.offset(x0 + 2, 3, -3), air);
+        fill(level, o.offset(x0, 0, -16), o.offset(VAULT_FROM - 1, 3, -14), air);
+        fill(level, o.offset(VAULT_FROM - 3, 0, -16), o.offset(VAULT_FROM - 1, 3, -8), air);
+        lanterns(level, o, x0, VAULT_FROM - 1, -16, -14, 3);
+        nest(level, o.offset(88, 0, -15));
+        plate(level, o.offset(75, -1, -15));
+        plate(level, o.offset(100, -1, -14));
+        // the side room off the bypass
+        fill(level, o.offset(78, 0, -19), o.offset(84, 3, -17), air);
+        BlockPos alcove = o.offset(81, 0, -19);
+        MimicChests.plant(level, alcove);
+        BlockPos reward = o.offset(83, 0, -19);
+        level.setBlock(reward, Blocks.CHEST.defaultBlockState(), FLAGS);
+        RandomizableContainer.setBlockEntityLootTable(level, random, reward, QuantumMaze.PRIZE);
+        // south: a dead end that looks like a promise
+        fill(level, o.offset(x0, 0, 3), o.offset(x0 + 2, 3, 15), air);
+        fill(level, o.offset(x0 - 3, 0, 15), o.offset(x0 + 5, 3, 18), air);
+        MimicChests.plant(level, o.offset(x0 - 2, 0, 17));
+        MimicChests.plant(level, o.offset(x0 + 4, 0, 17));
+        plate(level, o.offset(x0 + 1, -1, 9));
+        BlockPos bait = o.offset(x0 + 1, 0, 17);
+        level.setBlock(bait, Blocks.CHEST.defaultBlockState(), FLAGS);
+        RandomizableContainer.setBlockEntityLootTable(level, random, bait, QuantumMaze.COMMON);
+    }
 
     private static void hall(ServerLevel level, BlockPos o, RandomSource random) {
         int h = HALL / 2;

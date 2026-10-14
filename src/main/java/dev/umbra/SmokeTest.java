@@ -742,11 +742,13 @@ final class SmokeTest {
         }
         check(cores == 0 && level.getBlockState(o.offset(dev.umbra.citadel.Citadel.THRONE + 5, 3, 0)).isAir(), "the Architect waits in an open hall");
         check(dark > 500, "the hall of living darkness is full (" + dark + ")");
-        check(chests >= 16 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
+        check(chests >= 20 && mimics >= 10, "the citadel has chests, many of them hungry (" + chests + ", " + mimics + " mimics)");
         check(phantom == 36, "the library hides a phantom wall (" + phantom + ")");
         int statues = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelStatue.class);
         int keepers = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelKeeper.class);
         check(statues == 5 && keepers == 2, "statues and keepers stand guard (" + statues + ", " + keepers + ")");
+
+        testCitadel182(level, o);
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         BlockPos pw = o.offset(dev.umbra.citadel.Citadel.SECRET_X, 0, -11);
@@ -792,6 +794,94 @@ final class SmokeTest {
         check(dev.umbra.citadel.CitadelGateFeature.chosenChunk(42L, c[0], c[1]), "gate chunks are found again from their cell");
         BlockPos co = dev.umbra.citadel.Citadel.origin(c[0], c[1]);
         check(co.equals(dev.umbra.citadel.Citadel.originAt(42L, Vec3.atCenterOf(co.offset(100, 1, 5)))), "a citadel is found from inside it");
+    }
+
+    // ---------------------------------------------------------------- 1.8.2
+    private static void testCitadel182(ServerLevel level, BlockPos o) {
+        int nests = 0, plates = 0;
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(-3, -2, -dev.umbra.citadel.Citadel.HALF_WIDTH), o.offset(dev.umbra.citadel.Citadel.LENGTH, 9, dev.umbra.citadel.Citadel.HALF_WIDTH))) {
+            BlockState s = level.getBlockState(p);
+            if (s.is(ModBlocks.SHADOW_NEST.get())) nests++;
+            else if (s.is(ModBlocks.TRAP_PLATE.get())) plates++;
+        }
+        check(nests == 4 && plates == 8, "the citadel has nests and trap tiles (" + nests + ", " + plates + ")");
+
+        // the chests in the vault: every other one is a mimic, always
+        int vaultMimics = 0, vaultChests = 0;
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(dev.umbra.citadel.Citadel.VAULT_FROM, 0, -11), o.offset(dev.umbra.citadel.Citadel.VAULT_TO, 0, 11)))
+            if (level.getBlockState(p).is(Blocks.CHEST)) {
+                vaultChests++;
+                if (dev.umbra.mimic.MimicChests.isMimic(level, p)) vaultMimics++;
+            }
+        check(vaultChests == 14 && vaultMimics == 7, "the vault holds 14 chests, 7 hungry (" + vaultChests + ", " + vaultMimics + ")");
+
+        // the hall of living darkness is shut for this walk: the vault must still be reachable through the bypass,
+        // and so must the side room and the dead end
+        java.util.Set<Long> seen = reach(level, o);
+        check(seen.contains(o.offset(dev.umbra.citadel.Citadel.VAULT_FROM + 1, 0, 0).asLong()), "the vault can be reached without crossing the dark hall");
+        check(seen.contains(o.offset(80, 0, -18).asLong()), "the bypass has a reachable side room");
+        check(seen.contains(o.offset(61, 0, 16).asLong()), "the south fork has a reachable dead end");
+        check(seen.contains(o.offset(dev.umbra.citadel.Citadel.GARDEN_FROM + 2, 0, 0).asLong()), "the garden is reachable");
+
+        // a nest calls creatures, but only up to its cap
+        BlockPos nest = o.offset(15, 0, 7);
+        var type = dev.umbra.citadel.ShadowNestBlock.kind(nest);
+        int cap = type == ModEntities.BLIND.get() ? 1 : dev.umbra.citadel.ShadowNestBlock.CAP;
+        int spawned = 0;
+        for (int i = 0; i < 12; i++) if (dev.umbra.citadel.ShadowNestBlock.wave(level, nest, false)) spawned++;
+        check(spawned == cap, "a nest calls " + cap + " creatures and then waits (" + spawned + ")");
+        for (var m : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new net.minecraft.world.phys.AABB(nest).inflate(14))) {
+            if (m.getType() == type) m.discard();
+        }
+
+        // trap tiles: three kinds, each once
+        FakePlayer victim = FakePlayerFactory.getMinecraft(level);
+        boolean[] done = new boolean[dev.umbra.citadel.TrapPlateBlock.KINDS];
+        int sprung = 0;
+        for (int x = 2; x <= 14 && sprung < 3; x++) {
+            BlockPos at = o.offset(x, -1, 0);
+            int k = dev.umbra.citadel.TrapPlateBlock.kind(at);
+            if (done[k]) continue;
+            level.setBlock(at, ModBlocks.TRAP_PLATE.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+            victim.setPos(at.getX() + 0.5, at.getY() + 1, at.getZ() + 0.5);
+            int crawlers = level.getEntitiesOfClass(dev.umbra.mob.Crawler.class, new net.minecraft.world.phys.AABB(at).inflate(10)).size();
+            boolean first = dev.umbra.citadel.TrapPlateBlock.trigger(level, at, victim);
+            boolean second = dev.umbra.citadel.TrapPlateBlock.trigger(level, at, victim);
+            boolean effect = switch (k) {
+                case 0 -> level.getEntitiesOfClass(dev.umbra.mob.Crawler.class, new net.minecraft.world.phys.AABB(at).inflate(10)).size() == crawlers + 3;
+                case 1 -> victim.hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
+                default -> true;
+            };
+            check(first && !second && effect && level.getBlockState(at).getValue(dev.umbra.citadel.TrapPlateBlock.TRIGGERED), "trap tile kind " + k + " springs once");
+            done[k] = true;
+            sprung++;
+            victim.removeAllEffects();
+            level.setBlock(at, ModBlocks.MAZE_WALL.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+        check(sprung == 3, "all three kinds of trap were found in the hall floor (" + sprung + ")");
+        for (var m : level.getEntitiesOfClass(dev.umbra.mob.Crawler.class, dev.umbra.citadel.Citadel.bounds(o))) m.discard();
+    }
+
+    /** Cells on the floor of the citadel that can be walked to from the arrival, without going through living darkness. */
+    private static java.util.Set<Long> reach(ServerLevel level, BlockPos o) {
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        java.util.ArrayDeque<BlockPos> queue = new java.util.ArrayDeque<>();
+        BlockPos start = o.offset(dev.umbra.citadel.Citadel.ARRIVAL);
+        seen.add(start.asLong());
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            BlockPos p = queue.poll();
+            for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+                BlockPos n = p.relative(d);
+                if (n.getX() < o.getX() || n.getX() > o.getX() + dev.umbra.citadel.Citadel.SEAL_X - 1 || Math.abs(n.getZ() - o.getZ()) > dev.umbra.citadel.Citadel.HALF_WIDTH) continue;
+                if (seen.contains(n.asLong())) continue;
+                if (!level.getBlockState(n).isAir() && !level.getBlockState(n).is(ModBlocks.TRAP_PLATE.get())) continue;
+                if (!level.getBlockState(n.above()).isAir()) continue;
+                seen.add(n.asLong());
+                queue.add(n);
+            }
+        }
+        return seen;
     }
 
     // ---------------------------------------------------------------- 1.5

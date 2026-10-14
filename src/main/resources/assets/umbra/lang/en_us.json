@@ -349,5 +349,9 @@
   "journal.umbra.ash_storm.title": "Ash Storm",
   "journal.umbra.ash_storm.text": "Ash rises over the plains and the world shrinks to ten steps. Someone walks close by in the storm, I hear the steps. Better to wait it out by a fire or under a roof.",
   "journal.umbra.lurker.title": "Lurker",
-  "journal.umbra.lurker.text": "Long as an eel, with a light on a stalk above its jaws. It only hunts what is in the water: grabs and drags to the bottom. On the shore it is helpless, and light sends it into the deep."
+  "journal.umbra.lurker.text": "Long as an eel, with a light on a stalk above its jaws. It only hunts what is in the water: grabs and drags to the bottom. On the shore it is helpless, and light sends it into the deep.",
+  "block.umbra.shadow_nest": "Shadow Nest",
+  "block.umbra.trap_plate": "Cracked Floor Tile",
+  "command.umbra.citadel.outside": "You are not inside a citadel.",
+  "command.umbra.citadel.rebuilt": "The citadel stands anew."
 }

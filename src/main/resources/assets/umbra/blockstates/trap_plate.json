@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "triggered=false": {
+      "model": "umbra:block/trap_plate"
+    },
+    "triggered=true": {
+      "model": "umbra:block/trap_plate_spent"
+    }
+  }
+}
