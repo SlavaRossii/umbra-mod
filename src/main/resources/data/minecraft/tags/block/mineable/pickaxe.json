@@ -10,6 +10,7 @@
     "umbra:gloom_block",
     "umbra:ward",
     "umbra:luminite_cluster",
-    "umbra:echo_cluster"
+    "umbra:echo_cluster",
+    "umbra:luminite_block"
   ]
 }

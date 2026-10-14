@@ -61,12 +61,14 @@ public class Umbra {
         ModEntities.ENTITIES.register(modBus);
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);
+        dev.umbra.registry.ModSounds.SOUNDS.register(modBus);
         ModTabs.TABS.register(modBus);
         container.registerConfig(ModConfig.Type.LOCAL, UmbraConfig.SPEC, "umbra.toml");
 
         modBus.addListener(Umbra::onAttributes);
         modBus.addListener(Umbra::onSpawnPlacements);
 
+        NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onOpen);
         NeoForge.EVENT_BUS.addListener(Umbra::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(Umbra::onSetSpawn);
         NeoForge.EVENT_BUS.addListener(Umbra::onWakeUp);
@@ -91,6 +93,7 @@ public class Umbra {
         event.put(ModEntities.SHADOW.get(), ShadowEntity.createAttributes().build());
         event.put(ModEntities.HALLUCINATION.get(), HallucinationEntity.createAttributes().build());
         event.put(ModEntities.CRAWLER.get(), Crawler.createAttributes().build());
+        event.put(ModEntities.LURKER.get(), dev.umbra.lake.Lurker.createAttributes().build());
         event.put(ModEntities.BLIND.get(), Blind.createAttributes().build());
         event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
         event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
@@ -114,6 +117,8 @@ public class Umbra {
     private static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         var ground = SpawnPlacementTypes.ON_GROUND;
         var heightmap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
+        event.register(ModEntities.LURKER.get(), net.minecraft.world.entity.SpawnPlacementTypes.IN_WATER, net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                dev.umbra.lake.Lurker::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.CRAWLER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.BLIND.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.MIMICKER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
@@ -133,6 +138,7 @@ public class Umbra {
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);
+        dev.umbra.underside.UndersideAmbience.tick(player);
     }
 
     private static void onSetSpawn(PlayerSetSpawnEvent event) {
@@ -162,6 +168,7 @@ public class Umbra {
             StepsManager.forget(player);
             MimicManager.forget(player);
             Sanity.forget(player);
+            dev.umbra.underside.UndersideAmbience.forget(player);
         }
     }
 

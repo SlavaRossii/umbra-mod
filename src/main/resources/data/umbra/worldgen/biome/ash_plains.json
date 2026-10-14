@@ -6,7 +6,8 @@
         "offset": 2.0,
         "sound": "minecraft:ambient.cave",
         "tick_delay": 3000
-      }
+      },
+      "loop": "umbra:ambient.hum"
     },
     "minecraft:visual/ambient_particles": {
       "argument": [

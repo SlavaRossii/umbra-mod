@@ -1,0 +1,100 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "umbra:ambient.forest_hum",
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 3000
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:white_ash"
+          },
+          "probability": 0.008
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#121812",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "umbra:blind",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 1
+              },
+              "weight": 40
+            },
+            {
+              "type": "umbra:crawler",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 35
+            },
+            {
+              "type": "umbra:shade",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 2,
+                "max_inclusive": 4
+              },
+              "weight": 40
+            },
+            {
+              "type": "umbra:mimicker",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 1
+              },
+              "weight": 10
+            }
+          ]
+        }
+      },
+      "modifier": "overlay"
+    }
+  },
+  "carvers": "minecraft:nether_cave",
+  "downfall": 0.0,
+  "effects": {
+    "water_color": "#0b0b16"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "umbra:ore_gloom",
+      "umbra:ore_echo_quartz"
+    ],
+    [],
+    [],
+    [
+      "umbra:citadel_gate",
+      "umbra:dead_tree",
+      "umbra:hanging_trees_dense",
+      "umbra:underside_landmark",
+      "umbra:underside_decor"
+    ],
+    []
+  ],
+  "has_precipitation": false,
+  "temperature": 0.5
+}

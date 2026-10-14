@@ -411,8 +411,28 @@ def shadow_villager():
     return m
 
 
+def lurker():
+    m = Model("lurker")
+    skin = P((20, 24, 30, 255), 8, up=stripes((34, 44, 52, 255), 4))
+    belly = P((52, 54, 60, 255), 8)
+    head = P((22, 26, 32, 255), 8, front=combine(eyes((210, 245, 255, 255), 0.25, 0.34, 1, glow=(80, 140, 170, 255)),
+                                                   mouth((70, 12, 16, 255), y=0.75, width=0.9)))
+    lure = P((175, 245, 255, 255), 14)
+    h = m.part("head", "root", (0, 18, -3), (0, 0, 0), [C(-4, -4, -7, 8, 6, 7, head)])
+    m.part("jaw", h, (0, 2, -1), (0, 0, 0), [C(-3.5, 0, -6, 7, 2, 6, belly)])
+    stalk = m.part("stalk", h, (0, -4, -5), (-0.7, 0, 0), [C(-0.5, -7, -0.5, 1, 7, 1, skin)])
+    m.part("lure", stalk, (0, -7, 0), (0, 0, 0), [C(-1, -2, -1, 2, 2, 2, lure)])
+    b1 = m.part("body1", "root", (0, 18, -3), (0, 0, 0), [C(-3, -3, 0, 6, 5, 8, skin)])
+    b2 = m.part("body2", b1, (0, 0, 8), (0, 0, 0), [C(-2, -2, 0, 4, 4, 8, skin)])
+    b3 = m.part("body3", b2, (0, 0, 8), (0, 0, 0), [C(-1.5, -1.5, 0, 3, 3, 7, skin)])
+    m.part("fin", b3, (0, 0, 7), (0, 0, 0), [C(-0.5, -4, 0, 1, 8, 5, skin)])
+    m.part("fin_r", b1, (-3, 1, 2), (0, 0, 0.5), [C(-5, 0, -1, 5, 1, 4, skin)])
+    m.part("fin_l", b1, (3, 1, 2), (0, 0, -0.5), [C(0, 0, -1, 5, 1, 4, skin)])
+    return m
+
+
 MODELS = [crawler, blind, light_eater, shade, statue, keeper, watcher, mimic_queen, shepherd, architect,
-          primordial_shadow, shadow_villager]
+          primordial_shadow, shadow_villager, lurker]
 
 
 # ------------------------------------------------------------------ UV packing + painting

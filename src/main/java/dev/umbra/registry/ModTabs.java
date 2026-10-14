@@ -42,6 +42,7 @@ public final class ModTabs {
                 out.accept(ModItems.RAW_GLOOM.get());
                 out.accept(ModItems.GLOOM_INGOT.get());
                 out.accept(ModItems.GLOOM_BLOCK.get());
+                out.accept(ModItems.LUMINITE_BLOCK.get());
                 out.accept(ModItems.ECHO_QUARTZ_ORE.get());
                 out.accept(ModItems.ECHO_QUARTZ.get());
                 out.accept(ModItems.GLOOM_SWORD.get());
@@ -53,6 +54,7 @@ public final class ModTabs {
                 out.accept(ModItems.GLOOM_LEGGINGS.get());
                 out.accept(ModItems.GLOOM_BOOTS.get());
                 out.accept(ModItems.CRAWLER_SPAWN_EGG.get());
+                out.accept(ModItems.LURKER_SPAWN_EGG.get());
                 out.accept(ModItems.BLIND_SPAWN_EGG.get());
                 out.accept(ModItems.LIGHT_EATER_SPAWN_EGG.get());
                 out.accept(ModItems.MIMICKER_SPAWN_EGG.get());

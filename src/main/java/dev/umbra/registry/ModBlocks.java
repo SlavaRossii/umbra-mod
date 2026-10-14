@@ -198,6 +198,9 @@ public final class ModBlocks {
     public static final DeferredBlock<DropExperienceBlock> ECHO_QUARTZ_ORE = BLOCKS.registerBlock("echo_quartz_ore",
             p -> new DropExperienceBlock(UniformInt.of(3, 7), p),
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 3));
+    /** Grown luminite: the spires of the crystal grottos. */
+    public static final DeferredBlock<Block> LUMINITE_BLOCK = BLOCKS.registerSimpleBlock("luminite_block",
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel(s -> 10).mapColor(MapColor.COLOR_LIGHT_BLUE));
     public static final DeferredBlock<Block> GLOOM_BLOCK = BLOCKS.registerSimpleBlock("gloom_block",
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK).mapColor(MapColor.COLOR_BLACK));
     public static final DeferredBlock<RiftBlock> RIFT = BLOCKS.registerBlock("rift",

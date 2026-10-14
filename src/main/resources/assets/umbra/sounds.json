@@ -1,0 +1,199 @@
+{
+  "ambient.hum": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/hum",
+        "volume": 0.35,
+        "stream": true
+      }
+    ]
+  },
+  "ambient.crystal_hum": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/crystal_hum",
+        "volume": 0.35,
+        "stream": true
+      }
+    ]
+  },
+  "ambient.lake_hum": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/lake_hum",
+        "volume": 0.4,
+        "stream": true
+      }
+    ]
+  },
+  "ambient.forest_hum": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/forest_hum",
+        "volume": 0.3,
+        "stream": true
+      }
+    ]
+  },
+  "ambient.drip": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/drip1",
+        "volume": 0.6
+      },
+      {
+        "name": "umbra:ambient/drip2",
+        "volume": 0.6
+      },
+      {
+        "name": "umbra:ambient/drip3",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.umbra.drip"
+  },
+  "ambient.bell": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/bell1",
+        "volume": 1.0
+      },
+      {
+        "name": "umbra:ambient/bell2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.umbra.bell"
+  },
+  "ambient.steps_above": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/steps_above1",
+        "volume": 1.0
+      },
+      {
+        "name": "umbra:ambient/steps_above2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.umbra.steps_above"
+  },
+  "ambient.steps_behind": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/steps_behind",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.umbra.steps_behind"
+  },
+  "ambient.knock": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/knock1",
+        "volume": 1.0
+      },
+      {
+        "name": "umbra:ambient/knock2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.umbra.knock"
+  },
+  "ambient.whisper": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/whisper1",
+        "volume": 0.7
+      },
+      {
+        "name": "umbra:ambient/whisper2",
+        "volume": 0.7
+      },
+      {
+        "name": "umbra:ambient/whisper3",
+        "volume": 0.7
+      },
+      {
+        "name": "umbra:ambient/whisper4",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.umbra.whisper"
+  },
+  "ambient.breath": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/breath",
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "subtitles.umbra.breath"
+  },
+  "ambient.creak": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/creak1",
+        "volume": 0.7
+      },
+      {
+        "name": "umbra:ambient/creak2",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.umbra.creak"
+  },
+  "ambient.wail": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/wail",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.umbra.wail"
+  },
+  "ambient.chime": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/chime1",
+        "volume": 0.6
+      },
+      {
+        "name": "umbra:ambient/chime2",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.umbra.chime"
+  },
+  "ambient.gust": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/gust1",
+        "volume": 0.8
+      },
+      {
+        "name": "umbra:ambient/gust2",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.umbra.gust"
+  },
+  "ambient.splash": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/splash",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.umbra.splash"
+  },
+  "ambient.heartbeat_far": {
+    "sounds": [
+      {
+        "name": "umbra:ambient/heartbeat_far",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.umbra.heartbeat_far"
+  }
+}

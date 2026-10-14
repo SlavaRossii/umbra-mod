@@ -19,7 +19,8 @@ public final class Journal {
     public static final List<String> ENTRIES = List.of(
             "start", "sanity", "insight_1", "nightmare", "luminite", "shadow", "shadow_dispelled", "steps", "mimic", "mimic_crafting_table", "mimic_bookshelf", "mimic_planks", "mimic_stone", "mimic_barrel",
             "mimic_furnace", "mimic_hay", "mimic_log", "mimic_ore", "mimic_chest", "mimic_villager",
-            "darkness", "maze", "underside", "shadow_village", "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade",
+            "darkness", "maze", "underside", "shadow_village", "crystal_grottos", "black_lakes", "sunken_temple", "whispering_forest", "ash_storm",
+            "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade", "lurker",
             "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
             "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8");
 
@@ -32,7 +33,7 @@ public final class Journal {
         if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
         if (id.startsWith("note_")) return 5;
         return switch (id) {
-            case "crawler", "blind", "light_eater", "mimicker", "shade", "statue", "keeper" -> 3;
+            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper" -> 3;
             case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
             default -> 0;
         };
@@ -50,6 +51,7 @@ public final class Journal {
             "start", List.of("journal", "sedative"),
             "luminite", List.of("dispeller", "eternal_torch", "luminite_lamp", "luminite_lantern", "light_arrow", "mirror", "sedative_from_luminite"),
             "shadow_dispelled", List.of("dusk_stone", "antipsychotic"),
+            "crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block"),
             "underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
                     "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass", "ward",

@@ -52,6 +52,9 @@ public final class UmbraCommand {
                 .then(Commands.literal("status").executes(UmbraCommand::status))
                 .then(Commands.literal("nightmare").executes(UmbraCommand::nightmare))
                 .then(Commands.literal("citadel").executes(UmbraCommand::citadel))
+                .then(Commands.literal("storm").executes(UmbraCommand::storm))
+                .then(Commands.literal("temple").executes(UmbraCommand::temple))
+                .then(Commands.literal("forest").executes(UmbraCommand::forest))
                 .then(village()));
     }
 
@@ -178,6 +181,37 @@ public final class UmbraCommand {
         int[] c = dev.umbra.citadel.CitadelGateFeature.nearest(under.getSeed(), (int) player.getX(), (int) player.getZ());
         BlockPos gate = dev.umbra.citadel.CitadelGateFeature.findSolidGround(under, c[0] * 16 + 8, c[1] * 16 + 8).above(2);
         player.teleport(dev.umbra.citadel.Citadel.enter(under, player, gate));
+        return 1;
+    }
+
+    /** Toggles an ash storm for this player (they must stand in the ash plains to feel it). */
+    private static int storm(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        boolean on = !player.getData(dev.umbra.registry.ModAttachments.STORM_TEST);
+        player.setData(dev.umbra.registry.ModAttachments.STORM_TEST, on);
+        reply(ctx, on ? "command.umbra.storm.on" : "command.umbra.storm.off");
+        return 1;
+    }
+
+    /** Builds a sunken temple 30 blocks ahead, on the floor below. */
+    private static int temple(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        ServerLevel level = (ServerLevel) player.level();
+        Vec3 dir = dev.umbra.util.UmbraUtil.horizontal(player.getLookAngle());
+        BlockPos ahead = BlockPos.containing(player.position().add(dir.scale(30))).above(10);
+        BlockPos f = dev.umbra.decor.UndersideDecorFeature.floor(level, ahead, 60);
+        if (f == null) {
+            reply(ctx, "command.umbra.failed");
+            return 0;
+        }
+        dev.umbra.lake.SunkenTempleFeature.build(level, f, level.getRandom());
+        return 1;
+    }
+
+    /** As if you had run through the whispering forest. */
+    private static int forest(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        dev.umbra.underside.UndersideAmbience.alert((ServerLevel) player.level(), player);
         return 1;
     }
 

@@ -42,6 +42,12 @@ public final class ModAttachments {
                     .copyOnDeath()
                     .build());
 
+    /** /umbra storm: a storm for this player regardless of the clock (synced, so their screen goes grey too). */
+    public static final Supplier<AttachmentType<Boolean>> STORM_TEST = ATTACHMENTS.register("storm_test",
+            () -> AttachmentType.builder(() -> false)
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.BOOL)
+                    .build());
+
     /** Whether the player already received the journal. */
     public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENTS.register("got_journal",
             () -> AttachmentType.builder(() -> false)

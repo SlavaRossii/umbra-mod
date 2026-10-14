@@ -37,6 +37,7 @@ public final class UmbraClient {
                 (e, st) -> st.variant = Math.floorMod((int) Math.floor(e.getX() * 3) * 31 + (int) Math.floor(e.getZ() * 3) * 17, 3)));
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
+        event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
@@ -62,12 +63,52 @@ public final class UmbraClient {
         event.registerLayerDefinition(ModLayers.ARCHITECT, GeneratedModels::architect);
         event.registerLayerDefinition(ModLayers.PRIMORDIAL_SHADOW, GeneratedModels::primordialShadow);
         event.registerLayerDefinition(ModLayers.SHADOW_VILLAGER, GeneratedModels::shadowVillager);
+        event.registerLayerDefinition(ModLayers.LURKER, GeneratedModels::lurker);
     }
 
     /** Game-bus client events. */
     @EventBusSubscriber(modid = Umbra.MODID, value = Dist.CLIENT)
     public static final class Game {
         private Game() {}
+
+        /** Ash storm: the world closes in to a few blocks of grey. */
+        @SubscribeEvent
+        static void stormFog(net.neoforged.neoforge.client.event.ViewportEvent.RenderFog event) {
+            var player = net.minecraft.client.Minecraft.getInstance().player;
+            if (player == null || event.getType() != net.minecraft.world.level.material.FogType.NONE) return;
+            float s = dev.umbra.underside.AshStorm.at(player);
+            if (s <= 0) return;
+            event.setNearPlaneDistance(net.minecraft.util.Mth.lerp(s, event.getNearPlaneDistance(), 0.0F));
+            event.setFarPlaneDistance(net.minecraft.util.Mth.lerp(s, event.getFarPlaneDistance(), 11.0F));
+        }
+
+        @SubscribeEvent
+        static void stormColor(net.neoforged.neoforge.client.event.ViewportEvent.ComputeFogColor event) {
+            var player = net.minecraft.client.Minecraft.getInstance().player;
+            if (player == null) return;
+            float s = dev.umbra.underside.AshStorm.at(player);
+            if (s <= 0) return;
+            event.setRed(net.minecraft.util.Mth.lerp(s, event.getRed(), 0.33F));
+            event.setGreen(net.minecraft.util.Mth.lerp(s, event.getGreen(), 0.31F));
+            event.setBlue(net.minecraft.util.Mth.lerp(s, event.getBlue(), 0.30F));
+        }
+
+        /** Ash blowing past in a storm. */
+        @SubscribeEvent
+        static void stormParticles(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            var player = mc.player;
+            if (player == null || mc.level == null || mc.isPaused()) return;
+            float s = dev.umbra.underside.AshStorm.at(player);
+            if (s <= 0) return;
+            var r = player.getRandom();
+            double wind = (mc.level.getGameTime() / 6000L) % 2 == 0 ? 0.35 : -0.35;
+            for (int i = 0; i < (int) (40 * s); i++) {
+                double x = player.getX() + r.nextGaussian() * 8, y = player.getY() + r.nextDouble() * 5 - 1, z = player.getZ() + r.nextGaussian() * 8;
+                mc.level.addParticle(i % 3 == 0 ? net.minecraft.core.particles.ParticleTypes.ASH : net.minecraft.core.particles.ParticleTypes.WHITE_ASH,
+                        x, y, z, wind, -0.02, wind * 0.4);
+            }
+        }
 
         @SubscribeEvent
         static void tooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {

@@ -14,7 +14,8 @@ def rot(rx, ry, rz):
 
 models = [f() for f in m.MODELS]
 cols = 4
-fig = plt.figure(figsize=(16, 12))
+rows = (len(models) + cols - 1) // cols
+fig = plt.figure(figsize=(16, 4 * rows))
 for idx, model in enumerate(models):
     size = m.pack(model)
     tex = np.array(m.paint(model, size)).astype(float) / 255
@@ -24,7 +25,7 @@ for idx, model in enumerate(models):
         if p.parent != "root":
             PM, Pt = world(p.parent); return PM @ M, PM @ t + Pt
         return M, t
-    ax = fig.add_subplot(3, cols, idx + 1, projection="3d")
+    ax = fig.add_subplot(rows, cols, idx + 1, projection="3d")
     polys, colors = [], []
     for p in model.parts:
         M, t = world(p.name)

@@ -53,6 +53,42 @@
             "depth": 0.0,
             "offset": 0.0
           }
+        },
+        {
+          "biome": "umbra:crystal_grottos",
+          "parameters": {
+            "temperature": 0.0,
+            "humidity": 0.6,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "umbra:black_lakes",
+          "parameters": {
+            "temperature": -0.5,
+            "humidity": 0.6,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "umbra:whispering_forest",
+          "parameters": {
+            "temperature": 0.5,
+            "humidity": -0.6,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
         }
       ]
     }

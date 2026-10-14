@@ -85,6 +85,21 @@ public final class Animations {
         look(p.apply("head"), st, 0.5F);
     }
 
+    /** Lurker: a slow travelling wave down the body; the jaw gapes when it bites; the lure sways. */
+    public static void lurker(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, s = 0.5F + Math.min(1.0F, st.walkAnimationSpeed);
+        p.apply("body1").yRot += Mth.sin(t * 0.18F * s) * 0.15F;
+        p.apply("body2").yRot += Mth.sin(t * 0.18F * s - 0.9F) * 0.3F;
+        p.apply("body3").yRot += Mth.sin(t * 0.18F * s - 1.8F) * 0.4F;
+        p.apply("fin").yRot += Mth.sin(t * 0.18F * s - 2.6F) * 0.5F;
+        p.apply("head").yRot += Mth.sin(t * 0.18F * s + 0.9F) * 0.1F;
+        p.apply("fin_r").zRot += Mth.sin(t * 0.3F) * 0.3F;
+        p.apply("fin_l").zRot -= Mth.sin(t * 0.3F) * 0.3F;
+        p.apply("stalk").xRot += Mth.sin(t * 0.1F) * 0.15F;
+        p.apply("jaw").xRot += 0.15F + (st.attack > 0 ? Mth.sin(st.attack * Mth.PI) * 0.8F : 0);
+        look(p.apply("head"), st, 0.4F);
+    }
+
     public static void shade(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks;
         p.apply("core").y += Mth.sin(t * 0.18F) * 1.2F;

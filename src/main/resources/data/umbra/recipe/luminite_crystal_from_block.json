@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "umbra:luminite_block"
+  ],
+  "result": {
+    "id": "umbra:luminite_crystal",
+    "count": 4
+  }
+}

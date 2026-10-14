@@ -64,6 +64,7 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> DEAD_LOG = ITEMS.registerSimpleBlockItem("dead_log", ModBlocks.DEAD_LOG);
     public static final DeferredItem<BlockItem> GLOOM_ORE = ITEMS.registerSimpleBlockItem("gloom_ore", ModBlocks.GLOOM_ORE);
     public static final DeferredItem<BlockItem> ECHO_QUARTZ_ORE = ITEMS.registerSimpleBlockItem("echo_quartz_ore", ModBlocks.ECHO_QUARTZ_ORE);
+    public static final DeferredItem<BlockItem> LUMINITE_BLOCK = ITEMS.registerSimpleBlockItem("luminite_block", ModBlocks.LUMINITE_BLOCK);
     public static final DeferredItem<BlockItem> GLOOM_BLOCK = ITEMS.registerSimpleBlockItem("gloom_block", ModBlocks.GLOOM_BLOCK);
     public static final DeferredItem<Item> RAW_GLOOM = ITEMS.registerSimpleItem("raw_gloom");
     public static final DeferredItem<Item> GLOOM_INGOT = ITEMS.registerSimpleItem("gloom_ingot");
@@ -80,6 +81,7 @@ public final class ModItems {
     public static final DeferredItem<Item> GLOOM_BOOTS = ITEMS.registerSimpleItem("gloom_boots", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.BOOTS));
 
     // --- Spawn eggs ---
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LURKER_SPAWN_EGG = ITEMS.registerItem("lurker_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LURKER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> CRAWLER_SPAWN_EGG = ITEMS.registerItem("crawler_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.CRAWLER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> BLIND_SPAWN_EGG = ITEMS.registerItem("blind_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.BLIND.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LIGHT_EATER_SPAWN_EGG = ITEMS.registerItem("light_eater_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));

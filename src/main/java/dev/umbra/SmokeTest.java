@@ -121,6 +121,7 @@ final class SmokeTest {
                 case 635 -> testCitadel(server, level);
                 case 645 -> testFilling(server, level);
                 case 655 -> testBossMoves(level);
+                case 660 -> testUnderside18(server, level);
                 case 670 -> finish(server);
                 default -> { }
             }
@@ -883,6 +884,75 @@ final class SmokeTest {
         check(level.getBlockState(w).isAir(), "and crumbles away again");
         level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class, new AABB(c).inflate(20)).forEach(net.minecraft.world.entity.Entity::discard);
         watcher.discard();
+    }
+
+    private static void testUnderside18(MinecraftServer server, ServerLevel level) {
+        // storms: decided by the clock alone, about one window in four
+        int storms = 0;
+        boolean outside = false;
+        for (long w = 0; w < 80; w++) {
+            if (dev.umbra.underside.AshStorm.strength(w * dev.umbra.underside.AshStorm.WINDOW + 3000) >= 1.0F) storms++;
+            outside |= dev.umbra.underside.AshStorm.strength(w * dev.umbra.underside.AshStorm.WINDOW + 100) > 0;
+        }
+        check(storms >= 8 && storms <= 35 && !outside, "ash storms blow in about a quarter of the windows (" + storms + "/80)");
+        check(net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.containsKey(net.minecraft.resources.Identifier.fromNamespaceAndPath("umbra", "ambient.whisper")),
+                "the Underside has its own sounds");
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under != null) {
+            var possible = under.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();
+            int found = 0;
+            for (var b : possible) {
+                if (b.is(dev.umbra.underside.UndersideBiomes.CRYSTAL_GROTTOS) || b.is(dev.umbra.underside.UndersideBiomes.BLACK_LAKES)
+                        || b.is(dev.umbra.underside.UndersideBiomes.WHISPERING_FOREST)) found++;
+            }
+            check(found == 3, "the Underside has crystal grottos, black lakes and a whispering forest (" + found + "/3)");
+        }
+        check(dev.umbra.journal.Journal.section("lurker") == 3 && dev.umbra.journal.Journal.section("black_lakes") == 0, "new journal entries are sorted");
+
+        // a temple in a lake, built on a block of stone
+        BlockPos c = new BlockPos(270, Y + 6, 30);
+        for (int x = -18; x <= 18; x++)
+            for (int z = -18; z <= 18; z++)
+                for (int y = -20; y <= 14; y++)
+                    level.setBlock(c.offset(x, y, z), y < 0 ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        BlockPos chest = dev.umbra.lake.SunkenTempleFeature.build(level, c, level.getRandom());
+        check(level.getBlockState(chest).is(Blocks.CHEST) && level.getBlockEntity(chest) instanceof net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity rc
+                && dev.umbra.lake.SunkenTempleFeature.LOOT.equals(rc.getLootTable()), "a sunken temple keeps a chest on its altar");
+        check(level.getBlockState(c.offset(0, -1, 0)).is(Blocks.WATER) && level.getBlockState(c.offset(0, -5, -2)).is(Blocks.WATER), "the temple stands under water");
+        int leaks = 0;
+        for (int x = -18; x <= 18; x++)
+            for (int z = -18; z <= 18; z++)
+                if (level.getBlockState(c.offset(x, 0, z)).is(Blocks.WATER)) leaks++;
+        check(leaks == 0, "the lake does not rise above its shore (" + leaks + ")");
+        int lurkers = level.getEntitiesOfClass(dev.umbra.lake.Lurker.class, new AABB(c).inflate(20)).size();
+        check(lurkers >= 2, "lurkers guard the temple (" + lurkers + ")");
+        BlockState col = level.getBlockState(c.offset(6, 0, 6));
+        check(col.is(ModBlocks.GLOOM_BLOCK.get()) || col.is(ModBlocks.DUSK_STONE.get()), "broken columns stand out of the water");
+        level.getEntitiesOfClass(dev.umbra.lake.Lurker.class, new AABB(c).inflate(20)).forEach(net.minecraft.world.entity.Entity::discard);
+
+        // loot tables in the 26.3 format: stack sizes are honoured
+        int biggest = 0;
+        for (int i = 0; i < 6; i++) {
+            BlockPos lc = c.offset(-17 + i, 1, -17);
+            level.setBlock(lc.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(lc, Blocks.CHEST.defaultBlockState(), Block.UPDATE_CLIENTS);
+            if (level.getBlockEntity(lc) instanceof net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity lr) {
+                lr.setLootTable(dev.umbra.lake.SunkenTempleFeature.LOOT, 1234L + i);
+                lr.unpackLootTable(null);
+                for (int k = 0; k < lr.getContainerSize(); k++) biggest = Math.max(biggest, lr.getItem(k).getCount());
+            }
+        }
+        check(biggest > 1, "chest loot comes in stacks (largest " + biggest + ")");
+
+        // a crystal spire and a dead tree on the shore
+        BlockPos shore = c.offset(16, 1, 16);
+        level.setBlock(shore.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.decor.CrystalGrottoFeature.spire(level, shore, net.minecraft.core.Direction.UP, 6, level.getRandom());
+        check(level.getBlockState(shore).is(ModBlocks.LUMINITE_BLOCK.get()), "luminite spires grow in the grottos");
+        BlockPos tree = c.offset(-16, 1, 16);
+        level.setBlock(tree.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.decor.DeadTreeFeature.tree(level, tree, 7, level.getRandom());
+        check(level.getBlockState(tree.above(6)).is(ModBlocks.DEAD_LOG.get()), "dead trees stand in the whispering forest");
     }
 
     private static void checkWard(ServerLevel level) {

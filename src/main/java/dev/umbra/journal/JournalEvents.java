@@ -36,7 +36,14 @@ public final class JournalEvents {
     /** Cheap per-second checks of the player's surroundings. */
     public static void tick(ServerPlayer player) {
         if (player.tickCount % 20 != 7) return;
-        if (Underside.is(player.level())) Journal.unlock(player, "underside");
+        if (Underside.is(player.level())) {
+            Journal.unlock(player, "underside");
+            var biome = player.level().getBiome(player.blockPosition());
+            if (biome.is(dev.umbra.underside.UndersideBiomes.CRYSTAL_GROTTOS)) Journal.unlock(player, "crystal_grottos");
+            if (biome.is(dev.umbra.underside.UndersideBiomes.BLACK_LAKES)) Journal.unlock(player, "black_lakes");
+            if (biome.is(dev.umbra.underside.UndersideBiomes.WHISPERING_FOREST)) Journal.unlock(player, "whispering_forest");
+            if (dev.umbra.underside.AshStorm.at(player) > 0.5F) Journal.unlock(player, "ash_storm");
+        }
         if (Sanity.enabled() && Sanity.get(player) < Sanity.PARANOID) Journal.unlock(player, "sanity");
         checkInsights(player);
         BlockPos eye = BlockPos.containing(player.getEyePosition());
@@ -54,6 +61,15 @@ public final class JournalEvents {
         }
     }
 
+    /** Opening the drowned temple's chest. */
+    public static void onOpen(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.level().getBlockEntity(event.getPos()) instanceof net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity c
+                && dev.umbra.lake.SunkenTempleFeature.LOOT.equals(c.getLootTable())) {
+            Journal.unlock(player, "sunken_temple");
+        }
+    }
+
     public static void onDeath(LivingDeathEvent event) {
         LivingEntity dead = event.getEntity();
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
@@ -63,6 +79,7 @@ public final class JournalEvents {
                 Map.entry(ModEntities.LIGHT_EATER.get(), "light_eater"),
                 Map.entry(ModEntities.MIMICKER.get(), "mimicker"),
                 Map.entry(ModEntities.SHADE.get(), "shade"),
+                Map.entry(ModEntities.LURKER.get(), "lurker"),
                 Map.entry(ModEntities.WATCHER.get(), "watcher"),
                 Map.entry(ModEntities.MIMIC_QUEEN.get(), "mimic_queen"),
                 Map.entry(ModEntities.SHEPHERD.get(), "shepherd"),

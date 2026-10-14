@@ -825,6 +825,31 @@ def stage12():
     save(egg, "item/ash_figure_spawn_egg.png")
 
 
+# ------------------------------------------------------------------ 1.8
+def stage13():
+    # grown luminite: facets of pale cyan with bright edges
+    img = Image.new("RGBA", (16, 16)); px = img.load()
+    rnd = random.Random(130)
+    seeds = [(rnd.randint(0, 15), rnd.randint(0, 15)) for _ in range(7)]
+    for x in range(16):
+        for y in range(16):
+            d = sorted((min(abs(x - sx), 16 - abs(x - sx)) ** 2 + min(abs(y - sy), 16 - abs(y - sy)) ** 2, i) for i, (sx, sy) in enumerate(seeds))
+            cell, edge = d[0][1], d[1][0] - d[0][0]
+            k = 0.75 + 0.25 * ((cell * 37) % 5) / 4
+            base = (int(90 * k), int(200 * k), int(230 * k))
+            if edge <= 2:
+                base = (205, 250, 255)
+            px[x, y] = base + (255,)
+    save(img, "block/luminite_block.png")
+    egg = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); ep = egg.load()
+    rnd = random.Random("lurker")
+    for y in range(16):
+        for x in range(16):
+            if ((x - 7.5) / 5.2) ** 2 + ((y - 8.5) / 6.8) ** 2 <= 1:
+                ep[x, y] = ((175, 245, 255) if rnd.random() < 0.12 else (20, 26, 34)) + (255,)
+    save(egg, "item/lurker_spawn_egg.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -848,6 +873,7 @@ if __name__ == "__main__":
     stage10()
     stage11()
     stage12()
+    stage13()
     # creatures with 3D models get their textures from the model description (overwrites the flat skins above)
     import runpy
     runpy.run_path(os.path.join(os.path.dirname(__file__), "models.py"), run_name="__main__")

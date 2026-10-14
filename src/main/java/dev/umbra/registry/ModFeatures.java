@@ -24,6 +24,15 @@ public final class ModFeatures {
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.village.ShadowVillageFeature>> SHADOW_VILLAGE =
             FEATURES.register("shadow_village", () -> dev.umbra.village.ShadowVillageFeature.CODEC);
 
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.lake.BlackLakeFeature>> BLACK_LAKE =
+            FEATURES.register("black_lake", () -> dev.umbra.lake.BlackLakeFeature.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.lake.SunkenTempleFeature>> SUNKEN_TEMPLE =
+            FEATURES.register("sunken_temple", () -> dev.umbra.lake.SunkenTempleFeature.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.decor.CrystalGrottoFeature>> CRYSTAL_GROTTO =
+            FEATURES.register("crystal_grotto", () -> dev.umbra.decor.CrystalGrottoFeature.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.decor.DeadTreeFeature>> DEAD_TREE =
+            FEATURES.register("dead_tree", () -> dev.umbra.decor.DeadTreeFeature.CODEC);
+
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.citadel.CitadelGateFeature>> CITADEL_GATE =
             FEATURES.register("citadel_gate", () -> dev.umbra.citadel.CitadelGateFeature.CODEC);
 
