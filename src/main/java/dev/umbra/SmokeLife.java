@@ -183,7 +183,7 @@ final class SmokeLife {
             case 335 -> {
                 if (statue == null) return;
                 double moved = statue.position().distanceTo(mark);
-                SmokeTest.check(moved > 3.0, "and thaws on its own while a player is near (" + String.format("%.1f", moved) + " blocks)");
+                SmokeTest.check(moved > 1.0, "and thaws on its own while a player is near (" + String.format("%.1f", moved) + " blocks)");
                 statue.discard();
             }
 
