@@ -80,7 +80,7 @@ public final class UmbraClient {
 
     @SubscribeEvent
     static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
-        dev.umbra.journal.Journal.openScreen = () -> net.minecraft.client.Minecraft.getInstance().setScreen(new JournalScreen());
+        dev.umbra.journal.Journal.openScreen = () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(new JournalScreen());
     }
 
     @SubscribeEvent
