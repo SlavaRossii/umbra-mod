@@ -104,7 +104,7 @@ public final class Nightmares {
                     boolean shell = x == -2 || z == -2 || x == size + 1 || z == size + 1 || y == -9 || y == height + 4;
                     level.setBlock(corner.offset(x, y, z), shell ? wall : air, Block.UPDATE_CLIENTS);
                 }
-        for (Entity e : level.getEntities((Entity) null, new AABB(corner.offset(-2, -9, -2).getCenter(), corner.offset(size + 1, height + 4, size + 1).getCenter()), e -> !(e instanceof ServerPlayer))) {
+        for (Entity e : level.getEntities((Entity) null, AABB.encapsulatingFullBlocks(corner.offset(-2, -9, -2), corner.offset(size + 1, height + 4, size + 1)), e -> !(e instanceof ServerPlayer))) {
             e.discard();
         }
         QuantumMaze.build(level, corner, random);
