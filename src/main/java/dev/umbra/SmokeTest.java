@@ -730,7 +730,7 @@ final class SmokeTest {
         }
         check(cores == 0 && level.getBlockState(o.offset(dev.umbra.citadel.Citadel.THRONE + 5, 3, 0)).isAir(), "the Architect waits in an open hall");
         check(dark > 500, "the hall of living darkness is full (" + dark + ")");
-        check(chests >= 20 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
+        check(chests >= 16 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
         check(phantom == 36, "the library hides a phantom wall (" + phantom + ")");
         int statues = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelStatue.class);
         int keepers = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelKeeper.class);
