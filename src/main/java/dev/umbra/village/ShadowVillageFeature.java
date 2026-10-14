@@ -28,8 +28,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
  */
 public record ShadowVillageFeature() implements Feature {
     public static final MapCodec<ShadowVillageFeature> CODEC = MapCodec.unit(new ShadowVillageFeature());
-    public static final int CELL = 18;
-    public static final int SPREAD = 11;
+    public static final int CELL = 12;
+    public static final int SPREAD = 6;
     public static final ResourceKey<LootTable> HUT_LOOT = ResourceKey.create(Registries.LOOT_TABLE,
             Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "chests/shadow_village"));
     private static final int FLAGS = Block.UPDATE_CLIENTS;
@@ -39,20 +39,20 @@ public record ShadowVillageFeature() implements Feature {
         return CODEC;
     }
 
-    public static boolean chosenChunk(long seed, int cx, int cz) {
-        int gx = Math.floorDiv(cx, CELL), gz = Math.floorDiv(cz, CELL);
+    public static int[] chosenChunkOf(long seed, int gx, int gz) {
         RandomSource r = RandomSource.create(seed ^ (gx * 198491317L + gz * 6542989L) ^ 0x2545F4914F6CDD1DL);
-        return cx == gx * CELL + r.nextInt(SPREAD) && cz == gz * CELL + r.nextInt(SPREAD);
+        return new int[]{gx * CELL + r.nextInt(SPREAD), gz * CELL + r.nextInt(SPREAD)};
+    }
+
+    public static boolean chosenChunk(long seed, int cx, int cz) {
+        int[] c = chosenChunkOf(seed, Math.floorDiv(cx, CELL), Math.floorDiv(cz, CELL));
+        return c[0] == cx && c[1] == cz;
     }
 
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
-        int cx = origin.getX() >> 4, cz = origin.getZ() >> 4;
-        if (!chosenChunk(level.getSeed(), cx, cz)) return false;
-        BlockPos centre = findFloor(level, new BlockPos(cx * 16 + 8, 100, cz * 16 + 8), 100, 14);
-        if (centre == null) return false;
-        build(level, centre, random);
-        return true;
+        // since 1.4.1 villages are built at runtime by VillageManager (bigger than a feature may write)
+        return false;
     }
 
     /** Highest spot below {@code from} with solid ground and four blocks of air above it. */
@@ -90,7 +90,7 @@ public record ShadowVillageFeature() implements Feature {
         }
     }
 
-    private static void plaza(WorldGenLevel level, BlockPos c, RandomSource random) {
+    public static void plaza(WorldGenLevel level, BlockPos c, RandomSource random) {
         BlockState ash = ModBlocks.ASH_STONE.get().defaultBlockState();
         for (int x = -5; x <= 5; x++)
             for (int z = -5; z <= 5; z++) {
@@ -117,7 +117,7 @@ public record ShadowVillageFeature() implements Feature {
     }
 
     /** A ruined 7×7 hut facing {@code door}. */
-    private static void hut(WorldGenLevel level, BlockPos floor, RandomSource random, Direction door) {
+    public static void hut(WorldGenLevel level, BlockPos floor, RandomSource random, Direction door) {
         BlockState log = ModBlocks.DEAD_LOG.get().defaultBlockState();
         BlockState wall = ModBlocks.ASH_STONE.get().defaultBlockState();
         BlockState planks = Blocks.PALE_OAK_PLANKS.defaultBlockState();
@@ -160,7 +160,7 @@ public record ShadowVillageFeature() implements Feature {
     }
 
     /** Places {@code top} and props it up with ash stone down to the ground (at most 6 blocks). */
-    private static void foundation(WorldGenLevel level, BlockPos top, BlockState state) {
+    public static void foundation(WorldGenLevel level, BlockPos top, BlockState state) {
         level.setBlock(top, state, FLAGS);
         BlockState ash = ModBlocks.ASH_STONE.get().defaultBlockState();
         for (int i = 1; i <= 6; i++) {

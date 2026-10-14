@@ -49,7 +49,10 @@ public final class UmbraCommand {
                 .then(Commands.literal("darkness").executes(UmbraCommand::darkness))
                 .then(Commands.literal("maze").executes(UmbraCommand::maze))
                 .then(Commands.literal("home").executes(UmbraCommand::home))
-                .then(Commands.literal("status").executes(UmbraCommand::status)));
+                .then(Commands.literal("status").executes(UmbraCommand::status))
+                .then(Commands.literal("nightmare").executes(UmbraCommand::nightmare))
+                .then(Commands.literal("citadel").executes(UmbraCommand::citadel))
+                .then(village()));
     }
 
     private static int shadow(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -156,6 +159,40 @@ public final class UmbraCommand {
         RiftFrame.build(player.level(), base);
         reply(ctx, "command.umbra.rift");
         return 1;
+    }
+
+    private static int nightmare(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        if (player.level().dimension() != net.minecraft.world.level.Level.OVERWORLD || dev.umbra.nightmare.Nightmares.inNightmare(player)) {
+            reply(ctx, "command.umbra.nightmare_failed");
+            return 0;
+        }
+        return dev.umbra.nightmare.Nightmares.enter(player) ? 1 : 0;
+    }
+
+    /** Into the nearest citadel (built if needed), from anywhere. */
+    private static int citadel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        ServerLevel under = player.level().getServer().getLevel(dev.umbra.underside.Underside.LEVEL);
+        if (under == null) return 0;
+        int[] c = dev.umbra.citadel.CitadelGateFeature.nearest(under.getSeed(), (int) player.getX(), (int) player.getZ());
+        BlockPos gate = new BlockPos(c[0] * 16 + 8, dev.umbra.underside.Underside.FALLBACK_Y, c[1] * 16 + 8);
+        player.teleport(dev.umbra.citadel.Citadel.enter(under, player, gate));
+        return 1;
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> village() {
+        LiteralArgumentBuilder<CommandSourceStack> v = Commands.literal("village");
+        for (var layout : dev.umbra.village.VillageBuilder.Layout.values()) {
+            v.then(Commands.literal(layout.name().toLowerCase(java.util.Locale.ROOT)).executes(ctx -> {
+                ServerPlayer player = ctx.getSource().getPlayerOrException();
+                Vec3 dir = dev.umbra.util.UmbraUtil.horizontal(player.getLookAngle());
+                BlockPos at = BlockPos.containing(player.position().add(dir.scale(34)));
+                dev.umbra.village.VillageManager.buildHere((ServerLevel) player.level(), at, layout);
+                return 1;
+            }));
+        }
+        return v;
     }
 
     private static void reply(CommandContext<CommandSourceStack> ctx, String key) {

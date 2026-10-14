@@ -14,8 +14,13 @@ public class SilhouetteRenderer<T extends Mob> extends HumanoidMobRenderer<T, Hu
     private final Identifier texture;
 
     public SilhouetteRenderer(EntityRendererProvider.Context context, String textureName) {
+        this(context, Identifier.fromNamespaceAndPath(Umbra.MODID, "textures/entity/" + textureName + ".png"));
+    }
+
+    /** Any 64×64 humanoid texture, vanilla ones included. */
+    public SilhouetteRenderer(EntityRendererProvider.Context context, Identifier texture) {
         super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.0F);
-        this.texture = Identifier.fromNamespaceAndPath(Umbra.MODID, "textures/entity/" + textureName + ".png");
+        this.texture = texture;
     }
 
     @Override

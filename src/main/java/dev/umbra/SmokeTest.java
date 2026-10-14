@@ -534,7 +534,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 30, "journal has 30 entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 41, "journal has 41 entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -575,6 +575,23 @@ final class SmokeTest {
         check(dev.umbra.madness.DespairBladeItem.bonus(fake) < 0.01, "and not at all when sane");
         fake.getInventory().clearContent();
 
+        // 1.4.1: phantoms by tier, spawn eggs, mimic notes
+        fake.snapTo(PLATFORM.getX() + 0.5, PLATFORM.getY(), PLATFORM.getZ() + 0.5, 0, 0);
+        for (var mode : dev.umbra.sanity.PhantomEntity.Mode.values()) {
+            boolean ok = false;
+            for (int i = 0; i < 5 && !ok; i++) ok = dev.umbra.sanity.Hallucinations.spawnPhantom(level, fake, mode, level.getRandom());
+            check(ok, "a " + mode + " phantom appears");
+        }
+        var phantoms = level.getEntitiesOfClass(dev.umbra.sanity.PhantomEntity.class, new AABB(PLATFORM).inflate(40));
+        check(phantoms.size() >= 3, "phantoms are in the world (" + phantoms.size() + ")");
+        phantoms.forEach(net.minecraft.world.entity.Entity::discard);
+        check(ModItems.CRAWLER_SPAWN_EGG.get() instanceof net.minecraft.world.item.SpawnEggItem
+                && net.minecraft.world.item.SpawnEggItem.spawnsEntity(new ItemStack(ModItems.CITADEL_KEEPER_SPAWN_EGG.get()), ModEntities.CITADEL_KEEPER.get()), "spawn eggs are real spawn eggs");
+        BlockPos furnace = PLATFORM.offset(-3, 0, -9);
+        level.setBlock(furnace, Blocks.FURNACE.defaultBlockState(), Block.UPDATE_ALL);
+        dev.umbra.mimic.MimicManager.tryMimic(level, furnace);
+        check(dev.umbra.mimic.MimicNotes.kindOf(Blocks.DEEPSLATE_DIAMOND_ORE).equals("ore") && dev.umbra.mimic.MimicNotes.kindOf(Blocks.SPRUCE_PLANKS).equals("planks"), "mimic kinds group their blocks");
+
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under != null) {
             BlockPos corner = new BlockPos(3_000_000, 150, 3_000_000);
@@ -593,26 +610,31 @@ final class SmokeTest {
 
     // ---------------------------------------------------------------- 1.3
     private static void testVillage(ServerLevel level) {
-        BlockPos v = new BlockPos(185, Y + 40, 0);
-        for (int x = -20; x <= 20; x++)
-            for (int z = -20; z <= 20; z++)
-                level.setBlock(v.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
-        dev.umbra.village.ShadowVillageFeature.build(level, v, level.getRandom());
-        int containers = 0, lanterns = 0, logs = 0;
-        for (BlockPos p : BlockPos.betweenClosed(v.offset(-20, -1, -20), v.offset(20, 5, 20))) {
-            BlockState s = level.getBlockState(p);
-            if (s.is(Blocks.CHEST) || s.is(Blocks.BARREL)) containers++;
-            if (s.is(Blocks.SOUL_LANTERN) || s.is(Blocks.LANTERN)) lanterns++;
-            if (s.is(ModBlocks.DEAD_LOG.get())) logs++;
+        BlockPos v = new BlockPos(185, Y + 15, 0);
+        int[] ys = {Y + 15, Y + 45, Y + 75};
+        var layouts = dev.umbra.village.VillageBuilder.Layout.values();
+        for (int k = 0; k < layouts.length; k++) {
+            BlockPos c = new BlockPos(185, ys[k], 0);
+            for (int x = -34; x <= 34; x++)
+                for (int z = -34; z <= 34; z++)
+                    level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            BlockPos bell = dev.umbra.village.VillageBuilder.build(level, c, level.getRandom(), layouts[k]);
+            int containers = 0, lanterns = 0, logs = 0;
+            for (BlockPos p : BlockPos.betweenClosed(c.offset(-34, -1, -34), c.offset(34, 11, 34))) {
+                BlockState s = level.getBlockState(p);
+                if (s.is(Blocks.CHEST) || s.is(Blocks.BARREL)) containers++;
+                if (s.is(Blocks.SOUL_LANTERN) || s.is(Blocks.LANTERN)) lanterns++;
+                if (s.is(ModBlocks.DEAD_LOG.get())) logs++;
+            }
+            var folk = level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, new AABB(c).inflate(12));
+            check(level.getBlockState(bell).is(Blocks.BELL), "village '" + layouts[k] + "' has its bell");
+            check(containers >= 5 && lanterns >= 4 && logs >= 30 && folk.size() >= 4,
+                    "village '" + layouts[k] + "' is built (" + containers + " containers, " + lanterns + " lanterns, " + logs + " logs, " + folk.size() + " folk)");
+            if (k == 0 && !folk.isEmpty()) {
+                check(folk.get(0).getOffers().size() == 6, "a shadow villager has six trades (" + folk.get(0).getOffers().size() + ")");
+            }
+            folk.forEach(net.minecraft.world.entity.Entity::discard);
         }
-        check(containers >= 4, "a shadow village has a chest or barrel in every hut (" + containers + ")");
-        check(lanterns >= 4 && logs >= 16, "a shadow village has lantern posts and hut frames (" + lanterns + " lanterns, " + logs + " logs)");
-        var folk = level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, new AABB(v).inflate(10));
-        check(folk.size() >= 3, "shadow folk live in the village (" + folk.size() + ")");
-        if (!folk.isEmpty()) {
-            check(folk.get(0).getOffers().size() == 6, "a shadow villager has six trades (" + folk.get(0).getOffers().size() + ")");
-        }
-        folk.forEach(net.minecraft.world.entity.Entity::discard);
 
         int mimics = 0;
         dev.umbra.village.ShadowVillager mimic = null, real = null;
@@ -655,7 +677,7 @@ final class SmokeTest {
         for (int i = 0; i < at.size(); i++)
             for (int j = i + 1; j < at.size(); j++)
                 minGap = Math.min(minGap, Math.max(Math.abs(at.get(i)[0] - at.get(j)[0]), Math.abs(at.get(i)[1] - at.get(j)[1])));
-        check(villages == 100 && minGap >= 7, "shadow villages are spaced out (" + villages + " in 180x180 chunks, min gap " + minGap + ")");
+        check(villages == 225 && minGap >= 7, "shadow villages are spaced out (" + villages + " in 180x180 chunks, min gap " + minGap + ")");
     }
 
     // ---------------------------------------------------------------- 1.4
@@ -670,10 +692,17 @@ final class SmokeTest {
         dev.umbra.citadel.Citadel.build(level, o, level.getRandom());
         long ms = (System.nanoTime() - t0) / 1_000_000;
         check(dev.umbra.citadel.Citadel.isBuilt(level, o), "the citadel is built (" + ms + " ms)");
-        check(level.getBlockState(o.offset(0, 1, 0)).is(ModBlocks.CITADEL_GATE.get()), "the citadel has a way back");
+        check(level.getBlockState(o.offset(0, 1, 0)).is(ModBlocks.CITADEL_GATE.get())
+                && level.getBlockState(o.offset(0, 1, 0)).getValue(dev.umbra.citadel.CitadelGateBlock.AXIS) == net.minecraft.core.Direction.Axis.Z, "the citadel has a way back, facing the right way");
+        int quantum = 0;
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(dev.umbra.citadel.Citadel.MAZE_1, 0, -18), o.offset(dev.umbra.citadel.Citadel.MAZE_1 + 36, 0, 18)))
+            if (level.getBlockState(p).is(ModBlocks.QUANTUM_BLOCK.get())) quantum++;
+        check(quantum > 15, "the wide maze has quantum walls (" + quantum + " columns)");
+        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1, 1, 1)).isAir() && level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1 + 36, 1, 1)).isAir(),
+                "the wide maze has a way in and a way out");
         check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 0)).is(ModBlocks.CITADEL_SEAL.get()), "the throne is sealed");
         int cores = 0, dark = 0, chests = 0, mimics = 0, phantom = 0;
-        for (BlockPos p : BlockPos.betweenClosed(o.offset(-3, -2, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 9, 14))) {
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(-3, -2, -dev.umbra.citadel.Citadel.HALF_WIDTH), o.offset(dev.umbra.citadel.Citadel.LENGTH, 9, dev.umbra.citadel.Citadel.HALF_WIDTH))) {
             BlockState s = level.getBlockState(p);
             if (s.is(ModBlocks.MAZE_CORE.get())) cores++;
             else if (s.is(ModBlocks.LIVING_DARKNESS.get())) dark++;
@@ -683,16 +712,16 @@ final class SmokeTest {
                 if (dev.umbra.mimic.MimicChests.isMimic(level, p)) mimics++;
             }
         }
-        check(cores == 2, "the citadel has two quantum mazes (" + cores + ")");
+        check(cores == 1, "the Architect's maze has its core (" + cores + ")");
         check(dark > 500, "the hall of living darkness is full (" + dark + ")");
         check(chests >= 20 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
-        check(phantom == 27, "the library hides a phantom wall (" + phantom + ")");
+        check(phantom == 36, "the library hides a phantom wall (" + phantom + ")");
         int statues = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelStatue.class);
         int keepers = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelKeeper.class);
-        check(statues == 3 && keepers == 2, "statues and keepers stand guard (" + statues + ", " + keepers + ")");
+        check(statues == 5 && keepers == 2, "statues and keepers stand guard (" + statues + ", " + keepers + ")");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
-        BlockPos pw = o.offset((dev.umbra.citadel.Citadel.LIBRARY_FROM + dev.umbra.citadel.Citadel.LIBRARY_TO) / 2, 0, -8);
+        BlockPos pw = o.offset(dev.umbra.citadel.Citadel.SECRET_X, 0, -11);
         BlockState wallState = level.getBlockState(pw);
         Sanity.set(fake, 80);
         boolean solid = !wallState.getCollisionShape(level, pw, net.minecraft.world.phys.shapes.CollisionContext.of(fake)).isEmpty();
@@ -701,7 +730,7 @@ final class SmokeTest {
         check(solid && open, "the phantom wall lets only a slipping mind through");
         Sanity.set(fake, 100);
 
-        var statue = level.getEntitiesOfClass(dev.umbra.citadel.CitadelStatue.class, AABB.encapsulatingFullBlocks(o.offset(-3, -10, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 13, 14)));
+        var statue = level.getEntitiesOfClass(dev.umbra.citadel.CitadelStatue.class, dev.umbra.citadel.Citadel.bounds(o));
         if (!statue.isEmpty()) {
             statue.get(0).onLit(level, null);
             check(statue.get(0).isFrozen(), "light turns a statue to stone");
@@ -715,7 +744,7 @@ final class SmokeTest {
             check(Math.abs(boss.getX() - (o.getX() + dev.umbra.citadel.Citadel.THRONE + mid + 0.5)) < 1.0, "the Architect is in his maze");
             boss.discard();
         }
-        for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, AABB.encapsulatingFullBlocks(o.offset(-3, -10, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 13, 14)))) e.discard();
+        for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, dev.umbra.citadel.Citadel.bounds(o))) e.discard();
 
         // gates in the caves
         BlockPos g = new BlockPos(185, Y + 60, 40);

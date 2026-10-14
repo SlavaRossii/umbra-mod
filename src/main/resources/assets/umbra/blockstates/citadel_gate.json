@@ -1,7 +1,11 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
       "model": "umbra:block/citadel_gate"
+    },
+    "axis=z": {
+      "model": "umbra:block/citadel_gate",
+      "y": 90
     }
   }
 }

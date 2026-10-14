@@ -60,5 +60,11 @@ public final class ModAttachments {
                     .serialize(Codec.LONG.fieldOf("gate"))
                     .build());
 
+    /** On a village cell's chosen chunk: packed bell position once built; MIN = not built, MAX = no village here. */
+    public static final Supplier<AttachmentType<Long>> VILLAGE = ATTACHMENTS.register("village",
+            () -> AttachmentType.builder(() -> Long.MIN_VALUE)
+                    .serialize(Codec.LONG.fieldOf("bell"))
+                    .build());
+
     private ModAttachments() {}
 }

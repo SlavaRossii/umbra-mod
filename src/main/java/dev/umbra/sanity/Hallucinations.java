@@ -25,7 +25,22 @@ public final class Hallucinations {
             SoundEvents.WOODEN_DOOR_OPEN,
             SoundEvents.GLASS_BREAK,
             SoundEvents.STONE_STEP,
-            SoundEvents.WARDEN_HEARTBEAT);
+            SoundEvents.WARDEN_HEARTBEAT,
+            SoundEvents.WOODEN_DOOR_CLOSE,
+            SoundEvents.CHEST_OPEN,
+            SoundEvents.CHEST_CLOSE,
+            SoundEvents.TNT_PRIMED,
+            SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR,
+            SoundEvents.STONE_BREAK,
+            SoundEvents.GRAVEL_STEP,
+            SoundEvents.FIRE_EXTINGUISH,
+            SoundEvents.ENDERMAN_STARE,
+            SoundEvents.SCULK_SHRIEKER_SHRIEK,
+            SoundEvents.PLAYER_HURT,
+            SoundEvents.SKELETON_SHOOT);
+
+    /** Phantom looks: familiar mobs (index into {@link #LOOKS}). */
+    public static final int LOOKS = 4;
 
     private Hallucinations() {}
 
@@ -37,9 +52,48 @@ public final class Hallucinations {
             if (random.nextInt(chance) == 0) fakeSound(level, player, random);
         }
         if (sanity < Sanity.PARANOID) {
-            int chance = sanity < Sanity.BREAKDOWN ? 30 : 60;
+            int chance = sanity < Sanity.BREAKDOWN ? 60 : 110;
             if (random.nextInt(chance) == 0) spawnFigure(level, player, random);
         }
+        // phantoms, in tiers that match the insights
+        if (sanity < 45.0F && random.nextInt(70) == 0) spawnPhantom(level, player, PhantomEntity.Mode.WATCH, random);
+        if (sanity < 30.0F && random.nextInt(90) == 0) spawnPhantom(level, player, PhantomEntity.Mode.AMBUSH, random);
+        if (sanity < 15.0F && random.nextInt(110) == 0 && phantoms(level, player, PhantomEntity.Mode.SHADOW) < 2) {
+            spawnPhantom(level, player, PhantomEntity.Mode.SHADOW, random);
+        }
+        // your name, whispered
+        if (sanity < 30.0F && random.nextInt(400) == 0) {
+            player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.umbra.whisper_name", player.getName())
+                    .withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
+        }
+    }
+
+    private static int phantoms(ServerLevel level, ServerPlayer player, PhantomEntity.Mode mode) {
+        return level.getEntitiesOfClass(PhantomEntity.class, player.getBoundingBox().inflate(48), p -> p.mode() == mode).size();
+    }
+
+    /** Spawns a phantom: watchers far off, ambushers right in front, shadows out of sight. */
+    public static boolean spawnPhantom(ServerLevel level, ServerPlayer player, PhantomEntity.Mode mode, RandomSource random) {
+        Vec3 look = UmbraUtil.horizontal(player.getLookAngle());
+        if (look == Vec3.ZERO) look = new Vec3(0, 0, 1);
+        for (int attempt = 0; attempt < 12; attempt++) {
+            double angle, dist;
+            switch (mode) {
+                case WATCH -> { angle = Math.toRadians(random.nextInt(120) - 60); dist = 16 + random.nextInt(12); }
+                case AMBUSH -> { angle = Math.toRadians(random.nextInt(30) - 15); dist = 4 + random.nextInt(2); }
+                default -> { angle = Math.toRadians(120 + random.nextInt(120)); dist = 10 + random.nextInt(8); }
+            }
+            Vec3 dir = new Vec3(look.x * Math.cos(angle) - look.z * Math.sin(angle), 0, look.x * Math.sin(angle) + look.z * Math.cos(angle));
+            BlockPos ground = findStandable(level, BlockPos.containing(player.position().add(dir.scale(dist))), 6);
+            if (ground == null) continue;
+            var type = mode == PhantomEntity.Mode.SHADOW ? ModEntities.PHANTOM_SHADOW.get() : ModEntities.PHANTOMS.get(random.nextInt(ModEntities.PHANTOMS.size())).get();
+            PhantomEntity phantom = type.create(level, EntitySpawnReason.EVENT);
+            if (phantom == null) return false;
+            phantom.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);
+            phantom.setup(mode, player);
+            return level.addFreshEntity(phantom);
+        }
+        return false;
     }
 
     public static void fakeSound(ServerLevel level, ServerPlayer player, RandomSource random) {

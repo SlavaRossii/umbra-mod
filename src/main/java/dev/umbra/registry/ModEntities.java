@@ -35,6 +35,20 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.citadel.CitadelKeeper>> CITADEL_KEEPER = ENTITIES.registerEntityType("citadel_keeper",
             dev.umbra.citadel.CitadelKeeper::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10));
 
+    // --- Phantoms (1.4.1): familiar mobs that are not there ---
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> PHANTOM_ZOMBIE = phantom("phantom_zombie");
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> PHANTOM_SKELETON = phantom("phantom_skeleton");
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> PHANTOM_HUSK = phantom("phantom_husk");
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> PHANTOM_STEVE = phantom("phantom_steve");
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> PHANTOM_SHADOW = phantom("phantom_shadow");
+    public static final java.util.List<DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>>> PHANTOMS =
+            java.util.List.of(PHANTOM_ZOMBIE, PHANTOM_SKELETON, PHANTOM_HUSK, PHANTOM_STEVE);
+
+    private static DeferredHolder<EntityType<?>, EntityType<dev.umbra.sanity.PhantomEntity>> phantom(String name) {
+        return ENTITIES.registerEntityType(name, dev.umbra.sanity.PhantomEntity::new, MobCategory.MISC,
+                b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());
+    }
+
     public static final DeferredHolder<EntityType<?>, EntityType<HallucinationEntity>> HALLUCINATION = ENTITIES.registerEntityType("hallucination",
             HallucinationEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());

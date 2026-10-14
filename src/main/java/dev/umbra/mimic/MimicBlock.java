@@ -100,11 +100,11 @@ public class MimicBlock extends Block {
             if (ore && !player.isCreative()) spring(sl, pos);
             else expose(sl, pos);
         }
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
     }
 
     /** The player noticed: the mimic flees and leaves the real block plus a reward. */
     public void expose(ServerLevel level, BlockPos pos) {
+        MimicNotes.note(level, pos, MimicNotes.kindOf(original()));
         level.setBlock(pos, original().defaultBlockState(), Block.UPDATE_ALL);
         Vec3 c = Vec3.atCenterOf(pos);
         level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 25, 0.4, 0.4, 0.4, 0.05);
@@ -112,14 +112,6 @@ public class MimicBlock extends Block {
         ExperienceOrb.award(level, c, 12);
         ItemEntity reward = new ItemEntity(level, c.x, c.y + 0.6, c.z, new ItemStack(Items.EMERALD, 1 + level.getRandom().nextInt(2)));
         level.addFreshEntity(reward);
-    }
-
-    @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        // the faintest tell: now and then something like breath escapes from it
-        if (random.nextInt(ore ? 14 : 30) == 0) {
-            level.addParticle(ParticleTypes.ASH, pos.getX() + random.nextDouble(), pos.getY() + 1.02, pos.getZ() + random.nextDouble(), 0, 0, 0);
-        }
     }
 
     /** The bite: four hearts through armour to whoever is closest, but it leaves them alive. */
@@ -137,6 +129,7 @@ public class MimicBlock extends Block {
 
     /** Too late. */
     public void spring(ServerLevel level, BlockPos pos) {
+        MimicNotes.note(level, pos, MimicNotes.kindOf(original()));
         bite(level, pos);
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         Vec3 c = Vec3.atCenterOf(pos);
@@ -148,7 +141,6 @@ public class MimicBlock extends Block {
         for (Player p : level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(6.0))) {
             p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));
             Sanity.add(p, Sanity.Shock.MIMIC_SPRUNG);
-            if (p instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
         }
     }
 }

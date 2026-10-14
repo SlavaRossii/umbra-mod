@@ -119,7 +119,7 @@ public class ShadowVillager extends WanderingTrader implements LightSensitive {
         RandomSource r = this.random;
         level.addFreshEntity(new ItemEntity(level, getX(), getY() + 0.5, getZ(), new ItemStack(ModItems.SHADOW_SHARD.get(), 2 + r.nextInt(3))));
         if (r.nextInt(3) == 0) level.addFreshEntity(new ItemEntity(level, getX(), getY() + 0.5, getZ(), new ItemStack(ModItems.ECHO_QUARTZ.get())));
-        if (by instanceof ServerPlayer sp) Journal.unlock(sp, "mimic");
+        dev.umbra.mimic.MimicNotes.note(level, blockPosition(), "villager");
         this.discard();
     }
 
@@ -133,7 +133,7 @@ public class ShadowVillager extends WanderingTrader implements LightSensitive {
         for (int i = 0; i < 2; i++) ModEntities.SHADE.get().spawn(level, blockPosition(), EntitySpawnReason.MOB_SUMMONED);
         victim.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));
         Sanity.add(victim, Sanity.Shock.MIMIC_SPRUNG);
-        if (victim instanceof ServerPlayer sp) Journal.unlock(sp, "mimic");
+        dev.umbra.mimic.MimicNotes.note(level, blockPosition(), "villager");
         this.discard();
     }
 

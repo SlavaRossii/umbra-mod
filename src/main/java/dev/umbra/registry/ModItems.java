@@ -80,14 +80,14 @@ public final class ModItems {
     public static final DeferredItem<Item> GLOOM_BOOTS = ITEMS.registerSimpleItem("gloom_boots", p -> p.humanoidArmor(ModMaterials.GLOOM_ARMOR, ArmorType.BOOTS));
 
     // --- Spawn eggs ---
-    public static final DeferredItem<Item> CRAWLER_SPAWN_EGG = ITEMS.registerSimpleItem("crawler_spawn_egg", p -> p.spawnEgg(ModEntities.CRAWLER.get()));
-    public static final DeferredItem<Item> BLIND_SPAWN_EGG = ITEMS.registerSimpleItem("blind_spawn_egg", p -> p.spawnEgg(ModEntities.BLIND.get()));
-    public static final DeferredItem<Item> LIGHT_EATER_SPAWN_EGG = ITEMS.registerSimpleItem("light_eater_spawn_egg", p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));
-    public static final DeferredItem<Item> MIMICKER_SPAWN_EGG = ITEMS.registerSimpleItem("mimicker_spawn_egg", p -> p.spawnEgg(ModEntities.MIMICKER.get()));
-    public static final DeferredItem<Item> SHADOW_VILLAGER_SPAWN_EGG = ITEMS.registerSimpleItem("shadow_villager_spawn_egg", p -> p.spawnEgg(ModEntities.SHADOW_VILLAGER.get()));
-    public static final DeferredItem<Item> CITADEL_STATUE_SPAWN_EGG = ITEMS.registerSimpleItem("citadel_statue_spawn_egg", p -> p.spawnEgg(ModEntities.CITADEL_STATUE.get()));
-    public static final DeferredItem<Item> CITADEL_KEEPER_SPAWN_EGG = ITEMS.registerSimpleItem("citadel_keeper_spawn_egg", p -> p.spawnEgg(ModEntities.CITADEL_KEEPER.get()));
-    public static final DeferredItem<Item> SHADE_SPAWN_EGG = ITEMS.registerSimpleItem("shade_spawn_egg", p -> p.spawnEgg(ModEntities.SHADE.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> CRAWLER_SPAWN_EGG = ITEMS.registerItem("crawler_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.CRAWLER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> BLIND_SPAWN_EGG = ITEMS.registerItem("blind_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.BLIND.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LIGHT_EATER_SPAWN_EGG = ITEMS.registerItem("light_eater_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LIGHT_EATER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> MIMICKER_SPAWN_EGG = ITEMS.registerItem("mimicker_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.MIMICKER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> SHADOW_VILLAGER_SPAWN_EGG = ITEMS.registerItem("shadow_villager_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.SHADOW_VILLAGER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> CITADEL_STATUE_SPAWN_EGG = ITEMS.registerItem("citadel_statue_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.CITADEL_STATUE.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> CITADEL_KEEPER_SPAWN_EGG = ITEMS.registerItem("citadel_keeper_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.CITADEL_KEEPER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> SHADE_SPAWN_EGG = ITEMS.registerItem("shade_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.SHADE.get()));
 
     // --- Minibosses: seals, trophies, the key ---
     public static final DeferredItem<SummonSealItem> SEAL_OF_WATCHING = ITEMS.registerItem("seal_of_watching",

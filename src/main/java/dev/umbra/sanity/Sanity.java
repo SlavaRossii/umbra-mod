@@ -138,10 +138,10 @@ public final class Sanity {
 
     private static void applyEffects(ServerLevel level, ServerPlayer player, float sanity) {
         if (sanity < BREAKDOWN) {
-            if (player.getRandom().nextInt(30) == 0) {
+            if (player.getRandom().nextInt(50) == 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 20 * 7, 0, false, false));
             }
-            if (player.getRandom().nextInt(40) == 0) {
+            if (player.getRandom().nextInt(90) == 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 4, 0, false, false));
             }
             if (sanity <= 0.0F) {

@@ -95,6 +95,9 @@ public class Umbra {
         event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
         event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
         event.put(ModEntities.SHADE.get(), Shade.createAttributes().build());
+        for (var ph : java.util.List.of(ModEntities.PHANTOM_ZOMBIE, ModEntities.PHANTOM_SKELETON, ModEntities.PHANTOM_HUSK, ModEntities.PHANTOM_STEVE, ModEntities.PHANTOM_SHADOW)) {
+            event.put(ph.get(), dev.umbra.sanity.PhantomEntity.createAttributes().build());
+        }
         event.put(ModEntities.CITADEL_STATUE.get(), dev.umbra.citadel.CitadelStatue.createAttributes().build());
         event.put(ModEntities.CITADEL_KEEPER.get(), dev.umbra.citadel.CitadelKeeper.createAttributes().build());
         event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());
@@ -127,6 +130,7 @@ public class Umbra {
         Sanity.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
+        dev.umbra.village.VillageManager.tick(player);
     }
 
     private static void onSetSpawn(PlayerSetSpawnEvent event) {
@@ -136,8 +140,8 @@ public class Umbra {
     }
 
     private static void onWakeUp(PlayerWakeUpEvent event) {
-        // a full night's sleep, not being woken up by a monster
-        if (event.getEntity() instanceof ServerPlayer player && !event.wakeImmediately() && event.updateLevel()) {
+        // a full night's sleep (the night was skipped), not leaving the bed by hand
+        if (event.getEntity() instanceof ServerPlayer player && !event.wakeImmediately()) {
             // a troubled mind may not get its rest
             if (dev.umbra.nightmare.Nightmares.onSleep(player)) return;
             Sanity.add(player, Sanity.Shock.SLEEP);

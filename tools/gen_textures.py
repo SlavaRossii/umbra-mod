@@ -767,6 +767,12 @@ def stage10():
         save(egg, f"item/{name}_spawn_egg.png")
 
 
+# ------------------------------------------------------------------ 1.4.1
+
+def stage11():
+    humanoid_skin("entity/phantom_shadow.png", (6, 4, 10), (12, 8, 18), (255, 60, 60), 110)
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -788,4 +794,5 @@ if __name__ == "__main__":
     stage8()
     stage9()
     stage10()
+    stage11()
     print("textures written")

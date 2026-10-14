@@ -19,13 +19,27 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** The doorway of a citadel gate: in the caves it leads into the citadel, in the citadel it leads back out. */
 public class CitadelGateBlock extends Block implements Portal {
+    /** X: the doorway spans along x (thin in z); Z: it spans along z (thin in x). */
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<net.minecraft.core.Direction.Axis> AXIS =
+            net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_AXIS;
+
     public CitadelGateBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, net.minecraft.core.Direction.Axis.X));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(AXIS);
+    }
+
+    public BlockState facing(net.minecraft.core.Direction.Axis axis) {
+        return defaultBlockState().setValue(AXIS, axis);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Block.box(0, 0, 6, 16, 16, 10);
+        return state.getValue(AXIS) == net.minecraft.core.Direction.Axis.X ? Block.box(0, 0, 6, 16, 16, 10) : Block.box(6, 0, 0, 10, 16, 16);
     }
 
     @Override
@@ -57,7 +71,7 @@ public class CitadelGateBlock extends Block implements Portal {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(2) == 0) {
-            level.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + 0.5, 0, 0.02, 0);
+            level.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0.02, 0);
         }
     }
 }

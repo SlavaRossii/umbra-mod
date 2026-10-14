@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
  */
 public record CitadelGateFeature() implements Feature {
     public static final MapCodec<CitadelGateFeature> CODEC = MapCodec.unit(new CitadelGateFeature());
-    public static final int CELL = 20;
+    public static final int CELL = 24;
     public static final int SPREAD = 8;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 

@@ -115,7 +115,6 @@ public final class MimicChests {
                     double d = Math.sqrt(pos.distSqr(player.blockPosition()));
                     if (d < 10 && player.getRandom().nextInt(3) == 0) {
                         level.playSound(null, pos, SoundEvents.WARDEN_HEARTBEAT, SoundSource.BLOCKS, 0.35F, 1.6F);
-                        level.sendParticles(ParticleTypes.ASH, pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5, 4, 0.3, 0.1, 0.3, 0.0);
                     }
                 }
             }
@@ -128,6 +127,7 @@ public final class MimicChests {
         if (c == null || !MARKER.equals(c.getLootTable())) return;
         c.setLootTable(HOARD, level.getRandom().nextLong());
         c.setChanged();
+        MimicNotes.note(level, pos, "chest");
         Vec3 v = Vec3.atCenterOf(pos);
         level.sendParticles(ParticleTypes.SQUID_INK, v.x, v.y, v.z, 25, 0.4, 0.4, 0.4, 0.05);
         level.playSound(null, pos, SoundEvents.SILVERFISH_DEATH, SoundSource.BLOCKS, 1.0F, 0.5F);
@@ -137,6 +137,7 @@ public final class MimicChests {
 
     /** Opened or broken: it bites and is gone. */
     public static void spring(ServerLevel level, BlockPos pos) {
+        MimicNotes.note(level, pos, "chest");
         MimicBlock.bite(level, pos);
         RandomizableContainerBlockEntity c = container(level, pos);
         if (c != null) c.setLootTable(null);
@@ -148,7 +149,6 @@ public final class MimicChests {
         for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, new net.minecraft.world.phys.AABB(pos).inflate(6.0))) {
             p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0));
             Sanity.add(p, Sanity.Shock.MIMIC_SPRUNG);
-            dev.umbra.journal.Journal.unlock(p, "mimic");
         }
     }
 
@@ -167,6 +167,5 @@ public final class MimicChests {
         if (event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START) return;
         if (!decide(level, event.getPos())) return;
         expose(level, event.getPos());
-        if (event.getEntity() instanceof ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
     }
 }

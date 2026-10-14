@@ -49,17 +49,20 @@ import net.minecraft.world.phys.Vec3;
 public final class Citadel {
     /** The citadel hangs right above its gate, high over the caves, out of reach of the terrain. */
     public static final int POCKET_Y = 200;
-    public static final int WEST = 62;
-    public static final int LENGTH = 156;
+    public static final int WEST = 113;
+    public static final int LENGTH = 226;
+    public static final int HALF_WIDTH = 20;
 
-    // wing offsets (x relative to the origin), all at floor level y = 0
-    public static final int MAZE_1 = 18;
-    public static final int DARK_FROM = 46, DARK_TO = 86;
-    public static final int VAULT_FROM = 87, VAULT_TO = 103;
-    public static final int LIBRARY_FROM = 108, LIBRARY_TO = 124;
-    public static final int SEAL_X = 129;
-    public static final int THRONE = 130;
-    public static final BlockPos ARRIVAL = new BlockPos(4, 0, 0);
+    // wing offsets (x relative to the origin), all at floor level y = 0. Corridors are 5 wide and 4 high.
+    public static final int HALL_TO = 16;
+    public static final int MAZE_1 = 22, MAZE_CELLS = 9, MAZE_PITCH = 4, MAZE_SIZE = MAZE_CELLS * MAZE_PITCH + 1; // 37
+    public static final int DARK_FROM = 64, DARK_TO = 114;
+    public static final int VAULT_FROM = 115, VAULT_TO = 137;
+    public static final int LIBRARY_FROM = 143, LIBRARY_TO = 167;
+    public static final int GARDEN_FROM = 173, GARDEN_TO = 195;
+    public static final int SEAL_X = 200;
+    public static final int THRONE = 201;
+    public static final BlockPos ARRIVAL = new BlockPos(5, 0, 0);
 
     public static final ResourceKey<LootTable> LIBRARY_LOOT = key("chests/citadel_library");
     public static final ResourceKey<LootTable> SECRET_LOOT = key("chests/citadel_secret");
@@ -87,15 +90,15 @@ public final class Citadel {
         int x = (int) Math.floor(pos.x), z = (int) Math.floor(pos.z);
         int c = CitadelGateFeature.CELL;
         for (int gx = Math.floorDiv(Math.floorDiv(x - LENGTH + WEST - 8, 16), c); gx <= Math.floorDiv(Math.floorDiv(x + 3 + WEST - 8, 16), c); gx++)
-            for (int gz = Math.floorDiv(Math.floorDiv(z - 30, 16), c); gz <= Math.floorDiv(Math.floorDiv(z + 30, 16), c); gz++) {
+            for (int gz = Math.floorDiv(Math.floorDiv(z - 40, 16), c); gz <= Math.floorDiv(Math.floorDiv(z + 40, 16), c); gz++) {
                 int[] chunk = CitadelGateFeature.chosenChunkOf(seed, gx, gz);
                 BlockPos o = origin(chunk[0], chunk[1]);
-                if (x >= o.getX() - 3 && x <= o.getX() + LENGTH && Math.abs(z - o.getZ()) <= 14) return o;
+                if (x >= o.getX() - 3 && x <= o.getX() + LENGTH && Math.abs(z - o.getZ()) <= HALF_WIDTH) return o;
             }
         return null;
     }
     public static boolean isBuilt(ServerLevel level, BlockPos origin) {
-        return level.getBlockState(origin.offset(-3, -10, 0)).is(ModBlocks.MAZE_WALL.get())
+        return level.getBlockState(origin.offset(-3, -3, 0)).is(ModBlocks.MAZE_WALL.get())
                 && level.getBlockState(origin.offset(1, 0, 0)).isAir();
     }
 
@@ -170,29 +173,34 @@ public final class Citadel {
     public static void build(ServerLevel level, BlockPos o, RandomSource random) {
         BlockState wall = ModBlocks.MAZE_WALL.get().defaultBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
-        // 1. solid unbreakable block
-        fill(level, o.offset(-3, -10, -14), o.offset(LENGTH, 13, 14), wall);
+        // 1. one solid unbreakable block to carve from
+        fill(level, o.offset(-3, -3, -HALF_WIDTH), o.offset(LENGTH, 10, HALF_WIDTH), wall);
+
         // 2. entrance hall with the way back
-        fill(level, o.offset(1, 0, -6), o.offset(12, 4, 6), air);
+        fill(level, o.offset(1, 0, -8), o.offset(HALL_TO, 5, 8), air);
         for (int y = 0; y <= 3; y++)
-            for (int z = -1; z <= 1; z++) level.setBlock(o.offset(0, y, z), ModBlocks.CITADEL_GATE.get().defaultBlockState(), FLAGS);
-        lanterns(level, o, 2, 12, -6, 6, 4);
-        // 3. corridor → first maze
-        fill(level, o.offset(13, 0, -1), o.offset(MAZE_1 - 1, 2, 1), air);
-        QuantumMaze.build(level, o.offset(MAZE_1, -1, -QuantumMaze.SIZE / 2), random);
-        int mazeEnd = MAZE_1 + QuantumMaze.SIZE - 1;
-        fill(level, o.offset(mazeEnd, 0, 0), o.offset(DARK_FROM - 1, 2, 0), air);
-        fill(level, o.offset(mazeEnd + 1, 0, -1), o.offset(DARK_FROM - 1, 2, 1), air);
-        // 4. the hall of living darkness, with statues
-        fill(level, o.offset(DARK_FROM, 0, -3), o.offset(DARK_TO, 3, 3), ModBlocks.LIVING_DARKNESS.get().defaultBlockState());
-        for (int x : new int[]{DARK_FROM + 10, DARK_FROM + 22, DARK_FROM + 34}) spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(x, 0, random.nextInt(5) - 2));
+            for (int z = -1; z <= 1; z++) level.setBlock(o.offset(0, y, z), ModBlocks.CITADEL_GATE.get().facing(Direction.Axis.Z), FLAGS);
+        lanterns(level, o, 2, HALL_TO, -8, 8, 5);
+        corridor(level, o, HALL_TO + 1, MAZE_1 - 1);
+
+        // 3. a wide quantum maze: 9×9 cells, passages 3 blocks wide
+        wideMaze(level, o.offset(MAZE_1, 0, -MAZE_SIZE / 2), random);
+        corridor(level, o, MAZE_1 + MAZE_SIZE, DARK_FROM - 1);
+
+        // 4. the hall of living darkness: pillars, statues
+        fill(level, o.offset(DARK_FROM, 0, -5), o.offset(DARK_TO, 4, 5), ModBlocks.LIVING_DARKNESS.get().defaultBlockState());
+        for (int x = DARK_FROM + 4; x < DARK_TO; x += 8)
+            for (int z : new int[]{-3, 3})
+                fill(level, o.offset(x, 0, z), o.offset(x, 4, z), wall);
+        for (int x = DARK_FROM + 10; x < DARK_TO; x += 12) spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(x, 0, random.nextInt(5) - 2));
+
         // 5. the vault: half the chests are hungry
-        fill(level, o.offset(VAULT_FROM, 0, -8), o.offset(VAULT_TO, 4, 8), air);
+        fill(level, o.offset(VAULT_FROM, 0, -11), o.offset(VAULT_TO, 5, 11), air);
         int n = 0;
         for (int x = VAULT_FROM + 2; x <= VAULT_TO - 2; x += 3) {
-            for (int z : new int[]{-7, 7}) {
+            for (int z : new int[]{-10, 10}) {
                 BlockPos c = o.offset(x, 0, z);
-                if (n % 2 == random.nextInt(2)) {
+                if (random.nextBoolean()) {
                     MimicChests.plant(level, c);
                 } else {
                     level.setBlock(c, Blocks.CHEST.defaultBlockState(), FLAGS);
@@ -201,44 +209,137 @@ public final class Citadel {
                 n++;
             }
         }
-        lanterns(level, o, VAULT_FROM + 1, VAULT_TO - 1, -8, 8, 4);
+        lanterns(level, o, VAULT_FROM, VAULT_TO, -11, 11, 5);
         spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset((VAULT_FROM + VAULT_TO) / 2, 0, 0));
-        // 6. corridor → library
-        fill(level, o.offset(VAULT_TO + 1, 0, -1), o.offset(LIBRARY_FROM - 1, 2, 1), air);
-        fill(level, o.offset(LIBRARY_FROM, 0, -7), o.offset(LIBRARY_TO, 5, 7), air);
+        spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(VAULT_TO - 3, 0, 6));
+        corridor(level, o, VAULT_TO + 1, LIBRARY_FROM - 1);
+
+        // 6. the library
+        fill(level, o.offset(LIBRARY_FROM, 0, -10), o.offset(LIBRARY_TO, 6, 10), air);
         for (int x = LIBRARY_FROM; x <= LIBRARY_TO; x++)
-            for (int y = 0; y <= 3; y++) {
+            for (int y = 0; y <= 4; y++) {
                 if (x % 4 == 0) continue;
-                level.setBlock(o.offset(x, y, -7), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
-                level.setBlock(o.offset(x, y, 7), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
+                level.setBlock(o.offset(x, y, -10), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
+                level.setBlock(o.offset(x, y, 10), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
             }
         for (int x = LIBRARY_FROM + 3; x <= LIBRARY_TO - 3; x += 5)
-            for (int z : new int[]{-3, 3}) {
-                for (int y = 0; y <= 2; y++) level.setBlock(o.offset(x, y, z), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
-            }
-        BlockPos lib = o.offset(LIBRARY_FROM + 2, 0, 5);
+            for (int z : new int[]{-5, 5})
+                for (int dz = -1; dz <= 1; dz++)
+                    for (int y = 0; y <= 2; y++) level.setBlock(o.offset(x, y, z + dz), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
+        BlockPos lib = o.offset(LIBRARY_FROM + 2, 0, 8);
         level.setBlock(lib, Blocks.CHEST.defaultBlockState(), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, lib, LIBRARY_LOOT);
-        lanterns(level, o, LIBRARY_FROM + 1, LIBRARY_TO - 1, -6, 6, 5);
+        lanterns(level, o, LIBRARY_FROM, LIBRARY_TO, -9, 9, 6);
         spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset((LIBRARY_FROM + LIBRARY_TO) / 2, 0, 0));
         // the secret: behind the north shelves, a wall a sane mind cannot pass
-        int sx = (LIBRARY_FROM + LIBRARY_TO) / 2;
-        fill(level, o.offset(sx - 3, 0, -13), o.offset(sx + 3, 3, -10), air);
+        int sx = SECRET_X;
+        fill(level, o.offset(sx - 3, 0, -19), o.offset(sx + 3, 3, -14), air);
         for (int x = sx - 1; x <= sx + 1; x++)
-            for (int y = 0; y <= 2; y++) {
-                level.setBlock(o.offset(x, y, -7), ModBlocks.PHANTOM_WALL.get().defaultBlockState(), FLAGS);
-                level.setBlock(o.offset(x, y, -8), ModBlocks.PHANTOM_WALL.get().defaultBlockState(), FLAGS);
-                level.setBlock(o.offset(x, y, -9), ModBlocks.PHANTOM_WALL.get().defaultBlockState(), FLAGS);
-            }
-        BlockPos secret = o.offset(sx, 0, -12);
+            for (int y = 0; y <= 2; y++)
+                for (int z = -13; z <= -10; z++) level.setBlock(o.offset(x, y, z), ModBlocks.PHANTOM_WALL.get().defaultBlockState(), FLAGS);
+        BlockPos secret = o.offset(sx, 0, -18);
         level.setBlock(secret, Blocks.CHEST.defaultBlockState(), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, secret, SECRET_LOOT);
-        level.setBlock(o.offset(sx, 3, -11), Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
-        // 7. corridor → the Architect's maze behind the seal
-        fill(level, o.offset(LIBRARY_TO + 1, 0, -1), o.offset(SEAL_X - 1, 2, 1), air);
+        level.setBlock(o.offset(sx, 3, -16), Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
+        corridor(level, o, LIBRARY_TO + 1, GARDEN_FROM - 1);
+
+        // 7. the dead garden: ash, dead trees, crawlers in the branches
+        fill(level, o.offset(GARDEN_FROM, 0, -10), o.offset(GARDEN_TO, 7, 10), air);
+        fill(level, o.offset(GARDEN_FROM, -1, -10), o.offset(GARDEN_TO, -1, 10), ModBlocks.ASH_SOIL.get().defaultBlockState());
+        for (int t = 0; t < 7; t++) {
+            BlockPos base = o.offset(GARDEN_FROM + 2 + random.nextInt(GARDEN_TO - GARDEN_FROM - 3), 0, random.nextInt(17) - 8);
+            int h = 3 + random.nextInt(4);
+            for (int y = 0; y < h; y++) level.setBlock(base.above(y), ModBlocks.DEAD_LOG.get().defaultBlockState(), FLAGS);
+            for (Direction d : Direction.Plane.HORIZONTAL) {
+                if (random.nextInt(3) == 0) continue;
+                BlockPos br = base.above(h - 1 - random.nextInt(2)).relative(d);
+                level.setBlock(br, ModBlocks.DEAD_LOG.get().defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, d.getAxis()), FLAGS);
+            }
+        }
+        lanterns(level, o, GARDEN_FROM, GARDEN_TO, -10, 10, 7);
+        for (int i = 0; i < 3; i++) spawn(level, ModEntities.CRAWLER.get(), o.offset(GARDEN_FROM + 4 + i * 7, 0, random.nextInt(9) - 4));
+        corridor(level, o, GARDEN_TO + 1, SEAL_X - 1);
+
+        // 8. the Architect's maze behind the seal
         QuantumMaze.build(level, o.offset(THRONE, -1, -QuantumMaze.SIZE / 2), random);
         for (int y = 0; y <= 2; y++)
             for (int z = -1; z <= 1; z++) level.setBlock(o.offset(SEAL_X, y, z), ModBlocks.CITADEL_SEAL.get().defaultBlockState(), FLAGS);
+    }
+
+    public static final int SECRET_X = (LIBRARY_FROM + LIBRARY_TO) / 2;
+
+    /** A 5-wide, 4-high corridor along x at z = -2..2. */
+    private static void corridor(ServerLevel level, BlockPos o, int x0, int x1) {
+        if (x1 < x0) return;
+        fill(level, o.offset(x0, 0, -2), o.offset(x1, 3, 2), Blocks.AIR.defaultBlockState());
+    }
+
+    /**
+     * A one-storey maze with 3-wide passages. {@code corner} is its north-west corner at floor level.
+     * Some walls and some passages are quantum: they shift while nobody is looking.
+     */
+    private static void wideMaze(ServerLevel level, BlockPos corner, RandomSource random) {
+        int n = MAZE_CELLS, p = MAZE_PITCH;
+        boolean[][] seen = new boolean[n][n];
+        boolean[][] eastOpen = new boolean[n][n], southOpen = new boolean[n][n];
+        java.util.ArrayDeque<int[]> stack = new java.util.ArrayDeque<>();
+        int mid = n / 2;
+        stack.push(new int[]{0, mid});
+        seen[0][mid] = true;
+        while (!stack.isEmpty()) {
+            int[] c = stack.peek();
+            java.util.List<int[]> next = new java.util.ArrayList<>();
+            int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (int[] d : dirs) {
+                int x = c[0] + d[0], z = c[1] + d[1];
+                if (x >= 0 && z >= 0 && x < n && z < n && !seen[x][z]) next.add(new int[]{x, z, d[0], d[1]});
+            }
+            if (next.isEmpty()) {
+                stack.pop();
+                continue;
+            }
+            int[] t = next.get(random.nextInt(next.size()));
+            if (t[2] == 1) eastOpen[c[0]][c[1]] = true;
+            if (t[2] == -1) eastOpen[t[0]][t[1]] = true;
+            if (t[3] == 1) southOpen[c[0]][c[1]] = true;
+            if (t[3] == -1) southOpen[t[0]][t[1]] = true;
+            seen[t[0]][t[1]] = true;
+            stack.push(new int[]{t[0], t[1]});
+        }
+        BlockState air = Blocks.AIR.defaultBlockState();
+        BlockState quantum = ModBlocks.QUANTUM_BLOCK.get().defaultBlockState();
+        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                int x0 = 1 + i * p, z0 = 1 + j * p;
+                fill(level, corner.offset(x0, 0, z0), corner.offset(x0 + p - 2, 3, z0 + p - 2), air);
+                if (random.nextInt(6) == 0) level.setBlock(corner.offset(x0 + 1, 3, z0 + 1), lantern, FLAGS);
+                if (i < n - 1) wallStrip(level, corner, x0 + p - 1, z0, true, eastOpen[i][j], random, air, quantum);
+                if (j < n - 1) wallStrip(level, corner, x0, z0 + p - 1, false, southOpen[i][j], random, air, quantum);
+            }
+        // way in (west, middle row) and way out (east, middle row)
+        int zMid = 1 + mid * p;
+        fill(level, corner.offset(0, 0, zMid), corner.offset(0, 3, zMid + p - 2), air);
+        fill(level, corner.offset(MAZE_SIZE - 1, 0, zMid), corner.offset(MAZE_SIZE - 1, 3, zMid + p - 2), air);
+        // two chests in random cells
+        for (int k = 0; k < 2; k++) {
+            BlockPos c = corner.offset(1 + random.nextInt(n) * p, 0, 1 + random.nextInt(n) * p);
+            level.setBlock(c, Blocks.CHEST.defaultBlockState(), FLAGS);
+            RandomizableContainer.setBlockEntityLootTable(level, random, c, QuantumMaze.COMMON);
+        }
+    }
+
+    /** The 3-wide wall between two cells: open passage, solid wall, or (sometimes) quantum either way. */
+    private static void wallStrip(ServerLevel level, BlockPos corner, int x, int z, boolean alongZ, boolean open, RandomSource random,
+                                  BlockState air, BlockState quantum) {
+        boolean q = random.nextInt(open ? 5 : 4) == 0;
+        for (int k = 0; k < MAZE_PITCH - 1; k++) {
+            BlockPos base = alongZ ? corner.offset(x, 0, z + k) : corner.offset(x + k, 0, z);
+            for (int y = 0; y <= 3; y++) {
+                BlockState s = q ? quantum.setValue(dev.umbra.quantum.QuantumBlock.OPEN, open) : (open ? air : null);
+                if (s != null) level.setBlock(base.above(y), s, Block.UPDATE_ALL);
+            }
+        }
     }
 
     private static void fill(ServerLevel level, BlockPos a, BlockPos b, BlockState state) {
@@ -261,8 +362,12 @@ public final class Citadel {
         level.addFreshEntity(mob);
     }
 
+    public static AABB bounds(BlockPos o) {
+        return AABB.encapsulatingFullBlocks(o.offset(-3, -3, -HALF_WIDTH), o.offset(LENGTH, 10, HALF_WIDTH));
+    }
+
     /** Statues and keepers of a citadel (tests). */
     public static int count(ServerLevel level, BlockPos o, Class<? extends Entity> type) {
-        return level.getEntitiesOfClass(type, AABB.encapsulatingFullBlocks(o.offset(-3, -10, -14), o.offset(LENGTH, 13, 14))).size();
+        return level.getEntitiesOfClass(type, bounds(o)).size();
     }
 }

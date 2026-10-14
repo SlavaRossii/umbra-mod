@@ -21,6 +21,11 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new SilhouetteRenderer<>(ctx, "blind"));
         event.registerEntityRenderer(ModEntities.MIMICKER.get(), ctx -> new SilhouetteRenderer<>(ctx, "mimicker"));
         event.registerEntityRenderer(ModEntities.SHADE.get(), ctx -> new SilhouetteRenderer<>(ctx, "shade"));
+        event.registerEntityRenderer(ModEntities.PHANTOM_ZOMBIE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png")));
+        event.registerEntityRenderer(ModEntities.PHANTOM_SKELETON.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/skeleton/skeleton.png")));
+        event.registerEntityRenderer(ModEntities.PHANTOM_HUSK.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/husk.png")));
+        event.registerEntityRenderer(ModEntities.PHANTOM_STEVE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/player/wide/steve.png")));
+        event.registerEntityRenderer(ModEntities.PHANTOM_SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "phantom_shadow"));
         event.registerEntityRenderer(ModEntities.CITADEL_STATUE.get(), ctx -> new SilhouetteRenderer<>(ctx, "citadel_statue"));
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new SilhouetteRenderer<>(ctx, "citadel_keeper"));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new SilhouetteRenderer<>(ctx, "shadow_villager"));
