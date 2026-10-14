@@ -50,7 +50,7 @@ public class WardBlock extends Block implements DarknessProof {
     private static final int PULSE = 20;
 
     /** level → (ward position → last game time it was seen burning). */
-    private static final Map<ResourceKey<Level>, Map<Long, Long>> ACTIVE = new HashMap<>();
+    private static final Map<ResourceKey<Level>, Map<Long, long[]>> ACTIVE = new HashMap<>();   // {last seen, radius}
 
     public WardBlock(Properties properties) {
         super(properties);
@@ -68,17 +68,17 @@ public class WardBlock extends Block implements DarknessProof {
 
     /** Is {@code pos} inside a burning ward? */
     public static boolean protects(Level level, Vec3 pos) {
-        Map<Long, Long> wards = ACTIVE.get(level.dimension());
+        Map<Long, long[]> wards = ACTIVE.get(level.dimension());
         if (wards == null || wards.isEmpty()) return false;
         long now = level.getGameTime();
-        int r = radius(level);
-        Iterator<Map.Entry<Long, Long>> it = wards.entrySet().iterator();
+        Iterator<Map.Entry<Long, long[]>> it = wards.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<Long, Long> e = it.next();
-            if (now - e.getValue() > PULSE * 3 || now < e.getValue()) {
+            Map.Entry<Long, long[]> e = it.next();
+            if (now - e.getValue()[0] > PULSE * 3 || now < e.getValue()[0]) {
                 it.remove();
                 continue;
             }
+            int r = (int) e.getValue()[1];
             BlockPos w = BlockPos.of(e.getKey());
             double dx = pos.x - (w.getX() + 0.5), dz = pos.z - (w.getZ() + 0.5), dy = pos.y - (w.getY() + 0.5);
             if (dx * dx + dz * dz <= (double) r * r && Math.abs(dy) <= r) return true;
@@ -127,7 +127,12 @@ public class WardBlock extends Block implements DarknessProof {
     }
 
     private static void mark(ServerLevel level, BlockPos pos) {
-        ACTIVE.computeIfAbsent(level.dimension(), k -> new HashMap<>()).put(pos.asLong(), level.getGameTime());
+        mark(level, pos, radius(level));
+    }
+
+    /** Declares a burning protector (the ward, or the lighthouse lamp with its own, bigger radius) for the next few seconds. */
+    public static void mark(ServerLevel level, BlockPos pos, int radius) {
+        ACTIVE.computeIfAbsent(level.dimension(), k -> new HashMap<>()).put(pos.asLong(), new long[]{level.getGameTime(), radius});
     }
 
     @Override
@@ -149,7 +154,10 @@ public class WardBlock extends Block implements DarknessProof {
 
     /** Drives every dark thing (except bosses) out of the circle; things made of shadow simply burn. */
     public static int repel(ServerLevel level, BlockPos pos) {
-        int r = radius(level);
+        return repel(level, pos, radius(level));
+    }
+
+    public static int repel(ServerLevel level, BlockPos pos, int r) {
         Vec3 c = Vec3.atCenterOf(pos);
         int affected = 0;
         for (Entity e : level.getEntities((Entity) null, new AABB(pos).inflate(r), e -> e instanceof Enemy || e instanceof LightSensitive)) {

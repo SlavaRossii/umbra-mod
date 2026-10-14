@@ -59,10 +59,10 @@ final class SmokeLife {
     private SmokeLife() {}
 
     static void tick(MinecraftServer server, ServerLevel level, int s) {
-        if (s >= 132 && s <= 340 && s % 4 == 0 && statue != null && player != null) {
+        if (s >= 132 && s <= 380 && s % 4 == 0 && statue != null && player != null) {
             trace.append(String.format("%d:x=%.1f%s%s ph=%.0f ", s, statue.getX(), statue.isFrozen() ? "F" : "-", statue.isWatched(level) ? "W" : "-", player.getYHeadRot()));
         }
-        if (s == 341) {
+        if (s == 381) {
             SmokeTest.check(true, "statue trace (step:x, F=frozen, W=watched, ph=player head yaw) " + trace);
         }
         // what the player's connection does every tick on a real server
@@ -198,7 +198,7 @@ final class SmokeLife {
                 if (statue == null) return;
                 SmokeTest.check(statue.isFrozen() && statue.position().distanceTo(mark) < 0.3, "a flashed statue stays stone even with nobody watching");
             }
-            case 335 -> {
+            case 380 -> {
                 if (statue == null) return;
                 double moved = statue.position().distanceTo(mark);
                 SmokeTest.check(moved > 1.0, "and thaws on its own while a player is near (" + String.format("%.1f", moved) + " blocks)");
@@ -206,7 +206,7 @@ final class SmokeLife {
             }
 
             // ---- death and respawn
-            case 340 -> {
+            case 400 -> {
                 if (player == null) return;
                 player.setHealth(player.getMaxHealth());
                 var inv = player.getInventory();
@@ -221,7 +221,7 @@ final class SmokeLife {
                 carried = count(player);
                 SmokeTest.check(carried >= 8, "the player carries things (" + carried + ")");
             }
-            case 341 -> {
+            case 401 -> {
                 if (player == null) return;
                 diedAt = player.blockPosition();
                 kill(level, player);
@@ -231,7 +231,7 @@ final class SmokeLife {
                 SmokeTest.check(ground == carried, "and everything lies on the ground exactly once (" + ground + " of " + carried + ")");
                 SmokeTest.check(level.getEntitiesOfClass(DeathDouble.class, new AABB(diedAt).inflate(6)).size() == 1, "a dark double stands where they fell");
             }
-            case 346 -> {
+            case 406 -> {
                 if (player == null) return;
                 ServerPlayer old = player;
                 ServerPlayer back = respawn(server, old);
@@ -245,7 +245,7 @@ final class SmokeLife {
                         "the journal, the freed shadow and the home survive death");
                 SmokeTest.check(Math.abs(Sanity.get(back) - Sanity.MAX) < 0.01F, "sanity is full again (" + Sanity.get(back) + ")");
             }
-            case 350 -> {
+            case 410 -> {
                 if (player == null) return;
                 // a lost bed resets the spawn point in the middle of a respawn; that must not throw
                 boolean threw = false;
@@ -259,27 +259,27 @@ final class SmokeLife {
             }
 
             // ---- leaving on the death screen and coming back must not bring the things back
-            case 355 -> {
+            case 415 -> {
                 if (player == null) return;
                 level.getEntitiesOfClass(ItemEntity.class, new AABB(diedAt).inflate(12)).forEach(Entity::discard);
                 player.getInventory().add(new ItemStack(Items.EMERALD, 7));
                 player.getInventory().add(new ItemStack(Items.GOLDEN_APPLE, 2));
                 carried = count(player);
             }
-            case 356 -> {
+            case 416 -> {
                 if (player == null) return;
                 diedAt = player.blockPosition();
                 kill(level, player);
                 int ground = ground(level, diedAt);
                 SmokeTest.check(player.isDeadOrDying() && ground == carried, "a second death drops everything once (" + ground + " of " + carried + ")");
             }
-            case 358 -> {
+            case 418 -> {
                 if (player == null) return;
                 SmokeTest.check(true, "before leaving: got journal " + player.getData(ModAttachments.GOT_JOURNAL) + ", health " + player.getHealth());
                 server.getPlayerList().remove(player);
                 player = null;
             }
-            case 366 -> {
+            case 426 -> {
                 SmokeTest.check(true, "player data on disk: " + dataFiles());
                 SmokeTest.check(true, "saved: " + saved());
                 player = join(server, level);
@@ -290,14 +290,14 @@ final class SmokeLife {
                 SmokeTest.check(true, "after returning: pos " + player.position() + ", health " + player.getHealth() + ", got journal " + player.getData(ModAttachments.GOT_JOURNAL));
                 SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
             }
-            case 370 -> {
+            case 430 -> {
                 if (player == null) return;
                 ServerPlayer back = respawn(server, player);
                 if (back == null) return;
                 player = back;
                 SmokeTest.check(back.isAlive() && count(back) == 0, "that player can still respawn afterwards");
             }
-            case 374 -> {
+            case 434 -> {
                 if (player != null) server.getPlayerList().remove(player);
                 level.getEntitiesOfClass(ItemEntity.class, new AABB(diedAt).inflate(12)).forEach(Entity::discard);
                 player = null;

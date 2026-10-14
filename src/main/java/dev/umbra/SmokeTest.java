@@ -73,7 +73,7 @@ final class SmokeTest {
 
     /** The real-player part (see SmokeLife) runs from here for 400 ticks, then the report is written. */
     private static final int LIFE_FROM = 680;
-    private static final int LIFE_END = LIFE_FROM + 400;
+    private static final int LIFE_END = LIFE_FROM + 480;
 
     private static int tick;
     private static final List<String> failures = new ArrayList<>();
@@ -127,6 +127,7 @@ final class SmokeTest {
                 case 655 -> testBossMoves(level);
                 case 660 -> testUnderside18(server, level);
                 case 665 -> testBalance182(server, level);
+                case 667 -> profileUnderside(server);
                 case LIFE_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -561,7 +562,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 55 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 55, "journal has 55 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 62 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 62, "journal has 62 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -975,6 +976,46 @@ final class SmokeTest {
         check(dev.umbra.item.KeeperPageItem.nextPage(fake) == null && known.test("ward") && known.test("light_arrow") && known.test("eternal_torch")
                 && known.test("sedative_from_luminite"), "all seven pages teach the whole craft");
         dev.umbra.journal.Journal.clear(fake);
+    }
+
+    /** Diagnostics for the 1.9 lighthouse: how tall and how wide are the Underside's caverns, and where is the water. */
+    private static void profileUnderside(MinecraftServer server) {
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under == null) return;
+        java.util.Map<String, int[]> perBiome = new java.util.TreeMap<>();
+        StringBuilder rows = new StringBuilder();
+        for (int gx = 0; gx < 10; gx++) {
+            for (int gz = 0; gz < 10; gz++) {
+                int x = 4000 + gx * 53, z = 4000 + gz * 53;
+                BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos(x, 0, z);
+                int bestBottom = -1, bestTop = -1, runTop = -1;
+                for (int y = 126; y >= 1; y--) {
+                    m.setY(y);
+                    BlockState st = under.getBlockState(m);
+                    boolean open = !st.isSolidRender() && st.getFluidState().isEmpty();
+                    if (open) {
+                        if (runTop < 0) runTop = y;
+                        if (y == 1 || under.getBlockState(m.below()).isSolidRender() || !under.getBlockState(m.below()).getFluidState().isEmpty()) {
+                            if (runTop - y > bestTop - bestBottom) { bestTop = runTop; bestBottom = y; }
+                            runTop = -1;
+                        }
+                    } else runTop = -1;
+                }
+                if (bestBottom < 0) continue;
+                m.setY(bestBottom);
+                boolean water = !under.getBlockState(m.below()).getFluidState().isEmpty();
+                String biome = under.getBiome(m).unwrapKey().map(k -> k.identifier().getPath()).orElse("?");
+                int[] a = perBiome.computeIfAbsent(biome, k -> new int[]{0, 0, 0, 999, 0});
+                int h = bestTop - bestBottom + 1;
+                a[0]++; a[1] += h; a[2] += water ? 1 : 0; a[3] = Math.min(a[3], h); a[4] = Math.max(a[4], h);
+                rows.append(String.format("(%d,%d)%s:%d-%d%s ", x, z, biome.substring(0, Math.min(5, biome.length())), bestBottom, bestTop, water ? "w" : ""));
+            }
+        }
+        for (var e : perBiome.entrySet()) {
+            int[] a = e.getValue();
+            check(true, "PROFILE " + e.getKey() + ": columns " + a[0] + ", avg open height " + (a[1] / a[0]) + ", min " + a[3] + ", max " + a[4] + ", water floor in " + a[2]);
+        }
+        check(true, "PROFILE rows " + rows);
     }
 
     // ---------------------------------------------------------------- 1.5
