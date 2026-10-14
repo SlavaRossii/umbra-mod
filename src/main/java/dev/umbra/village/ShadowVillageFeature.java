@@ -56,7 +56,7 @@ public record ShadowVillageFeature() implements Feature {
     }
 
     /** Highest spot below {@code from} with solid ground and four blocks of air above it. */
-    static BlockPos findFloor(WorldGenLevel level, BlockPos from, int top, int bottom) {
+    public static BlockPos findFloor(WorldGenLevel level, BlockPos from, int top, int bottom) {
         for (int y = top; y > bottom; y--) {
             BlockPos p = new BlockPos(from.getX(), y, from.getZ());
             BlockState below = level.getBlockState(p.below());
