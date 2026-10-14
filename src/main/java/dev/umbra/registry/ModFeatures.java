@@ -27,5 +27,10 @@ public final class ModFeatures {
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.citadel.CitadelGateFeature>> CITADEL_GATE =
             FEATURES.register("citadel_gate", () -> dev.umbra.citadel.CitadelGateFeature.CODEC);
 
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.decor.UndersideDecorFeature>> UNDERSIDE_DECOR =
+            FEATURES.register("underside_decor", () -> dev.umbra.decor.UndersideDecorFeature.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.decor.UndersideLandmarkFeature>> UNDERSIDE_LANDMARK =
+            FEATURES.register("underside_landmark", () -> dev.umbra.decor.UndersideLandmarkFeature.CODEC);
+
     private ModFeatures() {}
 }

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "umbra:block/echo_cluster"
+    },
+    "facing=down": {
+      "model": "umbra:block/echo_cluster",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "umbra:block/echo_cluster",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "umbra:block/echo_cluster",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "umbra:block/echo_cluster",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "umbra:block/echo_cluster",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

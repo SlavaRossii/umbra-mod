@@ -87,7 +87,9 @@
     [],
     [
       "umbra:citadel_gate",
-      "umbra:hanging_trees_dense"
+      "umbra:hanging_trees_dense",
+      "umbra:underside_landmark",
+      "umbra:underside_decor"
     ],
     []
   ],

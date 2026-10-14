@@ -162,6 +162,18 @@ public final class ModBlocks {
                     .isSuffocating((s, l, p) -> false)
                     .pushReaction(PushReaction.IMMOVEABLE));
 
+    // --- Underside decoration (1.5) ---
+    public static final DeferredBlock<net.minecraft.world.level.block.AmethystClusterBlock> LUMINITE_CLUSTER = BLOCKS.registerBlock("luminite_cluster",
+            p -> new net.minecraft.world.level.block.AmethystClusterBlock(7.0F, 3.0F, p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 7).mapColor(MapColor.COLOR_LIGHT_BLUE));
+    public static final DeferredBlock<net.minecraft.world.level.block.AmethystClusterBlock> ECHO_CLUSTER = BLOCKS.registerBlock("echo_cluster",
+            p -> new net.minecraft.world.level.block.AmethystClusterBlock(5.0F, 3.0F, p),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 3).mapColor(MapColor.COLOR_CYAN));
+    public static final DeferredBlock<dev.umbra.decor.GloomMushroomBlock> GLOOM_MUSHROOM = BLOCKS.registerBlock("gloom_mushroom",
+            dev.umbra.decor.GloomMushroomBlock::new,
+            () -> BlockBehaviour.Properties.of().noCollision().instabreak().noOcclusion().lightLevel(s -> 6)
+                    .sound(SoundType.FUNGUS).pushReaction(PushReaction.POPPED).mapColor(MapColor.COLOR_LIGHT_GREEN));
+
     private static BlockBehaviour.Properties torchProperties() {
         return BlockBehaviour.Properties.of()
                 .noCollision()

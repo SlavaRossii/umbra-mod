@@ -96,7 +96,9 @@
     [],
     [
       "umbra:citadel_gate",
-      "umbra:hanging_trees_sparse"
+      "umbra:hanging_trees_sparse",
+      "umbra:underside_landmark",
+      "umbra:underside_decor"
     ],
     []
   ],

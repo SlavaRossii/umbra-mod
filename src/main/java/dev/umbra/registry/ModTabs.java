@@ -71,6 +71,11 @@ public final class ModTabs {
                 out.accept(ModItems.UNDERSIDE_KEY.get());
                 out.accept(ModItems.ABYSS_HEART.get());
                 out.accept(ModItems.DAWN_LANTERN.get());
+                out.accept(ModItems.EXPLORER_NOTE.get());
+                out.accept(ModItems.LUMINITE_CLUSTER.get());
+                out.accept(ModItems.ECHO_CLUSTER.get());
+                out.accept(ModItems.GLOOM_MUSHROOM.get());
+                out.accept(ModItems.ASH_FIGURE_SPAWN_EGG.get());
                 out.accept(ModItems.QUANTUM_BLOCK.get());
                 out.accept(ModItems.MAZE_WALL.get());
             })

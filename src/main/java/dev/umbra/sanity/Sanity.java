@@ -149,6 +149,7 @@ public final class Sanity {
             }
         }
         Hallucinations.tick(level, player, sanity);
+        FalseDawn.tick(level, player, sanity);
     }
 
     public static int gloomPieces(Player player) {

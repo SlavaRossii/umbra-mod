@@ -20,7 +20,8 @@ public final class Journal {
             "start", "sanity", "insight_1", "nightmare", "luminite", "shadow", "shadow_dispelled", "steps", "mimic", "mimic_crafting_table", "mimic_bookshelf", "mimic_planks", "mimic_stone", "mimic_barrel",
             "mimic_furnace", "mimic_hay", "mimic_log", "mimic_ore", "mimic_chest", "mimic_villager",
             "darkness", "maze", "underside", "shadow_village", "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade",
-            "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed");
+            "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
+            "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8");
 
     /** Insights: thoughts that only come when the mind is slipping. Sanity thresholds, in order. */
     public static final String[] INSIGHTS = {"insight_1", "insight_2", "insight_3"};

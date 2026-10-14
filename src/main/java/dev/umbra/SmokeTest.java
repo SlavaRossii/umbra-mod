@@ -119,7 +119,8 @@ final class SmokeTest {
                 case 625 -> testMadness(server, level);
                 case 630 -> testVillage(level);
                 case 635 -> testCitadel(server, level);
-                case 660 -> finish(server);
+                case 645 -> testFilling(server, level);
+                case 670 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -534,7 +535,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 41, "journal has 41 entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 49, "journal has 49 entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -764,6 +765,45 @@ final class SmokeTest {
         check(dev.umbra.citadel.CitadelGateFeature.chosenChunk(42L, c[0], c[1]), "gate chunks are found again from their cell");
         BlockPos co = dev.umbra.citadel.Citadel.origin(c[0], c[1]);
         check(co.equals(dev.umbra.citadel.Citadel.originAt(42L, Vec3.atCenterOf(co.offset(100, 1, 5)))), "a citadel is found from inside it");
+    }
+
+    // ---------------------------------------------------------------- 1.5
+    private static void testFilling(MinecraftServer server, ServerLevel level) {
+        BlockPos c = new BlockPos(120, Y + 60, 30);
+        for (int x = -12; x <= 12; x++)
+            for (int z = -12; z <= 12; z++) level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.decor.UndersideLandmarkFeature.camp(level, c, level.getRandom());
+        check(level.getBlockState(c).is(Blocks.CAMPFIRE) && level.getBlockState(c.offset(2, 0, -2)).is(Blocks.CHEST), "an explorer's camp has a campfire and a chest");
+        dev.umbra.decor.UndersideLandmarkFeature.figures(level, c.offset(8, 0, 8), level.getRandom());
+        check(!level.getEntitiesOfClass(dev.umbra.decor.AshFigure.class, new AABB(c).inflate(20)).isEmpty(), "ash figures stand in the ash");
+        level.getEntitiesOfClass(dev.umbra.decor.AshFigure.class, new AABB(c).inflate(20)).forEach(net.minecraft.world.entity.Entity::discard);
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 4.5, 0, 0);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.EXPLORER_NOTE.get(), 2));
+        ModItems.EXPLORER_NOTE.get().use(level, fake, InteractionHand.MAIN_HAND);
+        ModItems.EXPLORER_NOTE.get().use(level, fake, InteractionHand.MAIN_HAND);
+        check(dev.umbra.journal.Journal.has(fake, "note_1") && dev.umbra.journal.Journal.has(fake, "note_2"), "explorer notes go into the journal in order");
+        dev.umbra.sanity.FalseDawn.start(level, fake);
+        check(dev.umbra.sanity.FalseDawn.active(fake) && fake.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION), "a false dawn brightens the night");
+        var dd = ModEntities.DEATH_DOUBLE.get().create(level, EntitySpawnReason.EVENT);
+        check(dd != null, "a death double can stand where you died");
+        if (dd != null) dd.discard();
+
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under != null) {
+            int found = 0;
+            for (int cx = -3; cx <= 3; cx++)
+                for (int cz = -3; cz <= 3; cz++) {
+                    var chunk = under.getChunk(cx, cz);
+                    for (BlockPos p : BlockPos.betweenClosed(cx * 16, 10, cz * 16, cx * 16 + 15, 118, cz * 16 + 15)) {
+                        BlockState s = chunk.getBlockState(p);
+                        if (s.is(ModBlocks.LUMINITE_CLUSTER.get()) || s.is(ModBlocks.ECHO_CLUSTER.get()) || s.is(ModBlocks.GLOOM_MUSHROOM.get())
+                                || s.is(Blocks.BONE_BLOCK) || s.is(Blocks.SKELETON_SKULL)) found++;
+                    }
+                }
+            check(found > 20, "the Underside is decorated (" + found + " pieces in 49 chunks)");
+        }
     }
 
     private static void checkWard(ServerLevel level) {

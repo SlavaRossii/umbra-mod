@@ -116,6 +116,15 @@ public final class ModItems {
     public static final DeferredItem<dev.umbra.madness.DespairBladeItem> DESPAIR_BLADE = ITEMS.registerItem("despair_blade",
             dev.umbra.madness.DespairBladeItem::new, p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.4F).rarity(Rarity.EPIC));
 
+    // --- Underside decoration (1.5) ---
+    public static final DeferredItem<BlockItem> LUMINITE_CLUSTER = ITEMS.registerSimpleBlockItem("luminite_cluster", ModBlocks.LUMINITE_CLUSTER);
+    public static final DeferredItem<BlockItem> ECHO_CLUSTER = ITEMS.registerSimpleBlockItem("echo_cluster", ModBlocks.ECHO_CLUSTER);
+    public static final DeferredItem<BlockItem> GLOOM_MUSHROOM = ITEMS.registerSimpleBlockItem("gloom_mushroom", ModBlocks.GLOOM_MUSHROOM);
+    public static final DeferredItem<dev.umbra.item.ExplorerNoteItem> EXPLORER_NOTE = ITEMS.registerItem("explorer_note",
+            dev.umbra.item.ExplorerNoteItem::new, p -> p.stacksTo(16));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> ASH_FIGURE_SPAWN_EGG = ITEMS.registerItem("ash_figure_spawn_egg",
+            net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.ASH_FIGURE.get()));
+
     // --- Polish ---
     public static final DeferredItem<JournalItem> JOURNAL = ITEMS.registerItem("journal", JournalItem::new, p -> p.stacksTo(1));
     public static final DeferredItem<QuantumCompassItem> QUANTUM_COMPASS = ITEMS.registerItem("quantum_compass", QuantumCompassItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));

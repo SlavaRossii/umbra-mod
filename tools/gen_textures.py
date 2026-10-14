@@ -773,6 +773,58 @@ def stage11():
     humanoid_skin("entity/phantom_shadow.png", (6, 4, 10), (12, 8, 18), (255, 60, 60), 110)
 
 
+# ------------------------------------------------------------------ 1.5: filling the Underside
+
+def cluster(name, light, dark, seed):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    rnd = random.Random(seed)
+    for (cx, h, w) in [(4, 9, 1), (8, 14, 2), (12, 7, 1), (6, 5, 1), (10, 10, 1)]:
+        for y in range(16 - h, 16):
+            for dx in range(-w, w + 1):
+                x = cx + dx
+                if 0 <= x < 16:
+                    t = (y - (16 - h)) / max(1, h)
+                    c = light if dx == 0 or t < 0.3 else dark
+                    px[x, y] = c + (255,)
+    save(img, f"block/{name}.png")
+
+
+def stage12():
+    cluster("luminite_cluster", (200, 250, 255), (90, 190, 230), 120)
+    cluster("echo_cluster", (170, 255, 235), (60, 150, 140), 121)
+    m = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); mp = m.load()
+    for (cx, cy, r) in [(5, 8, 3), (11, 10, 2)]:
+        for x in range(16):
+            for y in range(16):
+                if (x - cx) ** 2 + (y - cy) ** 2 <= r * r and y <= cy:
+                    mp[x, y] = (150, 255, 190, 255) if (x + y) % 3 else (90, 200, 140, 255)
+        for y in range(cy + 1, 16):
+            mp[cx, y] = (200, 210, 190, 255)
+    save(m, "block/gloom_mushroom.png")
+
+    def note(px, rnd):
+        for x in range(3, 13):
+            for y in range(2, 14):
+                px[x, y] = (205, 195, 170, 255) if rnd.random() > 0.08 else (170, 160, 135, 255)
+        for y in (4, 6, 8, 10):
+            for x in range(4, 12):
+                if rnd.random() > 0.25:
+                    px[x, y] = (60, 50, 50, 255)
+        px[12, 13] = px[11, 13] = (0, 0, 0, 0)
+        px[3, 2] = (0, 0, 0, 0)
+    icon("explorer_note", note)
+    humanoid_skin("entity/ash_figure.png", (110, 106, 102), (130, 126, 122), (80, 76, 72), 122)
+    humanoid_skin("entity/death_double.png", (14, 12, 20), (22, 20, 30), (200, 200, 220), 123)
+    egg = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); ep = egg.load()
+    rnd = random.Random("ash_figure")
+    for y in range(16):
+        for x in range(16):
+            if ((x - 7.5) / 5.2) ** 2 + ((y - 8.5) / 6.8) ** 2 <= 1:
+                ep[x, y] = ((80, 76, 72) if rnd.random() < 0.18 else (130, 126, 122)) + (255,)
+    save(egg, "item/ash_figure_spawn_egg.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -795,4 +847,5 @@ if __name__ == "__main__":
     stage9()
     stage10()
     stage11()
+    stage12()
     print("textures written")

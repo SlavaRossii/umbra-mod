@@ -76,6 +76,7 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(Umbra::onCommands);
         NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onLogin);
         NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onDeath);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.decor.DeathDouble::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.LightArrowItem::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.WardBlock::onFinalizeSpawn);
         NeoForge.EVENT_BUS.addListener(dev.umbra.nightmare.Nightmares::onHurt);
@@ -98,6 +99,8 @@ public class Umbra {
         for (var ph : java.util.List.of(ModEntities.PHANTOM_ZOMBIE, ModEntities.PHANTOM_SKELETON, ModEntities.PHANTOM_HUSK, ModEntities.PHANTOM_STEVE, ModEntities.PHANTOM_SHADOW)) {
             event.put(ph.get(), dev.umbra.sanity.PhantomEntity.createAttributes().build());
         }
+        event.put(ModEntities.ASH_FIGURE.get(), dev.umbra.decor.AshFigure.createAttributes().build());
+        event.put(ModEntities.DEATH_DOUBLE.get(), dev.umbra.decor.DeathDouble.createAttributes().build());
         event.put(ModEntities.CITADEL_STATUE.get(), dev.umbra.citadel.CitadelStatue.createAttributes().build());
         event.put(ModEntities.CITADEL_KEEPER.get(), dev.umbra.citadel.CitadelKeeper.createAttributes().build());
         event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());

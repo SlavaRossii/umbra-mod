@@ -49,6 +49,11 @@ public final class ModEntities {
                 b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());
     }
 
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.decor.AshFigure>> ASH_FIGURE = ENTITIES.registerEntityType("ash_figure",
+            dev.umbra.decor.AshFigure::new, MobCategory.MISC, b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.decor.DeathDouble>> DEATH_DOUBLE = ENTITIES.registerEntityType("death_double",
+            dev.umbra.decor.DeathDouble::new, MobCategory.MISC, b -> b.sized(0.6F, 1.8F).clientTrackingRange(10).fireImmune().noSummon());
+
     public static final DeferredHolder<EntityType<?>, EntityType<HallucinationEntity>> HALLUCINATION = ENTITIES.registerEntityType("hallucination",
             HallucinationEntity::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune().noSummon());

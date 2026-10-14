@@ -77,7 +77,9 @@
     [],
     [],
     [
-      "umbra:citadel_gate"
+      "umbra:citadel_gate",
+      "umbra:underside_landmark",
+      "umbra:underside_decor"
     ],
     []
   ],
