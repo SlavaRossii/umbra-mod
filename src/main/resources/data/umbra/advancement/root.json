@@ -10,7 +10,8 @@
       "translate": "advancement.umbra.root.desc"
     },
     "show_toast": false,
-    "announce_to_chat": false
+    "announce_to_chat": false,
+    "background": "minecraft:gui/advancements/backgrounds/stone"
   },
   "criteria": {
     "entry": {

@@ -9,7 +9,7 @@ d = R + 'data/umbra/advancement/'
 os.makedirs(d, exist_ok=True)
 def write(name, obj): json.dump(obj, open(d + name + '.json', 'w'), indent=2)
 write('root', {"display": {"icon": {"id": "umbra:journal"}, "title": {"translate": "advancement.umbra.root.title"},
-    "description": {"translate": "advancement.umbra.root.desc"}, "show_toast": False, "announce_to_chat": False},
+    "description": {"translate": "advancement.umbra.root.desc"}, "background": "minecraft:gui/advancements/backgrounds/stone", "show_toast": False, "announce_to_chat": False},
     "criteria": {"entry": {"trigger": "minecraft:impossible"}}})
 for i in ids:
     frame = "challenge" if i in ("freed", "primordial_shadow") else "goal" if i in BOSS else "task"
