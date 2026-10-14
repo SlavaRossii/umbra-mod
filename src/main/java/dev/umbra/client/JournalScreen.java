@@ -22,7 +22,7 @@ import java.util.Set;
  * pages scrambled and finds lines it never wrote.
  */
 public class JournalScreen extends Screen {
-    private static final int W = 340, H = 214, LIST_W = 112, ROWS = 9, ROW_H = 17;
+    private static final int W = 380, H = 214, LIST_W = 112, ROWS = 9, ROW_H = 17;
     private static int tab, listPage;
     private static String open;
 
@@ -31,10 +31,12 @@ public class JournalScreen extends Screen {
     private final boolean slipping;
     private final Set<String> scrambled = new HashSet<>();
     private final String whisper;
+    private final net.minecraft.world.entity.player.Player me;
 
     public JournalScreen() {
         super(Component.translatable("item.umbra.journal"));
         var player = net.minecraft.client.Minecraft.getInstance().player;
+        this.me = player;
         this.got = player == null ? List.of() : player.getData(ModAttachments.JOURNAL);
         float sanity = player == null ? 100.0F : player.getData(ModAttachments.SANITY);
         this.slipping = sanity < Journal.CORRUPT_BELOW;
@@ -114,6 +116,33 @@ public class JournalScreen extends Screen {
         }
     }
 
+    /** The page of the open entry: creatures open up with what you know, errands show how far along you are. */
+    private MutableComponent fullText() {
+        if (me != null && dev.umbra.journal.Bestiary.isCreature(open)) {
+            int kills = dev.umbra.journal.Bestiary.kills(me, open);
+            int st = dev.umbra.journal.Bestiary.stage(open, kills);
+            MutableComponent t = Component.translatable("journal.umbra." + open + ".look");
+            if (st >= 1) t.append("\n\n").append(Component.translatable("journal.umbra." + open + ".text"));
+            if (st >= 2) t.append("\n\n").append(Component.translatable("journal.umbra." + open + ".weak"));
+            else t.append("\n\n").append(Component.translatable("journal.umbra.bestiary.hint" + st, dev.umbra.journal.Bestiary.toNext(open, kills))
+                    .withStyle(ChatFormatting.ITALIC));
+            return t;
+        }
+        MutableComponent t = Component.translatable("journal.umbra." + open + ".text");
+        if (me != null && open.startsWith("quest_")) {
+            var q = dev.umbra.quest.Quests.byId(open.substring("quest_".length()));
+            if (q != null) {
+                t.append("\n\n");
+                if (dev.umbra.quest.Quests.isDone(me, q)) t.append(Component.translatable("journal.umbra.quest.done").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD));
+                else {
+                    int base = Math.max(0, dev.umbra.quest.Quests.activeBaseline(me, q));
+                    t.append(Component.translatable("journal.umbra.quest.progress", dev.umbra.quest.Quests.progress(me, q, base), q.count()).withStyle(ChatFormatting.DARK_AQUA));
+                }
+            }
+        }
+        return t;
+    }
+
     private int textWidth() {
         return W - LIST_W - 30;
     }
@@ -124,7 +153,7 @@ public class JournalScreen extends Screen {
 
     private List<FormattedCharSequence> pageLines() {
         if (open == null) return List.of();
-        MutableComponent text = Component.translatable("journal.umbra." + open + ".text");
+        MutableComponent text = fullText();
         text = scrambled.contains(open) ? text.withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.OBFUSCATED) : text.withStyle(s -> s.withColor(0x2A1E14));
         return this.font.split(text, textWidth());
     }

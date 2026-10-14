@@ -80,7 +80,14 @@ public class ShadowVillager extends WanderingTrader implements LightSensitive {
             spring(level, player);
             return InteractionResult.SUCCESS;
         }
-        if (player instanceof ServerPlayer sp) Journal.unlock(sp, "shadow_village");
+        if (player instanceof ServerPlayer sp) {
+            Journal.unlock(sp, "shadow_village");
+            // an errand first (sneak to skip it and just trade)
+            if (!player.isShiftKeyDown() && !this.isTrading()) {
+                InteractionResult errand = dev.umbra.quest.Quests.talk(sp, this.getUUID());
+                if (errand != null) return errand;
+            }
+        }
         return super.mobInteract(player, hand);
     }
 

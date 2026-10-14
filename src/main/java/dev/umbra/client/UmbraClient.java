@@ -37,6 +37,7 @@ public final class UmbraClient {
                 (e, st) -> st.variant = Math.floorMod((int) Math.floor(e.getX() * 3) * 31 + (int) Math.floor(e.getZ() * 3) * 17, 3)));
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
+        event.registerEntityRenderer(ModEntities.LAMP_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "lamp_keeper", 0.5F, Animations::shadowVillager, null));
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));

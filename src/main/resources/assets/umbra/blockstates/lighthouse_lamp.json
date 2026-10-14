@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "level=0,fill=0": {
+      "model": "umbra:block/lighthouse_lamp_off"
+    },
+    "level=0,fill=1": {
+      "model": "umbra:block/lighthouse_lamp_off"
+    },
+    "level=0,fill=2": {
+      "model": "umbra:block/lighthouse_lamp_off"
+    },
+    "level=0,fill=3": {
+      "model": "umbra:block/lighthouse_lamp_off"
+    },
+    "level=1,fill=0": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=1,fill=1": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=1,fill=2": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=1,fill=3": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=2,fill=0": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=2,fill=1": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=2,fill=2": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=2,fill=3": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=3,fill=0": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=3,fill=1": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=3,fill=2": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=3,fill=3": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=4,fill=0": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=4,fill=1": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=4,fill=2": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    },
+    "level=4,fill=3": {
+      "model": "umbra:block/lighthouse_lamp_on"
+    }
+  }
+}

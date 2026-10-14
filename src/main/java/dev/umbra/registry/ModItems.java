@@ -124,6 +124,11 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> GLOOM_MUSHROOM = ITEMS.registerSimpleBlockItem("gloom_mushroom", ModBlocks.GLOOM_MUSHROOM);
     public static final DeferredItem<dev.umbra.item.ExplorerNoteItem> EXPLORER_NOTE = ITEMS.registerItem("explorer_note",
             dev.umbra.item.ExplorerNoteItem::new, p -> p.stacksTo(16));
+    public static final DeferredItem<BlockItem> LIGHTHOUSE_LAMP = ITEMS.registerSimpleBlockItem("lighthouse_lamp", ModBlocks.LIGHTHOUSE_LAMP, p -> p.rarity(Rarity.EPIC));
+    public static final DeferredItem<dev.umbra.lighthouse.MartaMapItem> MARTA_MAP = ITEMS.registerItem("marta_map",
+            dev.umbra.lighthouse.MartaMapItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LAMP_KEEPER_SPAWN_EGG = ITEMS.registerItem("lamp_keeper_spawn_egg",
+            net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LAMP_KEEPER.get()));
     public static final DeferredItem<dev.umbra.item.KeeperPageItem> KEEPER_PAGE = ITEMS.registerItem("keeper_page",
             dev.umbra.item.KeeperPageItem::new, p -> p.stacksTo(16));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> ASH_FIGURE_SPAWN_EGG = ITEMS.registerItem("ash_figure_spawn_egg",

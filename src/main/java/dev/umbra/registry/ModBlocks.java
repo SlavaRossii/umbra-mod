@@ -162,6 +162,15 @@ public final class ModBlocks {
                     .isSuffocating((s, l, p) -> false)
                     .pushReaction(PushReaction.IMMOVEABLE));
 
+    /** The lamp of the great lighthouse: dead until fed luminite, grows with it. */
+    public static final DeferredBlock<dev.umbra.lighthouse.LighthouseLampBlock> LIGHTHOUSE_LAMP = BLOCKS.registerBlock("lighthouse_lamp",
+            dev.umbra.lighthouse.LighthouseLampBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.BEACON)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> dev.umbra.lighthouse.LighthouseLampBlock.light(s.getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL)))
+                    .mapColor(MapColor.GOLD));
+
     public static final DeferredBlock<dev.umbra.citadel.ShadowNestBlock> SHADOW_NEST = BLOCKS.registerBlock("shadow_nest",
             dev.umbra.citadel.ShadowNestBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)

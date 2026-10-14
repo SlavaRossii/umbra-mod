@@ -73,5 +73,29 @@ public final class ModAttachments {
                     .serialize(Codec.LONG.fieldOf("bell"))
                     .build());
 
+    /** Kills per creature, as "id:count" (the bestiary opens up as you learn a creature). */
+    public static final Supplier<AttachmentType<java.util.List<String>>> BESTIARY = ATTACHMENTS.register("bestiary",
+            () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
+                    .serialize(Codec.STRING.listOf().fieldOf("kills"))
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .copyOnDeath()
+                    .build());
+
+    /** Accepted errands, as "id@kills at the time". */
+    public static final Supplier<AttachmentType<java.util.List<String>>> QUESTS_ACTIVE = ATTACHMENTS.register("quests_active",
+            () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
+                    .serialize(Codec.STRING.listOf().fieldOf("quests"))
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .copyOnDeath()
+                    .build());
+
+    /** Finished errands. */
+    public static final Supplier<AttachmentType<java.util.List<String>>> QUESTS_DONE = ATTACHMENTS.register("quests_done",
+            () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
+                    .serialize(Codec.STRING.listOf().fieldOf("quests"))
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .copyOnDeath()
+                    .build());
+
     private ModAttachments() {}
 }

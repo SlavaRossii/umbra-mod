@@ -1,0 +1,8 @@
+{
+  "feature": "umbra:lighthouse",
+  "placement": [
+    {
+      "type": "minecraft:in_square"
+    }
+  ]
+}

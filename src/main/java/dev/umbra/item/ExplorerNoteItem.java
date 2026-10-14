@@ -27,6 +27,13 @@ public class ExplorerNoteItem extends Item {
             String id = "note_" + i;
             if (!Journal.has(sp, id)) {
                 Journal.unlock(sp, id);
+                if (i == NOTES && !Journal.has(sp, "marta_map") && sp.getInventory().countItem(dev.umbra.registry.ModItems.MARTA_MAP.get()) == 0) {
+                    // the last note has a map folded into it
+                    if (!sp.getInventory().add(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.MARTA_MAP.get()))) {
+                        sp.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(sp.level(), sp.getX(), sp.getY(), sp.getZ(), new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.MARTA_MAP.get())));
+                    }
+                    sp.sendOverlayMessage(Component.translatable("message.umbra.note_map"));
+                }
                 if (!player.isCreative()) player.getItemInHand(hand).shrink(1);
                 return InteractionResult.SUCCESS;
             }

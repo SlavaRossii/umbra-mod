@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-import java.util.Map;
 
 /** Watches for first encounters and writes them into the journal. */
 public final class JournalEvents {
@@ -44,12 +43,28 @@ public final class JournalEvents {
             if (biome.is(dev.umbra.underside.UndersideBiomes.WHISPERING_FOREST)) Journal.unlock(player, "whispering_forest");
             if (dev.umbra.underside.AshStorm.at(player) > 0.5F) Journal.unlock(player, "ash_storm");
         }
+        if (Underside.is(player.level())) {
+            int[] lh = dev.umbra.lighthouse.LighthouseFeature.nearest(((net.minecraft.server.level.ServerLevel) player.level()).getSeed(), (int) player.getX(), (int) player.getZ());
+            double dx = lh[0] * 16 + 8 - player.getX(), dz = lh[1] * 16 + 8 - player.getZ();
+            if (dx * dx + dz * dz < 28 * 28) Journal.unlock(player, "lighthouse");
+        }
+        spot(player);
         if (Sanity.enabled() && Sanity.get(player) < Sanity.PARANOID) Journal.unlock(player, "sanity");
         checkInsights(player);
         BlockPos eye = BlockPos.containing(player.getEyePosition());
         if (player.level().getBlockState(eye).is(ModBlocks.LIVING_DARKNESS.get())) Journal.unlock(player, "darkness");
         if (player.level().getBlockState(player.blockPosition().below()).is(ModBlocks.MAZE_WALL.get())) Journal.unlock(player, "maze");
         if (player.getInventory().contains(new ItemStack(ModItems.LUMINITE_CRYSTAL.get()))) Journal.unlock(player, "luminite");
+    }
+
+    /** Seeing a creature (not just killing it) opens its page: a silhouette and a name. */
+    public static void spot(ServerPlayer player) {
+        var ids = Bestiary.ids();
+        for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(24.0), x -> ids.containsKey(x.getType()))) {
+            String id = ids.get(e.getType());
+            if (id.equals("mimicker") || e.isInvisible() || Journal.has(player, id)) continue;
+            if (player.hasLineOfSight(e)) Journal.unlock(player, id);
+        }
     }
 
     /** Insights come when sanity falls below their thresholds. */
@@ -73,22 +88,17 @@ public final class JournalEvents {
     public static void onDeath(LivingDeathEvent event) {
         LivingEntity dead = event.getEntity();
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
-        Map<EntityType<?>, String> ids = Map.ofEntries(
-                Map.entry(ModEntities.CRAWLER.get(), "crawler"),
-                Map.entry(ModEntities.BLIND.get(), "blind"),
-                Map.entry(ModEntities.LIGHT_EATER.get(), "light_eater"),
-                Map.entry(ModEntities.MIMICKER.get(), "mimicker"),
-                Map.entry(ModEntities.SHADE.get(), "shade"),
-                Map.entry(ModEntities.LURKER.get(), "lurker"),
-                Map.entry(ModEntities.WATCHER.get(), "watcher"),
-                Map.entry(ModEntities.MIMIC_QUEEN.get(), "mimic_queen"),
-                Map.entry(ModEntities.SHEPHERD.get(), "shepherd"),
-                Map.entry(ModEntities.DOPPELGANGER.get(), "doppelganger"),
-                Map.entry(ModEntities.ARCHITECT.get(), "architect"),
-                Map.entry(ModEntities.CITADEL_STATUE.get(), "statue"),
-                Map.entry(ModEntities.CITADEL_KEEPER.get(), "keeper"),
-                Map.entry(ModEntities.PRIMORDIAL_SHADOW.get(), "primordial_shadow"));
-        String id = ids.get(dead.getType());
+        String id = Bestiary.ids().get(dead.getType());
+        if (id != null && Bestiary.BOSSES.contains(id) && !id.equals("architect") && !id.equals("primordial_shadow")) {
+            // the first of the four minibosses leaves Marta's map behind
+            boolean first = true;
+            for (String b : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger"}) if (Bestiary.kills(player, b) > 0) first = false;
+            if (first) {
+                var level = dead.level();
+                level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, dead.getX(), dead.getY() + 1.0, dead.getZ(), new ItemStack(ModItems.MARTA_MAP.get())));
+            }
+        }
+        if (id != null) Bestiary.addKill(player, id);
         if (id != null) Journal.unlock(player, id);
     }
 }

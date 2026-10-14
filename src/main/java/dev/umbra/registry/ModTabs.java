@@ -19,6 +19,8 @@ public final class ModTabs {
                 out.accept(ModItems.DISPELLER.get());
                 out.accept(ModItems.LUMINITE_LANTERN.get());
                 out.accept(ModItems.WARD.get());
+                out.accept(ModItems.LIGHTHOUSE_LAMP.get());
+                out.accept(ModItems.MARTA_MAP.get());
                 out.accept(ModItems.WHISPER_TABLE.get());
                 out.accept(ModItems.SILENCE_TINCTURE.get());
                 out.accept(ModItems.MADMAN_MASK.get());
@@ -60,6 +62,7 @@ public final class ModTabs {
                 out.accept(ModItems.MIMICKER_SPAWN_EGG.get());
                 out.accept(ModItems.SHADE_SPAWN_EGG.get());
                 out.accept(ModItems.SHADOW_VILLAGER_SPAWN_EGG.get());
+                out.accept(ModItems.LAMP_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.CITADEL_STATUE_SPAWN_EGG.get());
                 out.accept(ModItems.CITADEL_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.SEAL_OF_WATCHING.get());

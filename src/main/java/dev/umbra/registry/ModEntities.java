@@ -30,6 +30,9 @@ public final class ModEntities {
             dev.umbra.village.ShadowVillager::new, MobCategory.MISC,
             b -> b.sized(0.6F, 1.95F).clientTrackingRange(10));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.lighthouse.LampKeeper>> LAMP_KEEPER = ENTITIES.registerEntityType("lamp_keeper",
+            dev.umbra.lighthouse.LampKeeper::new, MobCategory.MISC, b -> b.sized(0.6F, 1.95F).clientTrackingRange(10));
+
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.citadel.CitadelStatue>> CITADEL_STATUE = ENTITIES.registerEntityType("citadel_statue",
             dev.umbra.citadel.CitadelStatue::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.citadel.CitadelKeeper>> CITADEL_KEEPER = ENTITIES.registerEntityType("citadel_keeper",

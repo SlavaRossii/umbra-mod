@@ -128,6 +128,7 @@ final class SmokeTest {
                 case 660 -> testUnderside18(server, level);
                 case 665 -> testBalance182(server, level);
                 case 667 -> profileUnderside(server);
+                case 668 -> testLighthouse19(server, level);
                 case LIFE_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -562,7 +563,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 62 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 62, "journal has 62 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 80 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 80, "journal has 80 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -887,6 +888,129 @@ final class SmokeTest {
     }
 
     // ---------------------------------------------------------------- 1.8.2 balance and lore
+    // ---------------------------------------------------------------- 1.9
+    private static void testLighthouse19(MinecraftServer server, ServerLevel level) {
+        BlockPos f = new BlockPos(230, 100, 30);
+        dev.umbra.lighthouse.LighthouseFeature.build(level, f, level.getRandom());
+        BlockPos lamp = f.above(dev.umbra.lighthouse.LighthouseFeature.LAMP_Y);
+        check(level.getBlockState(lamp).is(ModBlocks.LIGHTHOUSE_LAMP.get()), "the lighthouse has its lamp at the top");
+        check(level.getBlockState(lamp).getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL) == 0, "the lamp starts dead");
+        boolean ladders = true, backed = true;
+        for (int y = 1; y <= dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 1; y++) {
+            ladders &= level.getBlockState(f.offset(0, y, -3)).is(Blocks.LADDER);
+            backed &= level.getBlockState(f.offset(0, y, -4)).isSolid();
+        }
+        check(ladders && backed, "a ladder with a wall behind it runs from the door to the lamp room");
+        check(level.getBlockState(f.offset(0, 1, 4)).isAir() && level.getBlockState(f.offset(0, 2, 4)).isAir(), "the tower has a door");
+        check(!level.getEntitiesOfClass(dev.umbra.lighthouse.LampKeeper.class, new AABB(f).inflate(14, 6, 14)).isEmpty(), "the keeper waits by the tower");
+
+        // growth: four crystals per level
+        BlockState s = ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState();
+        for (int i = 0; i < 4; i++) s = dev.umbra.lighthouse.LighthouseLampBlock.feed(s);
+        check(s.getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL) == 1 && s.getValue(dev.umbra.lighthouse.LighthouseLampBlock.FILL) == 0, "four crystals wake the lamp");
+        for (int i = 0; i < 20; i++) s = dev.umbra.lighthouse.LighthouseLampBlock.feed(s);
+        check(s.getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL) == dev.umbra.lighthouse.LighthouseLampBlock.MAX_LEVEL, "the lamp stops growing at the top level");
+        check(dev.umbra.lighthouse.LighthouseLampBlock.radius(1) < dev.umbra.lighthouse.LighthouseLampBlock.radius(2)
+                && dev.umbra.lighthouse.LighthouseLampBlock.radius(3) < dev.umbra.lighthouse.LighthouseLampBlock.radius(4)
+                && dev.umbra.lighthouse.LighthouseLampBlock.light(4) == 15, "a stronger lamp shelters a wider circle");
+        // a burning lamp is a ward
+        BlockState lit = ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState().setValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL, 2);
+        level.setBlock(lamp, lit, Block.UPDATE_ALL);
+        lit.tick(level, lamp, level.getRandom());
+        check(dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(lamp).add(dev.umbra.lighthouse.LighthouseLampBlock.radius(2) - 4, 0, 0)), "a burning lamp keeps the dark away");
+        check(!dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(lamp).add(dev.umbra.lighthouse.LighthouseLampBlock.radius(2) + 6, 0, 0)), "the circle has an edge");
+        dev.umbra.light.WardBlock.clear();
+        level.setBlock(lamp, ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        // the lighthouse is placed by the world seed and never on a gate
+        boolean apart = true;
+        for (int gx = -2; gx <= 2; gx++)
+            for (int gz = -2; gz <= 2; gz++) {
+                int[] c = dev.umbra.lighthouse.LighthouseFeature.chosenChunkOf(level.getSeed(), gx, gz);
+                for (int dx = -1; dx <= 1; dx++)
+                    for (int dz = -1; dz <= 1; dz++) apart &= !dev.umbra.citadel.CitadelGateFeature.chosenChunk(level.getSeed(), c[0] + dx, c[1] + dz);
+            }
+        check(apart, "no lighthouse stands beside a citadel gate");
+
+        // bestiary stages
+        check(dev.umbra.journal.Bestiary.stage("crawler", 0) == 0 && dev.umbra.journal.Bestiary.stage("crawler", 1) == 1
+                && dev.umbra.journal.Bestiary.stage("crawler", 4) == 2 && dev.umbra.journal.Bestiary.stage("watcher", 1) == 2
+                && dev.umbra.journal.Bestiary.stage("watcher", 0) == 0, "a creature is understood by stages");
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setData(dev.umbra.registry.ModAttachments.BESTIARY, java.util.List.of());
+        fake.setData(dev.umbra.registry.ModAttachments.QUESTS_ACTIVE, java.util.List.of());
+        fake.setData(dev.umbra.registry.ModAttachments.QUESTS_DONE, java.util.List.of());
+        dev.umbra.journal.Bestiary.addKill(fake, "shade");
+        dev.umbra.journal.Bestiary.addKill(fake, "shade");
+        dev.umbra.journal.Bestiary.addKill(fake, "crawler");
+        check(dev.umbra.journal.Bestiary.kills(fake, "shade") == 2 && dev.umbra.journal.Bestiary.kills(fake, "crawler") == 1
+                && dev.umbra.journal.Bestiary.kills(fake, "blind") == 0, "kills are counted per creature");
+
+        // errands: bring, kill, get somewhere
+        fake.getInventory().clearContent();
+        dev.umbra.journal.Journal.clear(fake);
+        java.util.UUID u1 = uuidFor("crystals"), u2 = uuidFor("shades"), u3 = uuidFor("lighthouse");
+        fake.getInventory().add(new ItemStack(ModItems.LUMINITE_CRYSTAL.get(), 6));
+        check(dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u1) != null
+                && dev.umbra.quest.Quests.isActive(fake, dev.umbra.quest.Quests.byId("crystals")), "a villager offers an errand");
+        check(dev.umbra.journal.Journal.has(fake, "quest_crystals"), "an accepted errand is written into the journal");
+        check(dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u1) != null
+                && dev.umbra.quest.Quests.isDone(fake, dev.umbra.quest.Quests.byId("crystals"))
+                && fake.getInventory().countItem(ModItems.LUMINITE_CRYSTAL.get()) == 0
+                && fake.getInventory().countItem(ModItems.SHADOW_SHARD.get()) == 3, "a finished errand takes its price and pays");
+        check(dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u1) == null, "after the errand the villager just trades");
+        dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u2);
+        for (int i = 0; i < 8; i++) dev.umbra.journal.Bestiary.addKill(fake, "shade");
+        dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u2);
+        check(dev.umbra.quest.Quests.isDone(fake, dev.umbra.quest.Quests.byId("shades")), "a hunting errand counts kills made after it was taken");
+        dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u3);
+        dev.umbra.journal.Journal.unlock((net.minecraft.server.level.ServerPlayer) fake, "lighthouse");
+        dev.umbra.quest.Quests.talk((net.minecraft.server.level.ServerPlayer) fake, u3);
+        check(dev.umbra.quest.Quests.isDone(fake, dev.umbra.quest.Quests.byId("lighthouse")), "an errand to get somewhere is done on arrival");
+
+        // Marta's map
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.MARTA_MAP.get()));
+        ModItems.MARTA_MAP.get().use(level, fake, InteractionHand.MAIN_HAND);
+        check(dev.umbra.journal.Journal.has(fake, "marta_map"), "reading Marta's map writes it into the journal");
+
+        // texts: every entry, creature stage and errand line exists in both languages
+        for (String lang : new String[]{"en_us", "ru_ru"}) {
+            java.util.List<String> missing = new java.util.ArrayList<>();
+            try (var in = Umbra.class.getResourceAsStream("/assets/umbra/lang/" + lang + ".json")) {
+                var obj = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                java.util.function.Consumer<String> need = k -> {
+                    if (!obj.has(k)) missing.add(k);
+                };
+                for (String id : dev.umbra.journal.Journal.ENTRIES) {
+                    need.accept("journal.umbra." + id + ".title");
+                    need.accept("journal.umbra." + id + ".text");
+                }
+                for (String id : dev.umbra.journal.Bestiary.CREATURES) {
+                    need.accept("journal.umbra." + id + ".look");
+                    need.accept("journal.umbra." + id + ".weak");
+                }
+                for (var q : dev.umbra.quest.Quests.ALL) {
+                    need.accept("quest.umbra." + q.id() + ".ask");
+                    need.accept("quest.umbra." + q.id() + ".thanks");
+                }
+                for (String k : new String[]{"dialogue.umbra.yan.intro", "dialogue.umbra.yan.dead", "dialogue.umbra.yan.level1", "dialogue.umbra.yan.level2",
+                        "dialogue.umbra.yan.level3", "dialogue.umbra.yan.max", "journal.umbra.tab.quests"}) need.accept(k);
+            } catch (Exception e) {
+                missing.add("(" + e + ")");
+            }
+            check(missing.isEmpty(), "language " + lang + " has all journal texts " + (missing.isEmpty() ? "" : missing.subList(0, Math.min(5, missing.size()))));
+        }
+    }
+
+    /** A UUID whose villager offers the given errand. */
+    private static java.util.UUID uuidFor(String quest) {
+        for (long i = 1; i < 100000; i++) {
+            java.util.UUID u = new java.util.UUID(i << 8, i);
+            if (dev.umbra.quest.Quests.forVillager(u).id().equals(quest)) return u;
+        }
+        return java.util.UUID.randomUUID();
+    }
+
     private static void testBalance182(MinecraftServer server, ServerLevel level) {
         BlockPos c = new BlockPos(160, Y + 60, 30);
         for (int x = -8; x <= 8; x++)

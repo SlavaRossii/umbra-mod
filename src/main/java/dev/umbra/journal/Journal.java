@@ -16,23 +16,26 @@ import java.util.Map;
  * New content: call {@link #unlock} with a new id and add both lang lines. The order below is the reading order.
  */
 public final class Journal {
-    public static final List<String> ENTRIES = List.of(
+    public static final List<String> ENTRIES = java.util.stream.Stream.concat(java.util.stream.Stream.of(
             "start", "sanity", "insight_1", "nightmare", "luminite", "shadow", "shadow_dispelled", "steps", "mimic", "mimic_crafting_table", "mimic_bookshelf", "mimic_planks", "mimic_stone", "mimic_barrel",
             "mimic_furnace", "mimic_hay", "mimic_log", "mimic_ore", "mimic_chest", "mimic_villager",
             "darkness", "maze", "underside", "shadow_village", "crystal_grottos", "black_lakes", "sunken_temple", "whispering_forest", "ash_storm",
             "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade", "lurker",
             "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
             "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8",
-            "keeper_1", "keeper_2", "keeper_3", "keeper_4", "keeper_5", "keeper_6", "keeper_7");
+            "keeper_1", "keeper_2", "keeper_3", "keeper_4", "keeper_5", "keeper_6", "keeper_7",
+            // 1.9: the lighthouse, Marta's map, Yan; errands follow
+            "marta_map", "lighthouse", "yan_1", "yan_2", "yan_3", "yan_4"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
-    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes"};
+    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests"};
 
     /** Index into {@link #SECTIONS} for an entry. */
     public static int section(String id) {
         if (id.startsWith("insight")) return 1;
         if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
         if (id.startsWith("note_") || id.startsWith("keeper_")) return 5;
+        if (id.startsWith("quest_")) return 6;
         return switch (id) {
             case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper" -> 3;
             case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
