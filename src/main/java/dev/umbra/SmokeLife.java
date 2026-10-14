@@ -50,6 +50,7 @@ final class SmokeLife {
     private static CitadelStatue statue;
     private static LivingEntity bait;
     private static ServerPlayer player;
+    private static net.minecraft.world.entity.Mob shade;
     private static Vec3 mark;
     private static BlockPos diedAt;
     private static int carried;
@@ -147,6 +148,23 @@ final class SmokeLife {
                 look(-90.0F);
                 SmokeTest.check(facing && !away, "a statue counts as watched only in the player's view (facing " + facing + ", away " + away + ", view "
                         + String.format("%.2f,%.2f", v1.x, v1.z) + ", player " + player.position() + ", statue " + statue.position() + ")");
+            }
+            // ---- 1.8.2: a light held in the hand burns shades within three blocks
+            case 140 -> {
+                if (player == null) return;
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.TORCH));
+                shade = dev.umbra.registry.ModEntities.SHADE.get().create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+                if (shade != null) {
+                    shade.snapTo(player.getX() + 2.0, player.getY(), player.getZ(), 0, 0);
+                    shade.setNoAi(true);
+                    level.addFreshEntity(shade);
+                }
+            }
+            case 160 -> {
+                if (player == null) return;
+                SmokeTest.check(shade != null && (!shade.isAlive() || shade.getHealth() < shade.getMaxHealth()), "a torch in the hand burns a shade standing two blocks away");
+                if (shade != null) shade.discard();
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }
             case 165 -> {
                 if (statue == null || player == null) return;

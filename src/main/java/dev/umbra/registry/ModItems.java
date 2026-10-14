@@ -124,6 +124,8 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> GLOOM_MUSHROOM = ITEMS.registerSimpleBlockItem("gloom_mushroom", ModBlocks.GLOOM_MUSHROOM);
     public static final DeferredItem<dev.umbra.item.ExplorerNoteItem> EXPLORER_NOTE = ITEMS.registerItem("explorer_note",
             dev.umbra.item.ExplorerNoteItem::new, p -> p.stacksTo(16));
+    public static final DeferredItem<dev.umbra.item.KeeperPageItem> KEEPER_PAGE = ITEMS.registerItem("keeper_page",
+            dev.umbra.item.KeeperPageItem::new, p -> p.stacksTo(16));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> ASH_FIGURE_SPAWN_EGG = ITEMS.registerItem("ash_figure_spawn_egg",
             net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.ASH_FIGURE.get()));
 

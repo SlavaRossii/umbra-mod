@@ -22,7 +22,8 @@ public final class Journal {
             "darkness", "maze", "underside", "shadow_village", "crystal_grottos", "black_lakes", "sunken_temple", "whispering_forest", "ash_storm",
             "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade", "lurker",
             "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
-            "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8");
+            "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8",
+            "keeper_1", "keeper_2", "keeper_3", "keeper_4", "keeper_5", "keeper_6", "keeper_7");
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes"};
@@ -31,7 +32,7 @@ public final class Journal {
     public static int section(String id) {
         if (id.startsWith("insight")) return 1;
         if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
-        if (id.startsWith("note_")) return 5;
+        if (id.startsWith("note_") || id.startsWith("keeper_")) return 5;
         return switch (id) {
             case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper" -> 3;
             case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
@@ -47,20 +48,27 @@ public final class Journal {
     public static final float[] INSIGHT_AT = {40.0F, 25.0F, 10.0F};
 
     /** Recipes the hero "figures out" when an entry is written (they appear in the recipe book). */
-    public static final Map<String, List<String>> RECIPES = Map.of(
-            "start", List.of("journal", "sedative"),
-            "luminite", List.of("dispeller", "eternal_torch", "luminite_lamp", "luminite_lantern", "light_arrow", "mirror", "sedative_from_luminite"),
-            "shadow_dispelled", List.of("dusk_stone", "antipsychotic"),
-            "crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block"),
-            "underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
+    public static final Map<String, List<String>> RECIPES = Map.ofEntries(
+            Map.entry("start", List.of("journal", "sedative")),
+            // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
+            Map.entry("luminite", List.of("luminite_lamp")),
+            Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic")),
+            Map.entry("crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block")),
+            Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
-                    "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass", "ward",
-                    "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection"),
-            "watcher", List.of("underside_key"),
-            "mimic_queen", List.of("underside_key"),
-            "shepherd", List.of("underside_key"),
-            "doppelganger", List.of("underside_key"),
-            "insight_1", List.of("whisper_table"));
+                    "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass",
+                    "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection")),
+            Map.entry("watcher", List.of("underside_key")),
+            Map.entry("mimic_queen", List.of("underside_key")),
+            Map.entry("shepherd", List.of("underside_key")),
+            Map.entry("doppelganger", List.of("underside_key")),
+            Map.entry("insight_1", List.of("whisper_table")),
+            // the Keepers of the Vein: notes of the miners who guarded the luminite, one craft per page
+            Map.entry("keeper_1", List.of("mirror")),
+            Map.entry("keeper_2", List.of("ward")),
+            Map.entry("keeper_3", List.of("light_arrow", "eternal_torch")),
+            Map.entry("keeper_4", List.of("dispeller", "luminite_lantern")),
+            Map.entry("keeper_5", List.of("sedative_from_luminite")));
 
     /** Lines in a hand that is not yours: they creep into the journal when sanity is low. */
     public static final int WHISPERS = 8;

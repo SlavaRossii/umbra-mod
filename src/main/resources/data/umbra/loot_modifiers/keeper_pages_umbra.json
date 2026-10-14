@@ -1,0 +1,29 @@
+{
+  "type": "neoforge:add_table",
+  "condition": {
+    "type": "minecraft:any_of",
+    "terms": [
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/maze_common"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/maze_common_underside"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/shadow_village"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/sunken_temple"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "umbra:chests/citadel_library"
+      }
+    ]
+  },
+  "table": "umbra:chests/keeper_page_find"
+}

@@ -45,7 +45,11 @@ public record QuantumMazeFeature() implements Feature {
 
     /** Dry land, and the surface of the whole footprint (plus the mound and stairs) within one block of height. */
     static boolean isFlat(WorldGenLevel level, BlockPos origin) {
-        int half = QuantumMaze.SIZE / 2 + MOUND + 3;
+        return isFlat(level, origin, QuantumMaze.SIZE / 2 + MOUND + 3);
+    }
+
+    /** Same check for any square footprint of the given half-width. */
+    public static boolean isFlat(WorldGenLevel level, BlockPos origin, int half) {
         int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
         for (int dx = -half; dx <= half; dx += 3) {
             for (int dz = -half; dz <= half; dz += 3) {

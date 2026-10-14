@@ -41,5 +41,8 @@ public final class ModFeatures {
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.decor.UndersideLandmarkFeature>> UNDERSIDE_LANDMARK =
             FEATURES.register("underside_landmark", () -> dev.umbra.decor.UndersideLandmarkFeature.CODEC);
 
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.village.KeepersWorkshopFeature>> KEEPERS_WORKSHOP =
+            FEATURES.register("keepers_workshop", () -> dev.umbra.village.KeepersWorkshopFeature.CODEC);
+
     private ModFeatures() {}
 }

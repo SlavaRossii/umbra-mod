@@ -126,6 +126,7 @@ final class SmokeTest {
                 case 645 -> testFilling(server, level);
                 case 655 -> testBossMoves(level);
                 case 660 -> testUnderside18(server, level);
+                case 665 -> testBalance182(server, level);
                 case LIFE_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -882,6 +883,98 @@ final class SmokeTest {
             }
         }
         return seen;
+    }
+
+    // ---------------------------------------------------------------- 1.8.2 balance and lore
+    private static void testBalance182(MinecraftServer server, ServerLevel level) {
+        BlockPos c = new BlockPos(160, Y + 60, 30);
+        for (int x = -8; x <= 8; x++)
+            for (int z = -8; z <= 8; z++) {
+                level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                for (int y = 0; y < 4; y++) level.setBlock(c.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+
+        // a winded boss takes half as much again
+        var a = ModEntities.ARCHITECT.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        var b = ModEntities.ARCHITECT.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        check(a != null && b != null, "two Architects for the stun test");
+        if (a != null && b != null) {
+            a.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+            b.snapTo(c.getX() + 4.5, c.getY(), c.getZ() + 0.5, 0, 0);
+            level.addFreshEntity(a);
+            level.addFreshEntity(b);
+            b.stun(dev.umbra.boss.UmbraBoss.STUN_TICKS);
+            check(b.isStunned() && !a.isStunned(), "a boss can be stunned for a moment");
+            float ha = a.getHealth(), hb = b.getHealth();
+            a.hurtServer(level, level.damageSources().magic(), 10.0F);
+            b.hurtServer(level, level.damageSources().magic(), 10.0F);
+            float lostA = ha - a.getHealth(), lostB = hb - b.getHealth();
+            check(lostA > 0 && Math.abs(lostB - lostA * 1.5F) < 0.05F, "and takes +50% damage meanwhile (" + lostA + " vs " + lostB + ")");
+
+            // shades: never more than four around one boss
+            int first = dev.umbra.boss.BossMoves.shades(level, a, null, 10);
+            int second = dev.umbra.boss.BossMoves.shades(level, a, null, 10);
+            int around = level.getEntitiesOfClass(dev.umbra.mob.Shade.class, a.getBoundingBox().inflate(40)).size();
+            check(first == 4 && second == 0 && around == 4, "a boss calls at most four shades (" + first + ", " + second + ", " + around + ")");
+            level.getEntitiesOfClass(dev.umbra.mob.Shade.class, a.getBoundingBox().inflate(40)).forEach(net.minecraft.world.entity.Entity::discard);
+            a.discard();
+            b.discard();
+        }
+
+        // the shroud: three hits with a light in hand tear it, without a light nothing helps
+        var shepherd = ModEntities.SHEPHERD.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (shepherd != null) {
+            shepherd.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+            level.addFreshEntity(shepherd);
+            level.setBlock(c.offset(1, 1, 0), ModBlocks.LIVING_DARKNESS.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+            float full = shepherd.getHealth();
+            fake.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+            fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
+            var hit = level.damageSources().playerAttack(fake);
+            for (int i = 0; i < 4; i++) shepherd.hurtServer(level, hit, 5.0F);
+            check(shepherd.getHealth() == full, "without a light in hand the shroud holds");
+            fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(Items.TORCH));
+            shepherd.hurtServer(level, hit, 5.0F);
+            shepherd.hurtServer(level, hit, 5.0F);
+            check(shepherd.getHealth() == full && level.getBlockState(c.offset(1, 1, 0)).is(ModBlocks.LIVING_DARKNESS.get()), "two hits with a light only chip it");
+            shepherd.hurtServer(level, hit, 5.0F);
+            check(shepherd.getHealth() < full && !level.getBlockState(c.offset(1, 1, 0)).is(ModBlocks.LIVING_DARKNESS.get()), "the third hit tears the shroud and lands");
+            shepherd.discard();
+            fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        }
+
+        // clarity wipes darkness and nausea, from any source
+        fake.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 200, 0));
+        fake.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NAUSEA, 200, 0));
+        dev.umbra.registry.ModEffects.tick(fake);
+        boolean without = fake.hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS) && fake.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA);
+        fake.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.SILENCE_TINCTURE.get()));
+        ModItems.SILENCE_TINCTURE.get().use(level, fake, net.minecraft.world.InteractionHand.MAIN_HAND);
+        check(fake.hasEffect(dev.umbra.registry.ModEffects.CLARITY), "the tincture of silence gives Clarity");
+        dev.umbra.registry.ModEffects.tick(fake);
+        check(without && !fake.hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS) && !fake.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA),
+                "Clarity wipes away darkness and nausea (and nothing else does)");
+        fake.removeAllEffects();
+
+        // the Keepers' pages: in order, each opens its own craft
+        dev.umbra.journal.Journal.clear(fake);
+        check("keeper_1".equals(dev.umbra.item.KeeperPageItem.nextPage(fake)), "the first page is read first");
+        var recipes = server.getRecipeManager();
+        java.util.function.Predicate<String> known = id -> fake.getRecipeBook().contains(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, id)));
+        dev.umbra.journal.Journal.unlock(fake, "luminite");
+        boolean beforePages = known.test("luminite_lamp") && !known.test("mirror") && !known.test("dispeller") && !known.test("ward");
+        dev.umbra.journal.Journal.unlock(fake, "keeper_1");
+        dev.umbra.journal.Journal.unlock(fake, "keeper_4");
+        boolean afterPages = known.test("mirror") && known.test("dispeller") && known.test("luminite_lantern") && !known.test("ward");
+        check(beforePages && afterPages, "finding the luminite is not enough: the mirror and the dispeller come from the Keepers' pages (" + beforePages + ", " + afterPages + ")");
+        check("keeper_2".equals(dev.umbra.item.KeeperPageItem.nextPage(fake)), "pages are read in order");
+        for (int i = 2; i <= dev.umbra.item.KeeperPageItem.PAGES; i++) dev.umbra.journal.Journal.unlock(fake, "keeper_" + i);
+        check(dev.umbra.item.KeeperPageItem.nextPage(fake) == null && known.test("ward") && known.test("light_arrow") && known.test("eternal_torch")
+                && known.test("sedative_from_luminite"), "all seven pages teach the whole craft");
+        dev.umbra.journal.Journal.clear(fake);
     }
 
     // ---------------------------------------------------------------- 1.5

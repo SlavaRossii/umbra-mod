@@ -354,5 +354,21 @@
   "block.umbra.trap_plate": "Cracked Floor Tile",
   "command.umbra.citadel.outside": "You are not inside a citadel.",
   "command.umbra.citadel.rebuilt": "The citadel stands anew.",
-  "effect.umbra.clarity": "Clarity"
+  "effect.umbra.clarity": "Clarity",
+  "item.umbra.keeper_page": "Keepers' Page",
+  "item.umbra.keeper_page.known": "You have read everything the Keepers left.",
+  "journal.umbra.keeper_1.title": "Keepers: \"The Vein\"",
+  "journal.umbra.keeper_1.text": "We, the Keepers of the Vein, write for those who come down after us. A blue vein runs under the hills; it shines and does not burn. We call it luminite. Set a crystal in a frame of iron grains and glass: such a mirror throws light back, and what watches from the dark looks away.",
+  "journal.umbra.keeper_2.title": "Keepers: \"The Ward\"",
+  "journal.umbra.keeper_2.text": "A lamp shines, but the shadow comes to the lamp too. We wrapped it on every side: dark ingots, echo quartz, crystals. It became a ward: within its light the shadow weakens and does not dare come near. Set it where you sleep.",
+  "journal.umbra.keeper_3.title": "Keepers: \"Fire and Arrow\"",
+  "journal.umbra.keeper_3.text": "A crystal on the arrowhead flares at the strike and lights whatever it hit. A crystal in the heart of a torch will not let it die: that is how we got the eternal fire for the mines. Both are simple, but you need many crystals.",
+  "journal.umbra.keeper_4.title": "Keepers: \"The Dispeller\"",
+  "journal.umbra.keeper_4.text": "A device that gives a flash at your word, and everything living in the dark recoils. One flash, then it cools; do not waste it. And a lantern for the hand: a light you can carry. The shadow does not like to come near us when we carry a light.",
+  "journal.umbra.keeper_5.title": "Keepers: \"Silence\"",
+  "journal.umbra.keeper_5.text": "Whoever hears voices must learn to be silent. A tincture of silence, from a crystal and herbs: for five minutes the head stays clear and nothing puts out the light in your eyes. We drank it before every descent. Those who did not came back changed.",
+  "journal.umbra.keeper_6.title": "Keepers: \"A Warning\"",
+  "journal.umbra.keeper_6.text": "If you listen to the whispering too long, it will start to suggest recipes. Do not believe it: everything madness teaches is paid for with your mind and only makes things darker. The bright craft is taught by stone and labour.",
+  "journal.umbra.keeper_7.title": "Keepers: \"The Fire on the Cliff\"",
+  "journal.umbra.keeper_7.text": "The last of us stayed at the great fire on the black cliff above the lake. He did not leave with the rest; he keeps the light. If you are reading this, go towards the light. That fire has not gone out; it only lacks luminite."
 }

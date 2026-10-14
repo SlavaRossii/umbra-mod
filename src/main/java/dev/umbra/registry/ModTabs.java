@@ -74,6 +74,7 @@ public final class ModTabs {
                 out.accept(ModItems.ABYSS_HEART.get());
                 out.accept(ModItems.DAWN_LANTERN.get());
                 out.accept(ModItems.EXPLORER_NOTE.get());
+                out.accept(ModItems.KEEPER_PAGE.get());
                 out.accept(ModItems.LUMINITE_CLUSTER.get());
                 out.accept(ModItems.ECHO_CLUSTER.get());
                 out.accept(ModItems.GLOOM_MUSHROOM.get());
