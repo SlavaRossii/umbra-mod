@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -118,14 +117,33 @@ public final class QuantumMaze {
             }
         }
 
-        // prizes: a modest chest downstairs, the real one upstairs
-        placeChest(level, random, corner.offset(mid, 1, mid), BuiltInLootTables.SIMPLE_DUNGEON);
-        placeChest(level, random, corner.offset(mid, floorBase(1) + 1, mid), BuiltInLootTables.ANCIENT_CITY);
+        // prizes: three common chests downstairs (centre and two far corners), upstairs one more and the real prize.
+        // Common chests can be mimics (see MimicChests).
+        int far = SIZE - 2;
+        placeChest(level, random, corner.offset(mid, 1, mid), COMMON);
+        placeChestIfFree(level, random, ladders, corner, 1, 1, 1, COMMON);
+        placeChestIfFree(level, random, ladders, corner, far, 1, far, COMMON);
+        placeChestIfFree(level, random, ladders, corner, far, floorBase(1) + 1, 1, COMMON);
+        placeChest(level, random, corner.offset(mid, floorBase(1) + 1, mid), PRIZE);
 
         // the core that drives the quantum walls
         BlockPos core = corner.offset(mid, -1, mid);
         level.setBlock(core, ModBlocks.MAZE_CORE.get().defaultBlockState(), FLAGS);
         level.scheduleTick(core, ModBlocks.MAZE_CORE.get(), 20);
+    }
+
+    public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> COMMON = lootKey("chests/maze_common");
+    public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> PRIZE = lootKey("chests/maze_prize");
+
+    private static net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootKey(String path) {
+        return net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, path));
+    }
+
+    private static void placeChestIfFree(WorldGenLevel level, RandomSource random, List<int[]> ladders, BlockPos corner, int x, int y, int z,
+                                         net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> loot) {
+        if (isLadderCell(ladders, x, z)) return;
+        placeChest(level, random, corner.offset(x, y, z), loot);
     }
 
     private static void placeChest(WorldGenLevel level, RandomSource random, BlockPos pos, net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> loot) {

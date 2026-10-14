@@ -10,6 +10,7 @@ import dev.umbra.journal.JournalItem;
 import dev.umbra.light.LightArrowItem;
 import dev.umbra.item.PillItem;
 import dev.umbra.light.DispellerItem;
+import dev.umbra.light.LanternItem;
 import dev.umbra.underside.ShadowShardItem;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.core.Direction;
@@ -40,7 +41,10 @@ public final class ModItems {
 
     // --- Tools against the dark ---
     public static final DeferredItem<DispellerItem> DISPELLER = ITEMS.registerItem("dispeller", DispellerItem::new,
-            p -> p.durability(64).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.UNCOMMON));
+            p -> p.durability(40).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<LanternItem> LUMINITE_LANTERN = ITEMS.registerItem("luminite_lantern", LanternItem::new,
+            p -> p.durability(LanternItem.CAPACITY).repairable(LUMINITE_CRYSTAL.get()));
+    public static final DeferredItem<BlockItem> WARD = ITEMS.registerSimpleBlockItem("ward", ModBlocks.WARD, p -> p.rarity(Rarity.RARE));
     public static final DeferredItem<MirrorItem> MIRROR = ITEMS.registerItem("mirror", MirrorItem::new, p -> p.stacksTo(1));
     public static final DeferredItem<ShadowShardItem> SHADOW_SHARD = ITEMS.registerItem("shadow_shard", ShadowShardItem::new, p -> p.rarity(Rarity.UNCOMMON));
 
@@ -98,7 +102,7 @@ public final class ModItems {
     public static final DeferredItem<BossSummonItems.Key> UNDERSIDE_KEY = ITEMS.registerItem("underside_key", BossSummonItems.Key::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<BossSummonItems.Heart> ABYSS_HEART = ITEMS.registerItem("abyss_heart", BossSummonItems.Heart::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<DawnLanternItem> DAWN_LANTERN = ITEMS.registerItem("dawn_lantern", DawnLanternItem::new,
-            p -> p.durability(512).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
+            p -> p.durability(256).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
 
     // --- Polish ---
     public static final DeferredItem<JournalItem> JOURNAL = ITEMS.registerItem("journal", JournalItem::new, p -> p.stacksTo(1));

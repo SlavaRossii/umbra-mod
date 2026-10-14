@@ -109,6 +109,12 @@ public final class Sanity {
         // gloom armour steadies the mind: each piece takes 12% off the drain
         drain *= 1.0F - 0.12F * gloomPieces(player);
 
+        // inside a burning ward the mind rests
+        if (dev.umbra.light.WardBlock.protects(player)) {
+            drain = 0.0F;
+            regen += 0.10F;
+        }
+
         float delta = regen * (float) UmbraConfig.num(UmbraConfig.SANITY_REGEN)
                 - drain * (float) UmbraConfig.num(UmbraConfig.SANITY_DRAIN);
         if (delta != 0.0F) set(player, get(player) + delta);

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "N": "minecraft:iron_nugget",
+    "G": "minecraft:glass_pane",
+    "C": "umbra:luminite_crystal"
+  },
+  "pattern": [
+    " N ",
+    "GCG",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "umbra:luminite_lantern"
+  }
+}

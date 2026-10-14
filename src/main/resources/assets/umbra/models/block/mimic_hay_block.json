@@ -1,0 +1,56 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "minecraft:block/hay_block_top",
+    "up": "minecraft:block/hay_block_top",
+    "north": "minecraft:block/hay_block_side",
+    "south": "minecraft:block/hay_block_side",
+    "west": "minecraft:block/hay_block_side",
+    "east": "minecraft:block/hay_block_side",
+    "particle": "minecraft:block/hay_block_side"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north",
+          "rotation": 90
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west",
+          "rotation": 90
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

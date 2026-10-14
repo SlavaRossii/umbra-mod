@@ -76,9 +76,11 @@ public class DispellerItem extends Item {
                 level.removeBlock(p, false);
                 burned++;
                 if (burned % 4 == 0) level.sendParticles(ParticleTypes.SMOKE, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 1, 0.2, 0.2, 0.2, 0.0);
-            } else if (state.getBlock() instanceof MimicBlock && len < 10) {
-                level.sendParticles(ParticleTypes.ANGRY_VILLAGER, p.getX() + 0.5, p.getY() + 1.1, p.getZ() + 0.5, 3, 0.3, 0.1, 0.3, 0.0);
-                level.playSound(null, p, SoundEvents.SILVERFISH_DEATH, SoundSource.BLOCKS, 0.5F, 1.8F);
+            } else if (state.getBlock() instanceof MimicBlock mimic && len < 10) {
+                // caught in the light: it gives up without a fight
+                mimic.expose(level, p.immutable());
+            } else if (len < 10 && state.hasBlockEntity() && dev.umbra.mimic.MimicChests.isMimic(level, p)) {
+                dev.umbra.mimic.MimicChests.expose(level, p.immutable());
             }
         }
 

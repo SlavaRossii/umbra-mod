@@ -2,10 +2,6 @@
   "feature": "umbra:underside_maze",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 6
-    },
-    {
       "type": "minecraft:in_square"
     },
     {

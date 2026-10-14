@@ -1,0 +1,56 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "minecraft:block/furnace_top",
+    "up": "minecraft:block/furnace_top",
+    "north": "minecraft:block/furnace_front",
+    "south": "minecraft:block/furnace_side",
+    "west": "minecraft:block/furnace_side",
+    "east": "minecraft:block/furnace_side",
+    "particle": "minecraft:block/furnace_front"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north",
+          "rotation": 90
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west",
+          "rotation": 90
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

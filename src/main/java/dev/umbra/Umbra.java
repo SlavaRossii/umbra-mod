@@ -77,6 +77,11 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onLogin);
         NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.LightArrowItem::onImpact);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.light.WardBlock::onFinalizeSpawn);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.light.SmolderingTorchBlock::onPlaced);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onRightClick);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onBreak);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
     }
@@ -113,6 +118,7 @@ public class Umbra {
         ShadowManager.tick(player);
         StepsManager.tick(player);
         MimicManager.tick(player);
+        dev.umbra.mimic.MimicChests.tick(player);
         DarknessManager.tick(player);
         Sanity.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);

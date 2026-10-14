@@ -37,6 +37,7 @@ public final class UmbraUtil {
     }
 
     private static boolean isLight(ItemStack stack) {
+        if (dev.umbra.light.LanternItem.isLit(stack)) return true;
         return !stack.isEmpty() && stack.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().getLightEmission() >= 10;
     }
 

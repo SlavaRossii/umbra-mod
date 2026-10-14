@@ -37,11 +37,20 @@ import java.util.function.Supplier;
  */
 public class MimicBlock extends Block {
     private static final int CHECK_INTERVAL = 20;
+    /** Four hearts, straight through armour: the price of guessing wrong. Never kills on its own. */
+    public static final float BITE = 8.0F;
     private final Supplier<Block> original;
+    private final boolean ore;
 
-    public MimicBlock(Properties properties, Supplier<Block> original) {
+    public MimicBlock(Properties properties, Supplier<Block> original, boolean ore) {
         super(properties);
         this.original = original;
+        this.ore = ore;
+    }
+
+    /** Ore mimics spring when you mine them; only light (the Dispeller) exposes them safely. */
+    public boolean isOre() {
+        return ore;
     }
 
     public Block original() {
@@ -56,6 +65,7 @@ public class MimicBlock extends Block {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (ore) return; // ores do not lunge at passers-by, they wait for the pickaxe
         List<Player> near = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(1.5), p -> !p.isSpectator() && !p.isCreative());
         if (!near.isEmpty() && random.nextInt(8) == 0) {
             spring(level, pos);
@@ -86,7 +96,10 @@ public class MimicBlock extends Block {
 
     @Override
     protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
-        if (level instanceof ServerLevel sl) expose(sl, pos);
+        if (level instanceof ServerLevel sl) {
+            if (ore && !player.isCreative()) spring(sl, pos);
+            else expose(sl, pos);
+        }
         if (player instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
     }
 
@@ -101,8 +114,30 @@ public class MimicBlock extends Block {
         level.addFreshEntity(reward);
     }
 
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        // the faintest tell: now and then something like breath escapes from it
+        if (random.nextInt(ore ? 14 : 30) == 0) {
+            level.addParticle(ParticleTypes.ASH, pos.getX() + random.nextDouble(), pos.getY() + 1.02, pos.getZ() + random.nextDouble(), 0, 0, 0);
+        }
+    }
+
+    /** The bite: four hearts through armour to whoever is closest, but it leaves them alive. */
+    public static void bite(ServerLevel level, BlockPos pos) {
+        Player victim = level.getNearestPlayer(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5.0,
+                p -> p instanceof Player pl && !pl.isCreative() && !pl.isSpectator());
+        level.playSound(null, pos, SoundEvents.EVOKER_FANGS_ATTACK, SoundSource.HOSTILE, 1.0F, 0.8F);
+        if (victim != null) bite(level, victim);
+    }
+
+    public static void bite(ServerLevel level, net.minecraft.world.entity.LivingEntity victim) {
+        float amount = Math.min(BITE, victim.getHealth() - 1.0F);
+        if (amount > 0) victim.hurtServer(level, level.damageSources().magic(), amount);
+    }
+
     /** Too late. */
     public void spring(ServerLevel level, BlockPos pos) {
+        bite(level, pos);
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         Vec3 c = Vec3.atCenterOf(pos);
         level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 40, 0.5, 0.5, 0.5, 0.1);

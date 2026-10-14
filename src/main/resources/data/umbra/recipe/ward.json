@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "umbra:gloom_ingot",
+    "E": "umbra:echo_quartz",
+    "C": "umbra:luminite_crystal",
+    "L": "umbra:luminite_lamp"
+  },
+  "pattern": [
+    "GEG",
+    "CLC",
+    "GCG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umbra:ward"
+  }
+}

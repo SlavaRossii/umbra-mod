@@ -47,7 +47,7 @@ public class LivingDarknessBlock extends Block {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!canExist(level, pos)) {
+        if (!canExist(level, pos) || dev.umbra.light.WardBlock.protects(level, net.minecraft.world.phys.Vec3.atCenterOf(pos))) {
             level.removeBlock(pos, false);
             level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 4, 0.3, 0.3, 0.3, 0.01);
             return;

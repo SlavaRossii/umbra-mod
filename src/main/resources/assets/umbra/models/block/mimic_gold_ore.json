@@ -1,0 +1,58 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "minecraft:block/gold_ore",
+    "up": "minecraft:block/gold_ore",
+    "north": "minecraft:block/gold_ore",
+    "south": "minecraft:block/gold_ore",
+    "west": "minecraft:block/gold_ore",
+    "east": "minecraft:block/gold_ore",
+    "particle": "minecraft:block/gold_ore"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down",
+          "rotation": 90
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up",
+          "rotation": 90
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north",
+          "rotation": 90
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west",
+          "rotation": 90
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

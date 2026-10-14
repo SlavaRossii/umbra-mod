@@ -81,6 +81,7 @@ public final class StepsManager {
         if (horiz > 0.05) s.moveDir = UmbraUtil.horizontal(delta);
 
         playPending(level, s);
+        if (dev.umbra.light.WardBlock.protects(player)) return;
 
         if (!s.active) {
             if (s.cooldown > 0) { s.cooldown--; return; }

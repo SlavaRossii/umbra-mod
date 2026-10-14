@@ -576,6 +576,70 @@ def stage6():
     icon("light_arrow", arrow)
 
 
+# ------------------------------------------------------------------ 1.1: lantern, ward, smouldering torch
+
+def stage7():
+    def lantern(px, rnd):
+        frame = (70, 72, 80, 255)
+        for y in range(4, 14):
+            px[4, y] = frame
+            px[11, y] = frame
+        for x in range(4, 12):
+            px[x, 4] = frame
+            px[x, 13] = frame
+            px[x, 14] = (50, 50, 58, 255)
+        for x in range(6, 10):
+            px[x, 3] = frame
+        px[7, 1] = frame; px[8, 1] = frame; px[6, 2] = frame; px[9, 2] = frame
+        for x in range(5, 11):
+            for y in range(5, 13):
+                d = math.hypot(x - 7.5, y - 8.5)
+                v = int(255 - d * 22)
+                px[x, y] = (max(90, v - 70), max(170, v), 255, 255)
+    icon("luminite_lantern", lantern)
+
+    def ward(lit):
+        side = Image.new("RGBA", (16, 16)); top = Image.new("RGBA", (16, 16))
+        sp, tp = side.load(), top.load()
+        rnd = random.Random(70)
+        for x in range(16):
+            for y in range(16):
+                base = 38 + rnd.randint(-6, 6)
+                sp[x, y] = (base, base - 4, base + 14, 255)
+                tp[x, y] = (base, base - 4, base + 14, 255)
+        glow = (150, 230, 255, 255) if lit else (60, 80, 95, 255)
+        core = (235, 252, 255, 255) if lit else (80, 100, 115, 255)
+        for i in range(16):
+            sp[i, 0] = sp[i, 15] = sp[0, i] = sp[15, i] = (20, 18, 30, 255)
+            tp[i, 0] = tp[i, 15] = tp[0, i] = tp[15, i] = (20, 18, 30, 255)
+        for y in range(3, 13):
+            for x in range(6, 10):
+                sp[x, y] = core if 7 <= x <= 8 and 5 <= y <= 10 else glow
+        for x in range(16):
+            for y in range(16):
+                d = math.hypot(x - 7.5, y - 7.5)
+                if 2.5 < d < 4.5:
+                    tp[x, y] = glow
+                elif d <= 2.5:
+                    tp[x, y] = core
+        suffix = "on" if lit else "off"
+        save(side, f"block/ward_side_{suffix}.png")
+        save(top, f"block/ward_top_{suffix}.png")
+    ward(True)
+    ward(False)
+    bottom = noise_tile((36, 32, 50), 6, 71)
+    save(bottom, "block/ward_bottom.png")
+
+    torch = Image.new("RGBA", (16, 16))
+    px = torch.load()
+    for y in range(8, 16):
+        px[7, y] = (70, 52, 34, 255)
+        px[8, y] = (54, 40, 26, 255)
+    for (x, y, c) in [(7, 6, (150, 60, 30)), (8, 6, (120, 45, 25)), (7, 7, (190, 90, 40)), (8, 7, (160, 70, 30))]:
+        px[x, y] = c + (255,)
+    save(torch, "block/smoldering_torch.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -593,4 +657,5 @@ if __name__ == "__main__":
     stage4()
     stage5()
     stage6()
+    stage7()
     print("textures written")

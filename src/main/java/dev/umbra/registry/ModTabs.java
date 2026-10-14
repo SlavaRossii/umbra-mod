@@ -17,6 +17,8 @@ public final class ModTabs {
             .displayItems((params, out) -> {
                 out.accept(ModItems.JOURNAL.get());
                 out.accept(ModItems.DISPELLER.get());
+                out.accept(ModItems.LUMINITE_LANTERN.get());
+                out.accept(ModItems.WARD.get());
                 out.accept(ModItems.LIGHT_ARROW.get());
                 out.accept(ModItems.QUANTUM_COMPASS.get());
                 out.accept(ModItems.MIRROR.get());

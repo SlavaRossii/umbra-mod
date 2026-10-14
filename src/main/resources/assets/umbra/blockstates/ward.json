@@ -1,0 +1,31 @@
+{
+  "variants": {
+    "charge=0": {
+      "model": "umbra:block/ward_off"
+    },
+    "charge=1": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=2": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=3": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=4": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=5": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=6": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=7": {
+      "model": "umbra:block/ward_on"
+    },
+    "charge=8": {
+      "model": "umbra:block/ward_on"
+    }
+  }
+}

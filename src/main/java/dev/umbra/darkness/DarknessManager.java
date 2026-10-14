@@ -50,6 +50,7 @@ public final class DarknessManager {
                     random.nextInt(SEED_RADIUS * 2 + 1) - SEED_RADIUS);
             if (pos.getY() > SEED_MAX_Y || !level.isLoaded(pos)) continue;
             if (pos.distSqr(player.blockPosition()) < 8 * 8) continue; // never right next to the player
+            if (dev.umbra.light.WardBlock.protects(level, net.minecraft.world.phys.Vec3.atCenterOf(pos))) continue;
             if (LivingDarknessBlock.seed(level, pos, ModBlocks.LIVING_DARKNESS.get())) return;
         }
     }

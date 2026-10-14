@@ -25,7 +25,9 @@ public class MirrorItem extends Item {
         if (player.tickCount % 20 != 0) return;
         BlockPos c = player.blockPosition();
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-RADIUS, -RADIUS / 2, -RADIUS), c.offset(RADIUS, RADIUS / 2, RADIUS))) {
-            if (level.getBlockState(p).getBlock() instanceof MimicBlock) {
+            var state = level.getBlockState(p);
+            if (state.getBlock() instanceof MimicBlock
+                    || (state.hasBlockEntity() && (dev.umbra.mimic.MimicChests.isMimic(level, p) || dev.umbra.mimic.MimicChests.decide(level, p.immutable())))) {
                 level.sendParticles(player, ParticleTypes.WITCH, true, true, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 6, 0.35, 0.35, 0.35, 0.0);
             }
         }

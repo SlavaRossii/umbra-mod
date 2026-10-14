@@ -1,0 +1,58 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "minecraft:block/emerald_ore",
+    "up": "minecraft:block/emerald_ore",
+    "north": "minecraft:block/emerald_ore",
+    "south": "minecraft:block/emerald_ore",
+    "west": "minecraft:block/emerald_ore",
+    "east": "minecraft:block/emerald_ore",
+    "particle": "minecraft:block/emerald_ore"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#down",
+          "cullface": "down",
+          "rotation": 90
+        },
+        "up": {
+          "texture": "#up",
+          "cullface": "up",
+          "rotation": 90
+        },
+        "north": {
+          "texture": "#north",
+          "cullface": "north",
+          "rotation": 90
+        },
+        "south": {
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 90
+        },
+        "west": {
+          "texture": "#west",
+          "cullface": "west",
+          "rotation": 90
+        },
+        "east": {
+          "texture": "#east",
+          "cullface": "east",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

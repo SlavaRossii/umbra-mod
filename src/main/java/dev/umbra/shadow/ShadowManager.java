@@ -86,6 +86,7 @@ public final class ShadowManager {
             }
             if (player.isCreative() || s.cooldown > 0 || s.trail.size() < MIN_TRAIL_TO_SPAWN) return;
             if (!UmbraConfig.on(UmbraConfig.SHADOW)) return;
+            if (dev.umbra.light.WardBlock.protects(player)) return;
             double chance = UmbraConfig.num(UmbraConfig.SHADOW_FREQUENCY) * Sanity.dread(player) / SPAWN_CHANCE;
             if (player.getRandom().nextDouble() >= chance) return;
             spawn(level, player, s, false);

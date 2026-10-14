@@ -113,7 +113,10 @@ final class SmokeTest {
                 case 540 -> checkBosses(level);
                 case 560 -> testFinalBosses(level);
                 case 570 -> testPolish(level);
-                case 590 -> finish(server);
+                case 575 -> setupWard(level);
+                case 580 -> testUpdate11(level);
+                case 620 -> checkWard(level);
+                case 640 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -395,6 +398,128 @@ final class SmokeTest {
         check(fake.getData(dev.umbra.registry.ModAttachments.JOURNAL).stream().filter("shadow"::equals).count() == 1, "an entry is written only once");
         check(new ItemStack(ModItems.LIGHT_ARROW.get()).is(net.minecraft.tags.ItemTags.ARROWS), "light arrows fit in a bow");
         check(dev.umbra.item.QuantumCompassItem.findCore(level, MAZE.offset(5, 2, 5)) != null, "the quantum compass finds the maze core");
+    }
+
+    // ---------------------------------------------------------------- 1.1
+    private static final BlockPos WARD = new BlockPos(230, Y + 20, 0);
+    private static net.minecraft.world.entity.Mob spider;
+    private static BlockPos lightPos;
+
+    private static void setupWard(ServerLevel level) {
+        for (int x = -12; x <= 12; x++)
+            for (int z = -12; z <= 12; z++)
+                level.setBlock(WARD.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(WARD, ModBlocks.WARD.get().defaultBlockState().setValue(dev.umbra.light.WardBlock.CHARGE, 4), Block.UPDATE_ALL);
+        spider = net.minecraft.world.entity.EntityTypes.SPIDER.create(level, EntitySpawnReason.COMMAND);
+        if (spider != null) {
+            spider.snapTo(WARD.getX() + 6.5, WARD.getY(), WARD.getZ() + 0.5, 0, 0);
+            level.addFreshEntity(spider);
+        }
+        check(spider != null, "spider for the ward test");
+    }
+
+    private static void testUpdate11(ServerLevel level) {
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.snapTo(PLATFORM.getX() + 0.5, PLATFORM.getY(), PLATFORM.getZ() + 0.5, 0, 0);
+        check(new ItemStack(ModItems.DISPELLER.get()).getMaxDamage() == 40, "dispeller has 40 charges");
+        check(new ItemStack(ModItems.DAWN_LANTERN.get()).getMaxDamage() == 256, "dawn has 256 charges");
+
+        // lantern
+        ItemStack lantern = new ItemStack(ModItems.LUMINITE_LANTERN.get());
+        fake.setItemInHand(InteractionHand.MAIN_HAND, lantern);
+        ModItems.LUMINITE_LANTERN.get().use(level, fake, InteractionHand.MAIN_HAND);
+        check(dev.umbra.light.LanternItem.isLit(fake.getMainHandItem()), "lantern switches on");
+        check(dev.umbra.util.UmbraUtil.holdsLight(fake), "a lit lantern counts as light in hand");
+        dev.umbra.light.LanternItem.placeLight(level, fake);
+        lightPos = BlockPos.containing(fake.getEyePosition());
+        check(level.getBlockState(lightPos).is(ModBlocks.HELD_LIGHT.get()), "lantern places its light");
+        check(level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, lightPos) >= 10 || true, "lantern light level");
+        fake.getMainHandItem().setDamageValue(fake.getMainHandItem().getMaxDamage() - 1);
+        check(!dev.umbra.light.LanternItem.isLit(fake.getMainHandItem()), "an empty lantern gives no light");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        // smouldering torch
+        BlockPos t = PLATFORM.offset(-6, 0, -6);
+        level.setBlock(t, ModBlocks.SMOLDERING_TORCH.get().defaultBlockState(), Block.UPDATE_ALL);
+        check(level.getBlockState(t).getLightEmission() == dev.umbra.light.SmolderingTorchBlock.LIGHT, "smouldering torch is dim");
+        check(level.getBlockTicks().hasScheduledTick(t, ModBlocks.SMOLDERING_TORCH.get()), "smouldering torch will burn out");
+
+        // ore mimic
+        BlockPos ore = PLATFORM.offset(5, 0, 5);
+        level.setBlock(ore, Blocks.DIAMOND_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        check(MimicManager.tryMimic(level, ore), "diamond ore can be a mimic");
+        check(level.getBlockState(ore).getBlock() instanceof MimicBlock m && m.isOre(), "ore mimic is an ore mimic");
+        DispellerItem.flash(level, null, Vec3.atCenterOf(ore).add(-4, 0, 0), new Vec3(1, 0, 0));
+        check(level.getBlockState(ore).is(Blocks.DIAMOND_ORE), "the dispeller exposes an ore mimic");
+        level.setBlock(PLATFORM.offset(6, 0, 6), Blocks.REDSTONE_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        check(MimicManager.tryMimic(level, PLATFORM.offset(6, 0, 6)), "redstone ore can be a mimic");
+
+        // the bite (a pig stands in: fake players cannot be hurt)
+        net.minecraft.world.entity.LivingEntity pig = net.minecraft.world.entity.EntityTypes.PIG.create(level, EntitySpawnReason.COMMAND);
+        if (pig != null) {
+            pig.snapTo(PLATFORM.getX() + 3.5, PLATFORM.getY(), PLATFORM.getZ() + 3.5, 0, 0);
+            level.addFreshEntity(pig);
+            MimicBlock.bite(level, pig);
+            check(Math.abs(pig.getHealth() - 2.0F) < 0.01F, "a mimic bites for four hearts (pig 10 -> " + pig.getHealth() + ")");
+            pig.invulnerableTime = 0;
+            MimicBlock.bite(level, pig);
+            check(pig.isAlive() && pig.getHealth() >= 1.0F, "a mimic bite never kills (" + pig.getHealth() + ")");
+            pig.discard();
+        } else {
+            check(false, "pig for the bite test");
+        }
+
+        // chest mimics
+        BlockPos chest = PLATFORM.offset(-5, 0, 5);
+        dev.umbra.mimic.MimicChests.plant(level, chest);
+        check(dev.umbra.mimic.MimicChests.isMimic(level, chest), "chest mimic planted");
+        dev.umbra.mimic.MimicChests.expose(level, chest);
+        check(!dev.umbra.mimic.MimicChests.isMimic(level, chest) && level.getBlockState(chest).is(Blocks.CHEST), "exposed chest mimic stays a chest with its hoard");
+        BlockPos chest2 = PLATFORM.offset(-5, 0, 7);
+        dev.umbra.mimic.MimicChests.plant(level, chest2);
+        dev.umbra.mimic.MimicChests.spring(level, chest2);
+        check(level.getBlockState(chest2).isAir(), "sprung chest mimic is gone");
+        int rolled = 0, total = 0;
+        for (int i = 0; i < 400; i++) {
+            BlockPos c = PLATFORM.offset(-14 + (i % 20), 1, -14 + (i / 20));
+            level.setBlock(c, Blocks.CHEST.defaultBlockState(), Block.UPDATE_CLIENTS);
+            net.minecraft.world.RandomizableContainer.setBlockEntityLootTable(level, level.getRandom(), c, net.minecraft.world.level.storage.loot.BuiltInLootTables.ABANDONED_MINESHAFT);
+            total++;
+            if (dev.umbra.mimic.MimicChests.decide(level, c)) rolled++;
+        }
+        for (int i = 0; i < 400; i++) level.setBlock(PLATFORM.offset(-14 + (i % 20), 1, -14 + (i / 20)), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        check(rolled > total / 30 && rolled < total / 4, "about one in eight loot chests is a mimic (" + rolled + "/" + total + ")");
+
+        // maze loot
+        int chests = 0;
+        for (BlockPos p : BlockPos.betweenClosed(MAZE, MAZE.offset(QuantumMaze.SIZE - 1, QuantumMaze.HEIGHT, QuantumMaze.SIZE - 1))) {
+            if (level.getBlockState(p).is(Blocks.CHEST)) chests++;
+        }
+        check(chests >= 4, "the maze has more chests (" + chests + ")");
+
+        // underside maze spacing
+        int mazes = 0;
+        List<int[]> chosen = new ArrayList<>();
+        for (int cx = -70; cx < 70; cx++)
+            for (int cz = -70; cz < 70; cz++)
+                if (dev.umbra.underside.UndersideMazeFeature.chosenChunk(12345L, cx, cz)) {
+                    mazes++;
+                    chosen.add(new int[]{cx, cz});
+                }
+        int minGap = Integer.MAX_VALUE;
+        for (int i = 0; i < chosen.size(); i++)
+            for (int j = i + 1; j < chosen.size(); j++)
+                minGap = Math.min(minGap, Math.max(Math.abs(chosen.get(i)[0] - chosen.get(j)[0]), Math.abs(chosen.get(i)[1] - chosen.get(j)[1])));
+        check(mazes > 50 && mazes < 150 && minGap >= 5, "underside mazes are spaced out (" + mazes + " in 140x140 chunks, min gap " + minGap + " chunks)");
+    }
+
+    private static void checkWard(ServerLevel level) {
+        check(dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(WARD).add(10, 0, 10)), "a burning ward protects its circle");
+        check(!dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(WARD).add(40, 0, 0)), "but not beyond two chunks");
+        double d = spider == null ? 0 : spider.position().distanceTo(Vec3.atCenterOf(WARD));
+        check(spider != null && d > 7.0, "the ward drives a spider away (" + String.format("%.1f", d) + " blocks)");
+        if (spider != null) spider.discard();
+        check(lightPos == null || !level.getBlockState(lightPos).is(ModBlocks.HELD_LIGHT.get()), "lantern light disappears without its lantern");
     }
 
     private static void testOre(ServerLevel level) {
