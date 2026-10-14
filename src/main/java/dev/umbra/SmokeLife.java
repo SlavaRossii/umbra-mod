@@ -7,6 +7,7 @@ import dev.umbra.journal.Journal;
 import dev.umbra.mimic.MimicManager;
 import dev.umbra.registry.ModAttachments;
 import dev.umbra.registry.ModEntities;
+import dev.umbra.registry.ModItems;
 import dev.umbra.sanity.Sanity;
 import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.core.BlockPos;
@@ -262,9 +263,12 @@ final class SmokeLife {
             }
             case 366 -> {
                 SmokeTest.check(true, "player data on disk: " + dataFiles());
+                SmokeTest.check(true, "saved: " + saved());
                 player = join(server, level);
                 int ground = ground(level, diedAt);
-                SmokeTest.check(count(player) == 0, "quitting on the death screen and coming back brings no items (" + count(player) + ": " + describe(player) + ")");
+                // a fresh journal is given at every login that has none; it is not a returned item
+                int back = countWithoutJournal(player);
+                SmokeTest.check(back == 0, "quitting on the death screen and coming back brings no items (" + back + ": " + describe(player) + ")");
                 SmokeTest.check(true, "after returning: pos " + player.position() + ", health " + player.getHealth() + ", got journal " + player.getData(ModAttachments.GOT_JOURNAL));
                 SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
             }
@@ -351,6 +355,27 @@ final class SmokeLife {
                     .map(java.nio.file.Path::toString).collect(java.util.stream.Collectors.joining(", "));
         } catch (java.io.IOException e) {
             return e.toString();
+        }
+    }
+
+    private static int countWithoutJournal(ServerPlayer p) {
+        int n = 0;
+        var inv = p.getInventory();
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack st = inv.getItem(i);
+            if (!st.is(ModItems.JOURNAL.get())) n += st.getCount();
+        }
+        return n;
+    }
+
+    /** What the game wrote for the tester when they left (health, place, how many stacks), to tell a harness quirk from a real bug. */
+    private static String saved() {
+        try {
+            java.nio.file.Path f = java.nio.file.Path.of("world", "players", "data", TESTER + ".dat");
+            var tag = net.minecraft.nbt.NbtIo.readCompressed(f, net.minecraft.nbt.NbtAccounter.unlimitedHeap());
+            return "Health=" + tag.get("Health") + " Pos=" + tag.get("Pos") + " Inventory=" + tag.get("Inventory");
+        } catch (Throwable t) {
+            return t.toString();
         }
     }
 
