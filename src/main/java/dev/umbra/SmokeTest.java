@@ -71,9 +71,9 @@ final class SmokeTest {
     private static final BlockPos PLATFORM = new BlockPos(130, Y + 20, 0);
     private static final int BOX_SIZE = 9;
 
-    /** The real-player part (see SmokeLife) runs from here for 380 ticks, then the report is written. */
+    /** The real-player part (see SmokeLife) runs from here for 400 ticks, then the report is written. */
     private static final int LIFE_FROM = 680;
-    private static final int LIFE_END = LIFE_FROM + 380;
+    private static final int LIFE_END = LIFE_FROM + 400;
 
     private static int tick;
     private static final List<String> failures = new ArrayList<>();

@@ -41,6 +41,8 @@ import java.util.UUID;
  */
 final class SmokeLife {
     private static final int Y = 250;
+    /** West edge of the test floor: far from everything the other tests build. */
+    private static final int X0 = 400;
     private static final UUID TESTER = UUID.fromString("5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d");
     private static final BlockPos HOME = new BlockPos(5, 70, 5);
 
@@ -50,10 +52,17 @@ final class SmokeLife {
     private static Vec3 mark;
     private static BlockPos diedAt;
     private static int carried;
+    private static final StringBuilder trace = new StringBuilder();
 
     private SmokeLife() {}
 
     static void tick(MinecraftServer server, ServerLevel level, int s) {
+        if (s >= 132 && s <= 340 && s % 4 == 0 && statue != null && player != null) {
+            trace.append(String.format("%d:x=%.1f%s%s ph=%.0f ", s, statue.getX(), statue.isFrozen() ? "F" : "-", statue.isWatched(level) ? "W" : "-", player.getYHeadRot()));
+        }
+        if (s == 341) {
+            SmokeTest.check(true, "statue trace (step:x, F=frozen, W=watched, ph=player head yaw) " + trace);
+        }
         // what the player's connection does every tick on a real server
         if (player != null && !player.isRemoved() && player.connection != null) {
             try {
@@ -76,16 +85,21 @@ final class SmokeLife {
         switch (s) {
             // ---- a flash turns a statue to stone for five seconds, and then it moves again
             case 1 -> {
-                for (int x = 150; x <= 210; x++)
+                for (int cx = (X0 >> 4) - 1; cx <= ((X0 + 60) >> 4) + 1; cx++)
+                    for (int cz = -1; cz <= 3; cz++) {
+                        level.setChunkForced(cx, cz, true);
+                        level.getChunk(cx, cz);
+                    }
+                for (int x = X0; x <= X0 + 60; x++)
                     for (int z = 0; z <= 40; z++)
                         level.setBlock(new BlockPos(x, Y - 1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
-                statue = statue(level, 160.5, 5.5);
+                statue = statue(level, X0 + 10.5, 5.5);
                 bait = EntityTypes.PIG.create(level, EntitySpawnReason.COMMAND);
                 if (statue == null || bait == null) {
                     SmokeTest.check(false, "statue and bait for the thaw test");
                     return;
                 }
-                bait.snapTo(176.5, Y, 5.5, 0, 0);
+                bait.snapTo(X0 + 26.5, Y, 5.5, 0, 0);
                 level.addFreshEntity(bait);
                 statue.setTarget(bait);
                 statue.onLit(level, null);
@@ -109,16 +123,29 @@ final class SmokeLife {
                 server.getPlayerList().setSimulationDistance(3);
                 player = join(server, level);
                 player.setGameMode(GameType.SURVIVAL);
-                player.teleportTo(level, 180.5, Y, 20.5, Set.of(), -90.0F, 0.0F, true);
+                player.teleportTo(level, X0 + 30.5, Y, 20.5, Set.of(), -90.0F, 0.0F, true);
                 look(-90.0F);
                 SmokeTest.check(level.players().contains(player) && player.gameMode() == GameType.SURVIVAL, "a survival player joins as on a real login");
-                statue = statue(level, 202.5, 20.5);
+                statue = statue(level, X0 + 52.5, 20.5);
                 if (statue == null) {
                     SmokeTest.check(false, "statue for the watching test");
                     return;
                 }
                 statue.setTarget(player);
                 mark = statue.position();
+                trace.setLength(0);
+            }
+            case 131 -> {
+                if (statue == null || player == null) return;
+                // the geometry on its own, before anything moves
+                look(-90.0F);
+                boolean facing = statue.isWatched(level);
+                Vec3 v1 = player.getViewVector(1.0F);
+                look(90.0F);
+                boolean away = statue.isWatched(level);
+                look(-90.0F);
+                SmokeTest.check(facing && !away, "a statue counts as watched only in the player's view (facing " + facing + ", away " + away + ", view "
+                        + String.format("%.2f,%.2f", v1.x, v1.z) + ", player " + player.position() + ", statue " + statue.position() + ")");
             }
             case 165 -> {
                 if (statue == null || player == null) return;
@@ -143,7 +170,7 @@ final class SmokeLife {
             case 216 -> {
                 if (statue == null) return;
                 look(90.0F);
-                statue.snapTo(202.5, Y, 20.5, 0, 0);
+                statue.snapTo(X0 + 52.5, Y, 20.5, 0, 0);
                 statue.getNavigation().stop();
                 statue.onLit(level, player);
                 mark = statue.position();
@@ -229,20 +256,26 @@ final class SmokeLife {
             }
             case 358 -> {
                 if (player == null) return;
+                SmokeTest.check(true, "before leaving: got journal " + player.getData(ModAttachments.GOT_JOURNAL) + ", health " + player.getHealth());
                 server.getPlayerList().remove(player);
+                player = null;
+            }
+            case 366 -> {
+                SmokeTest.check(true, "player data on disk: " + dataFiles());
                 player = join(server, level);
                 int ground = ground(level, diedAt);
-                SmokeTest.check(count(player) == 0, "quitting on the death screen and coming back brings no items (" + count(player) + ")");
+                SmokeTest.check(count(player) == 0, "quitting on the death screen and coming back brings no items (" + count(player) + ": " + describe(player) + ")");
+                SmokeTest.check(true, "after returning: pos " + player.position() + ", health " + player.getHealth() + ", got journal " + player.getData(ModAttachments.GOT_JOURNAL));
                 SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
             }
-            case 362 -> {
+            case 370 -> {
                 if (player == null) return;
                 ServerPlayer back = respawn(server, player);
                 if (back == null) return;
                 player = back;
                 SmokeTest.check(back.isAlive() && count(back) == 0, "that player can still respawn afterwards");
             }
-            case 366 -> {
+            case 374 -> {
                 if (player != null) server.getPlayerList().remove(player);
                 level.getEntitiesOfClass(ItemEntity.class, new AABB(diedAt).inflate(12)).forEach(Entity::discard);
                 player = null;
@@ -300,6 +333,25 @@ final class SmokeLife {
         player.yRotO = yaw;
         player.xRotO = 0.0F;
         player.yHeadRotO = yaw;
+    }
+
+    private static String describe(ServerPlayer p) {
+        StringBuilder sb = new StringBuilder();
+        var inv = p.getInventory();
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack st = inv.getItem(i);
+            if (!st.isEmpty()) sb.append(st.getItem()).append(" x").append(st.getCount()).append("; ");
+        }
+        return sb.toString();
+    }
+
+    private static String dataFiles() {
+        try (var walk = java.nio.file.Files.walk(java.nio.file.Path.of("."), 6)) {
+            return walk.filter(f -> f.getFileName().toString().startsWith(TESTER.toString()))
+                    .map(java.nio.file.Path::toString).collect(java.util.stream.Collectors.joining(", "));
+        } catch (java.io.IOException e) {
+            return e.toString();
+        }
     }
 
     private static int count(ServerPlayer p) {
