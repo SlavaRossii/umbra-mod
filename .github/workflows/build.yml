@@ -124,7 +124,8 @@ jobs:
         run: |
           { cat run-smoke/umbra-smoketest.txt 2>/dev/null; echo; echo "----- log excerpts -----";
             grep -nE -B2 -A12 'ERROR|Exception|umbra|UMBRA' run-smoke/logs/latest.log 2>/dev/null | head -3000; } > smoke.txt
-          cp run-smoke/logs/latest.log server.log 2>/dev/null || true
+          { head -c 3000000 run-smoke/logs/latest.log; echo; echo '----- tail -----'; tail -c 6000000 run-smoke/logs/latest.log; } > server.log 2>/dev/null || true
+          ls -la run-smoke/logs || true
           .github/scripts/publish.sh ci-smoke smoke.txt server.log
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
