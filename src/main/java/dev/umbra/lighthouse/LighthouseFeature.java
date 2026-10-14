@@ -102,6 +102,10 @@ public record LighthouseFeature() implements Feature {
         return true;
     }
 
+    private static BlockState vanilla(String id) {
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(id)).defaultBlockState();
+    }
+
     /** True if x, z (relative to the axis) lie inside the circle of the given radius. */
     private static boolean in(int x, int z, double r) {
         return x * x + z * z <= r * r + 0.5;
@@ -240,8 +244,8 @@ public record LighthouseFeature() implements Feature {
         for (int y = 0; y <= 1; y++) level.setBlock(c.offset(3, y, 0), air, FLAGS);
         level.setBlock(c.offset(3, 1, 4), Blocks.GLASS.defaultBlockState(), FLAGS);
         // a cot: wool on a plank frame
-        level.setBlock(c.offset(1, 1, 1), Blocks.RED_WOOL.defaultBlockState(), FLAGS);
-        level.setBlock(c.offset(1, 1, 2), Blocks.WHITE_WOOL.defaultBlockState(), FLAGS);
+        level.setBlock(c.offset(1, 1, 1), vanilla("red_wool"), FLAGS);
+        level.setBlock(c.offset(1, 1, 2), vanilla("white_wool"), FLAGS);
         level.setBlock(c.offset(5, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), FLAGS);
         level.setBlock(c.offset(5, 1, 3), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.WEST), FLAGS);
         level.setBlock(c.offset(3, 2, 2), Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), FLAGS);
