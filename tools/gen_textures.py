@@ -848,4 +848,7 @@ if __name__ == "__main__":
     stage10()
     stage11()
     stage12()
+    # creatures with 3D models get their textures from the model description (overwrites the flat skins above)
+    import runpy
+    runpy.run_path(os.path.join(os.path.dirname(__file__), "models.py"), run_name="__main__")
     print("textures written")

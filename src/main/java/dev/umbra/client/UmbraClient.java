@@ -1,6 +1,10 @@
 package dev.umbra.client;
 
 import dev.umbra.Umbra;
+import dev.umbra.client.model.Animations;
+import dev.umbra.client.model.GeneratedModels;
+import dev.umbra.client.model.ModLayers;
+import dev.umbra.client.model.UmbraRenderer;
 import dev.umbra.registry.ModEntities;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -18,9 +22,9 @@ public final class UmbraClient {
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "shadow"));
         event.registerEntityRenderer(ModEntities.HALLUCINATION.get(), ctx -> new SilhouetteRenderer<>(ctx, "hallucination"));
-        event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new SilhouetteRenderer<>(ctx, "blind"));
+        event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.BLIND, "blind", 0.5F, Animations::blind, null));
         event.registerEntityRenderer(ModEntities.MIMICKER.get(), ctx -> new SilhouetteRenderer<>(ctx, "mimicker"));
-        event.registerEntityRenderer(ModEntities.SHADE.get(), ctx -> new SilhouetteRenderer<>(ctx, "shade"));
+        event.registerEntityRenderer(ModEntities.SHADE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADE, "shade", 0.3F, Animations::shade, null));
         event.registerEntityRenderer(ModEntities.PHANTOM_ZOMBIE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_SKELETON.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/skeleton/skeleton.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_HUSK.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/husk.png")));
@@ -28,17 +32,35 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.PHANTOM_SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "phantom_shadow"));
         event.registerEntityRenderer(ModEntities.ASH_FIGURE.get(), ctx -> new SilhouetteRenderer<>(ctx, "ash_figure"));
         event.registerEntityRenderer(ModEntities.DEATH_DOUBLE.get(), ctx -> new SilhouetteRenderer<>(ctx, "death_double"));
-        event.registerEntityRenderer(ModEntities.CITADEL_STATUE.get(), ctx -> new SilhouetteRenderer<>(ctx, "citadel_statue"));
-        event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new SilhouetteRenderer<>(ctx, "citadel_keeper"));
-        event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new SilhouetteRenderer<>(ctx, "shadow_villager"));
-        event.registerEntityRenderer(ModEntities.CRAWLER.get(), CrawlerRenderer::new);
-        event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new SilhouetteRenderer<>(ctx, "watcher"));
-        event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new SilhouetteRenderer<>(ctx, "mimic_queen"));
-        event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new SilhouetteRenderer<>(ctx, "shepherd"));
+        event.registerEntityRenderer(ModEntities.CITADEL_STATUE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.STATUE, "citadel_statue", 0.5F, Animations::statue,
+                (e, st) -> st.variant = Math.floorMod((int) Math.floor(e.getX() * 3) * 31 + (int) Math.floor(e.getZ() * 3) * 17, 3)));
+        event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
+        event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
+        event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
+        event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
+        event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
+        event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null));
         event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new SilhouetteRenderer<>(ctx, "doppelganger"));
-        event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new SilhouetteRenderer<>(ctx, "architect"));
-        event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "primordial_shadow"));
-        event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), LightEaterRenderer::new);
+        event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null));
+        event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.PRIMORDIAL_SHADOW, "primordial_shadow", 1.0F, Animations::primordialShadow, null));
+        event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LIGHT_EATER, "light_eater", 0.3F,
+                Animations::lightEater, (e, st) -> st.flag = e.isCharging()));
+    }
+
+    @SubscribeEvent
+    static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModLayers.CRAWLER, GeneratedModels::crawler);
+        event.registerLayerDefinition(ModLayers.BLIND, GeneratedModels::blind);
+        event.registerLayerDefinition(ModLayers.LIGHT_EATER, GeneratedModels::lightEater);
+        event.registerLayerDefinition(ModLayers.SHADE, GeneratedModels::shade);
+        event.registerLayerDefinition(ModLayers.STATUE, GeneratedModels::citadelStatue);
+        event.registerLayerDefinition(ModLayers.KEEPER, GeneratedModels::citadelKeeper);
+        event.registerLayerDefinition(ModLayers.WATCHER, GeneratedModels::watcher);
+        event.registerLayerDefinition(ModLayers.MIMIC_QUEEN, GeneratedModels::mimicQueen);
+        event.registerLayerDefinition(ModLayers.SHEPHERD, GeneratedModels::shepherd);
+        event.registerLayerDefinition(ModLayers.ARCHITECT, GeneratedModels::architect);
+        event.registerLayerDefinition(ModLayers.PRIMORDIAL_SHADOW, GeneratedModels::primordialShadow);
+        event.registerLayerDefinition(ModLayers.SHADOW_VILLAGER, GeneratedModels::shadowVillager);
     }
 
     @SubscribeEvent
