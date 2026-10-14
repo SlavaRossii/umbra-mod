@@ -56,10 +56,10 @@ public record UndersideLandmarkFeature() implements Feature {
         level.setBlock(f, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), FLAGS);
         // a little A-frame tent of grey wool to the north
         for (int z = -3; z <= -1; z++) {
-            level.setBlock(f.offset(-1, 0, z), Blocks.GRAY_WOOL.defaultBlockState(), FLAGS);
-            level.setBlock(f.offset(1, 0, z), Blocks.GRAY_WOOL.defaultBlockState(), FLAGS);
-            level.setBlock(f.offset(0, 1, z), Blocks.GRAY_WOOL.defaultBlockState(), FLAGS);
-            level.setBlock(f.offset(0, 0, z), Blocks.GRAY_CARPET.defaultBlockState(), FLAGS);
+            level.setBlock(f.offset(-1, 0, z), vanilla("gray_wool"), FLAGS);
+            level.setBlock(f.offset(1, 0, z), vanilla("gray_wool"), FLAGS);
+            level.setBlock(f.offset(0, 1, z), vanilla("gray_wool"), FLAGS);
+            level.setBlock(f.offset(0, 0, z), vanilla("gray_carpet"), FLAGS);
         }
         BlockPos chest = f.offset(2, 0, -2);
         level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
@@ -68,6 +68,10 @@ public record UndersideLandmarkFeature() implements Feature {
         level.setBlock(f.offset(-2, 0, 2), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
         level.setBlock(f.offset(-1, 0, 2), Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), FLAGS);
         level.setBlock(f.offset(2, 0, 2), Blocks.LANTERN.defaultBlockState(), FLAGS);
+    }
+
+    private static BlockState vanilla(String id) {
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(id)).defaultBlockState();
     }
 
     public static void brokenRift(WorldGenLevel level, BlockPos f, RandomSource random) {
