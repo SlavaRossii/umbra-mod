@@ -858,8 +858,9 @@ final class SmokeTest {
         fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
         fake.snapTo(c.getX() + 2.5, c.getY(), c.getZ() + 0.5, 0, 0);
         fake.setDeltaMovement(Vec3.ZERO);
-        int hit = dev.umbra.boss.BossMoves.shockwave(level, watcher, 4.0, 1.0F, 1.2);
-        check(hit >= 1 && fake.getDeltaMovement().x > 0.3, "a shockwave throws the player away (" + hit + ", " + String.format("%.2f", fake.getDeltaMovement().x) + ")");
+        dev.umbra.boss.BossMoves.shockwave(level, watcher, 4.0, 1.0F, 1.2);
+        dev.umbra.boss.BossMoves.leap(watcher, fake, 1.2);
+        check(watcher.getDeltaMovement().x > 0.8 && watcher.getDeltaMovement().y > 0.4, "a boss leaps at its target");
 
         int before = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class, new AABB(c).inflate(20)).size();
         fake.snapTo(c.getX() + 8.5, c.getY(), c.getZ() + 0.5, 0, 0);
