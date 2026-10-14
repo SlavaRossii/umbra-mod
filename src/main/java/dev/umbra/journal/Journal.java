@@ -23,6 +23,24 @@ public final class Journal {
             "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
             "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8");
 
+    /** Sections of the journal window, in tab order. */
+    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes"};
+
+    /** Index into {@link #SECTIONS} for an entry. */
+    public static int section(String id) {
+        if (id.startsWith("insight")) return 1;
+        if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
+        if (id.startsWith("note_")) return 5;
+        return switch (id) {
+            case "crawler", "blind", "light_eater", "mimicker", "shade", "statue", "keeper" -> 3;
+            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
+            default -> 0;
+        };
+    }
+
+    /** Set on the client: opens the journal window. */
+    public static Runnable openScreen = () -> {};
+
     /** Insights: thoughts that only come when the mind is slipping. Sanity thresholds, in order. */
     public static final String[] INSIGHTS = {"insight_1", "insight_2", "insight_3"};
     public static final float[] INSIGHT_AT = {40.0F, 25.0F, 10.0F};

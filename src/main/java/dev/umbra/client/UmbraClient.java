@@ -79,6 +79,11 @@ public final class UmbraClient {
     }
 
     @SubscribeEvent
+    static void setup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        dev.umbra.journal.Journal.openScreen = () -> net.minecraft.client.Minecraft.getInstance().setScreen(new JournalScreen());
+    }
+
+    @SubscribeEvent
     static void registerGui(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, Identifier.fromNamespaceAndPath(Umbra.MODID, "sanity"), SanityHud::render);
     }

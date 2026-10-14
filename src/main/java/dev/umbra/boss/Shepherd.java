@@ -84,7 +84,6 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         // crook sweep: too close and you are thrown away
         if (++sweepTimer >= 70 && this.distanceTo(target) < 4.5) {
             sweepTimer = 0;
-            this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
             BossMoves.shockwave(level, this, 4.5, 6.0F, 1.5);
         }
         // phase 2: the herd is called home — pulled in, then the darkness bursts around him

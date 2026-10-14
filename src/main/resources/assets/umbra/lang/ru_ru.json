@@ -103,7 +103,7 @@
   "item.umbra.quantum_compass": "Квантовый компас",
   "item.umbra.light_arrow": "Светящаяся стрела",
   "message.umbra.journal_new": "Новая запись в дневнике: %s",
-  "journal.umbra.header": "— Дневник (%s/%s) —",
+  "journal.umbra.header": "Дневник: %s из %s",
   "journal.umbra.more": "Некоторые страницы ещё пусты...",
   "message.umbra.compass_none": "Стрелка крутится: квантового лабиринта рядом нет.",
   "message.umbra.compass_idle": "Лабиринт спит.",
@@ -151,7 +151,7 @@
   "journal.umbra.primordial_shadow.title": "Первородная Тень",
   "journal.umbra.primordial_shadow.text": "Первая тень, от которой падают все остальные. Под конец её мог коснуться только свет.",
   "journal.umbra.freed.title": "Моя тень снова моя",
-  "journal.umbra.freed.text": "Теперь она идёт рядом и бьёт всё, что подходит слишком близко. Ночи стали тише.",
+  "journal.umbra.freed.text": "Теперь она идёт рядом и бьёт всё, что подходит слишком близко. Ночи стали тише. Shift + ПКМ по тени — «стой здесь» или «за мной».",
   "block.umbra.mimic_barrel": "Бочка",
   "block.umbra.mimic_furnace": "Печь",
   "block.umbra.mimic_hay_block": "Сноп сена",
@@ -305,5 +305,13 @@
   "item.umbra.despair_blade.bonus": "Сейчас: +%s урона от потерянного рассудка",
   "message.umbra.boss.phase": "%s — стадия %s",
   "message.umbra.ally.stay": "Тень остаётся здесь и сторожит.",
-  "message.umbra.ally.follow": "Тень снова следует за тобой."
+  "message.umbra.ally.follow": "Тень снова следует за тобой.",
+  "journal.umbra.tab.chronicle": "Хроника",
+  "journal.umbra.tab.insights": "Озарения",
+  "journal.umbra.tab.mimics": "Подмены",
+  "journal.umbra.tab.creatures": "Существа",
+  "journal.umbra.tab.bosses": "Боссы",
+  "journal.umbra.tab.notes": "Записки",
+  "journal.umbra.locked": "???",
+  "journal.umbra.pick": "Выбери запись слева. Пустые страницы заполнятся, когда ты сам это увидишь."
 }

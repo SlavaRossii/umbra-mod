@@ -14,7 +14,8 @@ public class JournalItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (player instanceof ServerPlayer sp) Journal.read(sp);
+        if (level.isClientSide()) Journal.openScreen.run();
+        else if (player instanceof ServerPlayer sp) Journal.awardAll(sp);
         return InteractionResult.SUCCESS;
     }
 }

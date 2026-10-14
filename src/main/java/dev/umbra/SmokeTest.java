@@ -120,6 +120,7 @@ final class SmokeTest {
                 case 630 -> testVillage(level);
                 case 635 -> testCitadel(server, level);
                 case 645 -> testFilling(server, level);
+                case 655 -> testBossMoves(level);
                 case 670 -> finish(server);
                 default -> { }
             }
@@ -819,6 +820,68 @@ final class SmokeTest {
                 }
             check(found > 20, "the Underside is decorated (" + found + " pieces in 49 chunks)");
         }
+    }
+
+    private static void testBossMoves(ServerLevel level) {
+        check(dev.umbra.journal.Journal.section("watcher") == 4 && dev.umbra.journal.Journal.section("mimic_queen") == 4
+                && dev.umbra.journal.Journal.section("mimic_chest") == 2 && dev.umbra.journal.Journal.section("mimicker") == 3
+                && dev.umbra.journal.Journal.section("insight_2") == 1 && dev.umbra.journal.Journal.section("note_3") == 5
+                && dev.umbra.journal.Journal.section("start") == 0, "journal entries sort into sections");
+        int[] per = new int[dev.umbra.journal.Journal.SECTIONS.length];
+        for (String id : dev.umbra.journal.Journal.ENTRIES) per[dev.umbra.journal.Journal.section(id)]++;
+        boolean none = false;
+        for (int n : per) none |= n == 0;
+        check(!none, "every journal section has entries");
+
+        BlockPos c = new BlockPos(160, Y + 60, 30);
+        for (int x = -8; x <= 8; x++)
+            for (int z = -8; z <= 8; z++) {
+                level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                for (int y = 0; y < 4; y++) level.setBlock(c.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        var watcher = ModEntities.WATCHER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        check(watcher != null, "a watcher for the move tests");
+        if (watcher == null) return;
+        watcher.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        level.addFreshEntity(watcher);
+        check(watcher.phase() == 1, "a fresh boss is in phase 1");
+        watcher.setHealth(watcher.getMaxHealth() * 0.4F);
+        check(watcher.phase() == 2, "below half health a boss enters phase 2");
+        var prim = ModEntities.PRIMORDIAL_SHADOW.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (prim != null) {
+            prim.setHealth(prim.getMaxHealth() * 0.2F);
+            check(prim.phase() == 3, "the Primordial Shadow has a third phase");
+            prim.discard();
+        }
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.snapTo(c.getX() + 2.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        fake.setDeltaMovement(Vec3.ZERO);
+        int hit = dev.umbra.boss.BossMoves.shockwave(level, watcher, 4.0, 1.0F, 1.2);
+        check(hit >= 1 && fake.getDeltaMovement().x > 0.3, "a shockwave throws the player away (" + hit + ", " + String.format("%.2f", fake.getDeltaMovement().x) + ")");
+
+        int before = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class, new AABB(c).inflate(20)).size();
+        fake.snapTo(c.getX() + 8.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        dev.umbra.boss.BossMoves.fangsLine(level, watcher, fake, 10);
+        dev.umbra.boss.BossMoves.fangsRing(level, watcher, fake.position(), 2.5, 8, 20);
+        int fangs = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class, new AABB(c).inflate(20)).size() - before;
+        check(fangs >= 12, "jaws snap out of the floor in lines and rings (" + fangs + ")");
+
+        var bursts = new dev.umbra.boss.BossMoves.Bursts();
+        bursts.mark(level, c.offset(3, 0, 3), 0);
+        check(bursts.size() == 1, "a burst is marked on the floor");
+        bursts.tick(level, watcher, 1.0F);
+        check(bursts.size() == 0, "and goes off when its time comes");
+
+        var temp = new dev.umbra.boss.BossMoves.TempBlocks();
+        BlockPos w = c.offset(-3, 0, -3);
+        temp.place(level, w, ModBlocks.MAZE_WALL.get().defaultBlockState(), 0);
+        check(level.getBlockState(w).is(ModBlocks.MAZE_WALL.get()), "the Architect's cage wall rises");
+        temp.tick(level);
+        check(level.getBlockState(w).isAir(), "and crumbles away again");
+        level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class, new AABB(c).inflate(20)).forEach(net.minecraft.world.entity.Entity::discard);
+        watcher.discard();
     }
 
     private static void checkWard(ServerLevel level) {
