@@ -31,7 +31,7 @@ public class UmbraRenderer<T extends Mob> extends MobRenderer<T, UmbraRenderStat
     @Override
     public void extractRenderState(T entity, UmbraRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
-        state.attack = entity.getAttackAnim(partialTick);
+        state.attack = entity.getSwingAnimation(partialTick);
         state.health = entity.getMaxHealth() <= 0 ? 1.0F : entity.getHealth() / entity.getMaxHealth();
         if (extract != null) extract.accept(entity, state);
     }

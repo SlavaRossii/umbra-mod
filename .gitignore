@@ -39,3 +39,4 @@ run/
 repo/
 !**/src/**/repo/
 run-smoke/
+tools/__pycache__/
