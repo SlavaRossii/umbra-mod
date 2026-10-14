@@ -129,6 +129,7 @@ final class SmokeTest {
                 case 665 -> testBalance182(server, level);
                 case 667 -> profileUnderside(server);
                 case 668 -> testLighthouse19(server, level);
+                case 669 -> testLighthouseWorldgen(server);
                 case LIFE_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -1000,6 +1001,19 @@ final class SmokeTest {
             }
             check(missing.isEmpty(), "language " + lang + " has all journal texts " + (missing.isEmpty() ? "" : missing.subList(0, Math.min(5, missing.size()))));
         }
+    }
+
+    /** The real thing: generate the chunk the world seed picked for the nearest lighthouse. */
+    private static void testLighthouseWorldgen(MinecraftServer server) {
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under == null) return;
+        int[] c = dev.umbra.lighthouse.LighthouseFeature.nearest(under.getSeed(), 0, 0);
+        under.getChunk(c[0], c[1]);
+        BlockPos lamp = dev.umbra.lighthouse.LampKeeper.findLamp(under, c[0] * 16 + 8, c[1] * 16 + 8);
+        check(lamp != null, "a lighthouse is really generated in the Underside, in chunk " + c[0] + "," + c[1]);
+        if (lamp == null) return;
+        check(!under.getEntitiesOfClass(dev.umbra.lighthouse.LampKeeper.class, new AABB(lamp).inflate(20, 70, 20)).isEmpty(), "the real lighthouse has its keeper (lamp at y=" + lamp.getY() + ")");
+        check(lamp.getY() + 8 < 256, "the real lighthouse fits under the sky");
     }
 
     /** A UUID whose villager offers the given errand. */
