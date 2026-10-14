@@ -31,7 +31,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 
 /**
  * Chest mimics. A loot chest in a mineshaft, a dungeon, a village or a quantum maze may be something else.
@@ -169,12 +168,5 @@ public final class MimicChests {
         if (!decide(level, event.getPos())) return;
         expose(level, event.getPos());
         if (event.getEntity() instanceof ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "mimic");
-    }
-
-    public static void onBreak(BlockEvent.BreakEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || event.getPlayer().isCreative()) return;
-        if (!decide(level, event.getPos())) return;
-        event.setCanceled(true);
-        spring(level, event.getPos());
     }
 }

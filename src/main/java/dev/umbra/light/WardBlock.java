@@ -167,7 +167,6 @@ public class WardBlock extends Block implements DarknessProof {
             if (away.lengthSqr() < 1.0E-4) away = new Vec3(1, 0, 0);
             Vec3 push = away.normalize().scale(0.7);
             e.push(push.x, 0.15, push.z);
-            e.hurtMarked = true;
             if (e instanceof Mob mob && mob.getNavigation() != null) {
                 Vec3 flee = e.position().add(away.normalize().scale(r - away.length() + 6));
                 mob.getNavigation().moveTo(flee.x, flee.y, flee.z, 1.2);

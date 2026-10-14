@@ -461,10 +461,16 @@ final class SmokeTest {
             level.addFreshEntity(pig);
             MimicBlock.bite(level, pig);
             check(Math.abs(pig.getHealth() - 2.0F) < 0.01F, "a mimic bites for four hearts (pig 10 -> " + pig.getHealth() + ")");
-            pig.invulnerableTime = 0;
-            MimicBlock.bite(level, pig);
-            check(pig.isAlive() && pig.getHealth() >= 1.0F, "a mimic bite never kills (" + pig.getHealth() + ")");
             pig.discard();
+            net.minecraft.world.entity.LivingEntity weak = net.minecraft.world.entity.EntityTypes.PIG.create(level, EntitySpawnReason.COMMAND);
+            if (weak != null) {
+                weak.snapTo(PLATFORM.getX() + 4.5, PLATFORM.getY(), PLATFORM.getZ() + 3.5, 0, 0);
+                level.addFreshEntity(weak);
+                weak.setHealth(3.0F);
+                MimicBlock.bite(level, weak);
+                check(weak.isAlive() && Math.abs(weak.getHealth() - 1.0F) < 0.01F, "a mimic bite never kills (" + weak.getHealth() + ")");
+                weak.discard();
+            }
         } else {
             check(false, "pig for the bite test");
         }

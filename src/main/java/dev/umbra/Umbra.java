@@ -81,7 +81,6 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.SmolderingTorchBlock::onPlaced);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onRightClick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onBreak);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
     }
