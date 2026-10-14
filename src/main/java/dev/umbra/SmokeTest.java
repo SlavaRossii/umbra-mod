@@ -930,12 +930,12 @@ final class SmokeTest {
             level.addFreshEntity(shepherd);
             level.setBlock(c.offset(1, 1, 0), ModBlocks.LIVING_DARKNESS.get().defaultBlockState(), Block.UPDATE_CLIENTS);
             float full = shepherd.getHealth();
-            fake.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+            fake.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.IRON_SWORD));
             fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
             var hit = level.damageSources().playerAttack(fake);
             for (int i = 0; i < 4; i++) shepherd.hurtServer(level, hit, 5.0F);
             check(shepherd.getHealth() == full, "without a light in hand the shroud holds");
-            fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(Items.TORCH));
+            fake.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(net.minecraft.world.item.Items.TORCH));
             shepherd.hurtServer(level, hit, 5.0F);
             shepherd.hurtServer(level, hit, 5.0F);
             check(shepherd.getHealth() == full && level.getBlockState(c.offset(1, 1, 0)).is(ModBlocks.LIVING_DARKNESS.get()), "two hits with a light only chip it");
