@@ -541,5 +541,10 @@
   "artifact.umbra.architect_seal": "Artifact: Architect's Seal",
   "artifact.umbra.ash_clasp.effect": "On a chestplate: quiet steps, no fall damage, storms do not blind.",
   "artifact.umbra.architect_seal.effect": "On a chestplate: see through phantom walls; the maze stops reshuffling.",
-  "artifact.umbra.how": "Pin it to a chestplate at an anvil."
+  "artifact.umbra.how": "Pin it to a chestplate at an anvil.",
+  "item.umbra.luminite_shield": "Luminite Aegis",
+  "item.umbra.luminite_shield.tip": "Held in a hand: halves blows from creatures and burns whoever strikes you.",
+  "advancement.umbra.root.title": "Umbra",
+  "advancement.umbra.root.desc": "The journal writes itself.",
+  "advancement.umbra.entry.desc": "An entry in your journal."
 }

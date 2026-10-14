@@ -541,5 +541,10 @@
   "artifact.umbra.architect_seal": "Артефакт: печать Архитектора",
   "artifact.umbra.ash_clasp.effect": "На нагруднике: тихие шаги, нет урона от падения, буря не слепит.",
   "artifact.umbra.architect_seal.effect": "На нагруднике: видишь сквозь призрачные стены, лабиринт не перестраивается.",
-  "artifact.umbra.how": "Скрепляется с нагрудником на наковальне."
+  "artifact.umbra.how": "Скрепляется с нагрудником на наковальне.",
+  "item.umbra.luminite_shield": "Люминитовая эгида",
+  "item.umbra.luminite_shield.tip": "В руке: вдвое смягчает удары тварей и обжигает бьющего.",
+  "advancement.umbra.root.title": "Умбра",
+  "advancement.umbra.root.desc": "Дневник пишется сам.",
+  "advancement.umbra.entry.desc": "Запись в вашем дневнике."
 }

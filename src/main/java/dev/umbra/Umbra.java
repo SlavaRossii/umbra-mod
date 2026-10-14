@@ -95,6 +95,7 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onFall);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onAnvil);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onTooltip);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onIncoming);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
     }

@@ -1,0 +1,20 @@
+{
+  "display": {
+    "icon": {
+      "id": "umbra:journal"
+    },
+    "title": {
+      "translate": "advancement.umbra.root.title"
+    },
+    "description": {
+      "translate": "advancement.umbra.root.desc"
+    },
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entry": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

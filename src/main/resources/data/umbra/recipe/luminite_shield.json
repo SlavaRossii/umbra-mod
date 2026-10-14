@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "B": "umbra:luminite_block",
+    "G": "umbra:gloom_ingot"
+  },
+  "pattern": [
+    "LGL",
+    "LBL",
+    " L "
+  ],
+  "result": {
+    "id": "umbra:luminite_shield"
+  }
+}

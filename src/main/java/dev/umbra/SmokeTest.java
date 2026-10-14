@@ -1094,6 +1094,16 @@ final class SmokeTest {
         fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ItemStack.EMPTY);
         check(!dev.umbra.gear.Gear.hasArtifact(fake, dev.umbra.gear.Gear.ARCHITECT_SEAL), "no seal, no sight");
 
+        // achievements mirror the journal
+        {
+            var adv = level.getServer().getAdvancements();
+            java.util.List<String> noAdv = new java.util.ArrayList<>();
+            for (String id : dev.umbra.journal.Journal.ENTRIES)
+                if (adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "e_" + id)) == null) noAdv.add(id);
+            check(noAdv.isEmpty(), "every journal entry has an advancement " + (noAdv.isEmpty() ? "" : noAdv.subList(0, Math.min(5, noAdv.size()))));
+            check(adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "root")) != null, "the advancement tab has a root");
+        }
+
         // texts
         for (String lang : new String[]{"en_us", "ru_ru"}) {
             java.util.List<String> missing = new java.util.ArrayList<>();

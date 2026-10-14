@@ -90,6 +90,7 @@ public final class ModItems {
                 }
     }
 
+    public static final DeferredItem<Item> LUMINITE_SHIELD = ITEMS.registerSimpleItem("luminite_shield", p -> p.stacksTo(1).durability(336).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<Item> ASH_CLASP = ITEMS.registerSimpleItem("ash_clasp", p -> p.stacksTo(1).rarity(Rarity.RARE));
     public static final DeferredItem<Item> ARCHITECT_SEAL = ITEMS.registerSimpleItem("architect_seal", p -> p.stacksTo(1).rarity(Rarity.EPIC));
 

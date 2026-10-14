@@ -1,0 +1,23 @@
+{
+  "parent": "umbra:root",
+  "display": {
+    "icon": {
+      "id": "umbra:journal"
+    },
+    "title": {
+      "translate": "journal.umbra.insight_3.title"
+    },
+    "description": {
+      "translate": "advancement.umbra.entry.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "entry": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

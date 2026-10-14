@@ -23,6 +23,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
@@ -62,7 +63,7 @@ public final class EnchantEvents {
         if (!(event.getEntity().level() instanceof ServerLevel level)) return;
         int lvl = Gear.level(level, player.getMainHandItem(), Gear.ECHO);
         if (lvl <= 0 || event.getHealthDamage() <= 0) return;
-        ECHOES.add(new Echo(level, event.getEntity().getUUID(), player.getUUID(), level.getGameTime() + 12, event.getHealthDamage() * 0.35F * lvl));
+        ECHOES.add(new Echo(level, event.getEntity().getUUID(), player.getUUID(), level.getGameTime() + 5, event.getHealthDamage() * 0.35F * lvl));
     }
 
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -88,6 +89,24 @@ public final class EnchantEvents {
             e.level.sendParticles(ParticleTypes.SCULK_SOUL, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.2, 0.3, 0.2, 0.02);
             e.level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.8F, 0.6F);
         }
+    }
+
+    // ---- Luminite Aegis: in either hand it halves a creature's blow and sears the one who struck
+
+    public static boolean hasAegis(Player p) {
+        return p.getMainHandItem().is(ModItems.LUMINITE_SHIELD.get()) || p.getOffhandItem().is(ModItems.LUMINITE_SHIELD.get());
+    }
+
+    public static void onIncoming(LivingIncomingDamageEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !hasAegis(player)) return;
+        if (!(event.getSource().getEntity() instanceof net.minecraft.world.entity.Mob mob)) return;
+        event.setAmount(event.getAmount() * 0.5F);
+        boolean main = player.getMainHandItem().is(ModItems.LUMINITE_SHIELD.get());
+        player.getItemInHand(main ? net.minecraft.world.InteractionHand.MAIN_HAND : net.minecraft.world.InteractionHand.OFF_HAND)
+                .hurtAndBreak(2, player, main ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        mob.igniteForSeconds(3);
+        mob.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.GLOWING, 100));
+        ((ServerLevel) player.level()).playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 0.8F, 1.3F);
     }
 
     // ---- Harvest: the dark leaves more behind
