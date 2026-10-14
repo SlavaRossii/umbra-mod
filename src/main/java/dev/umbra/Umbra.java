@@ -78,6 +78,8 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.journal.JournalEvents::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.LightArrowItem::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.WardBlock::onFinalizeSpawn);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.nightmare.Nightmares::onHurt);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.madness.DespairBladeItem::onHurt);
         NeoForge.EVENT_BUS.addListener(dev.umbra.light.SmolderingTorchBlock::onPlaced);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onRightClick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);
@@ -121,6 +123,7 @@ public class Umbra {
         DarknessManager.tick(player);
         Sanity.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
+        dev.umbra.nightmare.Nightmares.tick(player);
     }
 
     private static void onSetSpawn(PlayerSetSpawnEvent event) {
@@ -132,6 +135,8 @@ public class Umbra {
     private static void onWakeUp(PlayerWakeUpEvent event) {
         // a full night's sleep, not being woken up by a monster
         if (event.getEntity() instanceof ServerPlayer player && !event.wakeImmediately() && event.updateLevel()) {
+            // a troubled mind may not get its rest
+            if (dev.umbra.nightmare.Nightmares.onSleep(player)) return;
             Sanity.add(player, Sanity.Shock.SLEEP);
         }
     }

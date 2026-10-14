@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": "umbra:shadow_shard",
+    "B": "minecraft:book",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "SBS",
+    "PPP",
+    "P P"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umbra:whisper_table"
+  }
+}

@@ -118,6 +118,22 @@ public final class ModBlocks {
             p -> new SmolderingWallTorchBlock(ParticleTypes.SMOKE, p),
             () -> torchProperties().lightLevel(s -> SmolderingTorchBlock.LIGHT));
 
+    /** The Whisper Table: crafts for a slipping mind. */
+    public static final DeferredBlock<dev.umbra.madness.WhisperTableBlock> WHISPER_TABLE = BLOCKS.registerBlock("whisper_table",
+            dev.umbra.madness.WhisperTableBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 3));
+
+    /** The way out of a nightmare. */
+    public static final DeferredBlock<dev.umbra.nightmare.DreamExitBlock> DREAM_EXIT = BLOCKS.registerBlock("dream_exit",
+            dev.umbra.nightmare.DreamExitBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> 15)
+                    .sound(SoundType.AMETHYST)
+                    .pushReaction(PushReaction.IMMOVEABLE)
+                    .mapColor(MapColor.SNOW));
+
     private static BlockBehaviour.Properties torchProperties() {
         return BlockBehaviour.Properties.of()
                 .noCollision()

@@ -78,7 +78,20 @@ public final class Sanity {
     /** Positive values heal, negative ones drain. Shocks bypass the difficulty multipliers. */
     public static void add(Player player, float delta) {
         if (!enabled() || player.isCreative() || player.isSpectator()) return;
+        if (delta < 0 && isCalm(player)) return;
         set(player, get(player) + delta);
+    }
+
+    /** Silence tincture: until this game time nothing drains the player's sanity. */
+    private static final Map<UUID, Long> CALM_UNTIL = new HashMap<>();
+
+    public static void calm(net.minecraft.world.entity.player.Player player, int ticks) {
+        CALM_UNTIL.put(player.getUUID(), player.level().getGameTime() + ticks);
+    }
+
+    public static boolean isCalm(net.minecraft.world.entity.player.Player player) {
+        Long until = CALM_UNTIL.get(player.getUUID());
+        return until != null && player.level().getGameTime() < until;
     }
 
     public static void forget(ServerPlayer player) {
@@ -109,6 +122,7 @@ public final class Sanity {
         // gloom armour steadies the mind: each piece takes 12% off the drain
         drain *= 1.0F - 0.12F * gloomPieces(player);
 
+        if (isCalm(player)) drain = 0.0F;
         // inside a burning ward the mind rests
         if (dev.umbra.light.WardBlock.protects(player)) {
             drain = 0.0F;

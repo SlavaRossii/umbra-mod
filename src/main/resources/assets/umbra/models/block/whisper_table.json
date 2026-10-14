@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "umbra:block/whisper_table_top",
+    "bottom": "minecraft:block/pale_oak_planks",
+    "side": "umbra:block/whisper_table_side"
+  }
+}

@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The journal writes itself: each first encounter adds an entry (lang keys journal.umbra.&lt;id&gt;.title/.text).
@@ -16,9 +17,33 @@ import java.util.List;
  */
 public final class Journal {
     public static final List<String> ENTRIES = List.of(
-            "start", "shadow", "shadow_dispelled", "steps", "mimic", "darkness", "maze", "sanity", "luminite",
-            "underside", "crawler", "blind", "light_eater", "mimicker", "shade",
-            "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "freed");
+            "start", "sanity", "insight_1", "nightmare", "luminite", "shadow", "shadow_dispelled", "steps", "mimic",
+            "darkness", "maze", "underside", "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade",
+            "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "freed");
+
+    /** Insights: thoughts that only come when the mind is slipping. Sanity thresholds, in order. */
+    public static final String[] INSIGHTS = {"insight_1", "insight_2", "insight_3"};
+    public static final float[] INSIGHT_AT = {40.0F, 25.0F, 10.0F};
+
+    /** Recipes the hero "figures out" when an entry is written (they appear in the recipe book). */
+    public static final Map<String, List<String>> RECIPES = Map.of(
+            "start", List.of("journal", "sedative"),
+            "luminite", List.of("dispeller", "eternal_torch", "luminite_lamp", "luminite_lantern", "light_arrow", "mirror", "sedative_from_luminite"),
+            "shadow_dispelled", List.of("dusk_stone", "antipsychotic"),
+            "underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
+                    "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
+                    "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass", "ward",
+                    "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection"),
+            "watcher", List.of("underside_key"),
+            "mimic_queen", List.of("underside_key"),
+            "shepherd", List.of("underside_key"),
+            "doppelganger", List.of("underside_key"),
+            "insight_1", List.of("whisper_table"));
+
+    /** Lines in a hand that is not yours: they creep into the journal when sanity is low. */
+    public static final int WHISPERS = 8;
+
+    public static final float CORRUPT_BELOW = 25.0F;
 
     private Journal() {}
 
@@ -32,19 +57,56 @@ public final class Journal {
         List<String> list = new ArrayList<>(player.getData(ModAttachments.JOURNAL));
         list.add(id);
         player.setData(ModAttachments.JOURNAL, List.copyOf(list));
+        awardRecipes(player, id);
+        if (id.startsWith("insight")) {
+            player.sendSystemMessage(Component.translatable("message.umbra.insight",
+                    Component.translatable("journal.umbra." + id + ".title")).withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD));
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 0.6F);
+            return;
+        }
         player.sendOverlayMessage(Component.translatable("message.umbra.journal_new",
                 Component.translatable("journal.umbra." + id + ".title")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 0.9F);
+    }
+
+    /** Puts the recipes tied to entry {@code id} into the player's recipe book. */
+    public static void awardRecipes(ServerPlayer player, String id) {
+        List<String> recipes = RECIPES.get(id);
+        if (recipes == null || player.level().getServer() == null) return;
+        var manager = player.level().getServer().getRecipeManager();
+        List<net.minecraft.world.item.crafting.RecipeHolder<?>> holders = new ArrayList<>();
+        for (String r : recipes) {
+            manager.byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, r))).ifPresent(holders::add);
+        }
+        if (!holders.isEmpty()) player.awardRecipes(holders);
+    }
+
+    /** On login: recipes for everything already written (older saves, lost recipe books). */
+    public static void awardAll(ServerPlayer player) {
+        for (String id : player.getData(ModAttachments.JOURNAL)) awardRecipes(player, id);
     }
 
     /** Prints the journal to chat. */
     public static void read(ServerPlayer player) {
         List<String> got = player.getData(ModAttachments.JOURNAL);
         player.sendSystemMessage(Component.translatable("journal.umbra.header", got.size(), ENTRIES.size()).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
+        // a slipping mind reads its own words badly, and finds lines it did not write
+        float sanity = dev.umbra.sanity.Sanity.enabled() ? dev.umbra.sanity.Sanity.get(player) : 100.0F;
+        boolean slipping = sanity < CORRUPT_BELOW;
+        var random = player.getRandom();
         for (String id : ENTRIES) {
             if (!got.contains(id)) continue;
-            player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".title").withStyle(ChatFormatting.LIGHT_PURPLE));
-            player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".text").withStyle(ChatFormatting.GRAY));
+            boolean insight = id.startsWith("insight");
+            player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".title").withStyle(insight ? ChatFormatting.DARK_PURPLE : ChatFormatting.LIGHT_PURPLE));
+            if (slipping && !insight && random.nextFloat() < 0.35F) {
+                player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".text").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.OBFUSCATED));
+            } else {
+                player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".text").withStyle(ChatFormatting.GRAY));
+            }
+            if (slipping && random.nextFloat() < 0.25F) {
+                player.sendSystemMessage(Component.translatable("journal.umbra.whisper." + random.nextInt(WHISPERS)).withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
+            }
         }
         if (got.size() < ENTRIES.size()) {
             player.sendSystemMessage(Component.translatable("journal.umbra.more").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));

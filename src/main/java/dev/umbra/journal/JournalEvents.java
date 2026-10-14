@@ -30,6 +30,7 @@ public final class JournalEvents {
             }
         }
         Journal.unlock(player, "start");
+        Journal.awardAll(player);
     }
 
     /** Cheap per-second checks of the player's surroundings. */
@@ -37,10 +38,20 @@ public final class JournalEvents {
         if (player.tickCount % 20 != 7) return;
         if (Underside.is(player.level())) Journal.unlock(player, "underside");
         if (Sanity.enabled() && Sanity.get(player) < Sanity.PARANOID) Journal.unlock(player, "sanity");
+        checkInsights(player);
         BlockPos eye = BlockPos.containing(player.getEyePosition());
         if (player.level().getBlockState(eye).is(ModBlocks.LIVING_DARKNESS.get())) Journal.unlock(player, "darkness");
         if (player.level().getBlockState(player.blockPosition().below()).is(ModBlocks.MAZE_WALL.get())) Journal.unlock(player, "maze");
         if (player.getInventory().contains(new ItemStack(ModItems.LUMINITE_CRYSTAL.get()))) Journal.unlock(player, "luminite");
+    }
+
+    /** Insights come when sanity falls below their thresholds. */
+    public static void checkInsights(ServerPlayer player) {
+        if (!Sanity.enabled()) return;
+        float s = Sanity.get(player);
+        for (int i = 0; i < Journal.INSIGHTS.length; i++) {
+            if (s < Journal.INSIGHT_AT[i]) Journal.unlock(player, Journal.INSIGHTS[i]);
+        }
     }
 
     public static void onDeath(LivingDeathEvent event) {

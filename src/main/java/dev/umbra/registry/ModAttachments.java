@@ -48,5 +48,11 @@ public final class ModAttachments {
                     .copyOnDeath()
                     .build());
 
+    /** While in a nightmare: packed overworld BlockPos to wake up at. Long.MIN_VALUE = not dreaming. */
+    public static final Supplier<AttachmentType<Long>> NIGHTMARE = ATTACHMENTS.register("nightmare",
+            () -> AttachmentType.builder(() -> Long.MIN_VALUE)
+                    .serialize(Codec.LONG.fieldOf("return"))
+                    .build());
+
     private ModAttachments() {}
 }

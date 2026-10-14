@@ -116,6 +116,7 @@ final class SmokeTest {
                 case 575 -> setupWard(level);
                 case 580 -> testUpdate11(level);
                 case 620 -> checkWard(level);
+                case 625 -> testMadness(server, level);
                 case 640 -> finish(server);
                 default -> { }
             }
@@ -517,6 +518,75 @@ final class SmokeTest {
             for (int j = i + 1; j < chosen.size(); j++)
                 minGap = Math.min(minGap, Math.max(Math.abs(chosen.get(i)[0] - chosen.get(j)[0]), Math.abs(chosen.get(i)[1] - chosen.get(j)[1])));
         check(mazes > 50 && mazes < 150 && minGap >= 5, "underside mazes are spaced out (" + mazes + " in 140x140 chunks, min gap " + minGap + " chunks)");
+    }
+
+    // ---------------------------------------------------------------- 1.2
+    private static void testMadness(MinecraftServer server, ServerLevel level) {
+        // every recipe the journal hands out must exist
+        int missing = 0;
+        for (var e : dev.umbra.journal.Journal.RECIPES.entrySet())
+            for (String r : e.getValue())
+                if (server.getRecipeManager().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+                        net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, r))).isEmpty()) {
+                    missing++;
+                    Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
+                }
+        check(missing == 0, "all journal recipes exist (" + missing + " missing)");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 26, "journal has 26 entries");
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.getInventory().clearContent();
+        dev.umbra.journal.Journal.unlock(fake, "luminite");
+        check(dev.umbra.journal.Journal.has(fake, "luminite"), "journal entry with recipes unlocks");
+
+        Sanity.set(fake, 100);
+        dev.umbra.journal.JournalEvents.checkInsights(fake);
+        check(!dev.umbra.journal.Journal.has(fake, "insight_1"), "no insight while sane");
+        Sanity.set(fake, 30);
+        dev.umbra.journal.JournalEvents.checkInsights(fake);
+        check(dev.umbra.journal.Journal.has(fake, "insight_1") && !dev.umbra.journal.Journal.has(fake, "insight_2"), "first insight below 40");
+        Sanity.set(fake, 5);
+        dev.umbra.journal.JournalEvents.checkInsights(fake);
+        check(dev.umbra.journal.Journal.has(fake, "insight_3"), "third insight below 10");
+
+        var tincture = dev.umbra.madness.Rituals.ALL.get(0);
+        Sanity.set(fake, 90);
+        check("ritual.umbra.too_sane".equals(dev.umbra.madness.WhisperTableBlock.check(fake, tincture)), "the whisper table refuses a sane mind");
+        Sanity.set(fake, 30);
+        check("ritual.umbra.missing".equals(dev.umbra.madness.WhisperTableBlock.check(fake, tincture)), "the whisper table wants its ingredients");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
+        fake.getInventory().add(new ItemStack(ModItems.SHADOW_SHARD.get()));
+        fake.getInventory().add(new ItemStack(ModItems.LUMINITE_CRYSTAL.get()));
+        BlockPos table = PLATFORM.offset(-8, 0, 0);
+        level.setBlock(table, ModBlocks.WHISPER_TABLE.get().defaultBlockState(), Block.UPDATE_ALL);
+        boolean made = dev.umbra.madness.WhisperTableBlock.perform(level, fake, table, InteractionHand.MAIN_HAND, tincture);
+        check(made && fake.getInventory().countItem(ModItems.SILENCE_TINCTURE.get()) == 1, "the whisper table makes a tincture of silence");
+        check(fake.getInventory().countItem(ModItems.SHADOW_SHARD.get()) == 0, "the ritual uses up its ingredients");
+
+        Sanity.set(fake, 50);
+        Sanity.calm(fake, 200);
+        Sanity.add(fake, -20);
+        check(Math.abs(Sanity.get(fake) - 50) < 0.01, "the tincture of silence stops sanity loss");
+        Sanity.set(fake, 0);
+        check(Math.abs(dev.umbra.madness.DespairBladeItem.bonus(fake) - 10.0F) < 0.01, "the blade of despair cuts deepest at zero sanity");
+        Sanity.set(fake, 100);
+        check(dev.umbra.madness.DespairBladeItem.bonus(fake) < 0.01, "and not at all when sane");
+        fake.getInventory().clearContent();
+
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under != null) {
+            BlockPos corner = new BlockPos(3_000_000, 150, 3_000_000);
+            dev.umbra.nightmare.Nightmares.build(under, corner, under.getRandom());
+            int mid = QuantumMaze.SIZE / 2;
+            check(under.getBlockState(corner.offset(mid, QuantumMaze.floorBase(1) + 1, mid)).is(ModBlocks.DREAM_EXIT.get()), "a nightmare has its way out");
+            int chests = 0;
+            for (BlockPos p : BlockPos.betweenClosed(corner, corner.offset(QuantumMaze.SIZE - 1, QuantumMaze.HEIGHT, QuantumMaze.SIZE - 1)))
+                if (under.getBlockState(p).is(Blocks.CHEST)) chests++;
+            check(chests == 0, "a nightmare has no chests");
+            check(under.getBlockState(corner.offset(-2, 3, mid)).is(ModBlocks.MAZE_WALL.get()), "a nightmare is sealed");
+        } else {
+            check(false, "underside level for the nightmare test");
+        }
     }
 
     private static void checkWard(ServerLevel level) {

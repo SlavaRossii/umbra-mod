@@ -640,6 +640,75 @@ def stage7():
     save(torch, "block/smoldering_torch.png")
 
 
+# ------------------------------------------------------------------ 1.2: madness
+
+def stage8():
+    rnd = random.Random(80)
+    side = Image.new("RGBA", (16, 16)); top = Image.new("RGBA", (16, 16))
+    sp, tp = side.load(), top.load()
+    for x in range(16):
+        for y in range(16):
+            v = 52 + rnd.randint(-8, 8) - (6 if y % 4 == 0 else 0)
+            sp[x, y] = (v, v - 10, v + 4, 255)
+            t = 34 + rnd.randint(-5, 5)
+            tp[x, y] = (t + 10, t, t + 18, 255)
+    for x in range(16):
+        sp[x, 0] = sp[x, 1] = (30, 22, 40, 255)
+    for (x, y) in [(4, 6), (5, 7), (6, 6), (9, 8), (10, 9), (11, 8), (7, 10), (8, 11)]:
+        sp[x, y] = (150, 230, 220, 255)
+    for i in range(3, 13):  # an open book on top, glowing script
+        tp[i, 5] = tp[i, 10] = (210, 200, 180, 255)
+        for y in range(6, 10):
+            tp[i, y] = (225, 215, 195, 255)
+    for (x, y) in [(4, 7), (6, 8), (9, 7), (11, 8), (5, 8), (10, 7)]:
+        tp[x, y] = (90, 200, 190, 255)
+    save(side, "block/whisper_table_side.png")
+    save(top, "block/whisper_table_top.png")
+
+    ex = Image.new("RGBA", (16, 16)); ep = ex.load()
+    for x in range(16):
+        for y in range(16):
+            d = math.hypot(x - 7.5, y - 7.5)
+            a = math.atan2(y - 7.5, x - 7.5)
+            v = int(200 + 55 * math.sin(a * 3 + d * 0.9))
+            ep[x, y] = (v, v, min(255, v + 30), 255)
+    save(ex, "block/dream_exit.png")
+
+    def tincture(px, rnd):
+        for y in range(6, 14):
+            for x in range(5, 11):
+                if (x - 7.5) ** 2 / 9 + (y - 10) ** 2 / 16 <= 1:
+                    px[x, y] = (40, 30, 70, 255) if y < 9 else (90, 60, 160, 255)
+        for y in range(3, 6):
+            px[7, y] = px[8, y] = (200, 220, 230, 255)
+        px[7, 2] = px[8, 2] = (120, 90, 60, 255)
+        px[6, 11] = (200, 170, 255, 255)
+    icon("silence_tincture", tincture)
+
+    def mask(px, rnd):
+        for y in range(3, 14):
+            for x in range(3, 13):
+                if (x - 7.5) ** 2 / 25 + (y - 8) ** 2 / 30 <= 1:
+                    px[x, y] = (225, 220, 205, 255)
+        for (x, y) in [(5, 7), (6, 7), (9, 7), (10, 7), (5, 8), (10, 8)]:
+            px[x, y] = (15, 10, 15, 255)
+        for x in range(5, 11):
+            px[x, 11] = (120, 20, 30, 255) if x % 2 else (15, 10, 15, 255)
+        px[7, 4] = px[8, 5] = (150, 30, 40, 255)
+    icon("madman_mask", mask)
+
+    def blade(px, rnd):
+        for i in range(3, 13):
+            px[i, 15 - i - 1] = (40, 20, 50, 255)
+            px[i + 1, 15 - i - 1] = (120, 30, 60, 255)
+            px[i, 15 - i] = (25, 10, 30, 255)
+        for (x, y) in [(2, 11), (3, 12), (4, 13), (1, 13), (2, 14)]:
+            px[x, y] = (70, 50, 40, 255)
+        for (x, y) in [(3, 10), (5, 12)]:
+            px[x, y] = (200, 80, 255, 255)
+    icon("despair_blade", blade)
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -658,4 +727,5 @@ if __name__ == "__main__":
     stage5()
     stage6()
     stage7()
+    stage8()
     print("textures written")

@@ -1,5 +1,6 @@
 {
   "values": [
-    "umbra:dead_log"
+    "umbra:dead_log",
+    "umbra:whisper_table"
   ]
 }

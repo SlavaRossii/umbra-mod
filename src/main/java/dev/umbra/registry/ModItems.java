@@ -104,6 +104,15 @@ public final class ModItems {
     public static final DeferredItem<DawnLanternItem> DAWN_LANTERN = ITEMS.registerItem("dawn_lantern", DawnLanternItem::new,
             p -> p.durability(256).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
 
+    // --- Madness (1.2) ---
+    public static final DeferredItem<BlockItem> WHISPER_TABLE = ITEMS.registerSimpleBlockItem("whisper_table", ModBlocks.WHISPER_TABLE, p -> p.rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<dev.umbra.madness.SilenceTinctureItem> SILENCE_TINCTURE = ITEMS.registerItem("silence_tincture",
+            dev.umbra.madness.SilenceTinctureItem::new, p -> p.stacksTo(8).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<dev.umbra.madness.MadmanMaskItem> MADMAN_MASK = ITEMS.registerItem("madman_mask",
+            dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
+    public static final DeferredItem<dev.umbra.madness.DespairBladeItem> DESPAIR_BLADE = ITEMS.registerItem("despair_blade",
+            dev.umbra.madness.DespairBladeItem::new, p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.4F).rarity(Rarity.EPIC));
+
     // --- Polish ---
     public static final DeferredItem<JournalItem> JOURNAL = ITEMS.registerItem("journal", JournalItem::new, p -> p.stacksTo(1));
     public static final DeferredItem<QuantumCompassItem> QUANTUM_COMPASS = ITEMS.registerItem("quantum_compass", QuantumCompassItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));

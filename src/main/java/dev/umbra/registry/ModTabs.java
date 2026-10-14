@@ -19,6 +19,10 @@ public final class ModTabs {
                 out.accept(ModItems.DISPELLER.get());
                 out.accept(ModItems.LUMINITE_LANTERN.get());
                 out.accept(ModItems.WARD.get());
+                out.accept(ModItems.WHISPER_TABLE.get());
+                out.accept(ModItems.SILENCE_TINCTURE.get());
+                out.accept(ModItems.MADMAN_MASK.get());
+                out.accept(ModItems.DESPAIR_BLADE.get());
                 out.accept(ModItems.LIGHT_ARROW.get());
                 out.accept(ModItems.QUANTUM_COMPASS.get());
                 out.accept(ModItems.MIRROR.get());

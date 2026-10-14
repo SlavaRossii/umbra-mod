@@ -41,6 +41,12 @@ public final class UmbraUtil {
         return !stack.isEmpty() && stack.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().getLightEmission() >= 10;
     }
 
+    /** Into the inventory, or at the player's feet if it is full. */
+    public static void give(Player player, ItemStack stack) {
+        if (player.getInventory().add(stack) || stack.isEmpty()) return;
+        player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY() + 0.5, player.getZ(), stack));
+    }
+
     public static Vec3 horizontal(Vec3 v) {
         Vec3 h = new Vec3(v.x, 0, v.z);
         double len = h.length();
