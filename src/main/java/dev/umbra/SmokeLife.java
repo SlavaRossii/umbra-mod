@@ -283,11 +283,14 @@ final class SmokeLife {
                 SmokeTest.check(true, "player data on disk: " + dataFiles());
                 SmokeTest.check(true, "saved: " + saved());
                 player = join(server, level);
-                int ground = ground(level, diedAt);
                 // a fresh journal is given at every login that has none; it is not a returned item
                 int back = countWithoutJournal(player);
                 SmokeTest.check(back == 0, "quitting on the death screen and coming back brings no items (" + back + ": " + describe(player) + ")");
                 SmokeTest.check(true, "after returning: pos " + player.position() + ", health " + player.getHealth() + ", got journal " + player.getData(ModAttachments.GOT_JOURNAL));
+            }
+            case 429 -> {
+                // a few ticks after the login: the chunk's entities come back asynchronously, a slow server needs a moment
+                int ground = ground(level, diedAt);
                 SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
             }
             case 430 -> {
