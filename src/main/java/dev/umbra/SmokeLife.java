@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -108,7 +109,6 @@ final class SmokeLife {
                 server.getPlayerList().setSimulationDistance(3);
                 player = join(server, level);
                 player.setGameMode(GameType.SURVIVAL);
-                player.setInvulnerable(true);
                 player.teleportTo(level, 180.5, Y, 20.5, Set.of(), -90.0F, 0.0F, true);
                 look(-90.0F);
                 SmokeTest.check(level.players().contains(player) && player.gameMode() == GameType.SURVIVAL, "a survival player joins as on a real login");
@@ -162,7 +162,6 @@ final class SmokeLife {
             // ---- death and respawn
             case 340 -> {
                 if (player == null) return;
-                player.setInvulnerable(false);
                 player.setHealth(player.getMaxHealth());
                 var inv = player.getInventory();
                 inv.add(new ItemStack(Items.DIAMOND, 5));
@@ -179,7 +178,7 @@ final class SmokeLife {
             case 341 -> {
                 if (player == null) return;
                 diedAt = player.blockPosition();
-                player.hurtServer(level, level.damageSources().magic(), 1000.0F);
+                kill(level, player);
                 SmokeTest.check(player.isDeadOrDying(), "the player dies");
                 SmokeTest.check(count(player) == 0, "death empties the pockets (" + count(player) + " left)");
                 int ground = ground(level, diedAt);
@@ -224,7 +223,7 @@ final class SmokeLife {
             case 356 -> {
                 if (player == null) return;
                 diedAt = player.blockPosition();
-                player.hurtServer(level, level.damageSources().magic(), 1000.0F);
+                kill(level, player);
                 int ground = ground(level, diedAt);
                 SmokeTest.check(player.isDeadOrDying() && ground == carried, "a second death drops everything once (" + ground + " of " + carried + ")");
             }
@@ -274,9 +273,19 @@ final class SmokeLife {
         }
     }
 
+    /** Lethal damage; if the player is still protected (just logged in), the death is forced the way the game would. */
+    private static void kill(ServerLevel level, ServerPlayer p) {
+        p.hurtServer(level, level.damageSources().magic(), 1000.0F);
+        if (!p.isDeadOrDying()) {
+            p.setHealth(0.0F);
+            p.die(level.damageSources().magic());
+        }
+    }
+
     private static CitadelStatue statue(ServerLevel level, double x, double z) {
         CitadelStatue st = ModEntities.CITADEL_STATUE.get().create(level, EntitySpawnReason.COMMAND);
         if (st == null) return null;
+        st.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(0.0); // it chases the player but must not hurt
         st.snapTo(x, Y, z, 0, 0);
         st.setPersistenceRequired();
         level.addFreshEntity(st);
