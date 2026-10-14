@@ -190,6 +190,8 @@ public final class ModBlocks {
                         .noLootTable()
                         // some originals (furnace, redstone ore) read a LIT property we do not have
                         .lightLevel(s -> 0)
+                        // and logs pick their map colour from an AXIS property
+                        .mapColor(originalBlock.get().defaultMapColor())
                         // the tell: it sounds slightly wrong when you walk on it
                         .sound(SoundType.HONEY_BLOCK));
         MIMICS.put(original, block);
