@@ -1,0 +1,8 @@
+{
+  "feature": "umbra:citadel_gate",
+  "placement": [
+    {
+      "type": "minecraft:in_square"
+    }
+  ]
+}

@@ -54,5 +54,11 @@ public final class ModAttachments {
                     .serialize(Codec.LONG.fieldOf("return"))
                     .build());
 
+    /** Where the player came into the citadel (gate position), to send them back there. */
+    public static final Supplier<AttachmentType<Long>> CITADEL_RETURN = ATTACHMENTS.register("citadel_return",
+            () -> AttachmentType.builder(() -> Long.MIN_VALUE)
+                    .serialize(Codec.LONG.fieldOf("gate"))
+                    .build());
+
     private ModAttachments() {}
 }

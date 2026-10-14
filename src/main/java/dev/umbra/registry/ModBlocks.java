@@ -134,6 +134,34 @@ public final class ModBlocks {
                     .pushReaction(PushReaction.IMMOVEABLE)
                     .mapColor(MapColor.SNOW));
 
+    // --- The Quantum Citadel (1.4) ---
+    public static final DeferredBlock<dev.umbra.citadel.CitadelGateBlock> CITADEL_GATE = BLOCKS.registerBlock("citadel_gate",
+            dev.umbra.citadel.CitadelGateBlock::new,
+            () -> BlockBehaviour.Properties.of()
+                    .noCollision()
+                    .noOcclusion()
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> 9)
+                    .sound(SoundType.GLASS)
+                    .pushReaction(PushReaction.IMMOVEABLE)
+                    .mapColor(MapColor.COLOR_CYAN));
+    public static final DeferredBlock<dev.umbra.citadel.CitadelSealBlock> CITADEL_SEAL = BLOCKS.registerBlock("citadel_seal",
+            dev.umbra.citadel.CitadelSealBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> 4)
+                    .pushReaction(PushReaction.IMMOVEABLE));
+    public static final DeferredBlock<dev.umbra.citadel.PhantomWallBlock> PHANTOM_WALL = BLOCKS.registerBlock("phantom_wall",
+            dev.umbra.citadel.PhantomWallBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .noOcclusion()
+                    .isSuffocating((s, l, p) -> false)
+                    .pushReaction(PushReaction.IMMOVEABLE));
+
     private static BlockBehaviour.Properties torchProperties() {
         return BlockBehaviour.Properties.of()
                 .noCollision()

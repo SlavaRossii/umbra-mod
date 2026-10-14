@@ -23,7 +23,11 @@ public class QuantumCompassItem extends Item {
         if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
         BlockPos core = findCore(server, player.blockPosition());
         if (core == null) {
-            player.sendOverlayMessage(Component.translatable("message.umbra.compass_none"));
+            if (dev.umbra.underside.Underside.is(server) && !dev.umbra.citadel.Citadel.inPocket(player)) {
+                player.sendOverlayMessage(dev.umbra.citadel.CitadelGateFeature.describeNearest(server, player, "message.umbra.compass_citadel"));
+            } else {
+                player.sendOverlayMessage(Component.translatable("message.umbra.compass_none"));
+            }
         } else {
             String pattern = MazeController.patternId(server, core);
             player.sendOverlayMessage(pattern == null

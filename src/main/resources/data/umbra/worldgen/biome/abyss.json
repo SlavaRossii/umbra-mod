@@ -76,7 +76,9 @@
     ],
     [],
     [],
-    [],
+    [
+      "umbra:citadel_gate"
+    ],
     []
   ],
   "has_precipitation": false,

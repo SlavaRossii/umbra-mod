@@ -24,5 +24,8 @@ public final class ModFeatures {
     public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.village.ShadowVillageFeature>> SHADOW_VILLAGE =
             FEATURES.register("shadow_village", () -> dev.umbra.village.ShadowVillageFeature.CODEC);
 
+    public static final DeferredHolder<MapCodec<? extends Feature>, MapCodec<dev.umbra.citadel.CitadelGateFeature>> CITADEL_GATE =
+            FEATURES.register("citadel_gate", () -> dev.umbra.citadel.CitadelGateFeature.CODEC);
+
     private ModFeatures() {}
 }

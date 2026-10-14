@@ -36,10 +36,12 @@ public final class BossSummonItems {
                 player.sendOverlayMessage(Component.translatable("message.umbra.only_underside"));
                 return InteractionResult.FAIL;
             }
-            Architect boss = summonArchitect(server, player);
-            if (boss == null) return InteractionResult.FAIL;
-            ItemStack stack = player.getItemInHand(hand);
-            if (!player.isCreative()) stack.shrink(1);
+            // the key pulls towards the sealed door of the nearest Quantum Citadel
+            if (dev.umbra.citadel.Citadel.inPocket(player)) {
+                player.sendOverlayMessage(Component.translatable("message.umbra.key.inside"));
+            } else {
+                player.sendOverlayMessage(dev.umbra.citadel.CitadelGateFeature.describeNearest(server, player, "message.umbra.key.pull"));
+            }
             return InteractionResult.SUCCESS;
         }
     }

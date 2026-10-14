@@ -118,7 +118,8 @@ final class SmokeTest {
                 case 620 -> checkWard(level);
                 case 625 -> testMadness(server, level);
                 case 630 -> testVillage(level);
-                case 650 -> finish(server);
+                case 635 -> testCitadel(server, level);
+                case 660 -> finish(server);
                 default -> { }
             }
         } catch (Throwable t) {
@@ -533,7 +534,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 27, "journal has 27 entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 30, "journal has 30 entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -655,6 +656,85 @@ final class SmokeTest {
             for (int j = i + 1; j < at.size(); j++)
                 minGap = Math.min(minGap, Math.max(Math.abs(at.get(i)[0] - at.get(j)[0]), Math.abs(at.get(i)[1] - at.get(j)[1])));
         check(villages == 100 && minGap >= 7, "shadow villages are spaced out (" + villages + " in 180x180 chunks, min gap " + minGap + ")");
+    }
+
+    // ---------------------------------------------------------------- 1.4
+    private static void testCitadel(MinecraftServer server, ServerLevel overworld) {
+        ServerLevel level = server.getLevel(Underside.LEVEL);
+        if (level == null) {
+            check(false, "underside for the citadel test");
+            return;
+        }
+        BlockPos o = dev.umbra.citadel.Citadel.origin(-3000, -3000);
+        long t0 = System.nanoTime();
+        dev.umbra.citadel.Citadel.build(level, o, level.getRandom());
+        long ms = (System.nanoTime() - t0) / 1_000_000;
+        check(dev.umbra.citadel.Citadel.isBuilt(level, o), "the citadel is built (" + ms + " ms)");
+        check(level.getBlockState(o.offset(0, 1, 0)).is(ModBlocks.CITADEL_GATE.get()), "the citadel has a way back");
+        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 0)).is(ModBlocks.CITADEL_SEAL.get()), "the throne is sealed");
+        int cores = 0, dark = 0, chests = 0, mimics = 0, phantom = 0;
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(-3, -2, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 9, 14))) {
+            BlockState s = level.getBlockState(p);
+            if (s.is(ModBlocks.MAZE_CORE.get())) cores++;
+            else if (s.is(ModBlocks.LIVING_DARKNESS.get())) dark++;
+            else if (s.is(ModBlocks.PHANTOM_WALL.get())) phantom++;
+            else if (s.is(Blocks.CHEST)) {
+                chests++;
+                if (dev.umbra.mimic.MimicChests.isMimic(level, p)) mimics++;
+            }
+        }
+        check(cores == 2, "the citadel has two quantum mazes (" + cores + ")");
+        check(dark > 500, "the hall of living darkness is full (" + dark + ")");
+        check(chests >= 20 && mimics >= 2, "the citadel has chests, some hungry (" + chests + ", " + mimics + " mimics)");
+        check(phantom == 9, "the library hides a phantom wall (" + phantom + ")");
+        int statues = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelStatue.class);
+        int keepers = dev.umbra.citadel.Citadel.count(level, o, dev.umbra.citadel.CitadelKeeper.class);
+        check(statues == 3 && keepers == 2, "statues and keepers stand guard (" + statues + ", " + keepers + ")");
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        BlockPos pw = o.offset((dev.umbra.citadel.Citadel.LIBRARY_FROM + dev.umbra.citadel.Citadel.LIBRARY_TO) / 2, 0, -8);
+        BlockState wallState = level.getBlockState(pw);
+        Sanity.set(fake, 80);
+        boolean solid = !wallState.getCollisionShape(level, pw, net.minecraft.world.phys.shapes.CollisionContext.of(fake)).isEmpty();
+        Sanity.set(fake, 10);
+        boolean open = wallState.getCollisionShape(level, pw, net.minecraft.world.phys.shapes.CollisionContext.of(fake)).isEmpty();
+        check(solid && open, "the phantom wall lets only a slipping mind through");
+        Sanity.set(fake, 100);
+
+        var statue = level.getEntitiesOfClass(dev.umbra.citadel.CitadelStatue.class, AABB.encapsulatingFullBlocks(o.offset(-3, -10, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 13, 14)));
+        if (!statue.isEmpty()) {
+            statue.get(0).onLit(level, null);
+            check(statue.get(0).isFrozen(), "light turns a statue to stone");
+        }
+
+        var boss = dev.umbra.citadel.Citadel.openThrone(level, o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 1), null);
+        check(boss != null && boss.isAlive(), "the key's door wakes the Architect");
+        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.SEAL_X, 1, 0)).isAir(), "the seal is gone");
+        if (boss != null) {
+            int mid = QuantumMaze.SIZE / 2;
+            check(Math.abs(boss.getX() - (o.getX() + dev.umbra.citadel.Citadel.THRONE + mid + 0.5)) < 1.0, "the Architect is in his maze");
+            boss.discard();
+        }
+        for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, AABB.encapsulatingFullBlocks(o.offset(-3, -10, -14), o.offset(dev.umbra.citadel.Citadel.LENGTH, 13, 14)))) e.discard();
+
+        // gates in the caves
+        BlockPos g = new BlockPos(185, Y + 60, 40);
+        for (int x = -5; x <= 5; x++) for (int z = -4; z <= 5; z++) overworld.setBlock(g.offset(x, -2, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.citadel.CitadelGateFeature.build(overworld, g, overworld.getRandom());
+        int gates = 0;
+        for (BlockPos p : BlockPos.betweenClosed(g.offset(-2, 0, 0), g.offset(2, 4, 0))) if (overworld.getBlockState(p).is(ModBlocks.CITADEL_GATE.get())) gates++;
+        check(gates == 12, "a citadel gate has a 3x4 doorway (" + gates + ")");
+        int minGap = Integer.MAX_VALUE;
+        List<int[]> at = new ArrayList<>();
+        for (int gx = -4; gx < 4; gx++) for (int gz = -4; gz < 4; gz++) at.add(dev.umbra.citadel.CitadelGateFeature.chosenChunkOf(42L, gx, gz));
+        for (int i = 0; i < at.size(); i++)
+            for (int j = i + 1; j < at.size(); j++)
+                minGap = Math.min(minGap, Math.max(Math.abs(at.get(i)[0] - at.get(j)[0]), Math.abs(at.get(i)[1] - at.get(j)[1])));
+        check(minGap * 16 > dev.umbra.citadel.Citadel.LENGTH, "citadels never overlap (gates " + minGap + " chunks apart)");
+        int[] c = at.get(0);
+        check(dev.umbra.citadel.CitadelGateFeature.chosenChunk(42L, c[0], c[1]), "gate chunks are found again from their cell");
+        BlockPos co = dev.umbra.citadel.Citadel.origin(c[0], c[1]);
+        check(co.equals(dev.umbra.citadel.Citadel.originAt(42L, Vec3.atCenterOf(co.offset(100, 1, 5)))), "a citadel is found from inside it");
     }
 
     private static void checkWard(ServerLevel level) {

@@ -732,6 +732,41 @@ def stage9():
     save(egg, "item/shadow_villager_spawn_egg.png")
 
 
+# ------------------------------------------------------------------ 1.4: the Quantum Citadel
+
+def stage10():
+    humanoid_skin("entity/citadel_statue.png", (120, 120, 126), (140, 140, 146), (60, 60, 66), 100)
+    humanoid_skin("entity/citadel_keeper.png", (30, 34, 44), (20, 22, 30), (110, 255, 230), 101)
+    img = Image.open(os.path.join(ROOT, "entity/citadel_keeper.png")).convert("RGBA")
+    px = img.load()
+    for x in range(20, 28):          # a glowing rune on the chest
+        px[x, 22] = (110, 255, 230, 255)
+    for y in range(20, 26):
+        px[24, y] = (110, 255, 230, 255)
+    img.save(os.path.join(ROOT, "entity/citadel_keeper.png"))
+    gate = Image.new("RGBA", (16, 16)); gp = gate.load()
+    for x in range(16):
+        for y in range(16):
+            v = math.sin(x * 0.9 + y * 0.45) * 0.5 + 0.5
+            gp[x, y] = (int(40 + 60 * v), int(120 + 100 * v), int(160 + 80 * v), 190)
+    save(gate, "block/citadel_gate.png")
+    seal = noise_tile((48, 46, 56), 6, 102); sp = seal.load()
+    for i in range(3, 13):
+        sp[i, 7] = sp[i, 8] = (150, 120, 220, 255)
+        sp[7, i] = sp[8, i] = (150, 120, 220, 255)
+    for (x, y) in [(4, 4), (11, 4), (4, 11), (11, 11)]:
+        sp[x, y] = (200, 170, 255, 255)
+    save(seal, "block/citadel_seal.png")
+    for name, base, spot in (("citadel_statue", (120, 120, 126), (60, 60, 66)), ("citadel_keeper", (30, 34, 44), (110, 255, 230))):
+        egg = Image.new("RGBA", (16, 16), (0, 0, 0, 0)); ep = egg.load()
+        rnd = random.Random(name)
+        for y in range(16):
+            for x in range(16):
+                if ((x - 7.5) / 5.2) ** 2 + ((y - 8.5) / 6.8) ** 2 <= 1:
+                    ep[x, y] = (spot if rnd.random() < 0.18 else base) + (255,)
+        save(egg, f"item/{name}_spawn_egg.png")
+
+
 if __name__ == "__main__":
     ore((125, 125, 125), 14, 1, "luminite_ore")
     ore((60, 60, 66), 10, 2, "deepslate_luminite_ore")
@@ -752,4 +787,5 @@ if __name__ == "__main__":
     stage7()
     stage8()
     stage9()
+    stage10()
     print("textures written")

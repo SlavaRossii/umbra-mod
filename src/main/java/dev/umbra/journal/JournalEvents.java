@@ -68,6 +68,8 @@ public final class JournalEvents {
                 Map.entry(ModEntities.SHEPHERD.get(), "shepherd"),
                 Map.entry(ModEntities.DOPPELGANGER.get(), "doppelganger"),
                 Map.entry(ModEntities.ARCHITECT.get(), "architect"),
+                Map.entry(ModEntities.CITADEL_STATUE.get(), "statue"),
+                Map.entry(ModEntities.CITADEL_KEEPER.get(), "keeper"),
                 Map.entry(ModEntities.PRIMORDIAL_SHADOW.get(), "primordial_shadow"));
         String id = ids.get(dead.getType());
         if (id != null) Journal.unlock(player, id);

@@ -58,6 +58,8 @@ public final class ModTabs {
                 out.accept(ModItems.MIMICKER_SPAWN_EGG.get());
                 out.accept(ModItems.SHADE_SPAWN_EGG.get());
                 out.accept(ModItems.SHADOW_VILLAGER_SPAWN_EGG.get());
+                out.accept(ModItems.CITADEL_STATUE_SPAWN_EGG.get());
+                out.accept(ModItems.CITADEL_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.SEAL_OF_WATCHING.get());
                 out.accept(ModItems.SEAL_OF_MIMICRY.get());
                 out.accept(ModItems.SEAL_OF_HERDING.get());
