@@ -186,7 +186,7 @@ public record LighthouseFeature() implements Feature {
                 if (Math.abs(x) <= 1 && Math.abs(z) <= 1) level.setBlock(floor.offset(x, LAMP_Y + 6, z), bricks, FLAGS);
             }
         for (int y = 0; y <= 1; y++) level.setBlock(floor.offset(0, LAMP_Y + y, 4), air, FLAGS);
-        level.setBlock(floor.offset(0, LAMP_Y + 7, 0), Blocks.LIGHTNING_ROD.defaultBlockState(), FLAGS);
+        level.setBlock(floor.offset(0, LAMP_Y + 7, 0), Blocks.END_ROD.defaultBlockState(), FLAGS);
         // the lamp itself, on a little plinth in the middle; the ladder comes out beside it
         level.setBlock(floor.offset(0, LAMP_Y - 1 + 0, 0), bricks, FLAGS);
         BlockPos lamp = floor.offset(0, LAMP_Y, 0);
@@ -239,10 +239,9 @@ public record LighthouseFeature() implements Feature {
         // door on the north wall (towards the tower), a window on the south
         for (int y = 0; y <= 1; y++) level.setBlock(c.offset(3, y, 0), air, FLAGS);
         level.setBlock(c.offset(3, 1, 4), Blocks.GLASS.defaultBlockState(), FLAGS);
-        level.setBlock(c.offset(1, 1, 1), Blocks.RED_BED.defaultBlockState().setValue(net.minecraft.world.level.block.BedBlock.FACING, Direction.SOUTH)
-                .setValue(net.minecraft.world.level.block.BedBlock.PART, net.minecraft.world.level.block.state.properties.BedPart.FOOT), FLAGS);
-        level.setBlock(c.offset(1, 1, 2), Blocks.RED_BED.defaultBlockState().setValue(net.minecraft.world.level.block.BedBlock.FACING, Direction.SOUTH)
-                .setValue(net.minecraft.world.level.block.BedBlock.PART, net.minecraft.world.level.block.state.properties.BedPart.HEAD), FLAGS);
+        // a cot: wool on a plank frame
+        level.setBlock(c.offset(1, 1, 1), Blocks.RED_WOOL.defaultBlockState(), FLAGS);
+        level.setBlock(c.offset(1, 1, 2), Blocks.WHITE_WOOL.defaultBlockState(), FLAGS);
         level.setBlock(c.offset(5, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), FLAGS);
         level.setBlock(c.offset(5, 1, 3), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.WEST), FLAGS);
         level.setBlock(c.offset(3, 2, 2), Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), FLAGS);
