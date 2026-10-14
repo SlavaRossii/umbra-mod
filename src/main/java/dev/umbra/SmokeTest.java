@@ -71,6 +71,10 @@ final class SmokeTest {
     private static final BlockPos PLATFORM = new BlockPos(130, Y + 20, 0);
     private static final int BOX_SIZE = 9;
 
+    /** The real-player part (see SmokeLife) runs from here for 380 ticks, then the report is written. */
+    private static final int LIFE_FROM = 680;
+    private static final int LIFE_END = LIFE_FROM + 380;
+
     private static int tick;
     private static final List<String> failures = new ArrayList<>();
     private static final List<String> passes = new ArrayList<>();
@@ -122,8 +126,10 @@ final class SmokeTest {
                 case 645 -> testFilling(server, level);
                 case 655 -> testBossMoves(level);
                 case 660 -> testUnderside18(server, level);
-                case 670 -> finish(server);
-                default -> { }
+                case LIFE_END -> finish(server);
+                default -> {
+                    if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
+                }
             }
         } catch (Throwable t) {
             Umbra.LOGGER.error("UMBRA SMOKETEST: exception at tick {}", tick, t);
@@ -132,7 +138,7 @@ final class SmokeTest {
         }
     }
 
-    private static void check(boolean ok, String what) {
+    static void check(boolean ok, String what) {
         (ok ? passes : failures).add(what);
         Umbra.LOGGER.info("UMBRA SMOKETEST: {} {}", ok ? "ok  " : "FAIL", what);
     }
@@ -268,6 +274,8 @@ final class SmokeTest {
     private static LightEater eater;
     private static Mimicker mimicker;
     private static final BlockPos TORCH = PLATFORM.offset(8, 0, 0);
+    /** Nearer to the light eater than the torch: if it were edible it would be gone first. */
+    private static final BlockPos LUMINITE = PLATFORM.offset(4, 0, 2);
 
     private static <T extends Mob> T spawn(ServerLevel level, net.minecraft.world.entity.EntityType<T> type, BlockPos at) {
         T mob = type.create(level, EntitySpawnReason.MOB_SUMMONED);
@@ -283,6 +291,7 @@ final class SmokeTest {
         blind = spawn(level, ModEntities.BLIND.get(), PLATFORM.offset(-10, 0, 10));
         mimicker = spawn(level, ModEntities.MIMICKER.get(), PLATFORM.offset(10, 0, 10));
         level.setBlock(TORCH, Blocks.TORCH.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(LUMINITE, ModBlocks.LUMINITE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
         eater = spawn(level, ModEntities.LIGHT_EATER.get(), PLATFORM.offset(3, 1, 0));
         check(crawler != null && blind != null && mimicker != null && eater != null, "all creatures can be created");
         check(mimicker != null && mimicker.isHidden(), "the mimicker starts invisible");
@@ -303,6 +312,7 @@ final class SmokeTest {
         check(mimicker != null && mimicker.isAlive(), "mimicker lives and ticks");
         check(eater != null && eater.isAlive(), "light eater lives and ticks");
         check(!level.getBlockState(TORCH).is(Blocks.TORCH), "the light eater ate the torch");
+        check(level.getBlockState(LUMINITE).is(ModBlocks.LUMINITE_BLOCK.get()), "the light eater left the luminite next to it alone");
     }
 
     private static void testDrops(ServerLevel level) {
@@ -897,6 +907,35 @@ final class SmokeTest {
         check(storms >= 8 && storms <= 35 && !outside, "ash storms blow in about a quarter of the windows (" + storms + "/80)");
         check(net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.containsKey(net.minecraft.resources.Identifier.fromNamespaceAndPath("umbra", "ambient.whisper")),
                 "the Underside has its own sounds");
+        // no humming in the background, no chiming crystals
+        var sounds = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT;
+        check(!sounds.containsKey(net.minecraft.resources.Identifier.fromNamespaceAndPath("umbra", "ambient.hum"))
+                        && !sounds.containsKey(net.minecraft.resources.Identifier.fromNamespaceAndPath("umbra", "ambient.crystal_hum"))
+                        && !sounds.containsKey(net.minecraft.resources.Identifier.fromNamespaceAndPath("umbra", "ambient.chime")),
+                "the humming loops and the crystal chime are gone");
+        int seen = 0;
+        boolean humming = false;
+        for (String biome : new String[]{"abyss", "ash_plains", "inverted_forest", "quantum_ruins", "crystal_grottos", "black_lakes", "whispering_forest"}) {
+            try (var in = SmokeTest.class.getResourceAsStream("/data/umbra/worldgen/biome/" + biome + ".json")) {
+                if (in == null) continue;
+                seen++;
+                humming |= new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).contains("\"loop\"");
+            } catch (java.io.IOException e) {
+                humming = true;
+            }
+        }
+        check(!humming, "no Underside biome hums in the background (" + seen + "/7 files checked)");
+
+        // the light eater and luminite
+        Block[] pure = {ModBlocks.LUMINITE_BLOCK.get(), ModBlocks.LUMINITE_CLUSTER.get(), ModBlocks.LUMINITE_LAMP.get(), ModBlocks.LUMINITE_ORE.get(),
+                ModBlocks.DEEPSLATE_LUMINITE_ORE.get(), ModBlocks.ECHO_CLUSTER.get()};
+        boolean left = true, tagged = true;
+        for (Block b : pure) {
+            left &= !LightEater.edible(b.defaultBlockState());
+            tagged &= b.defaultBlockState().is(LightEater.IGNORED);
+        }
+        check(left && tagged, "the light eater leaves every kind of luminite alone");
+        check(LightEater.edible(Blocks.GLOWSTONE.defaultBlockState()) && LightEater.edible(Blocks.TORCH.defaultBlockState()), "but it still eats ordinary light");
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under != null) {
             var possible = under.getChunkSource().getGenerator().getBiomeSource().possibleBiomes();

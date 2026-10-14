@@ -142,7 +142,9 @@ public class Umbra {
     }
 
     private static void onSetSpawn(PlayerSetSpawnEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && !event.isForced()) {
+        // getNewSpawn() is null when the spawn point is being reset (a lost bed, a drained anchor): that happens in the
+        // middle of a respawn, and an exception here used to leave a dead player unable to come back
+        if (event.getEntity() instanceof ServerPlayer player && !event.isForced() && event.getNewSpawn() != null) {
             MimicManager.setHome(player, event.getNewSpawn());
         }
     }

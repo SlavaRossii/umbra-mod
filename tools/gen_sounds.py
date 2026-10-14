@@ -66,44 +66,8 @@ def save(name, x, peak=0.8):
     os.remove(tmp)
 
 
-def seamless(x, fade=1.5):
-    """Loop-safe: crossfade the tail into the head."""
-    n = int(SR * fade)
-    head, body, tail = x[:n], x[n:-n] if n else x, x[-n:]
-    w = np.linspace(0, 1, n)
-    return np.concatenate([tail * (1 - w) + head * w, x[n:-n]])
-
-
 def noise(seconds, seed):
     return np.random.default_rng(seed).standard_normal(int(SR * seconds))
-
-
-def brown(seconds, seed):
-    x = np.cumsum(noise(seconds, seed))
-    return hp(x, 15)
-
-
-# ---------------------------------------------------------------- loops
-
-def hum(name, freqs, noise_lo, noise_hi, seed, length=24.0, shimmer=None):
-    tt = t(length)
-    x = np.zeros_like(tt)
-    for i, f in enumerate(freqs):
-        f = round(f * length) / length  # whole cycles: loops cleanly
-        lfo = 0.6 + 0.4 * np.sin(2 * np.pi * (i + 1) / length * tt + i)
-        x += np.sin(2 * np.pi * f * tt + i) * lfo / (i + 1)
-    n = bp(brown(length + 3, seed), noise_lo, noise_hi)[: len(tt)]
-    x = x + n / np.max(np.abs(n)) * 0.5
-    if shimmer:
-        rnd = np.random.default_rng(seed + 1)
-        for _ in range(shimmer):
-            at = rnd.uniform(1, length - 4)
-            f = rnd.uniform(1800, 3800)
-            s = t(3.0)
-            ping = np.sin(2 * np.pi * f * s) * np.exp(-s * 2.2) * 0.12
-            i0 = int(at * SR)
-            x[i0:i0 + len(ping)] += ping
-    return seamless(x)
 
 
 # ---------------------------------------------------------------- one-shots
@@ -208,18 +172,6 @@ def wail(seed):
     return reverb(x, 4.0, 0.7, seed, 1200)
 
 
-def chime(seed):
-    rnd = np.random.default_rng(seed)
-    s = t(3.5)
-    x = np.zeros_like(s)
-    for i in range(rnd.integers(3, 6)):
-        at = int(rnd.uniform(0, 1.2) * SR)
-        f = rnd.uniform(1800, 4200)
-        p = np.sin(2 * np.pi * f * s[: len(s) - at]) * np.exp(-s[: len(s) - at] * rnd.uniform(1.5, 3.0))
-        x[at:] += p * rnd.uniform(0.4, 1.0)
-    return reverb(x, 2.5, 0.5, seed, 7000)
-
-
 def gust(seed):
     n = noise(5.0, seed)
     tt = t(5.0)
@@ -255,10 +207,6 @@ def heartbeat_far(seed):
 
 
 if __name__ == "__main__":
-    save("hum", hum("hum", [41, 55, 61.7, 82], 40, 220, 1))
-    save("crystal_hum", hum("crystal_hum", [55, 82.5, 110, 165], 120, 900, 2, shimmer=9), 0.7)
-    save("lake_hum", hum("lake_hum", [36.7, 49, 73.4], 60, 500, 3))
-    save("forest_hum", hum("forest_hum", [43.6, 58.3, 65.4], 200, 1600, 4))
     for i in range(3):
         save(f"drip{i + 1}", drip(10 + i))
     save("bell1", bell(20, 196.0))
@@ -274,8 +222,6 @@ if __name__ == "__main__":
     save("creak1", creak(70))
     save("creak2", creak(71))
     save("wail", wail(80), 0.6)
-    save("chime1", chime(90))
-    save("chime2", chime(91))
     save("gust1", gust(100))
     save("gust2", gust(101))
     save("splash", splash(110))

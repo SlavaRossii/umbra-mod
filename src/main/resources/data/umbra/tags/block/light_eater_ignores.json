@@ -1,0 +1,10 @@
+{
+  "values": [
+    "umbra:luminite_block",
+    "umbra:luminite_cluster",
+    "umbra:luminite_lamp",
+    "umbra:luminite_ore",
+    "umbra:deepslate_luminite_ore",
+    "umbra:echo_cluster"
+  ]
+}

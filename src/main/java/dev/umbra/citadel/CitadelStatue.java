@@ -68,8 +68,18 @@ public class CitadelStatue extends Monster implements LightSensitive {
         return false;
     }
 
+    /**
+     * Decided here and not in customServerAiStep: the game skips the whole AI step of an immobile mob, so a flag that
+     * is only recomputed inside it can never be cleared again and the statue would stay stone for good after the
+     * first glance (or the first flash).
+     */
     @Override
-    protected void customServerAiStep(ServerLevel level) {
+    public void aiStep() {
+        if (this.level() instanceof ServerLevel level && this.isAlive()) watch(level);
+        super.aiStep();
+    }
+
+    private void watch(ServerLevel level) {
         if (stunned > 0) stunned--;
         boolean was = frozen;
         frozen = stunned > 0 || isWatched(level);
@@ -79,7 +89,6 @@ public class CitadelStatue extends Monster implements LightSensitive {
         } else if (was && this.getTarget() != null) {
             level.playSound(null, getX(), getY(), getZ(), SoundEvents.GRINDSTONE_USE, SoundSource.HOSTILE, 0.6F, 0.5F);
         }
-        super.customServerAiStep(level);
     }
 
     @Override

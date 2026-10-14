@@ -1,7 +1,6 @@
 {
   "attributes": {
     "minecraft:audio/ambient_sounds": {
-      "loop": "umbra:ambient.lake_hum",
       "mood": {
         "block_search_extent": 8,
         "offset": 2.0,

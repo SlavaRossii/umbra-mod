@@ -55,7 +55,23 @@ public final class UmbraCommand {
                 .then(Commands.literal("storm").executes(UmbraCommand::storm))
                 .then(Commands.literal("temple").executes(UmbraCommand::temple))
                 .then(Commands.literal("forest").executes(UmbraCommand::forest))
+                .then(journal())
                 .then(village()));
+    }
+
+    /** /umbra journal all | reset — for testers. */
+    private static LiteralArgumentBuilder<CommandSourceStack> journal() {
+        return Commands.literal("journal")
+                .then(Commands.literal("all").executes(ctx -> {
+                    int n = dev.umbra.journal.Journal.unlockAll(ctx.getSource().getPlayerOrException());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("command.umbra.journal.all", n), false);
+                    return n;
+                }))
+                .then(Commands.literal("reset").executes(ctx -> {
+                    dev.umbra.journal.Journal.clear(ctx.getSource().getPlayerOrException());
+                    ctx.getSource().sendSuccess(() -> Component.translatable("command.umbra.journal.reset"), false);
+                    return 1;
+                }));
     }
 
     private static int shadow(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

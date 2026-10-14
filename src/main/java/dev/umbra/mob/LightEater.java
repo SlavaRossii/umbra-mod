@@ -1,14 +1,18 @@
 package dev.umbra.mob;
 
+import dev.umbra.Umbra;
 import dev.umbra.light.DarknessProof;
 import dev.umbra.light.LightSensitive;
 import dev.umbra.registry.ModBlocks;
 import dev.umbra.util.UmbraUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,14 +23,17 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Пожиратель света: a pale moth-spirit that drifts through walls towards any light and eats it.
- * It attacks players who carry light. Luminite lamps and eternal torches are too pure for it.
+ * It attacks players who carry light. Luminite in any form (lamps, blocks, clusters, ore) and eternal torches
+ * are too pure for it: the tag {@code umbra:light_eater_ignores} lists what it leaves alone.
  */
 public class LightEater extends Vex implements LightSensitive {
+    public static final TagKey<Block> IGNORED = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Umbra.MODID, "light_eater_ignores"));
     private static final int SEARCH = 16;
     private BlockPos food;
     private int stunned;
@@ -53,7 +60,7 @@ public class LightEater extends Vex implements LightSensitive {
 
     public static boolean edible(BlockState state) {
         if (state.getLightEmission() < 10) return false;
-        if (state.getBlock() instanceof DarknessProof || state.is(ModBlocks.LUMINITE_LAMP.get())) return false;
+        if (state.getBlock() instanceof DarknessProof || state.is(IGNORED) || state.is(ModBlocks.LUMINITE_LAMP.get())) return false;
         if (state.getBlock() instanceof dev.umbra.underside.RiftBlock) return false;
         return state.getBlock().defaultDestroyTime() >= 0;
     }

@@ -49,9 +49,6 @@ public final class UndersideAmbience {
         if (r.nextInt(12) == 0) play(player, ModSounds.DRIP, around(player, r, 3, 9).add(0, 2 + r.nextInt(5), 0), 0.8F, 0.9F + r.nextFloat() * 0.3F);
         if (r.nextInt(70) == 0) play(player, ModSounds.CREAK, around(player, r, 6, 14), 1.0F, 0.8F + r.nextFloat() * 0.4F);
         if (r.nextInt(160) == 0) play(player, ModSounds.BELL, around(player, r, 45, 55), 4.0F, 0.9F + r.nextFloat() * 0.2F);
-        if (UndersideBiomes.in(level, pos, UndersideBiomes.CRYSTAL_GROTTOS) && r.nextInt(14) == 0) {
-            play(player, ModSounds.CHIME, around(player, r, 3, 10), 0.9F, 0.8F + r.nextFloat() * 0.5F);
-        }
         if (UndersideBiomes.in(level, pos, UndersideBiomes.BLACK_LAKES) && r.nextInt(35) == 0) {
             play(player, ModSounds.SPLASH, around(player, r, 10, 22), 1.6F, 0.7F + r.nextFloat() * 0.4F);
         }

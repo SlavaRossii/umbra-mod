@@ -11,10 +11,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, Umbra.MODID);
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> HUM = reg("ambient.hum");
-    public static final DeferredHolder<SoundEvent, SoundEvent> CRYSTAL_HUM = reg("ambient.crystal_hum");
-    public static final DeferredHolder<SoundEvent, SoundEvent> LAKE_HUM = reg("ambient.lake_hum");
-    public static final DeferredHolder<SoundEvent, SoundEvent> FOREST_HUM = reg("ambient.forest_hum");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRIP = reg("ambient.drip");
     public static final DeferredHolder<SoundEvent, SoundEvent> BELL = reg("ambient.bell");
     public static final DeferredHolder<SoundEvent, SoundEvent> STEPS_ABOVE = reg("ambient.steps_above");
@@ -24,7 +20,6 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> BREATH = reg("ambient.breath");
     public static final DeferredHolder<SoundEvent, SoundEvent> CREAK = reg("ambient.creak");
     public static final DeferredHolder<SoundEvent, SoundEvent> WAIL = reg("ambient.wail");
-    public static final DeferredHolder<SoundEvent, SoundEvent> CHIME = reg("ambient.chime");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUST = reg("ambient.gust");
     public static final DeferredHolder<SoundEvent, SoundEvent> SPLASH = reg("ambient.splash");
     public static final DeferredHolder<SoundEvent, SoundEvent> HEARTBEAT_FAR = reg("ambient.heartbeat_far");

@@ -104,6 +104,18 @@ public final class Journal {
         if (!holders.isEmpty()) player.awardRecipes(holders);
     }
 
+    /** For testers: every entry at once, quietly (no toast and sound per entry), with the recipes they open. */
+    public static int unlockAll(ServerPlayer player) {
+        player.setData(ModAttachments.JOURNAL, List.copyOf(ENTRIES));
+        awardAll(player);
+        return ENTRIES.size();
+    }
+
+    /** For testers: a blank journal (recipes stay in the book). */
+    public static void clear(ServerPlayer player) {
+        player.setData(ModAttachments.JOURNAL, List.of());
+    }
+
     /** On login: recipes for everything already written (older saves, lost recipe books). */
     public static void awardAll(ServerPlayer player) {
         for (String id : player.getData(ModAttachments.JOURNAL)) awardRecipes(player, id);
