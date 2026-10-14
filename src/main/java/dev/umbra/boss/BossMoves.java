@@ -94,6 +94,24 @@ public final class BossMoves {
         }
     }
 
+    /** A boss never has more than this many shades around it, however often it calls. */
+    public static final int SHADE_CAP = 4;
+
+    /** Calls up to {@code n} shades, but never above {@link #SHADE_CAP} alive within 40 blocks. Returns how many came. */
+    public static int shades(ServerLevel level, LivingEntity boss, LivingEntity target, int n) {
+        int room = SHADE_CAP - level.getEntitiesOfClass(dev.umbra.mob.Shade.class, boss.getBoundingBox().inflate(40.0)).size();
+        int made = 0;
+        for (int i = 0; i < Math.min(n, room); i++) {
+            var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+            if (shade == null) continue;
+            shade.snapTo(boss.getX() + boss.getRandom().nextGaussian() * 2.0, boss.getY(), boss.getZ() + boss.getRandom().nextGaussian() * 2.0, 0, 0);
+            level.addFreshEntity(shade);
+            if (target != null) shade.setTarget(target);
+            made++;
+        }
+        return made;
+    }
+
     /** Calls helpers around the boss, all hunting the target. */
     public static <T extends Mob> List<T> summon(ServerLevel level, LivingEntity boss, EntityType<T> type, int n, LivingEntity target) {
         List<T> out = new ArrayList<>();

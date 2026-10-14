@@ -88,6 +88,7 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
         if (leaping && this.onGround() && leapTimer > 5) {
             leaping = false;
             BossMoves.shockwave(level, this, 3.0, 7.0F, 0.9);
+            stun(STUN_TICKS);
         }
         leapTimer++;
         if (!leaping && target != null && leapTimer >= (phase == 1 ? 100 : 60)) {
@@ -142,6 +143,11 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (isDisguised()) return false;
         return super.hurtServer(level, source, amount);
+    }
+
+    @Override
+    protected void stunnedTick(ServerLevel level) {
+        spit.tick(level, this, 6.0F);
     }
 
     @Override

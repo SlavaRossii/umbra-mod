@@ -33,7 +33,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
     private int stepTimer;
     private int patternTimer;
     private int shadeTimer;
-    private int stunned;
+    private long cageStunAt;
     private int quakeTimer;
     private int cageTimer;
     private final BossMoves.Bursts quake = new BossMoves.Bursts();
@@ -66,9 +66,10 @@ public class Architect extends UmbraBoss implements LightSensitive {
         int phase = trackPhase(level);
         quake.tick(level, this, 8.0F);
         cage.tick(level);
-        if (stunned > 0) {
-            stunned--;
-            this.getNavigation().stop();
+        if (cageStunAt > 0 && this.tickCount >= cageStunAt) {
+            // the cage has crumbled: he is spent
+            cageStunAt = 0;
+            stun(STUN_TICKS);
             return;
         }
         LivingEntity target = this.getTarget();
@@ -98,6 +99,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
                         for (int y = 0; y < 3; y++) cage.place(level, t.offset(x, y, z), wall, 20 * 5);
             level.playSound(null, t, SoundEvents.IRON_DOOR_CLOSE, SoundSource.HOSTILE, 1.0F, 0.5F);
             this.teleportTo(t.getX() + 1.5, t.getY(), t.getZ() + 0.5);
+            cageStunAt = this.tickCount + 20 * 5;
         }
         if (++stepTimer >= (phase == 1 ? 100 : 60)) { // step through the walls to your side
             stepTimer = 0;
@@ -115,14 +117,14 @@ public class Architect extends UmbraBoss implements LightSensitive {
         }
         if (++shadeTimer >= 240) {
             shadeTimer = 0;
-            for (int i = 0; i < 2; i++) {
-                var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
-                if (shade == null) continue;
-                shade.snapTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-                level.addFreshEntity(shade);
-                shade.setTarget(target);
-            }
+            BossMoves.shades(level, this, target, 2);
         }
+    }
+
+    @Override
+    protected void stunnedTick(ServerLevel level) {
+        quake.tick(level, this, 8.0F);
+        cage.tick(level);
     }
 
     @Override
@@ -133,8 +135,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
 
     @Override
     public void onLit(ServerLevel level, Player source) {
-        stunned = 40;
-        this.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 3));
+        stun(STUN_TICKS);
         this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 8.0F);
     }
 }

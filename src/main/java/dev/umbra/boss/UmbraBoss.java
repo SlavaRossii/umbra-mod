@@ -29,6 +29,78 @@ public abstract class UmbraBoss extends Monster {
         bossTick(level);
     }
 
+    // --- 1.8.2: the window after a big move ---------------------------------------------------------------
+    /** How long a boss stands winded after a leap, dash, cage or swap (2 seconds), and what it costs it. */
+    public static final int STUN_TICKS = 40;
+    public static final float STUN_DAMAGE = 1.5F;
+    private int stun;
+
+    /** The boss is spent: it does not move or act for a moment and takes +50% damage. */
+    public void stun(int ticks) {
+        if (stun <= 0 && this.level() instanceof ServerLevel level) {
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.IRON_GOLEM_DAMAGE, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.5F);
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 16, 0.4, 0.3, 0.4, 0.05);
+        }
+        stun = Math.max(stun, ticks);
+    }
+
+    public boolean isStunned() {
+        return stun > 0;
+    }
+
+    /** Housekeeping that must go on while the boss is stunned (delayed bursts, crumbling blocks). */
+    protected void stunnedTick(ServerLevel level) {
+    }
+
+    @Override
+    public void aiStep() {
+        if (stun > 0 && this.level() instanceof ServerLevel level) {
+            stun--;
+            this.getNavigation().stop();
+            bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+            if (this.tickCount % 4 == 0) {
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.CRIT, this.getX(), this.getY() + this.getBbHeight() + 0.2, this.getZ(), 3, 0.3, 0.1, 0.3, 0.02);
+            }
+            stunnedTick(level);
+        }
+        super.aiStep();
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || stun > 0;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        return super.hurtServer(level, source, stun > 0 ? amount * STUN_DAMAGE : amount);
+    }
+
+    // --- 1.8.2: shrouds are chipped away, not waited out -------------------------------------------------
+    /** Hits with a light in either hand needed to tear a shroud of living darkness off a boss. */
+    public static final int SHROUD_HITS = 3;
+    private int shroudHits;
+    private long shroudHitAt;
+
+    /**
+     * Call when a hit lands on a shrouded boss: a player holding a light (a lantern in the off hand, say) chips the
+     * shroud; the third hit within three seconds tears it down. Returns true when it is down and the hit may land.
+     */
+    protected boolean chipShroud(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+        if (!(source.getEntity() instanceof net.minecraft.world.entity.player.Player p) || !dev.umbra.util.UmbraUtil.holdsLight(p)) return false;
+        long now = level.getGameTime();
+        if (now - shroudHitAt > 60) shroudHits = 0;
+        shroudHitAt = now;
+        shroudHits++;
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.6F + 0.3F * shroudHits);
+        level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, this.getX(), this.getY() + this.getBbHeight() * 0.6, this.getZ(), 8, 0.4, 0.5, 0.4, 0.03);
+        if (shroudHits >= SHROUD_HITS) {
+            shroudHits = 0;
+            return true;
+        }
+        return false;
+    }
+
     protected abstract void bossTick(ServerLevel level);
 
     /** Fight phase from health: 1 above half, 2 below. Bosses with more phases override this. */

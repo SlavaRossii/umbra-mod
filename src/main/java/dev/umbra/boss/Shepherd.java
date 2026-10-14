@@ -111,21 +111,23 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         }
         if (++shadeTimer >= (phase == 1 ? 400 : 260)) {
             shadeTimer = 0;
-            for (int i = 0; i < (phase == 1 ? 3 : 4); i++) {
-                var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
-                if (shade == null) continue;
-                shade.snapTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2, 0, 0);
-                level.addFreshEntity(shade);
-                shade.setTarget(target);
-            }
+            BossMoves.shades(level, this, target, phase == 1 ? 3 : 4);
         }
+    }
+
+    @Override
+    protected void stunnedTick(ServerLevel level) {
+        bursts.tick(level, this, 7.0F);
     }
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (shrouded(level) && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1.5, this.getZ(), 8, 0.4, 0.6, 0.4, 0.02);
-            return false;
+            if (!chipShroud(level, source)) {
+                level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1.5, this.getZ(), 8, 0.4, 0.6, 0.4, 0.02);
+                return false;
+            }
+            onLit(level, null);
         }
         return super.hurtServer(level, source, amount);
     }

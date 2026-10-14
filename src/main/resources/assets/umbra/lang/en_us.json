@@ -353,5 +353,6 @@
   "block.umbra.shadow_nest": "Shadow Nest",
   "block.umbra.trap_plate": "Cracked Floor Tile",
   "command.umbra.citadel.outside": "You are not inside a citadel.",
-  "command.umbra.citadel.rebuilt": "The citadel stands anew."
+  "command.umbra.citadel.rebuilt": "The citadel stands anew.",
+  "effect.umbra.clarity": "Clarity"
 }

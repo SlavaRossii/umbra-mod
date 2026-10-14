@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-/** Tincture of silence: for five minutes nothing can take your sanity. It does not give any back. */
+/** Tincture of silence: for five minutes nothing can take your sanity, and the Clarity effect wipes away darkness and nausea. It does not give any sanity back. */
 public class SilenceTinctureItem extends Item {
     public static final int DURATION = 20 * 60 * 5;
 
@@ -26,6 +26,7 @@ public class SilenceTinctureItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (level instanceof ServerLevel server) {
             Sanity.calm(player, DURATION);
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(dev.umbra.registry.ModEffects.CLARITY, DURATION, 0, false, true, true));
             server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 0.7F, 0.6F);
             player.sendOverlayMessage(Component.translatable("item.umbra.silence_tincture.drunk"));
             if (!player.isCreative()) {

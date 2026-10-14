@@ -62,6 +62,7 @@ public class Umbra {
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);
         dev.umbra.registry.ModSounds.SOUNDS.register(modBus);
+        dev.umbra.registry.ModEffects.MOB_EFFECTS.register(modBus);
         ModTabs.TABS.register(modBus);
         container.registerConfig(ModConfig.Type.LOCAL, UmbraConfig.SPEC, "umbra.toml");
 
@@ -135,6 +136,7 @@ public class Umbra {
         dev.umbra.mimic.MimicChests.tick(player);
         DarknessManager.tick(player);
         Sanity.tick(player);
+        dev.umbra.registry.ModEffects.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);

@@ -353,5 +353,6 @@
   "block.umbra.shadow_nest": "Гнездо теней",
   "block.umbra.trap_plate": "Треснувшая плита",
   "command.umbra.citadel.outside": "Ты не внутри цитадели.",
-  "command.umbra.citadel.rebuilt": "Цитадель выстроена заново."
+  "command.umbra.citadel.rebuilt": "Цитадель выстроена заново.",
+  "effect.umbra.clarity": "Ясность"
 }

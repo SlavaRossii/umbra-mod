@@ -90,6 +90,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         if (dashing && this.onGround() && dashTimer > 5) {
             dashing = false;
             BossMoves.shockwave(level, this, 3.5, 8.0F, 1.2);
+            stun(STUN_TICKS);
         }
         dashTimer++;
         if (!dashing && target != null && dashTimer >= (phase == 3 ? 80 : 140) && this.distanceTo(target) > 5) {
@@ -105,15 +106,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         }
         switch (phase) {
             case 1 -> {
-                if (timer % 300 == 0 && target != null) {
-                    for (int i = 0; i < 4; i++) {
-                        var shade = ModEntities.SHADE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
-                        if (shade == null) continue;
-                        shade.snapTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2, 0, 0);
-                        level.addFreshEntity(shade);
-                        shade.setTarget(target);
-                    }
-                }
+                if (timer % 300 == 0 && target != null) BossMoves.shades(level, this, target, 4);
             }
             case 2 -> {
                 if (noShroud == 0 && timer % 60 == 0) {
@@ -145,7 +138,10 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         int phase = phase();
-        if (phase == 2 && shrouded(level)) return false;
+        if (phase == 2 && shrouded(level) && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            if (!chipShroud(level, source)) return false;
+            tearShroud(level);
+        }
         if (phase == 3) {
             boolean light = source.getEntity() instanceof Player p && UmbraUtil.holdsLight(p);
             if (!light) {
@@ -156,13 +152,22 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         return super.hurtServer(level, source, amount);
     }
 
-    @Override
-    public void onLit(ServerLevel level, Player source) {
+    private void tearShroud(ServerLevel level) {
         BlockPos c = this.blockPosition();
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-2, -1, -2), c.offset(2, 4, 2))) {
             if (level.getBlockState(p).is(ModBlocks.LIVING_DARKNESS.get())) level.removeBlock(p, false);
         }
         noShroud = 20 * 4;
+    }
+
+    @Override
+    protected void stunnedTick(ServerLevel level) {
+        bursts.tick(level, this, 9.0F);
+    }
+
+    @Override
+    public void onLit(ServerLevel level, Player source) {
+        tearShroud(level);
         if (phase() == 3) {
             // light is the only thing that truly hurts her; bypass the phase-3 check
             super.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 25.0F);

@@ -46,6 +46,14 @@ public class Shade extends Monster implements LightSensitive {
     @Override
     public void aiStep() {
         super.aiStep();
+        if (this.level() instanceof ServerLevel level && this.tickCount % 10 == 5) {
+            // a light held in the hand scorches them: 1.8.2, within three blocks
+            for (Player p : level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(3.0), pl -> !pl.isSpectator() && UmbraUtil.holdsLight(pl))) {
+                level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5, this.getZ(), 4, 0.2, 0.3, 0.2, 0.01);
+                this.hurtServer(level, level.damageSources().playerAttack(p), 2.0F);
+                break;
+            }
+        }
         if (this.level() instanceof ServerLevel level && this.tickCount % 20 == 0) {
             BlockPos head = BlockPos.containing(this.getEyePosition());
             if (UmbraUtil.effectiveLight(level, head) >= 11) {

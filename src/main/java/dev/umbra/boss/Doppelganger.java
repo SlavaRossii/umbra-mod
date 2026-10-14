@@ -63,6 +63,7 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
             target.teleportTo(me.x, me.y, me.z);
             level.playSound(null, me.x, me.y, me.z, net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.8F);
             target.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 60, 0));
+            stun(STUN_TICKS);
         }
         // phase 2: copies of the copy
         if (phase == 2 && ++decoyTimer >= 240) {
