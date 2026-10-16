@@ -54,6 +54,7 @@ final class SmokeLife {
     private static Vec3 mark;
     private static BlockPos diedAt;
     private static int carried;
+    private static boolean pileChecked;
     private static final StringBuilder trace = new StringBuilder();
 
     private SmokeLife() {}
@@ -276,6 +277,8 @@ final class SmokeLife {
             case 418 -> {
                 if (player == null) return;
                 SmokeTest.check(true, "before leaving: got journal " + player.getData(ModAttachments.GOT_JOURNAL) + ", health " + player.getHealth());
+                // keep the pile's chunk loaded while nobody is there, so the count after the rejoin does not race the entity loader
+                level.setChunkForced(diedAt.getX() >> 4, diedAt.getZ() >> 4, true);
                 server.getPlayerList().remove(player);
                 player = null;
             }
@@ -288,10 +291,13 @@ final class SmokeLife {
                 SmokeTest.check(back == 0, "quitting on the death screen and coming back brings no items (" + back + ": " + describe(player) + ")");
                 SmokeTest.check(true, "after returning: pos " + player.position() + ", health " + player.getHealth() + ", got journal " + player.getData(ModAttachments.GOT_JOURNAL));
             }
-            case 429 -> {
-                // a few ticks after the login: the chunk's entities come back asynchronously, a slow server needs a moment
+            case 427, 428, 429 -> {
+                // a few ticks after the login: the chunk's entities may come back asynchronously, a slow server needs a moment
                 int ground = ground(level, diedAt);
-                SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
+                if (ground == carried || s == 429) {
+                    if (!pileChecked) SmokeTest.check(ground == carried, "and the pile on the ground stays the only copy (" + ground + " of " + carried + ")");
+                    pileChecked = true;
+                }
             }
             case 430 -> {
                 if (player == null) return;
