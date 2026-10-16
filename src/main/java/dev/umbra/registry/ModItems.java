@@ -148,6 +148,10 @@ public final class ModItems {
             dev.umbra.lighthouse.MartaMapItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LAMP_KEEPER_SPAWN_EGG = ITEMS.registerItem("lamp_keeper_spawn_egg",
             net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LAMP_KEEPER.get()));
+    public static final DeferredItem<dev.umbra.lighthouse.KeeperHornItem> KEEPER_HORN = ITEMS.registerItem("keeper_horn",
+            dev.umbra.lighthouse.KeeperHornItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<dev.umbra.ending.PrimordialHeartItem> PRIMORDIAL_HEART = ITEMS.registerItem("primordial_heart",
+            dev.umbra.ending.PrimordialHeartItem::new, p -> p.stacksTo(1).rarity(Rarity.EPIC).fireResistant());
     public static final DeferredItem<dev.umbra.item.KeeperPageItem> KEEPER_PAGE = ITEMS.registerItem("keeper_page",
             dev.umbra.item.KeeperPageItem::new, p -> p.stacksTo(16));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> ASH_FIGURE_SPAWN_EGG = ITEMS.registerItem("ash_figure_spawn_egg",

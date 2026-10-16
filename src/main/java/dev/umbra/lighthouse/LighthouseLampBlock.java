@@ -78,6 +78,28 @@ public class LighthouseLampBlock extends Block implements DarknessProof {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(ModItems.KEEPER_HORN.get())) {
+            if (!level.isClientSide()) {
+                stack.set(dev.umbra.registry.ModComponents.BOUND_LAMP.get(), LighthouseRaid.bindingOf(level, pos));
+                player.sendOverlayMessage(Component.translatable("item.umbra.keeper_horn.bound", pos.getX(), pos.getZ()));
+                level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.4F);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (stack.is(ModItems.PRIMORDIAL_HEART.get())) {
+            if (level instanceof ServerLevel server && player instanceof ServerPlayer sp) {
+                if (state.getValue(LEVEL) < MAX_LEVEL) {
+                    sp.sendOverlayMessage(Component.translatable("item.umbra.primordial_heart.lamp_weak", MAX_LEVEL));
+                    return InteractionResult.FAIL;
+                }
+                if (!dev.umbra.ending.Endings.dawn(sp, server, pos)) {
+                    sp.sendOverlayMessage(Component.translatable("item.umbra.primordial_heart.chosen"));
+                    return InteractionResult.FAIL;
+                }
+                if (!player.isCreative()) stack.shrink(1);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (!stack.is(ModItems.LUMINITE_CRYSTAL.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (state.getValue(LEVEL) >= MAX_LEVEL) {
             if (!level.isClientSide()) player.sendOverlayMessage(Component.translatable("block.umbra.lighthouse_lamp.full"));
@@ -99,6 +121,7 @@ public class LighthouseLampBlock extends Block implements DarknessProof {
                     if (lvl >= 2) Journal.unlock(sp, "yan_2");
                     if (lvl >= MAX_LEVEL) Journal.unlock(sp, "yan_3");
                 }
+                LighthouseRaid.onGrow(server, pos, lvl, server.getRandom());
             }
         }
         return InteractionResult.SUCCESS;
@@ -125,7 +148,11 @@ public class LighthouseLampBlock extends Block implements DarknessProof {
         level.scheduleTick(pos, this, PULSE);
         int r = radius(lvl);
         WardBlock.mark(level, pos, r);
-        WardBlock.repel(level, pos, r);
+        // during an onslaught the dark does not give way
+        if (!LighthouseRaid.active(level, pos)) {
+            WardBlock.repel(level, pos, r);
+            LighthouseRaid.onPulse(level, pos, lvl, random);
+        }
         // the beam
         int beam = BEAM[lvl];
         for (int i = 0; i < 3 + lvl; i++) {

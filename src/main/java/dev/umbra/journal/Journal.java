@@ -25,7 +25,9 @@ public final class Journal {
             "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8",
             "keeper_1", "keeper_2", "keeper_3", "keeper_4", "keeper_5", "keeper_6", "keeper_7",
             // 1.9: the lighthouse, Marta's map, Yan; errands follow
-            "marta_map", "lighthouse", "yan_1", "yan_2", "yan_3", "yan_4"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "marta_map", "lighthouse", "yan_1", "yan_2", "yan_3", "yan_4",
+            // 2.2: onslaughts on the lighthouse, the two endings
+            "onslaught", "onslaught_won", "ending_light", "ending_dark"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests"};
@@ -71,7 +73,8 @@ public final class Journal {
             Map.entry("keeper_2", List.of("ward")),
             Map.entry("keeper_3", List.of("light_arrow", "eternal_torch")),
             Map.entry("keeper_4", List.of("dispeller", "luminite_lantern")),
-            Map.entry("keeper_5", List.of("sedative_from_luminite")));
+            Map.entry("keeper_5", List.of("sedative_from_luminite")),
+            Map.entry("lighthouse", List.of("keeper_horn")));
 
     /** Lines in a hand that is not yours: they creep into the journal when sanity is low. */
     public static final int WHISPERS = 8;

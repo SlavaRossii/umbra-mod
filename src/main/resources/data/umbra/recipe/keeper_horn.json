@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "I": "umbra:gloom_ingot",
+    "Q": "umbra:echo_quartz"
+  },
+  "pattern": [
+    " L ",
+    "IQI",
+    " I "
+  ],
+  "result": {
+    "id": "umbra:keeper_horn"
+  }
+}

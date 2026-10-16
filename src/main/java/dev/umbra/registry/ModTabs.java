@@ -21,6 +21,8 @@ public final class ModTabs {
                 out.accept(ModItems.WARD.get());
                 out.accept(ModItems.LIGHTHOUSE_LAMP.get());
                 out.accept(ModItems.MARTA_MAP.get());
+                out.accept(ModItems.KEEPER_HORN.get());
+                out.accept(ModItems.PRIMORDIAL_HEART.get());
                 out.accept(ModItems.WHISPER_TABLE.get());
                 out.accept(ModItems.SILENCE_TINCTURE.get());
                 out.accept(ModItems.MADMAN_MASK.get());

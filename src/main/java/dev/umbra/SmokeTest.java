@@ -75,6 +75,8 @@ final class SmokeTest {
     /** The real-player part (see SmokeLife) runs from here for 400 ticks, then the report is written. */
     private static final int LIFE_FROM = 680;
     private static final int LIFE_END = LIFE_FROM + 480;
+    /** Then the onslaught on a lighthouse (see {@link #raidTick}). */
+    private static final int RAID_END = LIFE_END + 220;
 
     private static int tick;
     private static final List<String> failures = new ArrayList<>();
@@ -135,9 +137,11 @@ final class SmokeTest {
                 case 672 -> startEchoTest(level);
                 case 678 -> finishEchoTest();
                 case 679 -> testLighthouseKeeper(server);
-                case LIFE_END -> finish(server);
+                case 673 -> testEndings22(level);
+                case RAID_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
+                    if (tick > LIFE_END && tick < RAID_END) raidTick(level, tick - LIFE_END);
                 }
             }
         } catch (Throwable t) {
@@ -1162,6 +1166,156 @@ final class SmokeTest {
         if (lamp == null) return;
         under.setChunkForced(c[0], c[1], true);   // keep it loaded so its entities come to life
         check(lamp.getY() + 8 < 256, "the real lighthouse fits under the sky (lamp at y=" + lamp.getY() + ")");
+    }
+
+    // ------------------------------------------------------------------ 2.2: endings and the onslaught
+
+    private static void testEndings22(ServerLevel level) {
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        var ENDING = dev.umbra.registry.ModAttachments.ENDING.get();
+        fake.setData(ENDING, "");
+        check(!dev.umbra.ending.Endings.chosen(fake), "nobody has chosen an ending at first");
+
+        // darkness: the mind tops out at 60, the Underside's creatures leave you be
+        fake.setData(ENDING, dev.umbra.ending.Endings.DARK);
+        dev.umbra.sanity.Sanity.set(fake, 100.0F);
+        check(dev.umbra.sanity.Sanity.get(fake) <= dev.umbra.ending.Endings.DARK_SANITY_CAP + 0.01F, "after the dark ending the mind never climbs above 60 (" + dev.umbra.sanity.Sanity.get(fake) + ")");
+        var crawler = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
+        if (crawler != null) {
+            crawler.snapTo(fake.getX() + 3, fake.getY(), fake.getZ(), 0, 0);
+            crawler.setNoAi(true);
+            level.addFreshEntity(crawler);
+            fake.setData(ENDING, "");
+            crawler.setTarget(fake);
+            boolean control = crawler.getTarget() == fake;
+            crawler.setTarget(null);
+            fake.setData(ENDING, dev.umbra.ending.Endings.DARK);
+            crawler.setTarget(fake);
+            check(!control || crawler.getTarget() == null, "a creature of the Underside does not turn on one of its own (control " + control + ")");
+            crawler.setLastHurtByMob(fake);
+            crawler.setTarget(fake);
+            check(!control || crawler.getTarget() == fake, "unless struck first");
+            crawler.discard();
+        }
+
+        // dawn: the dread stays at the first night's, the drain halves
+        fake.setData(ENDING, dev.umbra.ending.Endings.LIGHT);
+        dev.umbra.sanity.Sanity.set(fake, 5.0F);
+        check(dev.umbra.sanity.Sanity.dread(fake) == 1.0F && dev.umbra.ending.Endings.drain(fake) == 0.5F, "after the dawn the dark presses no harder than on the first night");
+        fake.setData(ENDING, "");
+        dev.umbra.sanity.Sanity.set(fake, 100.0F);
+
+        // the heart: the dawn needs a lamp at full strength
+        BlockPos lamp = new BlockPos(720, Y + 40, 60);
+        level.setBlock(lamp, ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState().setValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL, 4), Block.UPDATE_ALL);
+        boolean dawn = dev.umbra.ending.Endings.dawn(fake, level, lamp);
+        check(dawn && dev.umbra.ending.Endings.isLight(fake) && dev.umbra.journal.Journal.has(fake, "ending_light"), "burning the heart in a full lamp brings the dawn");
+        check(!dev.umbra.ending.Endings.dawn(fake, level, lamp) && !dev.umbra.ending.Endings.darkness(fake), "the choice is made once");
+        fake.setData(ENDING, "");
+        level.setBlock(lamp, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        check(new ItemStack(ModItems.PRIMORDIAL_HEART.get()).getMaxStackSize() == 1, "the heart is one of a kind");
+
+        // texts
+        for (String lang : new String[]{"en_us", "ru_ru"}) {
+            java.util.List<String> missing = new java.util.ArrayList<>();
+            try (var in = Umbra.class.getResourceAsStream("/assets/umbra/lang/" + lang + ".json")) {
+                var obj = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                for (String w : new String[]{"light", "dark"}) {
+                    for (String k : new String[]{"title", "subtitle"}) if (!obj.has("ending.umbra." + w + "." + k)) missing.add(w + k);
+                    for (int i = 1; i <= dev.umbra.ending.Endings.LINES; i++) if (!obj.has("ending.umbra." + w + "." + i)) missing.add(w + i);
+                }
+                for (String k : new String[]{"event.umbra.onslaught.wave", "event.umbra.onslaught.won", "event.umbra.onslaught.lost", "item.umbra.keeper_horn", "item.umbra.primordial_heart"})
+                    if (!obj.has(k)) missing.add(k);
+            } catch (Exception e) {
+                missing.add("(" + e + ")");
+            }
+            check(missing.isEmpty(), "language " + lang + " has the endings and the onslaught " + (missing.isEmpty() ? "" : missing));
+        }
+    }
+
+    private static final BlockPos RAID_FOOT = new BlockPos(700, Y, 120);
+    private static BlockPos raidLamp;
+
+    private static int lampLevel(ServerLevel level) {
+        BlockState st = level.getBlockState(raidLamp);
+        return st.getBlock() instanceof dev.umbra.lighthouse.LighthouseLampBlock ? st.getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL) : -1;
+    }
+
+    private static void raidTick(ServerLevel level, int s) {
+        switch (s) {
+            case 1 -> {
+                for (int cx = (RAID_FOOT.getX() - 40) >> 4; cx <= (RAID_FOOT.getX() + 40) >> 4; cx++)
+                    for (int cz = (RAID_FOOT.getZ() - 40) >> 4; cz <= (RAID_FOOT.getZ() + 40) >> 4; cz++) {
+                        level.setChunkForced(cx, cz, true);
+                        level.getChunk(cx, cz);
+                    }
+                for (int x = -38; x <= 38; x++)
+                    for (int z = -38; z <= 38; z++) {
+                        level.setBlock(RAID_FOOT.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                        for (int y = 0; y < 4; y++) level.setBlock(RAID_FOOT.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    }
+                raidLamp = RAID_FOOT.below().above(dev.umbra.lighthouse.LighthouseFeature.LAMP_Y);
+                level.setBlock(raidLamp, ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState().setValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL, 3), Block.UPDATE_ALL);
+                check(dev.umbra.lighthouse.LighthouseRaid.footOf(level, raidLamp).equals(RAID_FOOT), "the onslaught knows the foot of the tower (" + dev.umbra.lighthouse.LighthouseRaid.footOf(level, raidLamp) + ")");
+                check(!dev.umbra.lighthouse.LighthouseRaid.tryStart(level, raidLamp, 3), "with nobody at the lighthouse, no onslaught starts");
+                dev.umbra.lighthouse.LighthouseRaid.warmup = 10;
+                dev.umbra.lighthouse.LighthouseRaid.pause = 10;
+                dev.umbra.lighthouse.LighthouseRaid.start(level, raidLamp, 3);
+                check(dev.umbra.lighthouse.LighthouseRaid.active(level, raidLamp), "an onslaught starts");
+            }
+            case 13 -> {
+                int[] st = dev.umbra.lighthouse.LighthouseRaid.state(level, raidLamp);
+                var raiders = dev.umbra.lighthouse.LighthouseRaid.raiders(level, raidLamp);
+                check(st != null && st[0] == 1 && !raiders.isEmpty(), "the first wave comes (" + (st == null ? "none" : st[0] + " / " + st[1]) + ")");
+                check(raiders.stream().allMatch(m -> m.entityTags().contains(dev.umbra.lighthouse.LighthouseRaid.TAG)), "the raiders are marked as the onslaught's");
+                int before = raiders.size();
+                dev.umbra.light.WardBlock.repel(level, raidLamp.below(dev.umbra.lighthouse.LighthouseFeature.LAMP_Y), 60);
+                check(dev.umbra.lighthouse.LighthouseRaid.raiders(level, raidLamp).size() == before, "light does not drive off an onslaught");
+            }
+            case 120 -> {
+                check(!dev.umbra.lighthouse.LighthouseRaid.active(level, raidLamp), "three waves beaten, the onslaught is over");
+                check(lampLevel(level) == 3, "the lighthouse keeps its light");
+                int crystals = 0;
+                for (var e : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(RAID_FOOT).inflate(8)))
+                    if (e.getItem().is(ModItems.LUMINITE_CRYSTAL.get())) crystals += e.getItem().getCount();
+                check(crystals >= 4, "and pays in luminite at its foot (" + crystals + ")");
+                level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(RAID_FOOT).inflate(8)).forEach(net.minecraft.world.entity.Entity::discard);
+                // the horn
+                FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+                ItemStack horn = new ItemStack(ModItems.KEEPER_HORN.get());
+                horn.set(dev.umbra.registry.ModComponents.BOUND_LAMP.get(), dev.umbra.lighthouse.LighthouseRaid.bindingOf(level, raidLamp));
+                fake.getInventory().clearContent();
+                fake.getInventory().add(horn);
+                check(dev.umbra.lighthouse.LighthouseRaid.hornFor(fake, level, raidLamp) != null, "a bound horn knows its lighthouse");
+                fake.snapTo(RAID_FOOT.getX() + 300.5, Y + 5, RAID_FOOT.getZ() + 0.5, 0, 0);
+                check(!dev.umbra.lighthouse.LighthouseRaid.answer(fake, horn), "when all is quiet the horn carries nobody");
+                dev.umbra.lighthouse.LighthouseRaid.start(level, raidLamp, 3);
+                boolean went = dev.umbra.lighthouse.LighthouseRaid.answer(fake, horn);
+                check(went && fake.position().distanceTo(Vec3.atCenterOf(RAID_FOOT)) < 12, "during an onslaught the horn carries you to the tower (" + fake.position() + ")");
+                fake.getInventory().clearContent();
+                fake.snapTo(0.5, Y + 30, 0.5, 0, 0);
+            }
+            case 135 -> {
+                // let them through: the lighthouse falls
+                var raiders = dev.umbra.lighthouse.LighthouseRaid.raiders(level, raidLamp);
+                check(raiders.size() >= dev.umbra.lighthouse.LighthouseRaid.MAX_BREACHES, "the second onslaught comes in force (" + raiders.size() + ")");
+                for (var m : raiders) m.snapTo(RAID_FOOT.getX() + 0.5, RAID_FOOT.getY(), RAID_FOOT.getZ() + 0.5, 0, 0);
+            }
+            case 140 -> {
+                check(!dev.umbra.lighthouse.LighthouseRaid.active(level, raidLamp) && lampLevel(level) == 2, "let through, the dark dims the lamp by a level (" + lampLevel(level) + ")");
+                check(dev.umbra.lighthouse.LighthouseRaid.raiders(level, raidLamp).isEmpty(), "and the rest of the onslaught melts away");
+                dev.umbra.lighthouse.LighthouseRaid.warmup = 100;
+                dev.umbra.lighthouse.LighthouseRaid.pause = 100;
+                level.setBlock(raidLamp, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            }
+            default -> {
+                // the first onslaught: every wave is cut down as soon as it is seen
+                if (s > 13 && s < 120 && dev.umbra.lighthouse.LighthouseRaid.active(level, raidLamp)) {
+                    for (var m : dev.umbra.lighthouse.LighthouseRaid.raiders(level, raidLamp)) m.discard();
+                }
+            }
+        }
     }
 
     private static void testLighthouseKeeper(MinecraftServer server) {

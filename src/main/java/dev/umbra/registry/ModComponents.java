@@ -15,5 +15,9 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> ARTIFACT = COMPONENTS.registerComponentType("artifact",
             b -> b.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
+    /** The lighthouse lamp a Keeper's horn is bound to: "dimension|x|y|z". */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> BOUND_LAMP = COMPONENTS.registerComponentType("bound_lamp",
+            b -> b.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
     private ModComponents() {}
 }

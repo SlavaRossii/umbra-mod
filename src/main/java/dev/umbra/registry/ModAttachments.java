@@ -27,6 +27,14 @@ public final class ModAttachments {
                     .sync(ByteBufCodecs.FLOAT)
                     .build());
 
+    /** The ending this player chose with the Primordial Shadow's heart: "" (none yet), "light" or "dark". Final. */
+    public static final Supplier<AttachmentType<String>> ENDING = ATTACHMENTS.register("ending",
+            () -> AttachmentType.builder(() -> "")
+                    .serialize(Codec.STRING.fieldOf("value"))
+                    .sync(ByteBufCodecs.STRING_UTF8)
+                    .copyOnDeath()
+                    .build());
+
     /** Set once the Primordial Shadow is defeated: your shadow fights for you from then on. */
     public static final Supplier<AttachmentType<Boolean>> FREED = ATTACHMENTS.register("freed",
             () -> AttachmentType.builder(() -> false)

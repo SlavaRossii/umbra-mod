@@ -64,11 +64,11 @@ public final class Sanity {
     }
 
     public static void set(Player player, float value) {
-        float v = Math.max(0.0F, Math.min(MAX, value));
+        float v = Math.max(0.0F, Math.min(dev.umbra.ending.Endings.cap(player), value));
         player.setData(ModAttachments.SANITY, v);
         if (player instanceof ServerPlayer sp) {
             Float last = LAST_SYNCED.get(sp.getUUID());
-            if (last == null || Math.abs(last - v) >= 0.5F || v == 0.0F || v == MAX) {
+            if (last == null || Math.abs(last - v) >= 0.5F || v == 0.0F || v == MAX || v == dev.umbra.ending.Endings.DARK_SANITY_CAP) {
                 sp.syncData(ModAttachments.SANITY);
                 LAST_SYNCED.put(sp.getUUID(), v);
             }
@@ -121,6 +121,7 @@ public final class Sanity {
         if (Underside.is(level)) drain += Underside.SANITY_DRAIN;
         // gloom armour steadies the mind: each piece takes 12% off the drain
         drain *= 1.0F - dev.umbra.gear.Gear.sanityShield(player);
+        drain *= dev.umbra.ending.Endings.drain(player);
 
         if (isCalm(player)) drain = 0.0F;
         // inside a burning ward the mind rests
@@ -165,9 +166,7 @@ public final class Sanity {
     public static float dread(Player player) {
         if (!enabled()) return 1.0F;
         float s = get(player);
-        if (s >= ANXIOUS) return 1.0F;
-        if (s >= PARANOID) return 1.5F;
-        if (s >= BREAKDOWN) return 2.0F;
-        return 3.0F;
+        float d = s >= ANXIOUS ? 1.0F : s >= PARANOID ? 1.5F : s >= BREAKDOWN ? 2.0F : 3.0F;
+        return dev.umbra.ending.Endings.dread(player, d);
     }
 }

@@ -183,6 +183,11 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
                 if (p.distanceTo(this) < 64) {
                     ShadowManager.free(p);
                     p.sendSystemMessage(Component.translatable("message.umbra.freed"));
+                    // her heart: the choice of how it ends (one for whoever has not chosen yet)
+                    if (!dev.umbra.ending.Endings.chosen(p) && p.getInventory().countItem(dev.umbra.registry.ModItems.PRIMORDIAL_HEART.get()) == 0) {
+                        UmbraUtil.give(p, new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.PRIMORDIAL_HEART.get()));
+                        p.sendSystemMessage(Component.translatable("message.umbra.heart").withStyle(net.minecraft.ChatFormatting.DARK_PURPLE, net.minecraft.ChatFormatting.ITALIC));
+                    }
                 }
             }
         }
