@@ -67,7 +67,7 @@ public record UndersideLandmarkFeature() implements Feature {
         // what is left of the explorer
         level.setBlock(f.offset(-2, 0, 2), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
         level.setBlock(f.offset(-1, 0, 2), Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), FLAGS);
-        level.setBlock(f.offset(2, 0, 2), Blocks.LANTERN.defaultBlockState(), FLAGS);
+        level.setBlock(f.offset(2, 0, 2), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState(), FLAGS);
     }
 
     private static BlockState vanilla(String id) {

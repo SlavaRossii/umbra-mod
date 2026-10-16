@@ -199,19 +199,17 @@ public final class Citadel {
                 fill(level, o.offset(x, 0, z), o.offset(x, 4, z), wall);
         for (int x = DARK_FROM + 10; x < DARK_TO; x += 12) spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(x, 0, random.nextInt(5) - 2));
 
-        // 5. the vault: every other chest is hungry (not the dice: the same ones every time you count)
+        // 5. the vault: any chest may be hungry (about two in five), except the first pair by the door
         fill(level, o.offset(VAULT_FROM, 0, -11), o.offset(VAULT_TO, 5, 11), air);
-        int n = 0;
         for (int x = VAULT_FROM + 2; x <= VAULT_TO - 2; x += 3) {
             for (int z : new int[]{-10, 10}) {
                 BlockPos c = o.offset(x, 0, z);
-                if (n % 2 == 1) {
+                if (x > VAULT_FROM + 2 && random.nextFloat() < VAULT_MIMIC_CHANCE) {
                     MimicChests.plant(level, c);
                 } else {
                     level.setBlock(c, Blocks.CHEST.defaultBlockState(), FLAGS);
-                    RandomizableContainer.setBlockEntityLootTable(level, random, c, n % 4 == 0 ? QuantumMaze.PRIZE : QuantumMaze.COMMON);
+                    RandomizableContainer.setBlockEntityLootTable(level, random, c, random.nextInt(4) == 0 ? QuantumMaze.PRIZE : QuantumMaze.COMMON);
                 }
-                n++;
             }
         }
         plate(level, o.offset(VAULT_FROM + 6, -1, -4));
@@ -248,7 +246,7 @@ public final class Citadel {
         BlockPos secret = o.offset(sx, 0, -18);
         level.setBlock(secret, Blocks.CHEST.defaultBlockState(), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, secret, SECRET_LOOT);
-        level.setBlock(o.offset(sx, 3, -16), Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
+        level.setBlock(o.offset(sx, 3, -16), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
         corridor(level, o, LIBRARY_TO + 1, GARDEN_FROM - 1);
 
         // 7. the dead garden: ash, dead trees, crawlers in the branches
@@ -275,6 +273,7 @@ public final class Citadel {
     }
 
     public static final int SECRET_X = (LIBRARY_FROM + LIBRARY_TO) / 2;
+    public static final float VAULT_MIMIC_CHANCE = 0.4F;
 
     // ------------------------------------------------------------------ 1.8.2: nests, traps, forks
 
@@ -296,6 +295,8 @@ public final class Citadel {
         // north bypass: link up from the corridor, run east beside the dark hall, link down into the vault
         fill(level, o.offset(x0, 0, -16), o.offset(x0 + 2, 3, -3), air);
         fill(level, o.offset(x0, 0, -16), o.offset(VAULT_FROM - 1, 3, -14), air);
+        // the way in is a wall only a broken mind or the Architect's seal sees through
+        fill(level, o.offset(x0, 0, -5), o.offset(x0 + 2, 3, -4), ModBlocks.PHANTOM_WALL.get().defaultBlockState());
         fill(level, o.offset(VAULT_FROM - 3, 0, -16), o.offset(VAULT_FROM - 1, 3, -8), air);
         lanterns(level, o, x0, VAULT_FROM - 1, -16, -14, 3);
         nest(level, o.offset(88, 0, -15));
@@ -328,8 +329,8 @@ public final class Citadel {
             for (int z : new int[]{-h + 3, h - 3})
                 fill(level, o.offset(x, 0, z), o.offset(x, 9, z), pillar);
         for (int x = THRONE + 2; x <= THRONE + HALL - 2; x += 6) {
-            level.setBlock(o.offset(x, 0, -h + 1), Blocks.SOUL_CAMPFIRE.defaultBlockState(), FLAGS);
-            level.setBlock(o.offset(x, 0, h - 1), Blocks.SOUL_CAMPFIRE.defaultBlockState(), FLAGS);
+            level.setBlock(o.offset(x, 0, -h + 1), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState(), FLAGS);
+            level.setBlock(o.offset(x, 0, h - 1), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState(), FLAGS);
         }
         // the throne at the far end
         int tx = THRONE + HALL - 2;
@@ -379,7 +380,7 @@ public final class Citadel {
         }
         BlockState air = Blocks.AIR.defaultBlockState();
         BlockState quantum = ModBlocks.QUANTUM_BLOCK.get().defaultBlockState();
-        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
+        BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.HANGING, true);
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++) {
                 int x0 = 1 + i * p, z0 = 1 + j * p;
@@ -418,7 +419,7 @@ public final class Citadel {
     }
 
     private static void lanterns(ServerLevel level, BlockPos o, int x0, int x1, int z0, int z1, int ceiling) {
-        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
+        BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.HANGING, true);
         for (int x = x0 + 2; x <= x1 - 2; x += 5) {
             level.setBlock(o.offset(x, ceiling, z0 + 1), lantern, FLAGS);
             level.setBlock(o.offset(x, ceiling, z1 - 1), lantern, FLAGS);

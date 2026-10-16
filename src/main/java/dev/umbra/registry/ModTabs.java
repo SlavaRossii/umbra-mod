@@ -24,6 +24,7 @@ public final class ModTabs {
                 out.accept(ModItems.KEEPER_HORN.get());
                 out.accept(ModItems.PRIMORDIAL_HEART.get());
                 out.accept(ModItems.WHISPER_TABLE.get());
+                out.accept(ModItems.LUMINITE_LANTERN_BLOCK.get());
                 out.accept(ModItems.ECHO_ALTAR.get());
                 out.accept(ModItems.GLOOM_ANVIL.get());
                 out.accept(ModItems.LUMINITE_CANDLE.get());

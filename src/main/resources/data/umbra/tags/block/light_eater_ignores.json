@@ -5,6 +5,12 @@
     "umbra:luminite_lamp",
     "umbra:luminite_ore",
     "umbra:deepslate_luminite_ore",
-    "umbra:echo_cluster"
+    "umbra:echo_cluster",
+    "umbra:luminite_lantern_block",
+    "umbra:eternal_torch",
+    "umbra:eternal_wall_torch",
+    "umbra:luminite_candle",
+    "umbra:echo_altar",
+    "umbra:lighthouse_lamp"
   ]
 }

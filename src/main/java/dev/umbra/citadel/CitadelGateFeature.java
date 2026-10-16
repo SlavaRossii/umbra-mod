@@ -126,7 +126,7 @@ public record CitadelGateFeature() implements Feature {
                 boolean frame = Math.abs(x) == 2 || y == 5;
                 level.setBlock(top.offset(x, y, 0), frame ? wall : (y <= 3 ? gate : wall), FLAGS);
             }
-        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState();
+        BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState();
         for (int[] p : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) {
             for (int y = 0; y < 3; y++) level.setBlock(top.offset(p[0], y, p[1]), wall, FLAGS);
             level.setBlock(top.offset(p[0], 3, p[1]), lantern, FLAGS);

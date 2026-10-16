@@ -85,13 +85,23 @@ public class Mimicker extends Monster implements LightSensitive {
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    public void aiStep() {
+        // decided here: an immobile mob (a hidden one) never gets its server AI step
+        if (this.level() instanceof ServerLevel level && this.isAlive()) think(level);
+        super.aiStep();
+    }
+
+    private void think(ServerLevel level) {
         Player nearest = level.getNearestPlayer(this, 24.0);
         if (nearest != null && (nearest.isCreative() || nearest.isSpectator())) nearest = null;
         if (isHidden()) {
             // sit square, like a chest that was put there
             this.getNavigation().stop();
+            // in the middle of its block, square to the world, like any chest that was put there
+            double cx = Math.floor(this.getX()) + 0.5, cz = Math.floor(this.getZ()) + 0.5;
+            if (Math.abs(this.getX() - cx) > 1.0E-3 || Math.abs(this.getZ() - cz) > 1.0E-3) this.setPos(cx, this.getY(), cz);
+            this.setDeltaMovement(0, Math.min(0, this.getDeltaMovement().y), 0);
+            this.setXRot(0.0F);
             this.setYRot(Math.round(this.getYRot() / 90.0F) * 90.0F);
             this.setYBodyRot(this.getYRot());
             this.setYHeadRot(this.getYRot());

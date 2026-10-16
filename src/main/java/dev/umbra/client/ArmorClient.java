@@ -56,13 +56,8 @@ final class ArmorClient {
         }
 
         private HumanoidModel<HumanoidRenderState> bake(EquipmentSlot slot) {
-            boolean inner = slot == EquipmentSlot.LEGS;
-            HumanoidModel<HumanoidRenderState> m = new HumanoidModel<>(ArmorModels.create(set, inner).bakeRoot());
-            m.head.visible = m.hat.visible = slot == EquipmentSlot.HEAD;
-            m.body.visible = slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS;
-            m.rightArm.visible = m.leftArm.visible = slot == EquipmentSlot.CHEST;
-            m.rightLeg.visible = m.leftLeg.visible = slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET;
-            return m;
+            // a mesh per slot that holds only that piece (the renderer turns every part visible again, so hiding is no use)
+            return new HumanoidModel<>(ArmorModels.create(set, slot).bakeRoot());
         }
     }
 }

@@ -119,6 +119,10 @@ public final class ModBlocks {
             () -> torchProperties().lightLevel(s -> SmolderingTorchBlock.LIGHT));
 
     /** The Whisper Table: crafts for a slipping mind. */
+    /** The Underside's lamps: luminite in a cage. Light eaters leave them be (tag umbra:light_eater_ignores). */
+    public static final DeferredBlock<net.minecraft.world.level.block.LanternBlock> LUMINITE_LANTERN_BLOCK = BLOCKS.registerBlock("luminite_lantern_block",
+            net.minecraft.world.level.block.LanternBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(s -> 14).noOcclusion());
     public static final DeferredBlock<dev.umbra.craft.EchoAltarBlock> ECHO_ALTAR = BLOCKS.registerBlock("echo_altar",
             dev.umbra.craft.EchoAltarBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 7).noOcclusion());

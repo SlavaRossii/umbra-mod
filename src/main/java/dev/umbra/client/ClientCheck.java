@@ -34,8 +34,9 @@ public final class ClientCheck {
         countdown = 200;
         check(() -> {
             for (String set : ArmorModels.SETS)
-                for (boolean inner : new boolean[]{false, true}) {
-                    new net.minecraft.client.model.HumanoidModel<net.minecraft.client.renderer.entity.state.HumanoidRenderState>(ArmorModels.create(set, inner).bakeRoot());
+                for (var slot : new net.minecraft.world.entity.EquipmentSlot[]{net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.entity.EquipmentSlot.CHEST,
+                        net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET}) {
+                    new net.minecraft.client.model.HumanoidModel<net.minecraft.client.renderer.entity.state.HumanoidRenderState>(ArmorModels.create(set, slot).bakeRoot());
                 }
         }, "the 3D armour models bake");
         check(() -> {

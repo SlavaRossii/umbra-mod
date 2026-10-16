@@ -71,7 +71,7 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<LightEater>> LIGHT_EATER = ENTITIES.registerEntityType("light_eater",
             LightEater::new, MobCategory.MONSTER, b -> b.sized(0.5F, 0.8F).clientTrackingRange(8).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<Mimicker>> MIMICKER = ENTITIES.registerEntityType("mimicker",
-            Mimicker::new, MobCategory.MONSTER, b -> b.sized(0.9F, 0.95F).clientTrackingRange(8));
+            Mimicker::new, MobCategory.MONSTER, b -> b.sized(0.875F, 0.875F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Shade>> SHADE = ENTITIES.registerEntityType("shade",
             Shade::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
 

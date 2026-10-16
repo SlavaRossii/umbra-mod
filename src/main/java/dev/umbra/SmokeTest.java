@@ -831,7 +831,11 @@ final class SmokeTest {
                 vaultChests++;
                 if (dev.umbra.mimic.MimicChests.isMimic(level, p)) vaultMimics++;
             }
-        check(vaultChests == 14 && vaultMimics == 7, "the vault holds 14 chests, 7 hungry (" + vaultChests + ", " + vaultMimics + ")");
+        check(vaultChests == 14 && vaultMimics <= 12, "the vault holds 14 chests, some hungry (" + vaultChests + ", " + vaultMimics + ")");
+        boolean firstReal = true;
+        for (int z : new int[]{-10, 10}) firstReal &= !dev.umbra.mimic.MimicChests.isMimic(level, o.offset(dev.umbra.citadel.Citadel.VAULT_FROM + 2, 0, z));
+        check(firstReal, "the first pair of chests by the vault door is real");
+        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1 + dev.umbra.citadel.Citadel.MAZE_SIZE + 2, 1, -4)).is(ModBlocks.PHANTOM_WALL.get()), "the bypass hides behind a phantom wall");
 
         // the hall of living darkness is shut for this walk: the vault must still be reachable through the bypass,
         // and so must the side room and the dead end
@@ -897,8 +901,9 @@ final class SmokeTest {
                 BlockPos n = p.relative(d);
                 if (n.getX() < o.getX() || n.getX() > o.getX() + dev.umbra.citadel.Citadel.SEAL_X - 1 || Math.abs(n.getZ() - o.getZ()) > dev.umbra.citadel.Citadel.HALF_WIDTH) continue;
                 if (seen.contains(n.asLong())) continue;
-                if (!level.getBlockState(n).isAir() && !level.getBlockState(n).is(ModBlocks.TRAP_PLATE.get())) continue;
-                if (!level.getBlockState(n.above()).isAir()) continue;
+                // (a phantom wall is a way for whoever sees through it)
+                if (!level.getBlockState(n).isAir() && !level.getBlockState(n).is(ModBlocks.TRAP_PLATE.get()) && !level.getBlockState(n).is(ModBlocks.PHANTOM_WALL.get())) continue;
+                if (!level.getBlockState(n.above()).isAir() && !level.getBlockState(n.above()).is(ModBlocks.PHANTOM_WALL.get())) continue;
                 seen.add(n.asLong());
                 queue.add(n);
             }

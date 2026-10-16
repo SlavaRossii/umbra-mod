@@ -104,7 +104,7 @@ public record SunkenTempleFeature() implements Feature {
         level.setBlock(chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
         // drowned lanterns, still burning
-        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.WATERLOGGED, true);
+        BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.WATERLOGGED, true);
         for (int[] q : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) level.setBlock(c.offset(q[0], 0, q[1]), lantern, FLAGS);
         level.setBlock(c.offset(-1, 0, 3), ModBlocks.LUMINITE_CLUSTER.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
         // the guards

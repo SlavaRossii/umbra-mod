@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "umbra:block/luminite_lantern_block"
+    },
+    "hanging=true": {
+      "model": "umbra:block/luminite_lantern_block_hanging"
+    }
+  }
+}

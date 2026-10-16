@@ -18,7 +18,7 @@ JAVA = 'src/main/java/dev/umbra/client/ArmorModels.java'
 
 PALETTE = {
     "luminite": {"a": (175, 240, 255), "b": (90, 180, 225), "c": (230, 250, 255)},
-    "shadow": {"a": (34, 24, 48), "b": (22, 14, 32), "c": (120, 70, 170)},
+    "shadow": {"a": (62, 48, 84), "b": (40, 30, 56), "c": (130, 80, 180)},
     "gloom": {"a": (70, 58, 92), "b": (44, 36, 60), "c": (170, 90, 230)},
 }
 
@@ -98,6 +98,13 @@ def textures():
             px = img.load()
             for part, name, (u, v), (x, y, z, w, h, d), pose, ck in layers[layer]:
                 paint_cube(px, u, v, w, h, d, PALETTE[s][ck], rnd)
+                if name == "hood":   # the face shows through
+                    fw, fh, fd = math.ceil(w), math.ceil(h), math.ceil(d)
+                    for xx in range(u + fd + 2, u + fd + fw - 2):
+                        for yy in range(v + fd + 3, v + fd + fh - 1):
+                            px[xx, yy] = (0, 0, 0, 0)
+                    for xx in range(u + fd, u + fd + fw):     # a bright trim round the opening
+                        px[xx, v + fd + 2] = PALETTE[s]["c"] + (255,)
             img.save(T + folder + '/' + s + '.png')
 
 
@@ -126,7 +133,7 @@ def java():
            "    public static ModelLayerLocation layer(String set, boolean inner) {",
            "        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, \"armor_\" + set), inner ? \"inner\" : \"outer\");",
            "    }", "",
-           "    public static LayerDefinition create(String set, boolean inner) {",
+           "    public static MeshDefinition mesh(String set, boolean inner) {",
            "        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(inner ? 0.5F : 1.0F), 0.0F);",
            "        PartDefinition root = mesh.getRoot();",
            "        switch (set + (inner ? \"/inner\" : \"/outer\")) {"]
@@ -139,6 +146,24 @@ def java():
                 out.append(f"                        PartPose.offsetAndRotation({jf(px)}, {jf(py)}, {jf(pz)}, {jf(rx)}, {jf(ry)}, {jf(rz)}));")
             out.append("            }")
     out += ["            default -> { }",
+            "        }",
+            "        return mesh;",
+            "    }", "",
+            "    /** One piece only, like vanilla: the parts of other slots are emptied (a model never shows armour you do not wear). */",
+            "    public static LayerDefinition create(String set, net.minecraft.world.entity.EquipmentSlot slot) {",
+            "        boolean inner = slot == net.minecraft.world.entity.EquipmentSlot.LEGS;",
+            "        MeshDefinition mesh = mesh(set, inner);",
+            "        PartDefinition root = mesh.getRoot();",
+            "        java.util.Set<String> keep = switch (slot) {",
+            "            case HEAD -> java.util.Set.of(\"head\");",
+            "            case CHEST -> java.util.Set.of(\"body\", \"right_arm\", \"left_arm\");",
+            "            case LEGS -> java.util.Set.of(\"body\", \"right_leg\", \"left_leg\");",
+            "            default -> java.util.Set.of(\"right_leg\", \"left_leg\");",
+            "        };",
+            "        for (String part : new String[]{\"head\", \"body\", \"right_arm\", \"left_arm\", \"right_leg\", \"left_leg\"}) {",
+            "            if (keep.contains(part)) continue;",
+            "            PartDefinition empty = root.addOrReplaceChild(part, CubeListBuilder.create(), PartPose.ZERO);",
+            "            if (part.equals(\"head\")) empty.addOrReplaceChild(\"hat\", CubeListBuilder.create(), PartPose.ZERO);",
             "        }",
             "        return LayerDefinition.create(mesh, 64, 64);",
             "    }",

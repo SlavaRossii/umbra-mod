@@ -320,6 +320,27 @@ def write_models():
     json.dump({"model": {"type": "minecraft:model", "model": "umbra:block/lighthouse_lamp_2"}}, open(ITEMS + 'lighthouse_lamp.json', 'w'), indent=2)
 
 
+def write_lantern():
+    """The Underside's lamp: a dark iron cage round a luminite core; standing or hanging from a short chain."""
+    tex('luminite_lantern_cage', lambda x, y, r: noise(bevel(x, y, (52, 50, 62), k=26), r, 4))
+    tex('luminite_lantern_core', lambda x, y, r: list(mix((255, 255, 255), LUMI, min(1.0, math.hypot(x - 7.5, y - 7.5) / 9))) + [255])
+    t = {"particle": "umbra:block/luminite_lantern_cage", "cage": "umbra:block/luminite_lantern_cage", "core": "umbra:block/luminite_lantern_core"}
+    for hanging in (False, True):
+        dy = 1 if hanging else 0
+        els = [box((5, dy, 5), (11, dy + 1, 11), "cage"),
+               box((5.5, dy + 1, 5.5), (10.5, dy + 7, 10.5), "core", light=15, shade=False),
+               box((5, dy + 7, 5), (11, dy + 8, 11), "cage"),
+               box((6.5, dy + 8, 6.5), (9.5, dy + 9, 9.5), "cage"),
+               box((5, dy + 1, 5), (6, dy + 7, 6), "cage"), box((10, dy + 1, 5), (11, dy + 7, 6), "cage"),
+               box((5, dy + 1, 10), (6, dy + 7, 11), "cage"), box((10, dy + 1, 10), (11, dy + 7, 11), "cage")]
+        if hanging:
+            els.append(box((7.5, dy + 9, 7.5), (8.5, 16, 8.5), "cage"))
+        model(MB + 'luminite_lantern_block%s.json' % ('_hanging' if hanging else ''), "minecraft:block/block", t, els, {"ambientocclusion": False})
+    json.dump({"variants": {"hanging=false": {"model": "umbra:block/luminite_lantern_block"},
+                            "hanging=true": {"model": "umbra:block/luminite_lantern_block_hanging"}}}, open(BS + 'luminite_lantern_block.json', 'w'), indent=2)
+    json.dump({"model": {"type": "minecraft:model", "model": "umbra:block/luminite_lantern_block"}}, open(ITEMS + 'luminite_lantern_block.json', 'w'), indent=2)
+
+
 # ------------------------------------------------------------------ preview: a little isometric renderer for element models
 
 def load_tex(ref):
@@ -415,6 +436,7 @@ def preview(out):
 if __name__ == '__main__':
     write_textures()
     write_models()
+    write_lantern()
     if len(sys.argv) > 2 and sys.argv[1] == '--preview':
         preview(sys.argv[2])
     print('ok')

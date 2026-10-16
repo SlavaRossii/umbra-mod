@@ -82,7 +82,7 @@ public final class VillageBuilder {
             if (t % 8 == 0 && t != 0) {
                 BlockPos post = road.relative(side, 2);
                 for (int y = 0; y < 2; y++) level.setBlock(post.above(y), ModBlocks.DEAD_LOG.get().defaultBlockState(), FLAGS);
-                level.setBlock(post.above(2), random.nextBoolean() ? Blocks.SOUL_LANTERN.defaultBlockState() : Blocks.AIR.defaultBlockState(), FLAGS);
+                level.setBlock(post.above(2), random.nextBoolean() ? dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState() : Blocks.AIR.defaultBlockState(), FLAGS);
             }
         }
         for (int t = -21; t <= 21; t += 9) {

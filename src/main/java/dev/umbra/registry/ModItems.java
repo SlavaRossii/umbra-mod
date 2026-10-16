@@ -90,7 +90,11 @@ public final class ModItems {
                 }
     }
 
-    public static final DeferredItem<Item> LUMINITE_SHIELD = ITEMS.registerSimpleItem("luminite_shield", p -> p.stacksTo(1).durability(336).rarity(Rarity.UNCOMMON));
+    /** A real shield (right click to block, like the vanilla one), with the aegis' own powers on top (EnchantEvents.onIncoming). */
+    public static final DeferredItem<Item> LUMINITE_SHIELD = ITEMS.registerSimpleItem("luminite_shield", p -> p.stacksTo(1).durability(504).rarity(Rarity.UNCOMMON)
+            .component(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS,
+                    net.minecraft.world.item.Items.SHIELD.components().get(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS))
+            .repairable(LUMINITE_CRYSTAL.get()));
     public static final DeferredItem<Item> ASH_CLASP = ITEMS.registerSimpleItem("ash_clasp", p -> p.stacksTo(1).rarity(Rarity.RARE));
     public static final DeferredItem<Item> ARCHITECT_SEAL = ITEMS.registerSimpleItem("architect_seal", p -> p.stacksTo(1).rarity(Rarity.EPIC));
 
@@ -129,6 +133,7 @@ public final class ModItems {
             p -> p.durability(256).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
 
     // --- Madness (1.2) ---
+    public static final DeferredItem<BlockItem> LUMINITE_LANTERN_BLOCK = ITEMS.registerSimpleBlockItem("luminite_lantern_block", ModBlocks.LUMINITE_LANTERN_BLOCK);
     public static final DeferredItem<BlockItem> ECHO_ALTAR = ITEMS.registerSimpleBlockItem("echo_altar", ModBlocks.ECHO_ALTAR, p -> p.rarity(Rarity.RARE));
     public static final DeferredItem<BlockItem> GLOOM_ANVIL = ITEMS.registerSimpleBlockItem("gloom_anvil", ModBlocks.GLOOM_ANVIL, p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<BlockItem> LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("luminite_candle", ModBlocks.LUMINITE_CANDLE);

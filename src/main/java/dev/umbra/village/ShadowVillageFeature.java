@@ -106,7 +106,7 @@ public record ShadowVillageFeature() implements Feature {
                 if (!rim) for (int y = -1; y >= -4; y--) level.setBlock(c.offset(0, y, 0), y == -4 ? ModBlocks.ASH_SOIL.get().defaultBlockState() : Blocks.AIR.defaultBlockState(), FLAGS);
             }
         // lantern posts
-        BlockState lantern = Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, false);
+        BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.HANGING, false);
         int[][] posts = {{4, 0}, {-4, 0}, {0, 4}, {0, -4}};
         for (int[] p : posts) {
             BlockPos base = c.offset(p[0], 0, p[1]);
@@ -152,7 +152,7 @@ public record ShadowVillageFeature() implements Feature {
         } else {
             level.setBlock(corner, Blocks.BARREL.defaultBlockState(), FLAGS);
         }
-        level.setBlock(floor.relative(back, 2).relative(side.getOpposite(), 2), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, false), FLAGS);
+        level.setBlock(floor.relative(back, 2).relative(side.getOpposite(), 2), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.HANGING, false), FLAGS);
         for (int i = 0; i < 3; i++) {
             BlockPos web = floor.offset(random.nextInt(5) - 2, 2, random.nextInt(5) - 2);
             if (level.getBlockState(web).isAir()) level.setBlock(web, Blocks.COBWEB.defaultBlockState(), FLAGS);

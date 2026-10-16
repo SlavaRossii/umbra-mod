@@ -20,7 +20,7 @@ public final class ArmorModels {
         return new ModelLayerLocation(Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "armor_" + set), inner ? "inner" : "outer");
     }
 
-    public static LayerDefinition create(String set, boolean inner) {
+    public static MeshDefinition mesh(String set, boolean inner) {
         MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(inner ? 0.5F : 1.0F), 0.0F);
         PartDefinition root = mesh.getRoot();
         switch (set + (inner ? "/inner" : "/outer")) {
@@ -73,6 +73,25 @@ public final class ArmorModels {
                         PartPose.offsetAndRotation(0.0F, 3.0F, -2.4F, 0.0F, 0.0F, 0.0F));
             }
             default -> { }
+        }
+        return mesh;
+    }
+
+    /** One piece only, like vanilla: the parts of other slots are emptied (a model never shows armour you do not wear). */
+    public static LayerDefinition create(String set, net.minecraft.world.entity.EquipmentSlot slot) {
+        boolean inner = slot == net.minecraft.world.entity.EquipmentSlot.LEGS;
+        MeshDefinition mesh = mesh(set, inner);
+        PartDefinition root = mesh.getRoot();
+        java.util.Set<String> keep = switch (slot) {
+            case HEAD -> java.util.Set.of("head");
+            case CHEST -> java.util.Set.of("body", "right_arm", "left_arm");
+            case LEGS -> java.util.Set.of("body", "right_leg", "left_leg");
+            default -> java.util.Set.of("right_leg", "left_leg");
+        };
+        for (String part : new String[]{"head", "body", "right_arm", "left_arm", "right_leg", "left_leg"}) {
+            if (keep.contains(part)) continue;
+            PartDefinition empty = root.addOrReplaceChild(part, CubeListBuilder.create(), PartPose.ZERO);
+            if (part.equals("head")) empty.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
         }
         return LayerDefinition.create(mesh, 64, 64);
     }
