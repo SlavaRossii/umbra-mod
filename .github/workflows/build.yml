@@ -108,15 +108,19 @@ jobs:
       - name: Virtual display
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri x11-apps imagemagick > /dev/null
-          Xvfb :99 -screen 0 1280x720x24 > /dev/null 2>&1 &
-          sleep 2
-          DISPLAY=:99 glxinfo -B | head -20 || true
+          sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers vulkan-tools x11-apps imagemagick > /dev/null
+          Xvfb :99 -screen 0 1280x720x24 +extension GLX +render -noreset > /dev/null 2>&1 &
+          sleep 3
+          DISPLAY=:99 glxinfo -B | head -25 || true
+          DISPLAY=:99 vulkaninfo --summary 2>&1 | head -30 || true
 
       - name: Run the client to the title screen
         env:
           DISPLAY: ':99'
           LIBGL_ALWAYS_SOFTWARE: '1'
+          MESA_GL_VERSION_OVERRIDE: '4.6'
+          MESA_GLSL_VERSION_OVERRIDE: '460'
+          __GLX_VENDOR_LIBRARY_NAME: 'mesa'
         run: |
           mkdir -p run-client
           printf "onboardAccessibility:false\nnarrator:0\njoinedFirstServer:true\n" > run-client/options.txt
