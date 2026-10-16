@@ -129,6 +129,9 @@ public final class ModItems {
             p -> p.durability(256).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.EPIC).fireResistant());
 
     // --- Madness (1.2) ---
+    public static final DeferredItem<BlockItem> ECHO_ALTAR = ITEMS.registerSimpleBlockItem("echo_altar", ModBlocks.ECHO_ALTAR, p -> p.rarity(Rarity.RARE));
+    public static final DeferredItem<BlockItem> GLOOM_ANVIL = ITEMS.registerSimpleBlockItem("gloom_anvil", ModBlocks.GLOOM_ANVIL, p -> p.rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<BlockItem> LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("luminite_candle", ModBlocks.LUMINITE_CANDLE);
     public static final DeferredItem<BlockItem> WHISPER_TABLE = ITEMS.registerSimpleBlockItem("whisper_table", ModBlocks.WHISPER_TABLE, p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<dev.umbra.madness.SilenceTinctureItem> SILENCE_TINCTURE = ITEMS.registerItem("silence_tincture",
             dev.umbra.madness.SilenceTinctureItem::new, p -> p.stacksTo(8).rarity(Rarity.UNCOMMON));

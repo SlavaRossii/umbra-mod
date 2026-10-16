@@ -1,17 +1,17 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_nightmare",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:madman_mask"
     },
     "title": {
       "translate": "journal.umbra.insight_3.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.insight_3.desc"
     },
-    "frame": "task",
-    "show_toast": false,
+    "frame": "goal",
+    "show_toast": true,
     "announce_to_chat": false,
     "hidden": false
   },

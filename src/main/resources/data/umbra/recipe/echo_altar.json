@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Q": "umbra:echo_quartz",
+    "L": "umbra:luminite_block",
+    "D": "umbra:dusk_stone"
+  },
+  "pattern": [
+    " Q ",
+    "QLQ",
+    "DDD"
+  ],
+  "result": {
+    "id": "umbra:echo_altar"
+  }
+}

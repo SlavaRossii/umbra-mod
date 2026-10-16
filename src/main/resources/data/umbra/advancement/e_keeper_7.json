@@ -1,16 +1,16 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_luminite",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:keeper_page"
     },
     "title": {
       "translate": "journal.umbra.keeper_7.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.keeper_7.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false

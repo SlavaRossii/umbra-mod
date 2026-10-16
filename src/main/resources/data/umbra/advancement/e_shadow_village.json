@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:shadow_villager_spawn_egg"
     },
     "title": {
       "translate": "journal.umbra.shadow_village.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.shadow_village.desc"
     },
     "frame": "task",
     "show_toast": true,

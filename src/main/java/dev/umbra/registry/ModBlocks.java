@@ -119,6 +119,15 @@ public final class ModBlocks {
             () -> torchProperties().lightLevel(s -> SmolderingTorchBlock.LIGHT));
 
     /** The Whisper Table: crafts for a slipping mind. */
+    public static final DeferredBlock<dev.umbra.craft.EchoAltarBlock> ECHO_ALTAR = BLOCKS.registerBlock("echo_altar",
+            dev.umbra.craft.EchoAltarBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 7).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.GloomAnvilBlock> GLOOM_ANVIL = BLOCKS.registerBlock("gloom_anvil",
+            dev.umbra.craft.GloomAnvilBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).mapColor(MapColor.COLOR_PURPLE).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.LuminiteCandleBlock> LUMINITE_CANDLE = BLOCKS.registerBlock("luminite_candle",
+            dev.umbra.craft.LuminiteCandleBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CANDLE).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(dev.umbra.craft.LuminiteCandleBlock::light).noOcclusion());
     public static final DeferredBlock<dev.umbra.madness.WhisperTableBlock> WHISPER_TABLE = BLOCKS.registerBlock("whisper_table",
             dev.umbra.madness.WhisperTableBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 3));

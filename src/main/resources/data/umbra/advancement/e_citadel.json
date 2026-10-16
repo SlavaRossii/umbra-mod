@@ -1,16 +1,16 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:maze_wall"
     },
     "title": {
       "translate": "journal.umbra.citadel.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.citadel.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "umbra:gloom_block",
+    "I": "umbra:gloom_ingot"
+  },
+  "pattern": [
+    "BBB",
+    " I ",
+    "III"
+  ],
+  "result": {
+    "id": "umbra:gloom_anvil"
+  }
+}

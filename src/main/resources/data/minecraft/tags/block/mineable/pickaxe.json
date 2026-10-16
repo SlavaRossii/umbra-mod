@@ -12,6 +12,8 @@
     "umbra:luminite_cluster",
     "umbra:echo_cluster",
     "umbra:luminite_block",
-    "umbra:shadow_nest"
+    "umbra:shadow_nest",
+    "umbra:echo_altar",
+    "umbra:gloom_anvil"
   ]
 }

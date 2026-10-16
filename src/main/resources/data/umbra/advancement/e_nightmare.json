@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_sanity",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "minecraft:red_bed"
     },
     "title": {
       "translate": "journal.umbra.nightmare.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.nightmare.desc"
     },
     "frame": "task",
     "show_toast": true,

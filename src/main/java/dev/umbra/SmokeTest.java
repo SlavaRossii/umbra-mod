@@ -138,6 +138,7 @@ final class SmokeTest {
                 case 678 -> finishEchoTest();
                 case 679 -> testLighthouseKeeper(server);
                 case 673 -> testEndings22(level);
+                case 674 -> testCraft23(level);
                 case RAID_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -1102,13 +1103,20 @@ final class SmokeTest {
         fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ItemStack.EMPTY);
         check(!dev.umbra.gear.Gear.hasArtifact(fake, dev.umbra.gear.Gear.ARCHITECT_SEAL), "no seal, no sight");
 
-        // achievements mirror the journal
+        // about thirty milestones of the journal are achievements; the small entries are not
         {
             var adv = level.getServer().getAdvancements();
-            java.util.List<String> noAdv = new java.util.ArrayList<>();
-            for (String id : dev.umbra.journal.Journal.ENTRIES)
-                if (adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "e_" + id)) == null) noAdv.add(id);
-            check(noAdv.isEmpty(), "every journal entry has an advancement " + (noAdv.isEmpty() ? "" : noAdv.subList(0, Math.min(5, noAdv.size()))));
+            java.util.List<String> milestones = new java.util.ArrayList<>();
+            try (var in = Umbra.class.getResourceAsStream("/data/umbra/advancement_entries.txt")) {
+                for (String line : new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).split("\n")) if (!line.isBlank()) milestones.add(line.trim());
+            } catch (Exception e) {
+                check(false, "the list of milestones is readable (" + e + ")");
+            }
+            java.util.List<String> bad = new java.util.ArrayList<>();
+            for (String id : milestones)
+                if (!dev.umbra.journal.Journal.ENTRIES.contains(id) || adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "e_" + id)) == null) bad.add(id);
+            check(bad.isEmpty() && milestones.size() >= 25 && milestones.size() <= 35, "about thirty journal milestones are achievements (" + milestones.size() + (bad.isEmpty() ? "" : ", broken " + bad) + ")");
+            check(adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "e_mimic_barrel")) == null, "a small entry stays in the journal only");
             check(adv.get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "root")) != null, "the advancement tab has a root");
         }
 
@@ -1240,6 +1248,61 @@ final class SmokeTest {
             }
             check(missing.isEmpty(), "language " + lang + " has the endings and the onslaught " + (missing.isEmpty() ? "" : missing));
         }
+    }
+
+    private static void testCraft23(ServerLevel level) {
+        BlockPos a = new BlockPos(740, Y + 10, 60);
+        for (int x = -4; x <= 4; x++)
+            for (int z = -4; z <= 4; z++) {
+                level.setBlock(a.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                for (int y = 0; y < 3; y++) level.setBlock(a.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        level.setBlock(a, ModBlocks.ECHO_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        check(dev.umbra.craft.EchoAltarBlock.candles(level, a) == 0 && dev.umbra.craft.EchoAltarBlock.power(0) == 1, "a bare altar echoes at level I");
+        level.setBlock(a.offset(2, 0, 0), ModBlocks.LUMINITE_CANDLE.get().defaultBlockState().setValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES, 4), Block.UPDATE_ALL);
+        level.setBlock(a.offset(-2, 0, 1), ModBlocks.LUMINITE_CANDLE.get().defaultBlockState().setValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES, 4), Block.UPDATE_ALL);
+        int c = dev.umbra.craft.EchoAltarBlock.candles(level, a);
+        check(c == 8 && dev.umbra.craft.EchoAltarBlock.power(c) == 3, "eight candles make it echo at level III (" + c + ")");
+        check(level.getBlockState(a.offset(2, 0, 0)).getLightEmission() >= 12, "four candles shine brightly");
+
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.getInventory().clearContent();
+        ItemStack sword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        var options = dev.umbra.craft.EchoAltarBlock.candidates(level, sword, 3);
+        check(!options.isEmpty(), "a sword can take something from the altar (" + options.size() + ")");
+        fake.experienceLevel = 30;
+        fake.getInventory().add(new ItemStack(ModItems.ECHO_QUARTZ.get(), 8));
+        fake.setItemInHand(InteractionHand.MAIN_HAND, sword);
+        var hit = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(a), net.minecraft.core.Direction.UP, a, false);
+        level.getBlockState(a).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hit);
+        ItemStack after = fake.getMainHandItem();
+        int umbra = 0;
+        for (var key : dev.umbra.gear.Gear.ALL_ENCHANTS) if (!key.equals(dev.umbra.gear.Gear.WHISPER_CURSE)) umbra += dev.umbra.gear.Gear.level(level, after, key) > 0 ? 1 : 0;
+        check(umbra == 1 && fake.experienceLevel == 30 - dev.umbra.craft.EchoAltarBlock.xpCost(3)
+                && fake.getInventory().countItem(ModItems.ECHO_QUARTZ.get()) == 8 - dev.umbra.craft.EchoAltarBlock.quartzCost(3), "the altar gives one enchantment of Umbra's for quartz and experience (" + umbra + ", xp " + fake.experienceLevel + ")");
+
+        // the anvil mends Umbra's gear with its own stuff, and pins artifacts
+        BlockPos v = a.offset(0, 0, 3);
+        level.setBlock(v, ModBlocks.GLOOM_ANVIL.get().defaultBlockState(), Block.UPDATE_ALL);
+        fake.getInventory().clearContent();
+        ItemStack helm = new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "luminite_helmet")));
+        helm.setDamageValue(helm.getMaxDamage() - 1);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, helm);
+        fake.getInventory().add(new ItemStack(ModItems.LUMINITE_CRYSTAL.get(), 1));
+        var hitV = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(v), net.minecraft.core.Direction.UP, v, false);
+        int before = fake.getMainHandItem().getDamageValue();
+        level.getBlockState(v).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hitV);
+        check(fake.getMainHandItem().getDamageValue() < before && fake.getInventory().countItem(ModItems.LUMINITE_CRYSTAL.get()) == 0, "the gloom anvil mends luminite with luminite");
+        check(dev.umbra.craft.GloomAnvilBlock.materialFor(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD)) == null, "and does not know foreign gear");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE));
+        fake.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.ASH_CLASP.get()));
+        level.getBlockState(v).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hitV);
+        check(dev.umbra.gear.Gear.ASH_CLASP.equals(fake.getMainHandItem().get(dev.umbra.registry.ModComponents.ARTIFACT.get())) && fake.getOffhandItem().isEmpty(), "and pins an artifact on a chestplate");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        fake.getInventory().clearContent();
+        for (BlockPos p : new BlockPos[]{a, v, a.offset(2, 0, 0), a.offset(-2, 0, 1)}) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
     }
 
     private static final BlockPos RAID_FOOT = new BlockPos(700, Y, 120);

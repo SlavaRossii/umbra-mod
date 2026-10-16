@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:explorer_note"
     },
     "title": {
       "translate": "journal.umbra.note_8.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.note_8.desc"
     },
     "frame": "task",
     "show_toast": true,

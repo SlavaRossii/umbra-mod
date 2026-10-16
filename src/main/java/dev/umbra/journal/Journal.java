@@ -58,7 +58,6 @@ public final class Journal {
             // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
             Map.entry("luminite", List.of("luminite_lamp")),
             Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic")),
-            Map.entry("crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block")),
             Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
                     "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass",
@@ -74,7 +73,10 @@ public final class Journal {
             Map.entry("keeper_3", List.of("light_arrow", "eternal_torch")),
             Map.entry("keeper_4", List.of("dispeller", "luminite_lantern")),
             Map.entry("keeper_5", List.of("sedative_from_luminite")),
-            Map.entry("lighthouse", List.of("keeper_horn")));
+            Map.entry("lighthouse", List.of("keeper_horn")),
+            // 2.3: the altar and the anvil are found with the Underside, the candles with luminite
+            Map.entry("crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block", "luminite_candle", "echo_altar")),
+            Map.entry("shadow_village", List.of("gloom_anvil")));
 
     /** Lines in a hand that is not yours: they creep into the journal when sanity is low. */
     public static final int WHISPERS = 8;

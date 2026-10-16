@@ -1,19 +1,19 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_primordial_shadow",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:dawn_lantern"
     },
     "title": {
       "translate": "journal.umbra.ending_light.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.ending_light.desc"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,
-    "hidden": false
+    "hidden": true
   },
   "criteria": {
     "entry": {

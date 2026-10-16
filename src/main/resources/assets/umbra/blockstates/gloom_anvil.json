@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "umbra:block/gloom_anvil",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "umbra:block/gloom_anvil",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "umbra:block/gloom_anvil",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "umbra:block/gloom_anvil"
+    }
+  }
+}

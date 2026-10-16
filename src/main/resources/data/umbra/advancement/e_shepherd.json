@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:shepherd_crook"
     },
     "title": {
       "translate": "journal.umbra.shepherd.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.shepherd.desc"
     },
     "frame": "goal",
     "show_toast": true,

@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_architect",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:abyss_heart"
     },
     "title": {
       "translate": "journal.umbra.primordial_shadow.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.primordial_shadow.desc"
     },
     "frame": "challenge",
     "show_toast": true,

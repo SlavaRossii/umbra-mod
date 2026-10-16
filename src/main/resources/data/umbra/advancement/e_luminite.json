@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_start",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:luminite_crystal"
     },
     "title": {
       "translate": "journal.umbra.luminite.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.luminite.desc"
     },
     "frame": "task",
     "show_toast": true,

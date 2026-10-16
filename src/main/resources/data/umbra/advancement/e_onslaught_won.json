@@ -1,16 +1,16 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_lighthouse",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:keeper_horn"
     },
     "title": {
       "translate": "journal.umbra.onslaught_won.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.onslaught_won.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false

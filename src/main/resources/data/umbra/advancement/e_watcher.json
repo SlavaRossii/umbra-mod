@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:watcher_eye"
     },
     "title": {
       "translate": "journal.umbra.watcher.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.watcher.desc"
     },
     "frame": "goal",
     "show_toast": true,

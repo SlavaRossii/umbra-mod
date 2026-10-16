@@ -1,16 +1,16 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_primordial_shadow",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:shadow_shard"
     },
     "title": {
       "translate": "journal.umbra.freed.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.freed.desc"
     },
-    "frame": "challenge",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false

@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_luminite",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:dispeller"
     },
     "title": {
       "translate": "journal.umbra.darkness.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.darkness.desc"
     },
     "frame": "task",
     "show_toast": true,

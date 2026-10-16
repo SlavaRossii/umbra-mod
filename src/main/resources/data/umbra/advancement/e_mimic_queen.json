@@ -1,14 +1,14 @@
 {
-  "parent": "umbra:root",
+  "parent": "umbra:e_underside",
   "display": {
     "icon": {
-      "id": "umbra:journal"
+      "id": "umbra:mimic_crown"
     },
     "title": {
       "translate": "journal.umbra.mimic_queen.title"
     },
     "description": {
-      "translate": "advancement.umbra.entry.desc"
+      "translate": "advancement.umbra.mimic_queen.desc"
     },
     "frame": "goal",
     "show_toast": true,

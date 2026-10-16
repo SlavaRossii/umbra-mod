@@ -1,6 +1,23 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "umbra:item/luminite_shield"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "ground",
+          "fixed"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "umbra:item/luminite_shield"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "umbra:item/luminite_shield_3d"
+    }
   }
 }
