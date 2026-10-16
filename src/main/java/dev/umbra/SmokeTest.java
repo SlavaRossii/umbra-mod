@@ -834,7 +834,11 @@ final class SmokeTest {
         check(seen.contains(o.offset(dev.umbra.citadel.Citadel.VAULT_FROM + 1, 0, 0).asLong()), "the vault can be reached without crossing the dark hall");
         check(seen.contains(o.offset(80, 0, -18).asLong()), "the bypass has a reachable side room");
         check(seen.contains(o.offset(61, 0, 16).asLong()), "the south fork has a reachable dead end");
-        check(seen.contains(o.offset(dev.umbra.citadel.Citadel.GARDEN_FROM + 2, 0, 0).asLong()), "the garden is reachable");
+        // (any spot of it: a dead tree may stand on any one block)
+        boolean garden = false;
+        for (int x = dev.umbra.citadel.Citadel.GARDEN_FROM; x <= dev.umbra.citadel.Citadel.GARDEN_TO && !garden; x++)
+            for (int z = -10; z <= 10 && !garden; z++) garden = seen.contains(o.offset(x, 0, z).asLong());
+        check(garden, "the garden is reachable");
 
         // a nest calls creatures, but only up to its cap
         BlockPos nest = o.offset(15, 0, 7);
@@ -1293,9 +1297,10 @@ final class SmokeTest {
                 fake.getInventory().add(horn);
                 check(dev.umbra.lighthouse.LighthouseRaid.hornFor(fake, level, raidLamp) != null, "a bound horn knows its lighthouse");
                 fake.snapTo(RAID_FOOT.getX() + 300.5, Y + 5, RAID_FOOT.getZ() + 0.5, 0, 0);
-                check(!dev.umbra.lighthouse.LighthouseRaid.answer(fake, horn), "when all is quiet the horn carries nobody");
+                check(!dev.umbra.lighthouse.LighthouseRaid.answer(fake, dev.umbra.lighthouse.LighthouseRaid.hornFor(fake, level, raidLamp)), "when all is quiet the horn carries nobody");
                 dev.umbra.lighthouse.LighthouseRaid.start(level, raidLamp, 3);
-                boolean went = dev.umbra.lighthouse.LighthouseRaid.answer(fake, horn);
+                // (the horn now lives in the inventory: the stack we made was moved there)
+                boolean went = dev.umbra.lighthouse.LighthouseRaid.answer(fake, dev.umbra.lighthouse.LighthouseRaid.hornFor(fake, level, raidLamp));
                 // (a fake player does not really move on teleport; the real move is the same call as the nightmare's)
                 check(went, "during an onslaught the horn answers and carries you to the tower");
                 fake.getInventory().clearContent();
