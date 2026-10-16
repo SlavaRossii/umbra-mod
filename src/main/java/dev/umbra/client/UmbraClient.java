@@ -21,29 +21,30 @@ public final class UmbraClient {
 
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "shadow"));
+        event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new MirrorRenderer<>(ctx, "shadow"));
         event.registerEntityRenderer(ModEntities.HALLUCINATION.get(), ctx -> new SilhouetteRenderer<>(ctx, "hallucination"));
         event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.BLIND, "blind", 0.5F, Animations::blind, null));
-        event.registerEntityRenderer(ModEntities.MIMICKER.get(), ctx -> new SilhouetteRenderer<>(ctx, "mimicker"));
+        event.registerEntityRenderer(ModEntities.MIMICKER.get(), ctx -> new UmbraRenderer<dev.umbra.mob.Mimicker>(ctx, ModLayers.MIMICKER, "mimicker", 0.5F, Animations::mimicker,
+                (e, st) -> st.flag = e.isHidden()));
         event.registerEntityRenderer(ModEntities.SHADE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADE, "shade", 0.3F, Animations::shade, null));
         event.registerEntityRenderer(ModEntities.PHANTOM_ZOMBIE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_SKELETON.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/skeleton/skeleton.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_HUSK.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/husk.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_STEVE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/player/wide/steve.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_SHADOW.get(), ctx -> new SilhouetteRenderer<>(ctx, "phantom_shadow"));
-        event.registerEntityRenderer(ModEntities.ASH_FIGURE.get(), ctx -> new SilhouetteRenderer<>(ctx, "ash_figure"));
+        event.registerEntityRenderer(ModEntities.ASH_FIGURE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ASH_FIGURE, "ash_figure", 0.4F, Animations::ashFigure, null));
         event.registerEntityRenderer(ModEntities.DEATH_DOUBLE.get(), ctx -> new SilhouetteRenderer<>(ctx, "death_double"));
         event.registerEntityRenderer(ModEntities.CITADEL_STATUE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.STATUE, "citadel_statue", 0.5F, Animations::statue,
                 (e, st) -> st.variant = Math.floorMod((int) Math.floor(e.getX() * 3) * 31 + (int) Math.floor(e.getZ() * 3) * 17, 3)));
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
-        event.registerEntityRenderer(ModEntities.LAMP_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "lamp_keeper", 0.5F, Animations::shadowVillager, null));
+        event.registerEntityRenderer(ModEntities.LAMP_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LAMP_KEEPER, "lamp_keeper", 0.5F, Animations::lampKeeper, null));
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null));
-        event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new SilhouetteRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));
+        event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new MirrorRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));
         event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null));
         event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.PRIMORDIAL_SHADOW, "primordial_shadow", 1.0F, Animations::primordialShadow, null));
         event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LIGHT_EATER, "light_eater", 0.3F,
@@ -65,6 +66,9 @@ public final class UmbraClient {
         event.registerLayerDefinition(ModLayers.PRIMORDIAL_SHADOW, GeneratedModels::primordialShadow);
         event.registerLayerDefinition(ModLayers.SHADOW_VILLAGER, GeneratedModels::shadowVillager);
         event.registerLayerDefinition(ModLayers.LURKER, GeneratedModels::lurker);
+        event.registerLayerDefinition(ModLayers.MIMICKER, GeneratedModels::mimicker);
+        event.registerLayerDefinition(ModLayers.LAMP_KEEPER, GeneratedModels::lampKeeper);
+        event.registerLayerDefinition(ModLayers.ASH_FIGURE, GeneratedModels::ashFigure);
     }
 
     /** Game-bus client events. */
@@ -118,6 +122,11 @@ public final class UmbraClient {
             event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.umbra.despair_blade.bonus", String.format("%.1f", bonus))
                     .withStyle(net.minecraft.ChatFormatting.DARK_PURPLE));
         }
+    }
+
+    @SubscribeEvent
+    static void clientExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        ArmorClient.register(event);
     }
 
     @SubscribeEvent

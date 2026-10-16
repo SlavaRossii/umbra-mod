@@ -23,9 +23,40 @@ import net.minecraft.world.level.Level;
  * The player's shadow. It has no AI of its own: {@link ShadowManager} walks it along the player's trail.
  * It cannot be hurt by ordinary weapons; hitting it while holding a light source dispels it.
  */
-public class ShadowEntity extends Monster implements LightSensitive {
+public class ShadowEntity extends Monster implements LightSensitive, dev.umbra.util.Mirrored {
     private boolean managed;
     private boolean ally;
+    private static final net.minecraft.network.syncher.EntityDataAccessor<String> MIRROR =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(ShadowEntity.class, net.minecraft.network.syncher.EntityDataSerializers.STRING);
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> ALLY =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(ShadowEntity.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(MIRROR, "");
+        builder.define(ALLY, false);
+    }
+
+    /** It is somebody's shadow: it wears their shape. */
+    void mirror(java.util.UUID owner) {
+        this.entityData.set(MIRROR, owner.toString());
+    }
+
+    @Override
+    public java.util.UUID mirrorOf() {
+        String s = this.entityData.get(MIRROR);
+        try {
+            return s.isEmpty() ? null : java.util.UUID.fromString(s);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public int mirrorKind() {
+        return this.entityData.get(ALLY) ? 1 : 0;
+    }
 
     public ShadowEntity(EntityType<? extends ShadowEntity> type, Level level) {
         super(type, level);
@@ -49,6 +80,7 @@ public class ShadowEntity extends Monster implements LightSensitive {
     /** A freed shadow: fights for its player, cannot be hurt or dispelled. */
     void makeAlly() {
         this.ally = true;
+        this.entityData.set(ALLY, true);
     }
 
     public boolean isAlly() {

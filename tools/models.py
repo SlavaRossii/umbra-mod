@@ -386,6 +386,13 @@ def primordial_shadow():
     body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-5, -12, -3, 10, 12, 6, void)])
     m.part("head", body, (0, -12, 0), (0, 0, 0), [C(-4, -8, -4, 8, 8, 8, head),
                                                  C(-5, -10, -1, 2, 4, 2, void), C(3, -10, -1, 2, 4, 2, void)])
+    m.part("chest", body, (0, -12, 0), (0, 0, 0), [C(-6, 0, -3.5, 12, 6, 7, void)])
+    m.part("crown", "head", (0, -8, 0), (0, 0, 0), [C(-4, -3, -1, 1, 3, 1, smoke), C(3, -3, -1, 1, 3, 1, smoke),
+                                                   C(-2, -4, -2, 1, 4, 1, smoke), C(1, -4, -2, 1, 4, 1, smoke), C(-0.5, -5, -3, 1, 5, 1, smoke)])
+    for i, (x, y, yaw) in enumerate(((-3, -10, -0.6), (3, -10, 0.6), (-4, -6, -1.0), (4, -6, 1.0), (-2, -3, -0.3), (2, -3, 0.3))):
+        a = m.part(f"tendril{i}_a", body, (x, y, 3), (0.9, yaw, 0), [C(-1.5, -1.5, 0, 3, 3, 7, smoke)])
+        b = m.part(f"tendril{i}_b", a, (0, 0, 7), (0.3, 0, 0), [C(-1, -1, 0, 2, 2, 7, smoke)])
+        m.part(f"tendril{i}_c", b, (0, 0, 7), (0.3, 0, 0), [C(-0.5, -0.5, 0, 1, 1, 6, void)])
     m.part("arm_r", body, (-6, -11, 0), (0, 0, 0.1), [C(-2, -1, -2, 3, 15, 4, void)])
     m.part("arm_l", body, (6, -11, 0), (0, 0, -0.1), [C(-1, -1, -2, 3, 15, 4, void)])
     for s, name in ((-1, "wing_r"), (1, "wing_l")):
@@ -431,8 +438,87 @@ def lurker():
     return m
 
 
+def mimicker():
+    """A chest, until it is not: legs folded away and lid shut while it waits (see Animations.mimicker)."""
+    m = Model("mimicker")
+    def planks(px, x0, y0, w, h, rnd):
+        for x in range(x0, x0 + w):
+            for y in range(y0, y0 + h):
+                if x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1):
+                    px[x, y] = (62, 40, 20, 255)
+                elif (y - y0) % 4 == 0:
+                    px[x, y] = (110, 74, 38, 255)
+    wood = P((150, 104, 56, 255), 9, front=planks, back=planks, left=planks, right=planks, up=planks)
+    lidp = P((156, 110, 60, 255), 9, front=combine(planks, latch((200, 200, 190, 255))), back=planks, left=planks, right=planks, up=planks)
+    inside = P((120, 18, 30, 255), 10)
+    tooth = P((236, 230, 214, 255), 4)
+    leg = P((52, 34, 22, 255), 8)
+    eye = P((255, 236, 150, 255), 6)
+    body = m.part("body", "root", (0, 24, 0), (0, 0, 0), [C(-7, -10, -7, 14, 10, 14, wood)])
+    m.part("tongue", body, (0, -10, 0), (0, 0, 0), [C(-2, -1, -6, 4, 1, 9, inside)])
+    lid = m.part("lid", body, (0, -10, 7), (0, 0, 0), [C(-7, -5, -14, 14, 5, 14, lidp),
+                                                       C(-1, -2, -15, 2, 4, 1, P((200, 200, 190, 255), 4))])
+    for i in range(6):
+        m.part(f"tooth{i}", lid, (-6 + i * 2.4, 0, -13), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 2, 1, tooth)])
+        m.part(f"fang{i}", body, (-6 + i * 2.4, -10, -6), (0, 0, 0), [C(-0.5, -2, -0.5, 1, 2, 1, tooth)])
+    m.part("eyes", lid, (0, 0, -7), (0, 0, 0), [C(-4, -1, -4, 2, 1, 2, eye), C(2, -1, -4, 2, 1, 2, eye)])
+    for i, z in enumerate((-4, 4)):
+        leg_pair(m, f"leg_r{i}", body, (-7, -3, z), -1, 7, 2, leg, 0.3, 0.5, 0.0, 15)
+        leg_pair(m, f"leg_l{i}", body, (7, -3, z), 1, 7, 2, leg, 0.3, 0.5, 0.0, 15)
+    return m
+
+
+def lamp_keeper():
+    """Yan, the keeper of the lighthouse: an old man in a hood, a white beard, a lantern on a pole."""
+    m = Model("lamp_keeper")
+    coat = P((58, 66, 84, 255), 9, front=stripes((44, 50, 66, 255), 5, True))
+    hood = P((50, 58, 74, 255), 8)
+    face = P((196, 160, 132, 255), 6, front=combine(eyes((40, 60, 80, 255), 0.3, 0.2, 1),
+                                                     lambda px, x0, y0, w, h, r: [px.__setitem__((x, y), (232, 232, 226, 255))
+                                                                                  for x in range(x0, x0 + w) for y in range(y0 + h // 2 + 1, y0 + h)]))
+    beard = P((230, 230, 224, 255), 6)
+    boots = P((44, 34, 26, 255), 6)
+    brass = P((190, 150, 70, 255), 10)
+    pole = P((96, 70, 44, 255), 8)
+    glow = P((215, 250, 255, 255), 6)
+    m.part("legs", "root", (0, 12, 0), (0, 0, 0), [C(-4, 0, -3, 8, 10, 6, coat), C(-4, 10, -3.5, 8, 2, 7, boots)])
+    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-4.5, -12, -3, 9, 12, 6, coat)])
+    head = m.part("head", body, (0, -12, 0), (0, 0, 0), [C(-4, -8, -4, 8, 8, 8, face), C(-4.5, -9, -4.5, 9, 4, 9, hood),
+                                                        C(-4.5, -5, 0.5, 9, 6, 4, hood)])
+    m.part("nose", head, (0, -3, -4), (0, 0, 0), [C(-1, -1, -2, 2, 3, 2, face)])
+    m.part("beard", head, (0, 0, -4), (0, 0, 0), [C(-3, -1, -1, 6, 5, 1, beard), C(-2, 4, -1, 4, 2, 1, beard)])
+    m.part("arm_l", body, (5.5, -11, 0), (0, 0, -0.05), [C(-1.5, -1, -1.5, 3, 11, 3, coat)])
+    arm = m.part("arm_r", body, (-5.5, -11, 0), (-0.6, 0, 0.05), [C(-1.5, -1, -1.5, 3, 11, 3, coat)])
+    staff = m.part("staff", arm, (0, 10, -0.5), (0.6, 0, 0), [C(-0.5, -18, -0.5, 1, 24, 1, pole), C(-0.5, -18, -4, 1, 1, 4, pole)])
+    lamp = m.part("lantern", staff, (0, -17, -3.5), (0, 0, 0), [C(-1.5, 0, -1.5, 3, 1, 3, brass), C(-1, 1, -1, 2, 3, 2, glow),
+                                                               C(-1.5, 4, -1.5, 3, 1, 3, brass)])
+    return m
+
+
+def ash_figure():
+    """A person made of ash, crumbling: one arm broken off at the elbow, the head bowed, gaps in the chest."""
+    m = Model("ash_figure")
+    def cracks(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 13 + h * 7)
+        for _ in range(max(2, w * h // 14)):
+            x, y = x0 + r.randint(0, w - 1), y0 + r.randint(0, h - 1)
+            px[x, y] = (255, 120, 40, 255) if r.random() < 0.25 else (34, 32, 32, 255)
+    ash = P((112, 108, 104, 255), 14, front=cracks, back=cracks, left=cracks, right=cracks)
+    dark = P((80, 76, 74, 255), 12, front=cracks)
+    face = P((104, 100, 98, 255), 10, front=combine(eyes((28, 24, 24, 255), 0.45, 0.22, 1), mouth((40, 34, 32, 255), (60, 54, 50, 255), 0.75, 0.4)))
+    m.part("leg_r", "root", (-2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 12, 4, ash)])
+    m.part("leg_l", "root", (2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 9, 4, dark), C(-1.5, 9, -1.5, 3, 3, 3, ash)])
+    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-4, -12, -2, 8, 7, 4, ash), C(-4, -5, -2, 3, 5, 4, ash),
+                                                         C(1, -5, -2, 3, 5, 4, dark)])
+    m.part("head", body, (0, -12, 0), (0.35, 0, 0.1), [C(-4, -8, -4, 8, 8, 8, face)])
+    m.part("arm_r", body, (-5, -11, 0), (0.1, 0, 0.08), [C(-2, -1, -2, 4, 12, 4, ash)])
+    m.part("arm_l", body, (5, -11, 0), (-0.2, 0, -0.15), [C(-2, -1, -2, 4, 6, 4, dark)])
+    m.part("crumbs", "root", (3, 24, -2), (0, 0.4, 0), [C(-1, -1, -1, 2, 1, 2, dark), C(1, -1, 1, 1, 1, 1, ash)])
+    return m
+
+
 MODELS = [crawler, blind, light_eater, shade, statue, keeper, watcher, mimic_queen, shepherd, architect,
-          primordial_shadow, shadow_villager, lurker]
+          primordial_shadow, shadow_villager, lurker, mimicker, lamp_keeper, ash_figure]
 
 
 # ------------------------------------------------------------------ UV packing + painting

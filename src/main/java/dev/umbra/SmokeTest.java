@@ -308,7 +308,7 @@ final class SmokeTest {
         level.setBlock(LUMINITE, ModBlocks.LUMINITE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
         eater = spawn(level, ModEntities.LIGHT_EATER.get(), PLATFORM.offset(3, 1, 0));
         check(crawler != null && blind != null && mimicker != null && eater != null, "all creatures can be created");
-        check(mimicker != null && mimicker.isHidden(), "the mimicker starts invisible");
+        check(mimicker != null && mimicker.isHidden(), "the mimicker starts as a chest");
     }
 
     private static void testShadeLit(ServerLevel level) {
@@ -324,6 +324,10 @@ final class SmokeTest {
         check(crawler != null && crawler.isAlive(), "crawler lives and ticks");
         check(blind != null && blind.isAlive() && blind.getTarget() == null, "the blind one does not see anyone");
         check(mimicker != null && mimicker.isAlive(), "mimicker lives and ticks");
+        if (mimicker != null) {
+            mimicker.reveal(level, null);
+            check(!mimicker.isHidden(), "touched, the chest shows its legs");
+        }
         check(eater != null && eater.isAlive(), "light eater lives and ticks");
         check(!level.getBlockState(TORCH).is(Blocks.TORCH), "the light eater ate the torch");
         check(level.getBlockState(LUMINITE).is(ModBlocks.LUMINITE_BLOCK.get()), "the light eater left the luminite next to it alone");
@@ -1272,8 +1276,8 @@ final class SmokeTest {
         var options = dev.umbra.craft.EchoAltarBlock.candidates(level, sword, 3);
         check(!options.isEmpty(), "a sword can take something from the altar (" + options.size() + ")");
         fake.experienceLevel = 30;
-        fake.getInventory().add(new ItemStack(ModItems.ECHO_QUARTZ.get(), 8));
         fake.setItemInHand(InteractionHand.MAIN_HAND, sword);
+        fake.getInventory().add(new ItemStack(ModItems.ECHO_QUARTZ.get(), 8));
         var hit = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(a), net.minecraft.core.Direction.UP, a, false);
         level.getBlockState(a).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hit);
         ItemStack after = fake.getMainHandItem();

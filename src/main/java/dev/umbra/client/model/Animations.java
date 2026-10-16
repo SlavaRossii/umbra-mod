@@ -216,6 +216,14 @@ public final class Animations {
         p.apply("wing_r_tip").zRot += Mth.sin(t * 0.1F) * 0.15F;
         p.apply("wing_l_tip").zRot -= Mth.sin(t * 0.1F) * 0.15F;
         p.apply("body").y += Mth.sin(t * 0.1F) * 0.5F;
+        // the tendrils from her back never stop; they lash harder in each phase
+        for (int i = 0; i < 6; i++) {
+            float ph = i * 1.05F, a = 0.15F + phase * 0.08F;
+            p.apply("tendril" + i + "_a").xRot += Mth.sin(t * 0.09F + ph) * a;
+            p.apply("tendril" + i + "_a").yRot += Mth.cos(t * 0.07F + ph) * a;
+            p.apply("tendril" + i + "_b").xRot += Mth.sin(t * 0.09F + ph - 0.8F) * a * 1.3F;
+            p.apply("tendril" + i + "_c").xRot += Mth.sin(t * 0.09F + ph - 1.6F) * a * 1.6F;
+        }
         slam(p, st, 1.8F);
     }
 
@@ -224,5 +232,48 @@ public final class Animations {
         p.apply("legs").xRot += Mth.cos(st.walkAnimationPos * 0.6662F) * 0.15F * Math.min(1.0F, st.walkAnimationSpeed);
         // nodding while trading
         if (st.flag) p.apply("head").xRot += Mth.sin(st.ageInTicks * 0.4F) * 0.15F;
+    }
+
+    /** A chest while it waits (legs folded away, lid shut); a mouth on legs once it shows itself. */
+    public static void mimicker(Function<String, ModelPart> p, UmbraRenderState st) {
+        boolean hidden = st.flag;
+        for (int i = 0; i < 2; i++)
+            for (String side : new String[]{"r", "l"}) {
+                p.apply("leg_" + side + i + "_upper").visible = !hidden;
+            }
+        p.apply("eyes").visible = !hidden;
+        p.apply("tongue").visible = !hidden;
+        if (hidden) return;
+        float t = st.ageInTicks;
+        p.apply("body").y -= 8.0F;
+        float open = 0.35F + Mth.sin(t * 0.25F) * 0.25F + (st.attack > 0 ? Mth.sin(st.attack * Mth.PI) * 0.8F : 0);
+        p.apply("lid").xRot -= open;
+        p.apply("tongue").xRot += Mth.sin(t * 0.4F) * 0.15F;
+        float w = st.walkAnimationPos * 1.4F, s = Math.min(1.0F, st.walkAnimationSpeed);
+        for (int i = 0; i < 2; i++) {
+            float ph = i * Mth.PI;
+            p.apply("leg_r" + i + "_upper").yRot += Mth.cos(w + ph) * 0.4F * s;
+            p.apply("leg_l" + i + "_upper").yRot -= Mth.cos(w + ph) * 0.4F * s;
+            p.apply("leg_r" + i + "_upper").zRot += Math.abs(Mth.sin(w + ph)) * 0.3F * s;
+            p.apply("leg_l" + i + "_upper").zRot -= Math.abs(Mth.sin(w + ph)) * 0.3F * s;
+        }
+    }
+
+    /** Yan: an old man's slow walk, a lantern that sways on its pole. */
+    public static void lampKeeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks;
+        look(p.apply("head"), st, 1.0F);
+        p.apply("legs").xRot += Mth.cos(st.walkAnimationPos * 0.6662F) * 0.12F * Math.min(1.0F, st.walkAnimationSpeed);
+        p.apply("lantern").zRot += Mth.sin(t * 0.07F) * 0.18F;
+        p.apply("lantern").xRot += Mth.cos(t * 0.05F) * 0.1F;
+        p.apply("arm_l").zRot -= Mth.sin(t * 0.05F) * 0.04F;
+        p.apply("body").xRot += 0.08F;
+    }
+
+    /** The ash figure barely sways, as if the wind could take it apart. */
+    public static void ashFigure(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks;
+        p.apply("body").zRot += Mth.sin(t * 0.03F) * 0.02F;
+        p.apply("head").xRot += Mth.sin(t * 0.02F) * 0.03F;
     }
 }

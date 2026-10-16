@@ -20,19 +20,27 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 /**
- * Подражатель: invisible, it makes the sounds of harmless things — a cow, a villager, footsteps — to lure you close.
- * Get within a few blocks and it shows itself.
+ * Подражатель: it sits there as an ordinary chest, and makes the sounds of harmless things — a villager, a sheep,
+ * a creaking lid — to lure you close. Open it, hit it, light it up or come right up to it, and it shows itself:
+ * a mouth on spider legs. Left alone for half a minute it settles down into a chest again.
  */
 public class Mimicker extends Monster implements LightSensitive {
     private static final List<SoundEvent> LURES = List.of(
             SoundEvents.VILLAGER_AMBIENT, SoundEvents.SHEEP_AMBIENT,
             SoundEvents.STONE_STEP, SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.SPIDER_AMBIENT);
-    private static final double REVEAL_RANGE = 5.0;
+    private static final double REVEAL_RANGE = 2.5;
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> HIDDEN =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(Mimicker.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
     private int hiddenAgain;
 
     public Mimicker(EntityType<? extends Mimicker> type, Level level) {
         super(type, level);
-        this.setInvisible(true);
+    }
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HIDDEN, true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -51,7 +59,29 @@ public class Mimicker extends Monster implements LightSensitive {
     }
 
     public boolean isHidden() {
-        return this.isInvisible();
+        return this.entityData.get(HIDDEN);
+    }
+
+    private void setHidden(boolean hidden) {
+        this.entityData.set(HIDDEN, hidden);
+    }
+
+    /** A chest does not walk. */
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || isHidden();
+    }
+
+    /** Opening it is the worst idea. */
+    @Override
+    protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+        if (isHidden() && this.level() instanceof ServerLevel level) {
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, 0.8F);
+            reveal(level, player);
+            this.doHurtTarget(level, player);
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -60,19 +90,24 @@ public class Mimicker extends Monster implements LightSensitive {
         Player nearest = level.getNearestPlayer(this, 24.0);
         if (nearest != null && (nearest.isCreative() || nearest.isSpectator())) nearest = null;
         if (isHidden()) {
+            // sit square, like a chest that was put there
+            this.getNavigation().stop();
+            this.setYRot(Math.round(this.getYRot() / 90.0F) * 90.0F);
+            this.setYBodyRot(this.getYRot());
+            this.setYHeadRot(this.getYRot());
             if (nearest != null && this.tickCount % 120 == 0 && this.random.nextInt(2) == 0) {
-                SoundEvent lure = LURES.get(this.random.nextInt(LURES.size()));
+                SoundEvent lure = this.random.nextInt(3) == 0 ? SoundEvents.CHEST_CLOSE : LURES.get(this.random.nextInt(LURES.size()));
                 level.playSound(null, this.getX(), this.getY(), this.getZ(), lure, SoundSource.NEUTRAL, 1.0F, 1.0F);
             }
             if (nearest != null && nearest.distanceTo(this) < REVEAL_RANGE) reveal(level, nearest);
         } else if (this.getTarget() == null && ++hiddenAgain > 20 * 30) {
-            this.setInvisible(true);
+            setHidden(true);
             hiddenAgain = 0;
         }
     }
 
     public void reveal(ServerLevel level, Player target) {
-        this.setInvisible(false);
+        setHidden(false);
         hiddenAgain = 0;
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.2F, 0.6F);
         if (target != null) this.setTarget(target);

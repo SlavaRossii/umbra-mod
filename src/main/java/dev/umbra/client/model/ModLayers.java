@@ -19,6 +19,9 @@ public final class ModLayers {
     public static final ModelLayerLocation PRIMORDIAL_SHADOW = layer("primordial_shadow");
     public static final ModelLayerLocation SHADOW_VILLAGER = layer("shadow_villager");
     public static final ModelLayerLocation LURKER = layer("lurker");
+    public static final ModelLayerLocation MIMICKER = layer("mimicker");
+    public static final ModelLayerLocation LAMP_KEEPER = layer("lamp_keeper");
+    public static final ModelLayerLocation ASH_FIGURE = layer("ash_figure");
 
     private static ModelLayerLocation layer(String name) {
         return new ModelLayerLocation(Identifier.fromNamespaceAndPath(Umbra.MODID, name), "main");

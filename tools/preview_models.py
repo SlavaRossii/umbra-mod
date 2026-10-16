@@ -12,7 +12,7 @@ def rot(rx, ry, rz):
     Rx = np.array([[1,0,0],[0,cx,-sx],[0,sx,cx]]); Ry = np.array([[cy,0,sy],[0,1,0],[-sy,0,cy]]); Rz = np.array([[cz,-sz,0],[sz,cz,0],[0,0,1]])
     return Rz @ Ry @ Rx
 
-models = [f() for f in m.MODELS]
+models = [f() for f in m.MODELS if (len(sys.argv) < 3 or f.__name__ in sys.argv[2].split(","))]
 cols = 4
 rows = (len(models) + cols - 1) // cols
 fig = plt.figure(figsize=(16, 4 * rows))

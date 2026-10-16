@@ -155,6 +155,7 @@ public final class ShadowManager {
             ally = ModEntities.SHADOW.get().create(level, EntitySpawnReason.EVENT);
             if (ally == null) return;
             ally.makeAlly();
+            ally.mirror(player.getUUID());
             ally.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0.0F);
             level.addFreshEntity(ally);
             s.shadowId = ally.getUUID();
@@ -238,6 +239,7 @@ public final class ShadowManager {
         ShadowEntity shadow = ModEntities.SHADOW.get().create(level, EntitySpawnReason.EVENT);
         if (shadow == null) return false;
         shadow.markManaged();
+        shadow.mirror(player.getUUID());
         shadow.snapTo(start.x, start.y, start.z, player.getYRot(), 0.0F);
         level.addFreshEntity(shadow);
         s.shadowId = shadow.getUUID();

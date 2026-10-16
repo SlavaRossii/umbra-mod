@@ -23,7 +23,7 @@ import java.util.ArrayDeque;
 /**
  * Двойник: takes your weapon and armour, and steps where you stood three seconds ago.
  */
-public class Doppelganger extends UmbraBoss implements LightSensitive {
+public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra.util.Mirrored {
     private static final int ECHO_DELAY = 60;
     private final ArrayDeque<Vec3> trail = new ArrayDeque<>();
     private boolean copied;
@@ -32,6 +32,30 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
 
     public Doppelganger(EntityType<? extends Doppelganger> type, Level level) {
         super(type, level, BossEvent.BossBarColor.BLUE);
+    }
+
+    private static final net.minecraft.network.syncher.EntityDataAccessor<String> MIRROR =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(Doppelganger.class, net.minecraft.network.syncher.EntityDataSerializers.STRING);
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(MIRROR, "");
+    }
+
+    @Override
+    public java.util.UUID mirrorOf() {
+        String s = this.entityData.get(MIRROR);
+        try {
+            return s.isEmpty() ? null : java.util.UUID.fromString(s);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public int mirrorKind() {
+        return 2;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -74,6 +98,8 @@ public class Doppelganger extends UmbraBoss implements LightSensitive {
         }
         if (!copied || this.tickCount % 200 == 0) {
             copied = true;
+            // it takes your face as well as your gear
+            this.entityData.set(MIRROR, target.getUUID().toString());
             for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
                 this.setItemSlot(slot, target.getItemBySlot(slot).copy());
                 this.setDropChance(slot, 0.0F);
