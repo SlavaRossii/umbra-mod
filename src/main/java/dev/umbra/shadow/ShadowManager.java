@@ -242,7 +242,7 @@ public final class ShadowManager {
         level.addFreshEntity(shadow);
         s.shadowId = shadow.getUUID();
 
-        dev.umbra.util.Private.sound(player, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 0.35F, 0.5F);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 0.35F, 0.5F);
         player.sendOverlayMessage(Component.translatable("message.umbra.shadow_detached"));
         Sanity.add(player, Sanity.Shock.SHADOW_DETACHED);
         dev.umbra.journal.Journal.unlock(player, "shadow");

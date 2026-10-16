@@ -28,7 +28,6 @@ public final class UmbraConfig {
     public static final ModConfigSpec.DoubleValue SANITY_DRAIN = B.comment("How fast sanity drains").defineInRange("sanityDrain", 1.0, 0.0, 5.0);
     public static final ModConfigSpec.DoubleValue SANITY_REGEN = B.comment("How fast sanity recovers").defineInRange("sanityRegen", 1.0, 0.0, 5.0);
     public static final ModConfigSpec.DoubleValue SHADOW_FREQUENCY = B.comment("How often the shadow detaches").defineInRange("shadowFrequency", 1.0, 0.0, 10.0);
-    public static final ModConfigSpec.BooleanValue BOSS_PARTY = B.comment("Server: bosses gain health for every extra player fighting them (+60% each, up to x3)").define("bossesScaleWithParty", true);
     public static final ModConfigSpec.IntValue MAZE_PATTERN_SECONDS = B.comment("How long a quantum maze keeps one change pattern").defineInRange("mazePatternSeconds", 30, 5, 600);
 
     static {

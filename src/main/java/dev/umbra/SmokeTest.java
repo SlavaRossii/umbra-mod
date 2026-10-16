@@ -75,8 +75,6 @@ final class SmokeTest {
     /** The real-player part (see SmokeLife) runs from here for 400 ticks, then the report is written. */
     private static final int LIFE_FROM = 680;
     private static final int LIFE_END = LIFE_FROM + 480;
-    /** Then the server part (see SmokeMulti): two players at once. */
-    private static final int MULTI_END = LIFE_END + 80;
 
     private static int tick;
     private static final List<String> failures = new ArrayList<>();
@@ -137,10 +135,9 @@ final class SmokeTest {
                 case 672 -> startEchoTest(level);
                 case 678 -> finishEchoTest();
                 case 679 -> testLighthouseKeeper(server);
-                case MULTI_END -> finish(server);
+                case LIFE_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
-                    if (tick > LIFE_END && tick < MULTI_END) SmokeMulti.tick(server, level, tick - LIFE_END);
                 }
             }
         } catch (Throwable t) {

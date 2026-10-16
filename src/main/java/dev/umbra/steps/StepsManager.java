@@ -80,7 +80,7 @@ public final class StepsManager {
         double horiz = Math.sqrt(delta.horizontalDistanceSqr());
         if (horiz > 0.05) s.moveDir = UmbraUtil.horizontal(delta);
 
-        playPending(level, player, s);
+        playPending(level, s);
         if (dev.umbra.light.WardBlock.protects(player)) return;
 
         if (!s.active) {
@@ -125,7 +125,7 @@ public final class StepsManager {
         return UmbraUtil.isNight(level) || underground;
     }
 
-    private static void playPending(ServerLevel level, ServerPlayer player, State s) {
+    private static void playPending(ServerLevel level, State s) {
         Iterator<Echo> it = s.pending.iterator();
         while (it.hasNext()) {
             Echo e = it.next();
@@ -136,14 +136,13 @@ public final class StepsManager {
             BlockState state = level.getBlockState(ground);
             SoundEvent step = state.isAir() ? SoundEvents.STONE_STEP : state.getSoundType().getStepSound();
             float volume = state.getSoundType().getVolume() * 0.3F;
-            // only the one being followed hears them
-            dev.umbra.util.Private.sound(player, step, SoundSource.HOSTILE, e.pos().x, e.pos().y, e.pos().z, volume, state.getSoundType().getPitch());
+            level.playSound(null, e.pos().x, e.pos().y, e.pos().z, step, SoundSource.HOSTILE, volume, state.getSoundType().getPitch());
         }
     }
 
     private static void finale(ServerLevel level, ServerPlayer player, State s) {
         Vec3 p = player.getEyePosition();
-        dev.umbra.util.Private.sound(player, SoundEvents.WARDEN_NEARBY_CLOSEST, SoundSource.HOSTILE, p.x, p.y, p.z, 0.6F, 1.6F);
+        level.playSound(null, p.x, p.y, p.z, SoundEvents.WARDEN_NEARBY_CLOSEST, SoundSource.HOSTILE, 0.6F, 1.6F);
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 4, 0));
         Sanity.add(player, Sanity.Shock.STEPS_FINALE);
         dev.umbra.journal.Journal.unlock(player, "steps");

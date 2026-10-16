@@ -19,7 +19,7 @@ import java.util.UUID;
  * A figure only a frightened mind sees. It stands still and watches you, and dissolves when you
  * look straight at it, get close, hit it, or light it up.
  */
-public class HallucinationEntity extends Monster implements LightSensitive, dev.umbra.util.Private.Vision {
+public class HallucinationEntity extends Monster implements LightSensitive {
     private static final int MAX_AGE = 20 * 30;
     private UUID owner;
     private int stared;
@@ -36,17 +36,6 @@ public class HallucinationEntity extends Monster implements LightSensitive, dev.
 
     public void setOwner(Player player) {
         this.owner = player.getUUID();
-    }
-
-    @Override
-    public UUID seer() {
-        return owner;
-    }
-
-    /** Only the frightened mind sees it: other players' clients are never told about it. */
-    @Override
-    public boolean broadcastToPlayer(net.minecraft.server.level.ServerPlayer player) {
-        return shownTo(player);
     }
 
     @Override
@@ -79,8 +68,8 @@ public class HallucinationEntity extends Monster implements LightSensitive, dev.
     }
 
     public void vanish() {
-        if (this.level() instanceof ServerLevel level && owner != null && level.getPlayerByUUID(owner) instanceof net.minecraft.server.level.ServerPlayer seer) {
-            dev.umbra.util.Private.particles(seer, ParticleTypes.SMOKE, this.getX(), this.getY() + 1.0, this.getZ(), 15, 0.2, 0.6, 0.2, 0.01);
+        if (this.level() instanceof ServerLevel level) {
+            level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1.0, this.getZ(), 15, 0.2, 0.6, 0.2, 0.01);
         }
         this.discard();
     }

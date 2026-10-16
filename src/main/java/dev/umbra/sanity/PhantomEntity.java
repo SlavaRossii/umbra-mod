@@ -28,7 +28,7 @@ import java.util.UUID;
  * </ul>
  * All of them flicker, and none of them drop anything.
  */
-public class PhantomEntity extends Monster implements LightSensitive, dev.umbra.util.Private.Vision {
+public class PhantomEntity extends Monster implements LightSensitive {
     public enum Mode { WATCH, AMBUSH, SHADOW }
 
     private Mode mode = Mode.WATCH;
@@ -61,33 +61,6 @@ public class PhantomEntity extends Monster implements LightSensitive, dev.umbra.
 
     public Mode mode() {
         return mode;
-    }
-
-    @Override
-    public UUID seer() {
-        return owner;
-    }
-
-    /** A phantom exists for one player only. */
-    @Override
-    public boolean broadcastToPlayer(net.minecraft.server.level.ServerPlayer player) {
-        return shownTo(player);
-    }
-
-    private net.minecraft.server.level.ServerPlayer seerPlayer() {
-        return owner != null && this.level() instanceof ServerLevel level && level.getPlayerByUUID(owner) instanceof net.minecraft.server.level.ServerPlayer p ? p : null;
-    }
-
-    /** Its growls and its hurt sounds, too, are heard by the one who imagines it. */
-    @Override
-    public void playSound(net.minecraft.sounds.SoundEvent sound, float volume, float pitch) {
-        if (this.isSilent()) return;
-        if (this.level().isClientSide()) {
-            super.playSound(sound, volume, pitch);
-            return;
-        }
-        var seer = seerPlayer();
-        if (seer != null) dev.umbra.util.Private.sound(seer, sound, this.getSoundSource(), getX(), getY(), getZ(), volume, pitch);
     }
 
     @Override
@@ -146,8 +119,7 @@ public class PhantomEntity extends Monster implements LightSensitive, dev.umbra.
     private void ambush(ServerLevel level, Player player) {
         face(player);
         if (this.tickCount == 1) {
-            if (player instanceof net.minecraft.server.level.ServerPlayer sp)
-                dev.umbra.util.Private.sound(sp, SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, getX(), getY(), getZ(), 1.2F, 0.6F + this.random.nextFloat() * 0.3F);
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.2F, 0.6F + this.random.nextFloat() * 0.3F);
             Sanity.add(player, -2.0F);
         }
         Vec3 d = player.getEyePosition().subtract(this.getEyePosition());
@@ -184,8 +156,7 @@ public class PhantomEntity extends Monster implements LightSensitive, dev.umbra.
     }
 
     public void vanish(ServerLevel level) {
-        var seer = seerPlayer();
-        if (seer != null) dev.umbra.util.Private.particles(seer, ParticleTypes.SMOKE, getX(), getY() + 1.0, getZ(), 15, 0.2, 0.6, 0.2, 0.01);
+        level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 1.0, getZ(), 15, 0.2, 0.6, 0.2, 0.01);
         this.discard();
     }
 
