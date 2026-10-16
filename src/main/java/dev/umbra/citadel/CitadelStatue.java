@@ -88,6 +88,8 @@ public class CitadelStatue extends Monster implements LightSensitive {
             this.setDeltaMovement(0, Math.min(0, this.getDeltaMovement().y), 0);
         } else if (was && this.getTarget() != null) {
             level.playSound(null, getX(), getY(), getZ(), SoundEvents.GRINDSTONE_USE, SoundSource.HOSTILE, 0.6F, 0.5F);
+            // the stone lets go: set off at once instead of waiting for the attack goal to think of a new path
+            this.getNavigation().moveTo(this.getTarget(), 1.0);
         }
     }
 
