@@ -45,7 +45,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 400.0)
+                .add(Attributes.MAX_HEALTH, 600.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.ATTACK_DAMAGE, 12.0)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
@@ -133,9 +133,17 @@ public class Architect extends UmbraBoss implements LightSensitive {
         super.remove(reason);
     }
 
+    public static final float STONE_SKIN = 0.35F;
+
+    /** Stone: blows glance off him unless he is winded after one of his great moves. */
+    @Override
+    protected float weakness(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+        return isStunned() ? 1.0F : STONE_SKIN;
+    }
+
     @Override
     public void onLit(ServerLevel level, Player source) {
-        stun(STUN_TICKS);
-        this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 8.0F);
+        lightStun(level);
+        lightHurt(level, source, 8.0F);
     }
 }

@@ -60,7 +60,7 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 100.0)
+                .add(Attributes.MAX_HEALTH, 150.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.33)
                 .add(Attributes.ATTACK_DAMAGE, 4.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0);
@@ -113,6 +113,19 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
             this.teleportTo(echo.x, echo.y, echo.z);
             level.sendParticles(ParticleTypes.REVERSE_PORTAL, echo.x, echo.y + 1, echo.z, 25, 0.3, 0.8, 0.3, 0.05);
         }
+    }
+
+    public static final float FACE_TO_FACE = 0.3F;
+
+    /** Face to face it parries you like a mirror; strike it from behind (or while it is winded). */
+    @Override
+    protected float weakness(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+        if (isStunned() || source.getEntity() == null) return 1.0F;
+        Vec3 look = Vec3.directionFromRotation(0.0F, this.yBodyRot);
+        Vec3 to = source.getEntity().position().subtract(this.position());
+        to = new Vec3(to.x, 0, to.z);
+        if (to.lengthSqr() < 1.0E-4) return 1.0F;
+        return look.dot(to.normalize()) > -0.2 ? FACE_TO_FACE : 1.0F;
     }
 
     @Override

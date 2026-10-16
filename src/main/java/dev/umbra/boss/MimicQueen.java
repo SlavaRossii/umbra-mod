@@ -50,7 +50,7 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 150.0)
+                .add(Attributes.MAX_HEALTH, 225.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.ATTACK_DAMAGE, 7.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
@@ -139,6 +139,15 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
         level.sendParticles(ParticleTypes.SQUID_INK, this.getX(), this.getY() + 1, this.getZ(), 30, 0.5, 1, 0.5, 0.05);
     }
 
+    public static final float BROOD_SHIELD = 0.25F;
+
+    /** Her brood shields her: while any of it lives, blows barely reach her. */
+    @Override
+    protected float weakness(ServerLevel level, DamageSource source) {
+        for (UUID id : brood) if (level.getEntity(id) instanceof net.minecraft.world.entity.LivingEntity e && e.isAlive()) return BROOD_SHIELD;
+        return 1.0F;
+    }
+
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (isDisguised()) return false;
@@ -153,6 +162,6 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
     @Override
     public void onLit(ServerLevel level, Player source) {
         if (isDisguised()) reveal(level);
-        this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 4.0F);
+        lightHurt(level, source, 4.0F);
     }
 }

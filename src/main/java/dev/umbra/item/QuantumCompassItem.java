@@ -25,6 +25,14 @@ public class QuantumCompassItem extends Item {
         if (core == null) {
             if (dev.umbra.underside.Underside.is(server) && !dev.umbra.citadel.Citadel.inPocket(player)) {
                 player.sendOverlayMessage(dev.umbra.citadel.CitadelGateFeature.describeNearest(server, player, "message.umbra.compass_citadel"));
+            } else if (server.dimension() == net.minecraft.world.level.Level.OVERWORLD) {
+                // outside a maze the needle leans towards the nearest one
+                BlockPos m = dev.umbra.quantum.QuantumMazeFeature.nearest(server.getSeed(), player.getBlockX(), player.getBlockZ());
+                double dx = m.getX() - player.getX(), dz = m.getZ() - player.getZ();
+                String[] dirs = {"s", "sw", "w", "nw", "n", "ne", "e", "se"};
+                String dir = dirs[(int) Math.floorMod(Math.round(Math.toDegrees(Math.atan2(-dx, dz)) / 45.0), 8)];
+                player.sendOverlayMessage(Component.translatable("message.umbra.compass_maze", (int) Math.round(Math.sqrt(dx * dx + dz * dz)),
+                        Component.translatable("direction.umbra." + dir)));
             } else {
                 player.sendOverlayMessage(Component.translatable("message.umbra.compass_none"));
             }

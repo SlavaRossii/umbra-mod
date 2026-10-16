@@ -2,6 +2,7 @@ package dev.umbra.boss;
 
 import dev.umbra.light.LightSensitive;
 import dev.umbra.registry.ModBlocks;
+import net.minecraft.world.level.block.Blocks;
 import dev.umbra.registry.ModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -41,7 +42,7 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 160.0)
+                .add(Attributes.MAX_HEALTH, 240.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.24)
                 .add(Attributes.ATTACK_DAMAGE, 6.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
@@ -72,8 +73,58 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         }
     }
 
+    /** The three soul lanterns he lights round himself when he wakes: while one still burns, his flock shields him. */
+    private final java.util.List<BlockPos> lanterns = new java.util.ArrayList<>();
+    private boolean lit;
+    public static final float FLOCK_SHIELD = 0.2F;
+
+    public java.util.List<BlockPos> lanterns() {
+        return lanterns;
+    }
+
+    public int lanternsBurning(ServerLevel level) {
+        int n = 0;
+        for (BlockPos p : lanterns) if (level.getBlockState(p).is(Blocks.SOUL_LANTERN)) n++;
+        return n;
+    }
+
+    /** On a post of deepslate, at the points of a triangle seven blocks round him. */
+    public void lightLanterns(ServerLevel level) {
+        lit = true;
+        lanterns.clear();
+        for (int i = 0; i < 3; i++) {
+            double a = i * Math.PI * 2 / 3 + this.random.nextDouble() * 0.5;
+            BlockPos at = dev.umbra.sanity.Hallucinations.findStandable(level,
+                    this.blockPosition().offset((int) Math.round(Math.cos(a) * 7), 0, (int) Math.round(Math.sin(a) * 7)), 6);
+            if (at == null) continue;
+            level.setBlock(at, Blocks.COBBLED_DEEPSLATE_WALL.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(at.above(), Blocks.SOUL_LANTERN.defaultBlockState(), Block.UPDATE_ALL);
+            lanterns.add(at.above());
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME, at.getX() + 0.5, at.getY() + 1.5, at.getZ() + 0.5, 12, 0.2, 0.3, 0.2, 0.02);
+        }
+        for (var p : opponents(level)) {
+            p.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.umbra.shepherd.lanterns").withStyle(net.minecraft.ChatFormatting.DARK_PURPLE, net.minecraft.ChatFormatting.ITALIC));
+        }
+    }
+
+    @Override
+    protected float weakness(ServerLevel level, DamageSource source) {
+        return lanternsBurning(level) > 0 ? FLOCK_SHIELD : 1.0F;
+    }
+
     @Override
     protected void bossTick(ServerLevel level) {
+        if (!lit) lightLanterns(level);
+        if (lanternsBurning(level) > 0 && this.tickCount % 10 == 0) {
+            for (BlockPos p : lanterns) if (level.getBlockState(p).is(Blocks.SOUL_LANTERN)) {
+                // a thread of soul fire from each lantern to him
+                net.minecraft.world.phys.Vec3 from = net.minecraft.world.phys.Vec3.atCenterOf(p), to = this.position().add(0, 1.5, 0);
+                for (int i = 1; i < 6; i++) {
+                    net.minecraft.world.phys.Vec3 q = from.lerp(to, i / 6.0);
+                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.SOUL, q.x, q.y, q.z, 1, 0, 0, 0, 0);
+                }
+            }
+        }
         if (noShroud > 0) noShroud--;
         else if (this.tickCount % 40 == 0) weaveShroud(level);
 

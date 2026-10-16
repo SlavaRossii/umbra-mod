@@ -629,5 +629,7 @@
   "block.umbra.gloom_anvil.whole": "Чинить нечего.",
   "block.umbra.gloom_anvil.foreign": "Мрачная наковальня не знает этой вещи: она чинит только снаряжение Умбры.",
   "block.umbra.gloom_anvil.need": "Для починки нужен %s (или эхо-кварц) в инвентаре.",
-  "block.umbra.luminite_lantern_block": "Люминитовый светильник"
+  "block.umbra.luminite_lantern_block": "Люминитовый светильник",
+  "message.umbra.compass_maze": "Стрелка тянется к лабиринту: ~%s блоков, %s.",
+  "message.umbra.shepherd.lanterns": "Пастух зажигает фонари душ. Пока они горят, стадо заслоняет его."
 }

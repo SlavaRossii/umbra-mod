@@ -54,6 +54,12 @@ public abstract class UmbraBoss extends Monster {
 
     @Override
     public void aiStep() {
+        if (guard > 0 && this.level() instanceof ServerLevel g) {
+            guard--;
+            this.heal(this.getMaxHealth() * GUARD_HEAL / GUARD_TICKS);
+            if (guard % 5 == 0) g.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, this.getX(), this.getY() + this.getBbHeight() * 0.5, this.getZ(), 6, 0.8, 1.0, 0.8, 0.02);
+            bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        }
         if (stun > 0 && this.level() instanceof ServerLevel level) {
             stun--;
             this.getNavigation().stop();
@@ -73,7 +79,46 @@ public abstract class UmbraBoss extends Monster {
 
     @Override
     public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+        if (guard > 0 && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.ENCHANTED_HIT, this.getX(), this.getY() + this.getBbHeight() * 0.6, this.getZ(), 8, 0.5, 0.6, 0.5, 0.1);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.SHIELD_BLOCK.value(), net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.6F);
+            return false;
+        }
+        amount *= weakness(level, source);
         return super.hurtServer(level, source, stun > 0 ? amount * STUN_DAMAGE : amount);
+    }
+
+    /** How much of a blow lands, from this boss's own rules (its weak point). 1 = all of it. */
+    protected float weakness(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+        return 1.0F;
+    }
+
+    // --- 2.4: a new phase is a second wind; light helps, it does not kill ---------------------------------
+    /** Ticks of the shield after a phase change, and how much health comes back during it. */
+    public static final int GUARD_TICKS = 80;
+    public static final float GUARD_HEAL = 0.25F;
+    /** A flash of light never takes more than this share of a boss's health, and stuns it at most this often. */
+    public static final float LIGHT_CAP = 0.02F;
+    public static final int LIGHT_STUN_COOLDOWN = 200;
+    private int guard;
+    private long lightStunAt = -100000;
+
+    public boolean isGuarded() {
+        return guard > 0;
+    }
+
+    /** Light hurts, a little: at most {@link #LIGHT_CAP} of the boss's health per flash. */
+    protected void lightHurt(ServerLevel level, net.minecraft.world.entity.player.Player source, float amount) {
+        float dmg = Math.min(amount, this.getMaxHealth() * LIGHT_CAP);
+        this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), dmg);
+    }
+
+    /** Light stuns, but not over and over: once in {@link #LIGHT_STUN_COOLDOWN} ticks. */
+    protected boolean lightStun(ServerLevel level) {
+        if (level.getGameTime() - lightStunAt < LIGHT_STUN_COOLDOWN) return false;
+        lightStunAt = level.getGameTime();
+        stun(STUN_TICKS);
+        return true;
     }
 
     // --- 1.8.2: shrouds are chipped away, not waited out -------------------------------------------------
@@ -114,6 +159,12 @@ public abstract class UmbraBoss extends Monster {
     protected int trackPhase(ServerLevel level) {
         int p = phase();
         if (p != lastPhase) {
+            // a second wind: shielded for a moment while a quarter of its health comes back
+            if (p > lastPhase) {
+                guard = GUARD_TICKS;
+                stun = 0;
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.BEACON_POWER_SELECT, net.minecraft.sounds.SoundSource.HOSTILE, 2.0F, 0.5F);
+            }
             lastPhase = p;
             BossMoves.phase(level, this, p);
             onPhase(level, p);

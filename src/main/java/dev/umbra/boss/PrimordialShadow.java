@@ -49,7 +49,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 600.0)
+                .add(Attributes.MAX_HEALTH, 900.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.ATTACK_DAMAGE, 14.0)
                 .add(Attributes.FOLLOW_RANGE, 64.0)
@@ -170,7 +170,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         tearShroud(level);
         if (phase() == 3) {
             // light is the only thing that truly hurts her; bypass the phase-3 check
-            super.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 25.0F);
+            super.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), Math.min(10.0F, this.getMaxHealth() * LIGHT_CAP));
         }
     }
 

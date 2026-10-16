@@ -629,5 +629,7 @@
   "block.umbra.gloom_anvil.whole": "Nothing to mend.",
   "block.umbra.gloom_anvil.foreign": "The gloom anvil does not know this: it mends only Umbra's gear.",
   "block.umbra.gloom_anvil.need": "Mending needs %s (or echo quartz) in your pack.",
-  "block.umbra.luminite_lantern_block": "Luminite Lamp"
+  "block.umbra.luminite_lantern_block": "Luminite Lamp",
+  "message.umbra.compass_maze": "The needle leans towards a maze: ~%s blocks, %s.",
+  "message.umbra.shepherd.lanterns": "The Shepherd lights his soul lanterns. While they burn, his flock shields him."
 }

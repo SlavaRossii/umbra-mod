@@ -62,6 +62,7 @@ public class Umbra {
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);
         dev.umbra.registry.ModComponents.COMPONENTS.register(modBus);
+        dev.umbra.registry.ModMenus.MENUS.register(modBus);
         dev.umbra.registry.ModSounds.SOUNDS.register(modBus);
         dev.umbra.registry.ModEffects.MOB_EFFECTS.register(modBus);
         ModTabs.TABS.register(modBus);

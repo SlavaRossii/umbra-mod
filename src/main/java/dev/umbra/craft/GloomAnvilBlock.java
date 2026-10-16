@@ -32,9 +32,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * The gloom anvil: Umbra's own smithy. Strike it with worn Umbra gear and it mends a quarter of the wear for one piece
- * of the gear's own stuff from your pack (luminite, shadow shards, gloom ingots; echo quartz mends anything of
- * Umbra's), with no experience spent. Hold a chestplate and an artifact in the other hand to pin the artifact on.
+ * The gloom anvil: Umbra's own smithy, with a window like an anvil's (see {@link GloomAnvilMenu}). Worn Umbra gear
+ * is mended by its own stuff (luminite, shadow shards, gloom ingots; echo quartz mends anything of Umbra's), a quarter
+ * of the wear for each piece, with no experience spent; an artifact is pinned onto a chestplate.
  */
 public class GloomAnvilBlock extends Block {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -73,39 +73,18 @@ public class GloomAnvilBlock extends Block {
         return ModItems.ECHO_QUARTZ.get();
     }
 
+    /** The anvil opens its window: gear on the left, its stuff (or an artifact) on the right. */
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (stack.isEmpty()) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
-        // pinning an artifact
-        ItemStack other = player.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-        String artifact = other.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : other.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : null;
-        if (artifact != null && stack.is(ItemTags.CHEST_ARMOR)) {
-            stack.set(ModComponents.ARTIFACT.get(), artifact);
-            if (!player.isCreative()) other.shrink(1);
-            strike(server, pos, 1.2F);
-            player.sendOverlayMessage(Component.translatable("block.umbra.gloom_anvil.pinned", Component.translatable("artifact.umbra." + artifact)).withStyle(ChatFormatting.GOLD));
-            return InteractionResult.SUCCESS;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            player.openMenu(new net.minecraft.world.SimpleMenuProvider((id, inv, p) -> new GloomAnvilMenu(id, inv, net.minecraft.world.inventory.ContainerLevelAccess.create(level, pos)),
+                    Component.translatable("block.umbra.gloom_anvil")));
         }
-        // mending
-        if (!stack.isDamageableItem() || !stack.isDamaged()) {
-            player.sendOverlayMessage(Component.translatable("block.umbra.gloom_anvil.whole").withStyle(ChatFormatting.GRAY));
-            return InteractionResult.FAIL;
-        }
-        Item mat = materialFor(stack);
-        if (mat == null) {
-            player.sendOverlayMessage(Component.translatable("block.umbra.gloom_anvil.foreign").withStyle(ChatFormatting.GRAY));
-            return InteractionResult.FAIL;
-        }
-        if (!player.isCreative()) {
-            if (!take(player, mat) && (mat == ModItems.ECHO_QUARTZ.get() || !take(player, ModItems.ECHO_QUARTZ.get()))) {
-                player.sendOverlayMessage(Component.translatable("block.umbra.gloom_anvil.need", new ItemStack(mat).getHoverName()).withStyle(ChatFormatting.DARK_PURPLE));
-                return InteractionResult.FAIL;
-            }
-        }
-        int mend = Math.max(1, Math.round(stack.getMaxDamage() * MEND));
-        stack.setDamageValue(Math.max(0, stack.getDamageValue() - mend));
-        strike(server, pos, 0.9F);
         return InteractionResult.SUCCESS;
     }
 

@@ -35,7 +35,7 @@ public class Watcher extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 120.0)
+                .add(Attributes.MAX_HEALTH, 180.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.42)
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
@@ -71,6 +71,7 @@ public class Watcher extends UmbraBoss implements LightSensitive {
         if (target == null) return;
         this.setTarget(target);
         int phase = trackPhase(level);
+        mirrorTick(level);
 
         if (isWatched(level)) {
             unseenTicks = 0;
@@ -111,9 +112,35 @@ public class Watcher extends UmbraBoss implements LightSensitive {
         }
     }
 
+    /** Ticks someone has been holding a mirror up to the eye. */
+    private int mirrored;
+    public static final float ARMOURED_EYE = 0.4F;
+
+    @Override
+    protected float weakness(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+        return isStunned() ? 1.0F : ARMOURED_EYE;
+    }
+
+    /** A mirror held up to the eye: its own stare comes back at it and it reels. */
+    private void mirrorTick(ServerLevel level) {
+        boolean any = false;
+        for (ServerPlayer p : opponents(level)) {
+            boolean holds = p.getMainHandItem().is(dev.umbra.registry.ModItems.MIRROR.get()) || p.getOffhandItem().is(dev.umbra.registry.ModItems.MIRROR.get());
+            Vec3 to = this.getEyePosition().subtract(p.getEyePosition()).normalize();
+            if (holds && p.getViewVector(1.0F).dot(to) > 0.85 && p.hasLineOfSight(this)) any = true;
+        }
+        mirrored = any ? mirrored + 1 : 0;
+        if (mirrored >= 40) {
+            mirrored = -60;
+            stun(STUN_TICKS + 40);
+            level.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getEyeY(), this.getZ(), 40, 0.6, 0.6, 0.6, 0.15);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GLASS_BREAK, SoundSource.HOSTILE, 1.0F, 0.5F);
+        }
+    }
+
     @Override
     public void onLit(ServerLevel level, Player source) {
         this.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 2));
-        this.hurtServer(level, source != null ? level.damageSources().playerAttack(source) : level.damageSources().magic(), 6.0F);
+        lightHurt(level, source, 6.0F);
     }
 }

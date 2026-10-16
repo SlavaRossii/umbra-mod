@@ -669,7 +669,7 @@ final class SmokeTest {
             for (BlockPos p : BlockPos.betweenClosed(c.offset(-34, -1, -34), c.offset(34, 11, 34))) {
                 BlockState s = level.getBlockState(p);
                 if (s.is(Blocks.CHEST) || s.is(Blocks.BARREL)) containers++;
-                if (s.is(Blocks.SOUL_LANTERN) || s.is(Blocks.LANTERN)) lanterns++;
+                if (s.is(Blocks.SOUL_LANTERN) || s.is(Blocks.LANTERN) || s.is(ModBlocks.LUMINITE_LANTERN_BLOCK.get())) lanterns++;
                 if (s.is(ModBlocks.DEAD_LOG.get())) logs++;
             }
             var folk = level.getEntitiesOfClass(dev.umbra.village.ShadowVillager.class, new AABB(c).inflate(12));
@@ -919,14 +919,23 @@ final class SmokeTest {
         BlockPos lamp = f.above(dev.umbra.lighthouse.LighthouseFeature.LAMP_Y);
         check(level.getBlockState(lamp).is(ModBlocks.LIGHTHOUSE_LAMP.get()), "the lighthouse has its lamp at the top");
         check(level.getBlockState(lamp).getValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL) == 0, "the lamp starts dead");
-        boolean ladders = true, backed = true;
-        for (int y = 1; y <= dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 1; y++) {
-            ladders &= level.getBlockState(f.offset(0, y, -3)).is(Blocks.LADDER);
-            backed &= level.getBlockState(f.offset(0, y, -4)).isSolid();
+        // the spiral stair: a slab in every layer from the door to the gallery, never more than half a block apart
+        int steps = 0, maxY = 0;
+        for (BlockPos p : BlockPos.betweenClosed(f.offset(-3, 1, -3), f.offset(3, dev.umbra.lighthouse.LighthouseFeature.LAMP_Y - 2, 3))) {
+            if (level.getBlockState(p).is(Blocks.STONE_BRICK_SLAB)) {
+                steps++;
+                maxY = Math.max(maxY, p.getY() - f.getY());
+            }
         }
-        check(ladders && backed, "a ladder with a wall behind it runs from the door to the lamp room");
+        check(steps > 40 && maxY >= dev.umbra.lighthouse.LighthouseFeature.LAMP_Y - 3, "a spiral stair winds up to the gallery (" + steps + " steps, top at " + maxY + ")");
+        check(dev.umbra.lighthouse.LighthouseFeature.MAX_FLOOR + dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 8 < 128, "the tower fits under the roof of the Underside");
+        int[] one = dev.umbra.lighthouse.LighthouseFeature.site(level.getSeed());
+        check(java.util.Arrays.equals(one, dev.umbra.lighthouse.LighthouseFeature.nearest(level.getSeed(), 5000, -5000)) && java.util.Arrays.equals(one, dev.umbra.lighthouse.LighthouseFeature.nearest(level.getSeed(), -3000, 0)), "there is one lighthouse in the world");
+        double far = Math.sqrt(Math.pow(one[0] * 16 + 8, 2) + Math.pow(one[1] * 16 + 8, 2));
+        check(far >= 230 && far <= 470, "it stands a few hundred blocks from the middle (" + (int) far + ")");
         check(level.getBlockState(f.offset(0, 1, 4)).isAir() && level.getBlockState(f.offset(0, 2, 4)).isAir(), "the tower has a door");
         check(!level.getEntitiesOfClass(dev.umbra.lighthouse.LampKeeper.class, new AABB(f).inflate(14, 6, 14)).isEmpty(), "the keeper waits by the tower");
+        check(level.getBlockState(f.offset(0, dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 10, 6)).isAir(), "the lighthouse stands in a hollow it carved for itself");
 
         // growth: four crystals per level
         BlockState s = ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState();
@@ -1291,27 +1300,48 @@ final class SmokeTest {
         check(umbra == 1 && fake.experienceLevel == 30 - dev.umbra.craft.EchoAltarBlock.xpCost(3)
                 && fake.getInventory().countItem(ModItems.ECHO_QUARTZ.get()) == 8 - dev.umbra.craft.EchoAltarBlock.quartzCost(3), "the altar gives one enchantment of Umbra's for quartz and experience (" + umbra + ", xp " + fake.experienceLevel + ")");
 
-        // the anvil mends Umbra's gear with its own stuff, and pins artifacts
+        // the anvil mends Umbra's gear with its own stuff, and pins artifacts (the logic of its window)
         BlockPos v = a.offset(0, 0, 3);
         level.setBlock(v, ModBlocks.GLOOM_ANVIL.get().defaultBlockState(), Block.UPDATE_ALL);
-        fake.getInventory().clearContent();
         ItemStack helm = new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "luminite_helmet")));
         helm.setDamageValue(helm.getMaxDamage() - 1);
-        fake.setItemInHand(InteractionHand.MAIN_HAND, helm);
-        fake.getInventory().add(new ItemStack(ModItems.LUMINITE_CRYSTAL.get(), 1));
-        var hitV = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(v), net.minecraft.core.Direction.UP, v, false);
-        int before = fake.getMainHandItem().getDamageValue();
-        level.getBlockState(v).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hitV);
-        check(fake.getMainHandItem().getDamageValue() < before && fake.getInventory().countItem(ModItems.LUMINITE_CRYSTAL.get()) == 0, "the gloom anvil mends luminite with luminite");
-        check(dev.umbra.craft.GloomAnvilBlock.materialFor(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD)) == null, "and does not know foreign gear");
-        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE));
-        fake.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.ASH_CLASP.get()));
-        level.getBlockState(v).useItemOn(fake.getMainHandItem(), level, fake, InteractionHand.MAIN_HAND, hitV);
-        check(dev.umbra.gear.Gear.ASH_CLASP.equals(fake.getMainHandItem().get(dev.umbra.registry.ModComponents.ARTIFACT.get())) && fake.getOffhandItem().isEmpty(), "and pins an artifact on a chestplate");
+        int[] cost = new int[1];
+        ItemStack mended = dev.umbra.craft.GloomAnvilMenu.result(helm, new ItemStack(ModItems.LUMINITE_CRYSTAL.get(), 64), cost);
+        check(!mended.isEmpty() && mended.getDamageValue() == 0 && cost[0] == 4, "the gloom anvil mends luminite with luminite, a quarter for each crystal (" + cost[0] + ")");
+        check(dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD), new ItemStack(ModItems.ECHO_QUARTZ.get()), cost).isEmpty(), "and does not know foreign gear");
+        ItemStack pinned = dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE), new ItemStack(ModItems.ASH_CLASP.get()), cost);
+        check(dev.umbra.gear.Gear.ASH_CLASP.equals(pinned.get(dev.umbra.registry.ModComponents.ARTIFACT.get())) && cost[0] == 1, "and pins an artifact on a chestplate");
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
         fake.getInventory().clearContent();
         for (BlockPos p : new BlockPos[]{a, v, a.offset(2, 0, 0), a.offset(-2, 0, 1)}) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+
+        // 2.4: the armour ladder, the mazes, the bosses' second wind
+        int[][] ladder = {{0, 1}, {2, 1}, {1, 1}, {0, 2}, {2, 2}, {1, 2}, {0, 3}, {2, 3}, {1, 3}};
+        boolean rising = true;
+        StringBuilder sc = new StringBuilder();
+        for (int i = 0; i < ladder.length; i++) {
+            float sco = dev.umbra.registry.ModMaterials.score(ladder[i][0], ladder[i][1]);
+            sc.append(sco).append(' ');
+            if (i > 0) rising &= sco > dev.umbra.registry.ModMaterials.score(ladder[i - 1][0], ladder[i - 1][1]);
+        }
+        check(rising, "armour: gloom, shadow, luminite, tier by tier, each better than the one before (" + sc + ")");
+        BlockPos maze = dev.umbra.quantum.QuantumMazeFeature.nearest(level.getSeed(), 0, 0);
+        check(Math.hypot(maze.getX(), maze.getZ()) < 24 * 16 * 1.5, "a maze is never far: the nearest is " + (int) Math.hypot(maze.getX(), maze.getZ()) + " blocks away");
+        var w = ModEntities.WATCHER.get().create(level, EntitySpawnReason.COMMAND);
+        if (w != null) {
+            w.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);
+            w.setNoAi(true);
+            level.addFreshEntity(w);
+            check(w.getMaxHealth() >= 180, "bosses are half as strong again (the Watcher has " + w.getMaxHealth() + ")");
+            float before = w.getHealth();
+            w.hurtServer(level, level.damageSources().magic(), 100.0F);
+            check(before - w.getHealth() < 100.0F * 0.5F, "the Watcher's eye shrugs off most of a blow (" + (before - w.getHealth()) + " of 100)");
+            float h = w.getHealth();
+            w.onLit(level, null);
+            check(h - w.getHealth() <= w.getMaxHealth() * dev.umbra.boss.UmbraBoss.LIGHT_CAP + 0.01F, "a flash takes no more than 2% of a boss");
+            w.discard();
+        }
     }
 
     private static final BlockPos RAID_FOOT = new BlockPos(700, Y, 120);

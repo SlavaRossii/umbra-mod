@@ -125,6 +125,11 @@ public final class UmbraClient {
     }
 
     @SubscribeEvent
+    static void menuScreens(net.neoforged.neoforge.client.event.RegisterMenuScreensEvent event) {
+        event.register(dev.umbra.registry.ModMenus.GLOOM_ANVIL.get(), GloomAnvilScreen::new);
+    }
+
+    @SubscribeEvent
     static void clientExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
         ArmorClient.register(event);
     }
