@@ -23,9 +23,26 @@ public class LuminiteCandleBlock extends Block {
     private static final VoxelShape[] SHAPES = {
             Block.box(7, 0, 7, 9, 8, 9), Block.box(4, 0, 7, 9, 8, 11), Block.box(4, 0, 5, 12, 9, 11), Block.box(4, 0, 4, 12, 9, 12)};
 
+    /** How much each candle of this kind counts for an echo altar (a thick candle burns for two, a candelabrum for three). */
+    private final int weight;
+
     public LuminiteCandleBlock(Properties properties) {
+        this(properties, 1);
+    }
+
+    public LuminiteCandleBlock(Properties properties, int weight) {
         super(properties);
+        this.weight = weight;
         registerDefaultState(stateDefinition.any().setValue(CANDLES, 1));
+    }
+
+    public int weight() {
+        return weight;
+    }
+
+    /** What these candles count for round an altar. */
+    public static int worth(BlockState state) {
+        return state.getBlock() instanceof LuminiteCandleBlock c ? c.weight * state.getValue(CANDLES) : 0;
     }
 
     public static int light(BlockState state) {

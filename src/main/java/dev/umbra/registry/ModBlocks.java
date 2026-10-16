@@ -123,6 +123,9 @@ public final class ModBlocks {
     public static final DeferredBlock<net.minecraft.world.level.block.LanternBlock> LUMINITE_LANTERN_BLOCK = BLOCKS.registerBlock("luminite_lantern_block",
             net.minecraft.world.level.block.LanternBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(s -> 14).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.TrophyShelfBlock> TROPHY_SHELF = BLOCKS.registerBlock("trophy_shelf",
+            dev.umbra.craft.TrophyShelfBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS).noOcclusion());
     public static final DeferredBlock<dev.umbra.craft.EchoAltarBlock> ECHO_ALTAR = BLOCKS.registerBlock("echo_altar",
             dev.umbra.craft.EchoAltarBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 7).noOcclusion());
@@ -132,6 +135,15 @@ public final class ModBlocks {
     public static final DeferredBlock<dev.umbra.craft.LuminiteCandleBlock> LUMINITE_CANDLE = BLOCKS.registerBlock("luminite_candle",
             dev.umbra.craft.LuminiteCandleBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CANDLE).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(dev.umbra.craft.LuminiteCandleBlock::light).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.LuminiteCandleBlock> THICK_LUMINITE_CANDLE = BLOCKS.registerBlock("thick_luminite_candle",
+            p -> new dev.umbra.craft.LuminiteCandleBlock(p, 2),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CANDLE).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(dev.umbra.craft.LuminiteCandleBlock::light).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.LuminiteCandleBlock> MELTED_LUMINITE_CANDLE = BLOCKS.registerBlock("melted_luminite_candle",
+            p -> new dev.umbra.craft.LuminiteCandleBlock(p, 1),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CANDLE).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(s -> 2 + 2 * s.getValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES)).noOcclusion());
+    public static final DeferredBlock<dev.umbra.craft.LuminiteCandleBlock> LUMINITE_CANDELABRUM = BLOCKS.registerBlock("luminite_candelabrum",
+            p -> new dev.umbra.craft.LuminiteCandleBlock(p, 3),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CANDLE).mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(s -> 6 + 2 * s.getValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES)).noOcclusion());
     public static final DeferredBlock<dev.umbra.madness.WhisperTableBlock> WHISPER_TABLE = BLOCKS.registerBlock("whisper_table",
             dev.umbra.madness.WhisperTableBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 3));

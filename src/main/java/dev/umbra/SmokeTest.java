@@ -578,7 +578,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 84 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 84, "journal has 84 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 95 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 95, "journal has 95 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1278,9 +1278,13 @@ final class SmokeTest {
         level.setBlock(a, ModBlocks.ECHO_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
         check(dev.umbra.craft.EchoAltarBlock.candles(level, a) == 0 && dev.umbra.craft.EchoAltarBlock.power(0) == 1, "a bare altar echoes at level I");
         level.setBlock(a.offset(2, 0, 0), ModBlocks.LUMINITE_CANDLE.get().defaultBlockState().setValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES, 4), Block.UPDATE_ALL);
-        level.setBlock(a.offset(-2, 0, 1), ModBlocks.LUMINITE_CANDLE.get().defaultBlockState().setValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES, 4), Block.UPDATE_ALL);
+        level.setBlock(a.offset(-2, 0, 1), ModBlocks.THICK_LUMINITE_CANDLE.get().defaultBlockState().setValue(dev.umbra.craft.LuminiteCandleBlock.CANDLES, 4), Block.UPDATE_ALL);
         int c = dev.umbra.craft.EchoAltarBlock.candles(level, a);
-        check(c == 8 && dev.umbra.craft.EchoAltarBlock.power(c) == 3, "eight candles make it echo at level III (" + c + ")");
+        check(c == 12 && dev.umbra.craft.EchoAltarBlock.power(c) == 3, "four candles and four thick ones (worth two each) make it echo at level III (" + c + ")");
+        check(dev.umbra.craft.EchoAltarBlock.power(63) == 4 && dev.umbra.craft.EchoAltarBlock.power(64) == dev.umbra.craft.EchoAltarBlock.ABYSS
+                && dev.umbra.craft.EchoAltarBlock.next(60) == 4 && dev.umbra.craft.EchoAltarBlock.next(64) == 0, "sixty-four candles open the abyss");
+        check(dev.umbra.craft.LuminiteCandleBlock.worth(ModBlocks.LUMINITE_CANDELABRUM.get().defaultBlockState()) == 3
+                && ModBlocks.MELTED_LUMINITE_CANDLE.get().defaultBlockState().getLightEmission() > 0, "a candelabrum counts thrice, a melted candle still shines");
         check(level.getBlockState(a.offset(2, 0, 0)).getLightEmission() >= 12, "four candles shine brightly");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
@@ -1342,6 +1346,31 @@ final class SmokeTest {
             check(h - w.getHealth() <= w.getMaxHealth() * dev.umbra.boss.UmbraBoss.LIGHT_CAP + 0.01F, "a flash takes no more than 2% of a boss");
             w.discard();
         }
+
+        // the trophy shelf: six relics in their places, then it gives back
+        BlockPos sh = a.offset(0, 0, -3);
+        level.setBlock(sh, ModBlocks.TROPHY_SHELF.get().defaultBlockState(), Block.UPDATE_ALL);
+        var shHit = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(sh), net.minecraft.core.Direction.NORTH, sh, false);
+        int placed = 0;
+        for (var t : ModItems.TROPHIES.values()) {
+            ItemStack trophy = new ItemStack(t.get());
+            fake.setItemInHand(InteractionHand.MAIN_HAND, trophy);
+            if (level.getBlockState(sh).useItemOn(trophy, level, fake, InteractionHand.MAIN_HAND, shHit).consumesAction()) placed++;
+        }
+        ItemStack again = new ItemStack(ModItems.TROPHIES.values().iterator().next().get());
+        boolean refused = !level.getBlockState(sh).useItemOn(again, level, fake, InteractionHand.MAIN_HAND, shHit).consumesAction();
+        int quartz = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(sh).inflate(2))
+                .stream().filter(e -> e.getItem().is(ModItems.ECHO_QUARTZ.get())).mapToInt(e -> e.getItem().getCount()).sum();
+        check(placed == 6 && refused && dev.umbra.craft.TrophyShelfBlock.count(level.getBlockState(sh)) == 6 && quartz == 16,
+                "the trophy shelf takes six relics, one of each, and pays out when full (" + placed + ", " + quartz + ")");
+        level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(sh).inflate(3)).forEach(net.minecraft.world.entity.Entity::discard);
+        level.setBlock(sh, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        // night events: one can be called, and it holds for the night
+        dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);
+        check(dev.umbra.night.NightEvents.FOG.equals(dev.umbra.night.NightEvents.tonight(level)), "a foggy night can be called");
+        dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.NONE);
     }
 
     private static final BlockPos RAID_FOOT = new BlockPos(700, Y, 120);
@@ -1458,7 +1487,7 @@ final class SmokeTest {
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
 
-        // a winded boss takes half as much again
+        // a winded boss drops its guard (the Architect its stone skin) and takes half as much again
         var a = ModEntities.ARCHITECT.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         var b = ModEntities.ARCHITECT.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         check(a != null && b != null, "two Architects for the stun test");
@@ -1473,7 +1502,7 @@ final class SmokeTest {
             a.hurtServer(level, level.damageSources().magic(), 10.0F);
             b.hurtServer(level, level.damageSources().magic(), 10.0F);
             float lostA = ha - a.getHealth(), lostB = hb - b.getHealth();
-            check(lostA > 0 && Math.abs(lostB - lostA * 1.5F) < 0.05F, "and takes +50% damage meanwhile (" + lostA + " vs " + lostB + ")");
+            check(lostA > 0 && Math.abs(lostB - lostA * dev.umbra.boss.UmbraBoss.STUN_DAMAGE / dev.umbra.boss.Architect.STONE_SKIN) < 0.1F, "and drops its stone skin, taking +50% meanwhile (" + lostA + " vs " + lostB + ")");
 
             // shades: never more than four around one boss
             int first = dev.umbra.boss.BossMoves.shades(level, a, null, 10);

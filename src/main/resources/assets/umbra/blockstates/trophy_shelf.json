@@ -1,0 +1,280 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "watcher": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_watcher",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "mimic_queen": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_mimic_queen",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "shepherd": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_shepherd",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "doppelganger": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_doppelganger",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "architect": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_architect",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "primordial_shadow": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_primordial_shadow",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "watcher": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_watcher",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "mimic_queen": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_mimic_queen",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "shepherd": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_shepherd",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "doppelganger": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_doppelganger",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "architect": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_architect",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "primordial_shadow": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_primordial_shadow",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "watcher": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_watcher",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "mimic_queen": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_mimic_queen",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "shepherd": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_shepherd",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "doppelganger": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_doppelganger",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "architect": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_architect",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "primordial_shadow": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_primordial_shadow",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "watcher": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_watcher",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "mimic_queen": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_mimic_queen",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "shepherd": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_shepherd",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "doppelganger": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_doppelganger",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "architect": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_architect",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "primordial_shadow": "true"
+      },
+      "apply": {
+        "model": "umbra:block/trophy_shelf_primordial_shadow",
+        "y": 270
+      }
+    }
+  ]
+}

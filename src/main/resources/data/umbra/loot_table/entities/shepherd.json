@@ -47,6 +47,15 @@
           ]
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:trophy_shepherd"
+        }
+      ]
     }
   ],
   "random_sequence": "umbra:entities/shepherd"

@@ -93,7 +93,12 @@ public final class ModItems {
     /** A real shield (right click to block, like the vanilla one), with the aegis' own powers on top (EnchantEvents.onIncoming). */
     public static final DeferredItem<Item> LUMINITE_SHIELD = ITEMS.registerSimpleItem("luminite_shield", p -> p.stacksTo(1).durability(504).rarity(Rarity.UNCOMMON)
             .component(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS,
-                    net.minecraft.world.item.Items.SHIELD.components().get(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS))
+                    new net.minecraft.world.item.component.BlocksAttacks(0.25F, 1.0F,
+                            java.util.List.of(new net.minecraft.world.item.component.BlocksAttacks.DamageReduction(90.0F, java.util.Optional.empty(), 0.0F, 1.0F)),
+                            new net.minecraft.world.item.component.BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
+                            java.util.Optional.empty(),
+                            java.util.Optional.of(net.minecraft.sounds.SoundEvents.SHIELD_BLOCK),
+                            java.util.Optional.of(net.minecraft.sounds.SoundEvents.SHIELD_BREAK)))
             .repairable(LUMINITE_CRYSTAL.get()));
     public static final DeferredItem<Item> ASH_CLASP = ITEMS.registerSimpleItem("ash_clasp", p -> p.stacksTo(1).rarity(Rarity.RARE));
     public static final DeferredItem<Item> ARCHITECT_SEAL = ITEMS.registerSimpleItem("architect_seal", p -> p.stacksTo(1).rarity(Rarity.EPIC));
@@ -134,9 +139,22 @@ public final class ModItems {
 
     // --- Madness (1.2) ---
     public static final DeferredItem<BlockItem> LUMINITE_LANTERN_BLOCK = ITEMS.registerSimpleBlockItem("luminite_lantern_block", ModBlocks.LUMINITE_LANTERN_BLOCK);
+    public static final DeferredItem<BlockItem> TROPHY_SHELF = ITEMS.registerSimpleBlockItem("trophy_shelf", ModBlocks.TROPHY_SHELF);
+    /** The relic each boss leaves behind, for the trophy shelf. */
+    public static final java.util.Map<String, DeferredItem<Item>> TROPHIES = new java.util.LinkedHashMap<>();
+
+    static {
+        for (String b : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow"}) {
+            TROPHIES.put(b, ITEMS.registerSimpleItem("trophy_" + b, p -> p.stacksTo(1).rarity(Rarity.EPIC).fireResistant()));
+        }
+    }
+
     public static final DeferredItem<BlockItem> ECHO_ALTAR = ITEMS.registerSimpleBlockItem("echo_altar", ModBlocks.ECHO_ALTAR, p -> p.rarity(Rarity.RARE));
     public static final DeferredItem<BlockItem> GLOOM_ANVIL = ITEMS.registerSimpleBlockItem("gloom_anvil", ModBlocks.GLOOM_ANVIL, p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<BlockItem> LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("luminite_candle", ModBlocks.LUMINITE_CANDLE);
+    public static final DeferredItem<BlockItem> THICK_LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("thick_luminite_candle", ModBlocks.THICK_LUMINITE_CANDLE);
+    public static final DeferredItem<BlockItem> MELTED_LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("melted_luminite_candle", ModBlocks.MELTED_LUMINITE_CANDLE);
+    public static final DeferredItem<BlockItem> LUMINITE_CANDELABRUM = ITEMS.registerSimpleBlockItem("luminite_candelabrum", ModBlocks.LUMINITE_CANDELABRUM);
     public static final DeferredItem<BlockItem> WHISPER_TABLE = ITEMS.registerSimpleBlockItem("whisper_table", ModBlocks.WHISPER_TABLE, p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<dev.umbra.madness.SilenceTinctureItem> SILENCE_TINCTURE = ITEMS.registerItem("silence_tincture",
             dev.umbra.madness.SilenceTinctureItem::new, p -> p.stacksTo(8).rarity(Rarity.UNCOMMON));

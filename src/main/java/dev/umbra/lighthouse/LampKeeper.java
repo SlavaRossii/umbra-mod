@@ -66,8 +66,14 @@ public class LampKeeper extends PathfinderMob {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (!(player instanceof ServerPlayer sp) || !(this.level() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
         int lamp = lampLevel(level, getX(), getZ());
+        this.playSound(dev.umbra.registry.ModSounds.YAN.value(), 1.0F, getVoicePitch());
         String line;
-        if (!Journal.has(sp, "yan_1")) {
+        if (dev.umbra.ending.Endings.isLight(sp)) {
+            line = "dialogue.umbra.yan.dawn";
+            Journal.unlock(sp, "yan_dawn");
+        } else if (dev.umbra.ending.Endings.isDark(sp)) {
+            line = "dialogue.umbra.yan.dark";
+        } else if (!Journal.has(sp, "yan_1")) {
             Journal.unlock(sp, "yan_1");
             line = "dialogue.umbra.yan.intro";
         } else if (lamp <= 0) {
@@ -105,11 +111,22 @@ public class LampKeeper extends PathfinderMob {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.VILLAGER_AMBIENT;
+        // Yan's own voice: an old man's mumble, a cough, the clink of his lantern now and then
+        return this.random.nextInt(5) == 0 ? dev.umbra.registry.ModSounds.LANTERN_CLINK.value() : dev.umbra.registry.ModSounds.YAN.value();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return dev.umbra.registry.ModSounds.YAN_HURT.value();
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 240;
     }
 
     @Override
     public float getVoicePitch() {
-        return 0.6F;
+        return 0.95F + this.random.nextFloat() * 0.1F;
     }
 }

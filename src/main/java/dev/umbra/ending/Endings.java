@@ -122,6 +122,18 @@ public final class Endings {
     public static void tick(ServerPlayer player) {
         if (player.tickCount % 20 != 11 || !isDark(player) || player.isSpectator()) return;
         Level level = player.level();
+        // the dark keeps you company: at night a shade sometimes walks with you for a while, and the night thickens
+        if (level instanceof ServerLevel sl && level.dimension() == Level.OVERWORLD && UmbraUtil.isNight(sl)) {
+            if (player.getRandom().nextInt(240) == 0) {
+                BlockPos at = dev.umbra.sanity.Hallucinations.findStandable(sl, player.blockPosition().offset(player.getRandom().nextInt(13) - 6, 0, player.getRandom().nextInt(13) - 6), 4);
+                var shade = dev.umbra.registry.ModEntities.SHADE.get().create(sl, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+                if (at != null && shade != null) {
+                    shade.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+                    sl.addFreshEntity(shade);
+                }
+            }
+            if (player.getRandom().nextInt(120) == 0) player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, true, false));
+        }
         BlockPos eye = BlockPos.containing(player.getEyePosition());
         // eyes made for the dark
         if (Underside.is(level) || UmbraUtil.effectiveLight(level, eye) <= 7) {
@@ -132,6 +144,12 @@ public final class Endings {
         if (level.dimension() == Level.OVERWORLD && !UmbraUtil.isNight((ServerLevel) level) && UmbraUtil.skyLight(level, eye) >= 13 && !level.isRaining()) {
             player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 20 * 3, 0, true, true));
         }
+    }
+
+    /** Dawn: the Underside's creatures strike you a third softer. */
+    public static void onIncoming(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !isLight(player)) return;
+        if (event.getSource().getEntity() instanceof Mob m && Bestiary.ids().containsKey(m.getType())) event.setAmount(event.getAmount() * 0.7F);
     }
 
     /** Dark ending: the creatures of the Underside do not turn on one of their own, unless struck first. Bosses always do. */

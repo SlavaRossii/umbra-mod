@@ -76,11 +76,41 @@ public final class UmbraClient {
     public static final class Game {
         private Game() {}
 
-        /** Ash storm: the world closes in to a few blocks of grey. */
+        /** 2.4: music of its own in the Underside and in a boss fight. */
+        @SubscribeEvent
+        static void music(net.neoforged.neoforge.client.event.SelectMusicEvent event) {
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            if (mc.player == null || mc.level == null) return;
+            boolean boss = !mc.level.getEntitiesOfClass(dev.umbra.boss.UmbraBoss.class, mc.player.getBoundingBox().inflate(40)).isEmpty();
+            if (boss) {
+                event.setMusic(new net.minecraft.sounds.Music(dev.umbra.registry.ModSounds.MUSIC_BOSS, 0, 0, true));
+            } else if (dev.umbra.underside.Underside.is(mc.level)) {
+                event.setMusic(new net.minecraft.sounds.Music(dev.umbra.registry.ModSounds.MUSIC_UNDERSIDE, 1200, 3600, false));
+            }
+        }
+
+        /** 2.4: on a silent night every creature falls quiet. */
+        @SubscribeEvent
+        static void hush(net.neoforged.neoforge.client.event.sound.PlaySoundEvent event) {
+            var player = net.minecraft.client.Minecraft.getInstance().player;
+            if (player == null || event.getSound() == null) return;
+            if (!dev.umbra.night.NightEvents.SILENCE.equals(player.getData(dev.umbra.registry.ModAttachments.NIGHT_EVENT))) return;
+            var src = event.getSound().getSource();
+            if (src == net.minecraft.sounds.SoundSource.HOSTILE || src == net.minecraft.sounds.SoundSource.NEUTRAL || src == net.minecraft.sounds.SoundSource.AMBIENT && !event.getSound().getIdentifier().getNamespace().equals(dev.umbra.Umbra.MODID)) {
+                event.setSound(null);
+            }
+        }
+
+        /** Ash storm: the world closes in to a few blocks of grey. Fog nights: a white wall. */
         @SubscribeEvent
         static void stormFog(net.neoforged.neoforge.client.event.ViewportEvent.RenderFog event) {
             var player = net.minecraft.client.Minecraft.getInstance().player;
             if (player == null || event.getType() != net.minecraft.world.level.material.FogType.NONE) return;
+            if (dev.umbra.night.NightEvents.FOG.equals(player.getData(dev.umbra.registry.ModAttachments.NIGHT_EVENT))) {
+                event.setNearPlaneDistance(0.0F);
+                event.setFarPlaneDistance(Math.min(event.getFarPlaneDistance(), 14.0F));
+                return;
+            }
             float s = dev.umbra.underside.AshStorm.at(player);
             if (s <= 0) return;
             event.setNearPlaneDistance(net.minecraft.util.Mth.lerp(s, event.getNearPlaneDistance(), 0.0F));
@@ -91,6 +121,19 @@ public final class UmbraClient {
         static void stormColor(net.neoforged.neoforge.client.event.ViewportEvent.ComputeFogColor event) {
             var player = net.minecraft.client.Minecraft.getInstance().player;
             if (player == null) return;
+            String night = player.getData(dev.umbra.registry.ModAttachments.NIGHT_EVENT);
+            if (dev.umbra.night.NightEvents.BLOOD.equals(night)) {
+                event.setRed(Math.min(1.0F, event.getRed() * 0.6F + 0.35F));
+                event.setGreen(event.getGreen() * 0.35F);
+                event.setBlue(event.getBlue() * 0.35F);
+                return;
+            }
+            if (dev.umbra.night.NightEvents.FOG.equals(night)) {
+                event.setRed(0.55F);
+                event.setGreen(0.56F);
+                event.setBlue(0.6F);
+                return;
+            }
             float s = dev.umbra.underside.AshStorm.at(player);
             if (s <= 0) return;
             event.setRed(net.minecraft.util.Mth.lerp(s, event.getRed(), 0.33F));
@@ -117,6 +160,14 @@ public final class UmbraClient {
 
         @SubscribeEvent
         static void tooltip(net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) {
+            // a quiet line in the item's own voice, where it has one
+            Identifier id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem());
+            if (id.getNamespace().equals(Umbra.MODID)) {
+                String key = "tip.umbra." + id.getPath();
+                if (net.minecraft.locale.Language.getInstance().has(key))
+                    event.getToolTip().add(net.minecraft.network.chat.Component.translatable(key)
+                            .withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
+            }
             if (!(event.getItemStack().getItem() instanceof dev.umbra.madness.DespairBladeItem) || event.getEntity() == null) return;
             float bonus = dev.umbra.madness.DespairBladeItem.bonus(event.getEntity());
             event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.umbra.despair_blade.bonus", String.format("%.1f", bonus))

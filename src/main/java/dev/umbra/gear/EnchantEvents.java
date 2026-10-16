@@ -66,6 +66,25 @@ public final class EnchantEvents {
         ECHOES.add(new Echo(level, event.getEntity().getUUID(), player.getUUID(), level.getGameTime() + 5, event.getHealthDamage() * 0.35F * lvl));
     }
 
+    /** Resonance: a melee blow rings on in every monster within three blocks of the one struck (a third as hard). */
+    public static void onResonance(LivingDamageEvent.Post event) {
+        if (echoing) return;
+        DamageSource src = event.getSource();
+        if (!(src.getEntity() instanceof ServerPlayer player) || src.getDirectEntity() != player) return;
+        if (!(event.getEntity().level() instanceof ServerLevel level) || event.getHealthDamage() <= 0) return;
+        if (Gear.level(level, player.getMainHandItem(), Gear.RESONANCE) <= 0) return;
+        LivingEntity hit = event.getEntity();
+        echoing = true;
+        try {
+            for (var m : level.getEntitiesOfClass(net.minecraft.world.entity.monster.Monster.class, hit.getBoundingBox().inflate(3.0), m -> m != hit && m.isAlive())) {
+                m.hurtServer(level, level.damageSources().playerAttack(player), event.getHealthDamage() / 3.0F);
+                level.sendParticles(ParticleTypes.SONIC_BOOM, m.getX(), m.getY() + m.getBbHeight() * 0.5, m.getZ(), 1, 0, 0, 0, 0);
+            }
+        } finally {
+            echoing = false;
+        }
+    }
+
     public static void onServerTick(ServerTickEvent.Post event) {
         if (ECHOES.isEmpty()) return;
         Iterator<Echo> it = ECHOES.iterator();

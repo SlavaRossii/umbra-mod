@@ -123,6 +123,8 @@ public class MimicBlock extends Block {
     }
 
     public static void bite(ServerLevel level, net.minecraft.world.entity.LivingEntity victim) {
+        // after the dark ending the mimics know their own
+        if (dev.umbra.ending.Endings.isDark(victim)) return;
         float amount = Math.min(BITE, victim.getHealth() - 1.0F);
         if (amount > 0) victim.hurtServer(level, level.damageSources().magic(), amount);
     }

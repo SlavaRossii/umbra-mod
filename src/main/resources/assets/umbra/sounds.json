@@ -146,5 +146,80 @@
       }
     ],
     "subtitle": "subtitles.umbra.heartbeat_far"
+  },
+  "voice.yan": {
+    "subtitle": "subtitles.umbra.yan",
+    "sounds": [
+      {
+        "name": "umbra:voice/yan_mumble1"
+      },
+      {
+        "name": "umbra:voice/yan_mumble2"
+      },
+      {
+        "name": "umbra:voice/yan_mumble3"
+      },
+      {
+        "name": "umbra:voice/yan_cough",
+        "weight": 1
+      }
+    ]
+  },
+  "voice.yan_hurt": {
+    "subtitle": "subtitles.umbra.yan_hurt",
+    "sounds": [
+      {
+        "name": "umbra:voice/yan_hurt"
+      }
+    ]
+  },
+  "voice.lantern_clink": {
+    "sounds": [
+      {
+        "name": "umbra:voice/lantern_clink",
+        "volume": 0.5
+      }
+    ]
+  },
+  "music.underside": {
+    "sounds": [
+      {
+        "name": "umbra:music/underside",
+        "stream": true
+      }
+    ]
+  },
+  "music.boss": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss",
+        "stream": true
+      }
+    ]
+  },
+  "event.onslaught_horn": {
+    "subtitle": "subtitles.umbra.onslaught_horn",
+    "sounds": [
+      {
+        "name": "umbra:event/onslaught_horn",
+        "attenuation_distance": 96
+      }
+    ]
+  },
+  "event.blood_moon": {
+    "subtitle": "subtitles.umbra.blood_moon",
+    "sounds": [
+      {
+        "name": "umbra:event/blood_moon"
+      }
+    ]
+  },
+  "event.silence": {
+    "sounds": [
+      {
+        "name": "umbra:event/silence",
+        "volume": 0.5
+      }
+    ]
   }
 }

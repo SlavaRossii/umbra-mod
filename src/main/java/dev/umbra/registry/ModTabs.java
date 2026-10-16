@@ -25,9 +25,14 @@ public final class ModTabs {
                 out.accept(ModItems.PRIMORDIAL_HEART.get());
                 out.accept(ModItems.WHISPER_TABLE.get());
                 out.accept(ModItems.LUMINITE_LANTERN_BLOCK.get());
+                out.accept(ModItems.TROPHY_SHELF.get());
+                ModItems.TROPHIES.values().forEach(t -> out.accept(t.get()));
                 out.accept(ModItems.ECHO_ALTAR.get());
                 out.accept(ModItems.GLOOM_ANVIL.get());
                 out.accept(ModItems.LUMINITE_CANDLE.get());
+                out.accept(ModItems.THICK_LUMINITE_CANDLE.get());
+                out.accept(ModItems.MELTED_LUMINITE_CANDLE.get());
+                out.accept(ModItems.LUMINITE_CANDELABRUM.get());
                 out.accept(ModItems.SILENCE_TINCTURE.get());
                 out.accept(ModItems.MADMAN_MASK.get());
                 out.accept(ModItems.DESPAIR_BLADE.get());

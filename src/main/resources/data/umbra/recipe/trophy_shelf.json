@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "minecraft:spruce_planks",
+    "S": "minecraft:spruce_slab"
+  },
+  "pattern": [
+    "SSS",
+    "P P",
+    "SSS"
+  ],
+  "result": {
+    "id": "umbra:trophy_shelf"
+  }
+}

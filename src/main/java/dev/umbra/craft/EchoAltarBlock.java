@@ -34,9 +34,10 @@ import java.util.List;
 
 /**
  * The echo altar: Umbra's own enchanting. Bring a piece of gear, pay in echo quartz and experience, and the altar
- * gives it one of Umbra's enchantments that fits. Luminite candles around it (within 3 blocks) make the echo deeper:
- * 4 candles for level II, 8 for level III. The echo sometimes answers with a whisper: one time in six it also leaves
- * Whisper's Curse (with 12 candles burning, never).
+ * gives it one of Umbra's enchantments that fits. Luminite candles of any kind around it (within 4 blocks) make the
+ * echo deeper: 4 candles for II, 12 for III, 24 for IV, and 64 for the echo of the abyss, which lifts an enchantment
+ * one level past its limit and may add Resonance. The echo sometimes answers with a whisper: one time in six it
+ * also leaves Whisper's Curse (with 12 candles burning, never).
  */
 public class EchoAltarBlock extends Block {
     private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(3, 4, 3, 13, 10, 13), Block.box(1, 10, 1, 15, 13, 15));
@@ -55,25 +56,44 @@ public class EchoAltarBlock extends Block {
     /** Burning luminite candles within 3 blocks. */
     public static int candles(Level level, BlockPos pos) {
         int n = 0;
-        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-3, -1, -3), pos.offset(3, 2, 3))) {
+        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-RADIUS, -1, -RADIUS), pos.offset(RADIUS, 3, RADIUS))) {
             BlockState s = level.getBlockState(p);
-            if (s.is(ModBlocks.LUMINITE_CANDLE.get())) n += s.getValue(LuminiteCandleBlock.CANDLES);
+            n += LuminiteCandleBlock.worth(s);
         }
         return n;
     }
 
+    public static final int RADIUS = 4;
+    /** Candles for each level of the echo: II, III, IV, and the abyss (V). */
+    public static final int[] STEPS = {4, 12, 24, 64};
+    public static final int ABYSS = 5;
+
     public static int power(int candles) {
-        return 1 + Math.min(2, candles / 4);
+        int p = 1;
+        for (int s : STEPS) if (candles >= s) p++;
+        return p;
     }
 
-    /** Echo quartz the altar asks for an enchantment of {@code level}. */
-    public static int quartzCost(int level) {
-        return 1 + level;
+    /** Candles still missing for the next level of the echo (0 at the abyss). */
+    public static int next(int candles) {
+        for (int st : STEPS) if (candles < st) return st - candles;
+        return 0;
+    }
+
+    /** Echo quartz the altar asks at this power. */
+    public static int quartzCost(int power) {
+        return power >= ABYSS ? 8 : 1 + power;
     }
 
     /** Experience levels it asks. */
-    public static int xpCost(int level) {
-        return 3 * level + 2;
+    public static int xpCost(int power) {
+        return power >= ABYSS ? 30 : 3 * power + 2;
+    }
+
+    /** The level an enchantment gets at this power: up to its limit, and one past it from the abyss. */
+    public static int levelFor(Holder<Enchantment> holder, int power) {
+        int max = holder.value().getMaxLevel();
+        return power >= ABYSS ? max + 1 : Math.min(power, max);
     }
 
     /** Umbra's enchantments that could go on {@code stack} at {@code level} (new ones, or ones it holds lower). */
@@ -82,13 +102,13 @@ public class EchoAltarBlock extends Block {
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         var existing = EnchantmentHelper.getEnchantmentsForCrafting(stack);
         for (ResourceKey<Enchantment> key : Gear.ALL_ENCHANTS) {
-            if (key.equals(Gear.WHISPER_CURSE)) continue;
+            if (key.equals(Gear.WHISPER_CURSE) || key.equals(Gear.RESONANCE)) continue;
             var h = reg.get(key);
             if (h.isEmpty()) continue;
             Holder<Enchantment> holder = h.get();
             if (!holder.value().canEnchant(stack)) continue;
             int have = existing.getLevel(holder);
-            int want = Math.min(power, holder.value().getMaxLevel());
+            int want = levelFor(holder, power);
             if (have > 0) {
                 if (have < want) out.add(holder);
             } else if (EnchantmentHelper.isEnchantmentCompatible(existing.keySet(), holder)) {
@@ -102,14 +122,14 @@ public class EchoAltarBlock extends Block {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             int c = candles(level, pos), p = power(c);
-            player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.status", c, p, quartzCost(p), xpCost(p)));
+            player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.status", c, p, quartzCost(p), xpCost(p), next(c)));
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (stack.isEmpty() || stack.is(ModItems.ECHO_QUARTZ.get()) || stack.is(ModItems.LUMINITE_CANDLE.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (stack.isEmpty() || stack.is(ModItems.ECHO_QUARTZ.get()) || (stack.getItem() instanceof net.minecraft.world.item.BlockItem bi && bi.getBlock() instanceof LuminiteCandleBlock)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
         int c = candles(level, pos);
         int power = power(c);
@@ -129,7 +149,15 @@ public class EchoAltarBlock extends Block {
         }
         RandomSource random = server.getRandom();
         Holder<Enchantment> pick = options.get(random.nextInt(options.size()));
-        stack.enchant(pick, Math.min(power, pick.value().getMaxLevel()));
+        stack.enchant(pick, levelFor(pick, power));
+        // the echo of the abyss: sometimes the blow learns to ring on
+        if (power >= ABYSS && random.nextInt(4) == 0) {
+            var res = server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Gear.RESONANCE);
+            if (res.isPresent() && res.get().value().canEnchant(stack) && EnchantmentHelper.getEnchantmentsForCrafting(stack).getLevel(res.get()) == 0) {
+                stack.enchant(res.get(), 1);
+                player.sendSystemMessage(Component.translatable("block.umbra.echo_altar.resonance").withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.ITALIC));
+            }
+        }
         boolean cursed = false;
         if (c < SAFE_CANDLES && random.nextInt(CURSE_ONE_IN) == 0) {
             var curse = server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Gear.WHISPER_CURSE);

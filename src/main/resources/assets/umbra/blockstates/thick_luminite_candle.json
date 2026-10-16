@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "candles=1": {
+      "model": "umbra:block/thick_luminite_candle_1"
+    },
+    "candles=2": {
+      "model": "umbra:block/thick_luminite_candle_2"
+    },
+    "candles=3": {
+      "model": "umbra:block/thick_luminite_candle_3"
+    },
+    "candles=4": {
+      "model": "umbra:block/thick_luminite_candle_4"
+    }
+  }
+}

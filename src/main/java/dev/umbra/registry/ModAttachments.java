@@ -56,6 +56,12 @@ public final class ModAttachments {
                     .sync(net.minecraft.network.codec.ByteBufCodecs.BOOL)
                     .build());
 
+    /** Tonight's event where this player is ("", "blood_moon", "fog", "silence"), synced for the fog and the hush. */
+    public static final Supplier<AttachmentType<String>> NIGHT_EVENT = ATTACHMENTS.register("night_event",
+            () -> AttachmentType.builder(() -> "")
+                    .sync(ByteBufCodecs.STRING_UTF8)
+                    .build());
+
     /** Whether the player already received the journal. */
     public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENTS.register("got_journal",
             () -> AttachmentType.builder(() -> false)

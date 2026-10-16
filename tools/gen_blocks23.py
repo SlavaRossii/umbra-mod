@@ -320,6 +320,38 @@ def write_models():
     json.dump({"model": {"type": "minecraft:model", "model": "umbra:block/lighthouse_lamp_2"}}, open(ITEMS + 'lighthouse_lamp.json', 'w'), indent=2)
 
 
+def write_candle_kinds():
+    """2.4: more candles. Thick ones, melted stubs with wax run down, and an iron candelabrum."""
+    tex('luminite_candle_iron', lambda x, y, r: noise(bevel(x, y, (60, 58, 66), k=30), r, 4))
+    kinds = {
+        "thick_luminite_candle": [(6, 6, 7, 4), (3, 9, 5, 4), (10, 4, 6, 4), (9, 10, 4, 4)],
+        "melted_luminite_candle": [(7, 7, 3, 3), (4, 9, 2, 3), (10, 5, 4, 3), (9, 10, 2, 3)],
+        "luminite_candelabrum": [(7, 7, 10, 2), (3, 7, 8, 2), (11, 7, 8, 2), (7, 3, 8, 2)],
+    }
+    for kind, spots in kinds.items():
+        for n in range(1, 5):
+            els = []
+            if kind == "luminite_candelabrum":
+                els += [box((6.5, 0, 6.5), (9.5, 1, 9.5), "iron"), box((7.5, 1, 7.5), (8.5, 6, 8.5), "iron"),
+                        box((3, 6, 7.5), (13, 7, 8.5), "iron"), box((7.5, 6, 3), (8.5, 7, 13), "iron")]
+            for i in range(n):
+                x, z, h, w = spots[i]
+                base = 7 if kind == "luminite_candelabrum" and i > 0 else (1 if kind == "luminite_candelabrum" else 0)
+                if kind == "luminite_candelabrum" and i == 0:
+                    base = 6
+                els.append(box((x, base, z), (x + w, base + h - (w - 2), z + w), "wax"))
+                top = base + h - (w - 2)
+                if kind == "melted_luminite_candle":
+                    els.append(box((x - 1, 0, z - 1), (x + w + 1, 1, z + w + 1), "wax"))      # the puddle of wax
+                fx = x + w / 2
+                els.append(box((fx - 0.5, top, z + w / 2 - 0.5), (fx + 0.5, top + 2, z + w / 2 + 0.5), "flame", light=15, shade=False))
+            model(MB + '%s_%d.json' % (kind, n), "minecraft:block/block",
+                  {"particle": "umbra:block/luminite_candle", "wax": "umbra:block/luminite_candle", "flame": "umbra:block/luminite_candle_flame",
+                   "iron": "umbra:block/luminite_candle_iron"}, els, {"ambientocclusion": False})
+        json.dump({"variants": {"candles=%d" % n: {"model": "umbra:block/%s_%d" % (kind, n)} for n in range(1, 5)}}, open(BS + kind + '.json', 'w'), indent=2)
+        json.dump({"model": {"type": "minecraft:model", "model": "umbra:block/%s_1" % kind}}, open(ITEMS + kind + '.json', 'w'), indent=2)
+
+
 def write_lantern():
     """The Underside's lamp: a dark iron cage round a luminite core; standing or hanging from a short chain."""
     tex('luminite_lantern_cage', lambda x, y, r: noise(bevel(x, y, (52, 50, 62), k=26), r, 4))
@@ -437,6 +469,7 @@ if __name__ == '__main__':
     write_textures()
     write_models()
     write_lantern()
+    write_candle_kinds()
     if len(sys.argv) > 2 and sys.argv[1] == '--preview':
         preview(sys.argv[2])
     print('ok')

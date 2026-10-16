@@ -148,14 +148,14 @@ public final class LighthouseRaid {
         Raid raid = new Raid(level, lamp, foot, lvl);
         RAIDS.put(key(level, lamp), raid);
         level.playSound(null, foot, SoundEvents.WARDEN_EMERGE, SoundSource.HOSTILE, 4.0F, 0.5F);
-        level.playSound(null, lamp, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 3.0F, 0.5F);
+        level.playSound(null, lamp, dev.umbra.registry.ModSounds.ONSLAUGHT_HORN.value(), SoundSource.BLOCKS, 4.0F, 1.0F);
         for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
             if (defending(raid, p)) {
                 p.sendSystemMessage(Component.translatable("event.umbra.onslaught.start").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
                 Journal.unlock(p, "onslaught");
             } else if (hornFor(p, level, lamp) != null) {
                 p.sendSystemMessage(Component.translatable("event.umbra.onslaught.horn", lamp.getX(), lamp.getZ()).withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD));
-                p.level().playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.BELL_RESONATE, SoundSource.PLAYERS, 1.2F, 0.7F);
+                p.level().playSound(null, p.getX(), p.getY(), p.getZ(), dev.umbra.registry.ModSounds.ONSLAUGHT_HORN.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }
     }

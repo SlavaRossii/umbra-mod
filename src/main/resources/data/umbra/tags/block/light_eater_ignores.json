@@ -11,6 +11,9 @@
     "umbra:eternal_wall_torch",
     "umbra:luminite_candle",
     "umbra:echo_altar",
-    "umbra:lighthouse_lamp"
+    "umbra:lighthouse_lamp",
+    "umbra:thick_luminite_candle",
+    "umbra:melted_luminite_candle",
+    "umbra:luminite_candelabrum"
   ]
 }

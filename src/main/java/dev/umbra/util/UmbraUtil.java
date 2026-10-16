@@ -52,4 +52,12 @@ public final class UmbraUtil {
         double len = h.length();
         return len < 1.0E-6 ? Vec3.ZERO : h.scale(1.0 / len);
     }
+
+    /** A sound for this player's ears only. */
+    public static void privateSound(net.minecraft.server.level.ServerPlayer player, net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> sound,
+                                    net.minecraft.sounds.SoundSource source, float volume, float pitch) {
+        if (player.connection == null) return;
+        player.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(sound, source, player.getX(), player.getY(), player.getZ(),
+                volume, pitch, player.getRandom().nextLong()));
+    }
 }

@@ -27,7 +27,10 @@ public final class Journal {
             // 1.9: the lighthouse, Marta's map, Yan; errands follow
             "marta_map", "lighthouse", "yan_1", "yan_2", "yan_3", "yan_4",
             // 2.2: onslaughts on the lighthouse, the two endings
-            "onslaught", "onslaught_won", "ending_light", "ending_dark"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "onslaught", "onslaught_won", "ending_light", "ending_dark",
+            // 2.4: what the journal works out about each boss, strange nights, the trophy shelf, Yan after the dawn
+            "weak_watcher", "weak_mimic_queen", "weak_shepherd", "weak_doppelganger", "weak_architect", "weak_primordial_shadow",
+            "night_blood_moon", "night_fog", "night_silence", "trophy_shelf", "yan_dawn"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests"};
@@ -38,6 +41,7 @@ public final class Journal {
         if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
         if (id.startsWith("note_") || id.startsWith("keeper_")) return 5;
         if (id.startsWith("quest_")) return 6;
+        if (id.startsWith("weak_")) return 4;
         return switch (id) {
             case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper" -> 3;
             case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
@@ -75,7 +79,7 @@ public final class Journal {
             Map.entry("keeper_5", List.of("sedative_from_luminite")),
             Map.entry("lighthouse", List.of("keeper_horn")),
             // 2.3: the altar and the anvil are found with the Underside, the candles with luminite
-            Map.entry("crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block", "luminite_candle", "echo_altar")),
+            Map.entry("crystal_grottos", List.of("luminite_block", "luminite_crystal_from_block", "luminite_candle", "thick_luminite_candle", "melted_luminite_candle", "luminite_candelabrum", "echo_altar", "luminite_lantern_block")),
             Map.entry("shadow_village", List.of("gloom_anvil")));
 
     /** Lines in a hand that is not yours: they creep into the journal when sanity is low. */

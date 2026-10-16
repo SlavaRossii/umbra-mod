@@ -47,6 +47,15 @@
           ]
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:trophy_doppelganger"
+        }
+      ]
     }
   ],
   "random_sequence": "umbra:entities/doppelganger"

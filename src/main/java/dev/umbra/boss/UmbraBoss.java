@@ -26,6 +26,11 @@ public abstract class UmbraBoss extends Monster {
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        // the journal starts working out how to beat it as soon as you face it
+        if (this.tickCount % 40 == 9) {
+            String id = dev.umbra.journal.Bestiary.ids().get(this.getType());
+            if (id != null) for (ServerPlayer p : opponents(level)) dev.umbra.journal.Journal.unlock(p, "weak_" + id);
+        }
         bossTick(level);
     }
 

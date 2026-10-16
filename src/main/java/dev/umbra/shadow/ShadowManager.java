@@ -184,7 +184,7 @@ public final class ShadowManager {
                 }
             }
             if (prey != null) {
-                prey.hurtServer(level, level.damageSources().playerAttack(player), 5.0F);
+                prey.hurtServer(level, level.damageSources().playerAttack(player), dev.umbra.ending.Endings.isDark(player) ? 10.0F : 5.0F);
                 level.sendParticles(net.minecraft.core.particles.ParticleTypes.SQUID_INK, prey.getX(), prey.getY() + 1, prey.getZ(), 8, 0.3, 0.5, 0.3, 0.02);
             }
         }

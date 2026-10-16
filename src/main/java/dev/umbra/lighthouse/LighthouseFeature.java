@@ -263,6 +263,8 @@ public record LighthouseFeature() implements Feature {
         level.setBlock(c.offset(5, 1, 3), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.WEST), FLAGS);
         level.setBlock(c.offset(3, 2, 2), ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), FLAGS);
         level.setBlock(c.offset(3, 3, 2), planks, FLAGS);
+        // the shelf for the six relics, by the south wall
+        level.setBlock(c.offset(2, 1, 3), ModBlocks.TROPHY_SHELF.get().defaultBlockState(), FLAGS);
         BlockPos chest = c.offset(5, 1, 2);
         level.setBlock(chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);

@@ -48,6 +48,8 @@ public final class MimicManager {
 
     public static void tick(ServerPlayer player) {
         if (player.tickCount % 20 != 0) return;
+        // after the dawn nothing moves into your house any more
+        if (dev.umbra.ending.Endings.isLight(player)) return;
         if (!(player.level() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) return;
         if (player.tickCount % WILD_INTERVAL == WILD_INTERVAL / 2) wild(level, player);
         BlockPos home = getHome(player);

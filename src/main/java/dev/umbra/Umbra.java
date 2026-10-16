@@ -90,7 +90,9 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.mimic.MimicChests::onLeftClick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.lighthouse.LighthouseRaid::onServerTick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Endings::onTarget);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Endings::onIncoming);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDamage);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onResonance);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onServerTick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDrops);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onDeath);
@@ -157,6 +159,7 @@ public class Umbra {
         dev.umbra.village.VillageManager.tick(player);
         dev.umbra.underside.UndersideAmbience.tick(player);
         dev.umbra.ending.Endings.tick(player);
+        dev.umbra.night.NightEvents.tick(player);
     }
 
     private static void onSetSpawn(PlayerSetSpawnEvent event) {

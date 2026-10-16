@@ -19,6 +19,7 @@ public final class UmbraConfig {
     public static final ModConfigSpec.BooleanValue DARKNESS = B.comment("Living darkness grows in deep caves").define("livingDarkness", true);
     public static final ModConfigSpec.BooleanValue SANITY = B.comment("Sanity meter, hallucinations and pills").define("sanity", true);
     public static final ModConfigSpec.BooleanValue ONSLAUGHTS = B.comment("The dark sometimes comes for a lighthouse in waves").define("lighthouseOnslaughts", true);
+    public static final ModConfigSpec.BooleanValue NIGHT_EVENTS = B.comment("Blood moons, fog and silent nights").define("nightEvents", true);
     public static final ModConfigSpec.BooleanValue NIGHTMARES = B.comment("Sleeping with low sanity can drop you into a nightmare").define("nightmares", true);
 
     static {

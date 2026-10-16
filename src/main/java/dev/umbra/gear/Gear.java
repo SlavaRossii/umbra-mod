@@ -44,6 +44,8 @@ public final class Gear {
     public static final ResourceKey<Enchantment> ANCHOR = key("anchor");
     public static final ResourceKey<Enchantment> INSTINCT = key("instinct");
     public static final ResourceKey<Enchantment> WHISPER_CURSE = key("whisper_curse");
+    /** 2.4: only the echo of the abyss (64 candles round the altar) gives it: a blow rings on in the creatures near. */
+    public static final ResourceKey<Enchantment> RESONANCE = key("resonance");
     public static final List<ResourceKey<Enchantment>> ALL_ENCHANTS = List.of(ECHO, SILENCE, VOID, HARVEST, TASTE, FLASH, ANCHOR, INSTINCT, WHISPER_CURSE);
 
     private Gear() {}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "H": "minecraft:honeycomb"
+  },
+  "pattern": [
+    "LL",
+    "HH"
+  ],
+  "result": {
+    "id": "umbra:thick_luminite_candle",
+    "count": 1
+  }
+}

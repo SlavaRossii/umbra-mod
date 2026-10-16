@@ -24,6 +24,16 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> SPLASH = reg("ambient.splash");
     public static final DeferredHolder<SoundEvent, SoundEvent> HEARTBEAT_FAR = reg("ambient.heartbeat_far");
 
+    // 2.4 (tools/gen_sounds24.py)
+    public static final DeferredHolder<SoundEvent, SoundEvent> YAN = reg("voice.yan");
+    public static final DeferredHolder<SoundEvent, SoundEvent> YAN_HURT = reg("voice.yan_hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_CLINK = reg("voice.lantern_clink");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_UNDERSIDE = reg("music.underside");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_BOSS = reg("music.boss");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ONSLAUGHT_HORN = reg("event.onslaught_horn");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOOD_MOON = reg("event.blood_moon");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SILENCE = reg("event.silence");
+
     private ModSounds() {}
 
     private static DeferredHolder<SoundEvent, SoundEvent> reg(String name) {
