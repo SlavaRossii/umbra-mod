@@ -65,7 +65,8 @@ public class Umbra {
         dev.umbra.registry.ModSounds.SOUNDS.register(modBus);
         dev.umbra.registry.ModEffects.MOB_EFFECTS.register(modBus);
         ModTabs.TABS.register(modBus);
-        container.registerConfig(ModConfig.Type.LOCAL, UmbraConfig.SPEC, "umbra.toml");
+        // SYNCED: on a server the world's settings (serverconfig/umbra.toml) rule, and clients receive them
+        container.registerConfig(ModConfig.Type.SYNCED, UmbraConfig.SPEC, "umbra.toml");
 
         modBus.addListener(Umbra::onAttributes);
         modBus.addListener(Umbra::onSpawnPlacements);

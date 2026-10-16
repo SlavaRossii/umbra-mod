@@ -42,8 +42,8 @@ public final class FalseDawn {
         player.removeEffect(MobEffects.DARKNESS);
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, LENGTH + 20, 0, false, false));
         player.sendOverlayMessage(Component.translatable("message.umbra.false_dawn.start").withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
-        level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.AMBIENT, 1.0F, 1.6F);
-        level.playSound(null, player.blockPosition(), SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.6F, 1.8F);
+        dev.umbra.util.Private.sound(player, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.AMBIENT, 1.0F, 1.6F);
+        dev.umbra.util.Private.sound(player, SoundEvents.BELL_RESONATE, SoundSource.AMBIENT, 0.6F, 1.8F);
     }
 
     private static void finish(ServerLevel level, ServerPlayer player) {
@@ -51,7 +51,7 @@ public final class FalseDawn {
         player.removeEffect(MobEffects.NIGHT_VISION);
         player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 4, 0, false, false));
         player.sendOverlayMessage(Component.translatable("message.umbra.false_dawn.end").withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
-        level.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_STARE, SoundSource.HOSTILE, 1.0F, 0.5F);
+        dev.umbra.util.Private.sound(player, SoundEvents.ENDERMAN_STARE, SoundSource.HOSTILE, 1.0F, 0.5F);
         Sanity.add(player, -5.0F);
     }
 

@@ -69,7 +69,7 @@ public final class Hallucinations {
     }
 
     private static int phantoms(ServerLevel level, ServerPlayer player, PhantomEntity.Mode mode) {
-        return level.getEntitiesOfClass(PhantomEntity.class, player.getBoundingBox().inflate(48), p -> p.mode() == mode).size();
+        return level.getEntitiesOfClass(PhantomEntity.class, player.getBoundingBox().inflate(48), p -> p.mode() == mode && p.shownTo(player)).size();
     }
 
     /** Spawns a phantom: watchers far off, ambushers right in front, shadows out of sight. */
@@ -101,7 +101,7 @@ public final class Hallucinations {
         Vec3 behind = UmbraUtil.horizontal(player.getLookAngle()).scale(-(3 + random.nextInt(6)))
                 .add(random.nextGaussian() * 2, 0, random.nextGaussian() * 2);
         Vec3 at = player.position().add(behind);
-        level.playSound(null, at.x, at.y, at.z, sound, SoundSource.HOSTILE, 0.6F, 0.9F + random.nextFloat() * 0.2F);
+        dev.umbra.util.Private.sound(player, sound, SoundSource.HOSTILE, at.x, at.y, at.z, 0.6F, 0.9F + random.nextFloat() * 0.2F);
     }
 
     /** A still figure at the edge of your vision. It is gone when you look straight at it or come close. */

@@ -39,12 +39,30 @@ public class DeathDouble extends PathfinderMob {
     protected void registerGoals() {
     }
 
+    public static final String OWNER_TAG = "umbra_double_of:";
+
+    /** Whose death this is, or null for doubles from older saves. */
+    public java.util.UUID owner() {
+        for (String t : entityTags()) {
+            if (t.startsWith(OWNER_TAG)) {
+                try {
+                    return java.util.UUID.fromString(t.substring(OWNER_TAG.length()));
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
     public static void onDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)) return;
-        // only one: the newest death
-        for (DeathDouble old : level.getEntitiesOfClass(DeathDouble.class, new AABB(player.blockPosition()).inflate(256))) old.discard();
+        // only one per player: the newest death (on a server, other players keep theirs)
+        String tag = OWNER_TAG + player.getUUID();
+        for (DeathDouble old : level.getEntitiesOfClass(DeathDouble.class, new AABB(player.blockPosition()).inflate(256), d -> d.entityTags().contains(tag))) old.discard();
         DeathDouble d = dev.umbra.registry.ModEntities.DEATH_DOUBLE.get().create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
         if (d == null) return;
+        d.addTag(tag); // entity tags are saved with the entity: the double remembers whose it is
         d.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
         level.addFreshEntity(d);
     }
@@ -57,8 +75,10 @@ public class DeathDouble extends PathfinderMob {
             this.discard();
             return;
         }
-        Player p = level.getNearestPlayer(this, 48);
-        if (p == null || !p.isAlive()) return;
+        // it watches the one who died here; others can only see it standing
+        java.util.UUID owner = owner();
+        Player p = owner != null ? level.getPlayerByUUID(owner) : level.getNearestPlayer(this, 48);
+        if (p == null || !p.isAlive() || p.level() != level || this.distanceToSqr(p) > 48 * 48) return;
         Vec3 face = p.position().subtract(this.position());
         float yaw = (float) (Math.toDegrees(Math.atan2(face.z, face.x)) - 90.0);
         this.setYHeadRot(yaw);

@@ -24,7 +24,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<Float>> SANITY = ATTACHMENTS.register("sanity",
             () -> AttachmentType.builder(() -> 100.0F)
                     .serialize(Codec.FLOAT.fieldOf("value"))
-                    .sync(ByteBufCodecs.FLOAT)
+                    .sync(ModAttachments::ownerOnly, ByteBufCodecs.FLOAT)
                     .build());
 
     /** Set once the Primordial Shadow is defeated: your shadow fights for you from then on. */
@@ -38,14 +38,14 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> JOURNAL = ATTACHMENTS.register("journal",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("entries"))
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
     /** /umbra storm: a storm for this player regardless of the clock (synced, so their screen goes grey too). */
     public static final Supplier<AttachmentType<Boolean>> STORM_TEST = ATTACHMENTS.register("storm_test",
             () -> AttachmentType.builder(() -> false)
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.BOOL)
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.BOOL)
                     .build());
 
     /** Whether the player already received the journal. */
@@ -77,7 +77,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> BESTIARY = ATTACHMENTS.register("bestiary",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("kills"))
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
@@ -85,7 +85,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> QUESTS_ACTIVE = ATTACHMENTS.register("quests_active",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("quests"))
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
@@ -93,9 +93,14 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> QUESTS_DONE = ATTACHMENTS.register("quests_done",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("quests"))
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
     private ModAttachments() {}
+
+    /** On a server, a player's mind (sanity, journal, errands) is sent to that player alone, not to everyone nearby. */
+    public static boolean ownerOnly(net.neoforged.neoforge.attachment.IAttachmentHolder holder, net.minecraft.server.level.ServerPlayer to) {
+        return holder == to;
+    }
 }

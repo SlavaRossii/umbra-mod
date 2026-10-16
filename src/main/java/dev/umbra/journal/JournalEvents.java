@@ -87,18 +87,29 @@ public final class JournalEvents {
 
     public static void onDeath(LivingDeathEvent event) {
         LivingEntity dead = event.getEntity();
-        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
+        if (!(event.getSource().getEntity() instanceof ServerPlayer killer)) return;
         String id = Bestiary.ids().get(dead.getType());
-        if (id != null && Bestiary.BOSSES.contains(id) && !id.equals("architect") && !id.equals("primordial_shadow")) {
-            // the first of the four minibosses leaves Marta's map behind
-            boolean first = true;
-            for (String b : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger"}) if (Bestiary.kills(player, b) > 0) first = false;
-            if (first) {
-                var level = dead.level();
-                level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, dead.getX(), dead.getY() + 1.0, dead.getZ(), new ItemStack(ModItems.MARTA_MAP.get())));
+        if (id == null) return;
+        // on a server, a boss falls to the whole party: everyone who fought it gets the page and the kill
+        java.util.Set<ServerPlayer> credited = new java.util.LinkedHashSet<>();
+        credited.add(killer);
+        if (dead instanceof dev.umbra.boss.UmbraBoss boss && dead.level() instanceof net.minecraft.server.level.ServerLevel level) credited.addAll(boss.opponents(level));
+        for (ServerPlayer player : credited) {
+            if (Bestiary.BOSSES.contains(id) && !id.equals("architect") && !id.equals("primordial_shadow")) {
+                // the first of the four minibosses leaves Marta's map behind, one for each who has none
+                boolean first = true;
+                for (String b : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger"}) if (Bestiary.kills(player, b) > 0) first = false;
+                if (first) {
+                    if (player == killer) {
+                        var level = dead.level();
+                        level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, dead.getX(), dead.getY() + 1.0, dead.getZ(), new ItemStack(ModItems.MARTA_MAP.get())));
+                    } else {
+                        dev.umbra.util.UmbraUtil.give(player, new ItemStack(ModItems.MARTA_MAP.get()));
+                    }
+                }
             }
+            Bestiary.addKill(player, id);
+            Journal.unlock(player, id);
         }
-        if (id != null) Bestiary.addKill(player, id);
-        if (id != null) Journal.unlock(player, id);
     }
 }

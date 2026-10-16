@@ -25,8 +25,34 @@ public abstract class UmbraBoss extends Monster {
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
+        if (this.tickCount % 20 == 7) scaleToParty(level);
         bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
         bossTick(level);
+    }
+
+    // --- server: a boss meant for one survivor stands up to a party -------------------------------------
+    public static final net.minecraft.resources.Identifier PARTY = net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "party");
+    /** Extra health per fighter beyond the first, and the most it can grow to (×3). */
+    public static final double PER_EXTRA = 0.6, MAX_EXTRA = 2.0;
+
+    /** Bonus health share for a party of {@code fighters}. */
+    public static double partyBonus(int fighters) {
+        return Math.min(MAX_EXTRA, PER_EXTRA * Math.max(0, fighters - 1));
+    }
+
+    /** More fighters, more health: it only ever grows during a fight (leaving does not weaken it), and the wounds stay. */
+    public void scaleToParty(ServerLevel level) {
+        if (!dev.umbra.UmbraConfig.on(dev.umbra.UmbraConfig.BOSS_PARTY)) return;
+        var attr = this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+        if (attr == null) return;
+        double want = partyBonus(opponents(level).size());
+        var have = attr.getModifier(PARTY);
+        double now = have == null ? 0.0 : have.amount();
+        if (want <= now + 1.0E-3) return;
+        float ratio = this.getHealth() / this.getMaxHealth();
+        attr.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(PARTY, want,
+                net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        this.setHealth(ratio * this.getMaxHealth());
     }
 
     // --- 1.8.2: the window after a big move ---------------------------------------------------------------
