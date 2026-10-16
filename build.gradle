@@ -70,6 +70,13 @@ neoForge {
             systemProperty 'umbra.smoketest', 'true'
         }
 
+        // CI: the real client starts, loads every model and texture, reaches the title screen and quits.
+        clientCheck {
+            client()
+            gameDirectory = project.file('run-client')
+            systemProperty 'umbra.clientcheck', 'true'
+        }
+
         data {
             clientData()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
