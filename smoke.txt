@@ -1,0 +1,861 @@
+UMBRA SMOKETEST: PASSED
+ok   setup
+ok   maze walls built (3090)
+ok   maze has linked quantum walls (453)
+ok   maze has ladders between floors (12 blocks)
+ok   ground floor chest
+ok   upper floor chest
+ok   maze core under the centre
+ok   maze walls are unbreakable
+ok   crafting table can be replaced
+ok   mimic placed
+ok   exposed mimic turns back into a crafting table
+ok   sprung mimic leaves air
+ok   sprung mimic releases silverfish (4)
+ok   shadow entity created
+ok   shadow added to the world
+ok   unowned shadow dissipates
+ok   darkness can be seeded in a sealed dark box
+ok   darkness spreads (343 blocks)
+ok   darkness recedes from light (343 -> 117)
+ok   seedCluster runs
+ok   dispeller burns living darkness (13 of 117)
+ok   maze pattern 'flicker' changes walls (30)
+ok   maze pattern 'wave' changes walls (82)
+ok   maze pattern 'breath' changes walls (76)
+ok   maze pattern 'rebuild' changes walls (90)
+ok   maze pattern 'mirror' changes walls (51)
+ok   sanity can be set
+ok   sanity is capped at 100
+ok   sedative restores 30 sanity (50.0)
+ok   a pill is used up
+ok   low sanity makes things nastier
+ok   a hallucination can appear
+ok   luminite ore generates underground (867 blocks in 70 chunks)
+ok   dusk stone frame opens a rift
+ok   rift fills the whole frame
+ok   breaking the frame closes the rift
+ok   the Underside dimension exists
+ok   the Underside is made of ash (210003 blocks)
+ok   the Underside has a bedrock floor and roof (13734)
+ok   gloom ore generates in the Underside (329)
+ok   a rift leads to the Underside
+ok   a return rift is built on arrival
+ok   arrival spot is safe (300, 86, 302)
+ok   the rift leads back to the world
+ok   the same rift is reused next time
+ok   all creatures can be created
+ok   the mimicker starts as a chest
+ok   a shade can be created
+ok   the Dispeller destroys a shade
+ok   crawler lives and ticks
+ok   the blind one does not see anyone
+ok   mimicker lives and ticks
+ok   touched, the chest shows its legs
+ok   light eater lives and ticks
+ok   the light eater ate the torch
+ok   the light eater left the luminite next to it alone
+ok   blocks drop themselves when broken (3/3)
+ok   seals summon all four minibosses
+ok   the Watcher is a boss (150.0 hp)
+ok   the Watcher waits, unseen
+ok   the Queen lives
+ok   the Doppelganger lives
+ok   the Shepherd wraps himself in darkness
+ok   the shroud makes him untouchable
+ok   light burns the shroud away
+ok   without the shroud he can be hurt
+ok   the key raises the Architect's maze
+ok   the Architect stands in his maze
+ok   the Primordial Shadow can be summoned
+ok   she starts in phase 1
+ok   phase 3 below a third of her health
+ok   in phase 3 ordinary damage does nothing
+ok   in phase 3 light hurts her
+ok   defeating her frees your shadow
+ok   journal entries unlock
+ok   an entry is written only once
+ok   light arrows fit in a bow
+ok   the quantum compass finds the maze core
+ok   spider for the ward test
+ok   dispeller has 40 charges
+ok   dawn has 256 charges
+ok   lantern switches on
+ok   a lit lantern counts as light in hand
+ok   lantern places its light
+ok   lantern light level
+ok   an empty lantern gives no light
+ok   smouldering torch is dim
+ok   smouldering torch will burn out
+ok   diamond ore can be a mimic
+ok   ore mimic is an ore mimic
+ok   the dispeller exposes an ore mimic
+ok   redstone ore can be a mimic
+ok   a mimic bites for four hearts (pig 10 -> 2.0)
+ok   a mimic bite never kills (1.0)
+ok   chest mimic planted
+ok   exposed chest mimic stays a chest with its hoard
+ok   sprung chest mimic is gone
+ok   about one in eight loot chests is a mimic (58/400)
+ok   the maze has more chests (5)
+ok   underside mazes are spaced out (100 in 140x140 chunks, min gap 6 chunks)
+ok   a burning ward protects its circle
+ok   but not beyond two chunks
+ok   the ward drives a spider away (18.1 blocks)
+ok   an unwatched statue moves (1.9 blocks)
+ok   lantern light disappears without its lantern
+ok   all journal recipes exist (0 missing)
+ok   journal has 102 distinct entries
+ok   journal entry with recipes unlocks
+ok   no insight while sane
+ok   first insight below 40
+ok   third insight below 10
+ok   the whisper table refuses a sane mind
+ok   the whisper table wants its ingredients
+ok   the whisper table makes a tincture of silence
+ok   the ritual uses up its ingredients
+ok   the tincture of silence stops sanity loss
+ok   the blade of despair cuts deepest at zero sanity
+ok   and not at all when sane
+ok   a WATCH phantom appears
+ok   a AMBUSH phantom appears
+ok   a SHADOW phantom appears
+ok   phantoms are in the world (3)
+ok   spawn eggs are real spawn eggs
+ok   mimic kinds group their blocks
+ok   a nightmare has its way out
+ok   a nightmare has no chests
+ok   a nightmare is sealed
+ok   you wake inside the nightmare maze, on solid floor
+ok   village 'RING' has its bell
+ok   village 'RING' is built (10 containers, 9 lanterns, 95 logs, 9 folk)
+ok   a shadow villager has six trades (6)
+ok   village 'STREET' has its bell
+ok   village 'STREET' is built (14 containers, 18 lanterns, 136 logs, 9 folk)
+ok   village 'HAMLET' has its bell
+ok   village 'HAMLET' is built (13 containers, 5 lanterns, 102 logs, 9 folk)
+ok   about one in seven shadow villagers is a mimic (47/300)
+ok   hitting a mimic villager first exposes it
+ok   an exposed mimic villager drops shards (4)
+ok   a real villager just gets hurt
+ok   shadow villages are spaced out (225 in 180x180 chunks, min gap 7)
+ok   the citadel is built (1299 ms)
+ok   the citadel has a way back, facing the right way
+ok   the wide maze holds still (0 quantum columns)
+ok   the wide maze has a way in and a way out
+ok   the throne is sealed
+ok   the Architect waits in an open hall
+ok   the hall of living darkness is full (2745)
+ok   the citadel has chests, some of them hungry, by chance (23, 9 mimics)
+ok   the library and the side passage hide phantom walls (60)
+ok   statues and keepers stand guard (5, 2)
+ok   the citadel has nests and trap tiles (4, 18)
+ok   the citadel has spawner cages (4)
+ok   the vault holds 14 chests, some hungry (14, 6)
+ok   the first pair of chests by the vault door is real
+ok   the bypass hides behind a wall only the Architect's seal opens
+ok   the sealed wall lets through only one who wears the Architect's seal, not the mad
+ok   the vault can be reached without crossing the dark hall
+ok   the bypass has a reachable side room
+ok   the south fork has a reachable dead end
+ok   the garden is reachable
+ok   a nest calls 1 creatures and then waits (1)
+ok   trap tile kind 2 springs once
+ok   trap tile kind 4 springs once
+ok   trap tile kind 1 springs once
+ok   trap tile kind 3 springs once
+ok   trap tile kind 0 springs once
+ok   all five kinds of trap were found in the hall floor (5)
+ok   the phantom wall lets only a slipping mind through
+ok   light turns a statue to stone
+ok   the key's door wakes the Architect
+ok   the seal is gone
+ok   the Architect is in his hall
+ok   a citadel gate has a 3x4 doorway (12)
+ok   citadels never overlap (gates 18 chunks apart)
+ok   gate chunks are found again from their cell
+ok   a citadel is found from inside it
+ok   an explorer's camp has a campfire and a chest
+ok   ash figures stand in the ash
+ok   explorer notes go into the journal in order
+ok   a false dawn brightens the night
+ok   a death double can stand where you died
+ok   the Underside is decorated (429 pieces in 49 chunks)
+ok   journal entries sort into sections
+ok   every journal section has entries (the atlas is a map)
+ok   a watcher for the move tests
+ok   a fresh boss is in phase 1
+ok   below half health a boss enters phase 2
+ok   the Primordial Shadow has a third phase
+ok   a boss leaps at its target
+ok   jaws snap out of the floor in lines and rings (16)
+ok   a burst is marked on the floor
+ok   and goes off when its time comes
+ok   the Architect's cage wall rises
+ok   and crumbles away again
+ok   ash storms blow in about a quarter of the windows (21/80)
+ok   the Underside has its own sounds
+ok   the humming loops and the crystal chime are gone
+ok   no Underside biome hums in the background (7/7 files checked)
+ok   the light eater leaves every kind of luminite alone
+ok   but it still eats ordinary light
+ok   the Underside has crystal grottos, black lakes and a whispering forest (3/3)
+ok   new journal entries are sorted
+ok   a sunken temple keeps a chest on its altar
+ok   the temple stands under water
+ok   the lake does not rise above its shore (0)
+ok   lurkers guard the temple (2)
+ok   broken columns stand out of the water
+ok   chest loot comes in stacks (largest 4)
+ok   luminite spires grow in the grottos
+ok   dead trees stand in the whispering forest
+ok   two Architects for the stun test
+ok   a boss can be stunned for a moment
+ok   and drops its stone skin, taking +50% meanwhile (3.5 vs 15.0)
+ok   a boss calls at most four shades (4, 0, 4)
+ok   without a light in hand the shroud holds
+ok   two hits with a light only chip it
+ok   the third hit tears the shroud and lands
+ok   the tincture of silence gives Clarity
+ok   Clarity wipes away darkness and nausea (and nothing else does)
+ok   the first page is read first
+ok   finding the luminite is not enough: the mirror and the dispeller come from the Keepers' pages (true, true)
+ok   pages are read in order
+ok   all seven pages teach the whole craft
+ok   PROFILE abyss: columns 14, avg open height 36, min 9, max 83, water floor in 3
+ok   PROFILE ash_plains: columns 38, avg open height 46, min 2, max 100, water floor in 3
+ok   PROFILE crystal_grottos: columns 1, avg open height 15, min 15, max 15, water floor in 0
+ok   PROFILE inverted_forest: columns 10, avg open height 25, min 2, max 79, water floor in 0
+ok   PROFILE quantum_ruins: columns 28, avg open height 54, min 15, max 85, water floor in 2
+ok   PROFILE whispering_forest: columns 5, avg open height 29, min 15, max 37, water floor in 0
+ok   PROFILE rows (4000,4000)ash_p:64-94 (4000,4053)ash_p:74-100 (4000,4106)abyss:23-54 (4000,4159)abyss:44-53 (4000,4212)abyss:26-53 (4000,4265)abyss:24-106 (4000,4318)abyss:23-79 (4000,4371)abyss:20-84w (4000,4424)abyss:20-34w (4000,4477)abyss:68-108 (4053,4000)ash_p:90-106 (4053,4053)ash_p:76-83 (4053,4159)ash_p:23-62 (4053,4212)ash_p:21-59 (4053,4265)ash_p:22-70 (4053,4318)abyss:23-97 (4053,4371)abyss:24-43 (4053,4477)abyss:96-104 (4106,4000)cryst:29-43 (4106,4053)ash_p:62-93 (4106,4159)ash_p:20-83w (4106,4212)ash_p:21-103 (4106,4265)ash_p:21-107 (4106,4318)ash_p:36-108 (4106,4371)abyss:20-73w (4106,4424)abyss:95-105 (4106,4477)abyss:96-106 (4159,4000)quant:24-105 (4159,4053)quant:24-55 (4159,4106)quant:47-104 (4159,4159)quant:60-109 (4159,4212)ash_p:22-90 (4159,4265)ash_p:21-120 (4159,4318)ash_p:33-109 (4159,4371)ash_p:21-64 (4159,4424)ash_p:22-51 (4159,4477)ash_p:80-106 (4212,4000)quant:68-85 (4212,4053)quant:24-82 (4212,4106)quant:21-78 (4212,4159)quant:20-94 (4212,4212)quant:22-89 (4212,4265)ash_p:74-109 (4212,4318)ash_p:66-106 (4212,4371)ash_p:74-101 (4212,4424)ash_p:39-83 (4212,4477)ash_p:20-107w (4265,4000)quant:50-79 (4265,4053)quant:41-55 (4265,4106)quant:21-103 (4265,4159)quant:21-105 (4265,4212)quant:23-99 (4265,4265)ash_p:23-104 (4265,4318)ash_p:27-120 (4265,4371)ash_p:57-111 (4265,4424)ash_p:55-87 (4265,4477)ash_p:68-111 (4318,4000)quant:22-105 (4318,4053)quant:20-85w (4318,4106)quant:54-95 (4318,4159)quant:20-91w (4318,4212)quant:22-98 (4318,4265)ash_p:23-104 (4318,4318)ash_p:83-105 (4318,4371)ash_p:24-66 (4318,4424)ash_p:28-43 (4318,4477)ash_p:20-41w (4371,4000)quant:28-76 (4371,4053)quant:22-93 (4371,4106)quant:45-80 (4371,4159)quant:48-89 (4371,4212)quant:26-70 (4371,4265)inver:59-90 (4371,4318)inver:42-60 (4371,4371)ash_p:88-89 (4371,4424)ash_p:24-35 (4424,4000)quant:42-92 (4424,4053)quant:62-108 (4424,4106)quant:57-81 (4424,4159)quant:50-80 (4424,4212)whisp:38-68 (4424,4265)inver:46-61 (4424,4318)inver:26-29 (4424,4371)inver:89-107 (4424,4424)ash_p:63-83 (4424,4477)ash_p:84-105 (4477,4000)whisp:41-70 (4477,4053)whisp:84-98 (4477,4106)whisp:68-99 (4477,4159)whisp:23-59 (4477,4212)inver:59-68 (4477,4265)inver:63-85 (4477,4318)inver:56-57 (4477,4371)inver:23-101 (4477,4424)inver:53-107 (4477,4477)ash_p:24-107 
+ok   the lighthouse has its lamp at the top
+ok   the lamp starts dead
+ok   a spiral stair winds up to the gallery (90 steps, top at 36)
+ok   the tower and its hollow fit under the roof of the Underside
+ok   the last step of the stair is set flush into the gallery floor
+ok   there is one lighthouse in the world
+ok   it stands a few hundred blocks from the middle (328)
+ok   the tower has a door
+ok   the keeper waits by the tower
+ok   the lighthouse stands in a hollow it carved for itself
+ok   four crystals wake the lamp
+ok   the lamp stops growing at the top level
+ok   a stronger lamp shelters a wider circle
+ok   a burning lamp keeps the dark away
+ok   the circle has an edge
+ok   no lighthouse stands beside a citadel gate
+ok   a creature is understood by stages
+ok   kills are counted per creature
+ok   a villager offers an errand
+ok   an accepted errand is written into the journal
+ok   a finished errand takes its price and pays
+ok   after the errand the villager just trades
+ok   a hunting errand counts kills made after it was taken
+ok   an errand to get somewhere is done on arrival
+ok   reading Marta's map writes it into the journal
+ok   language en_us has all journal texts 
+ok   language ru_ru has all journal texts 
+ok   a lighthouse is really raised in the Underside, near chunk 15,-14 (platform 248, 22, -168)
+ok   the real lighthouse fits under the roof of the Underside (lamp at y=60)
+ok   the lighthouse stands in an open grotto (96/96 open)
+ok   and it is raised only once
+ok   the three armour sets have all their pieces (32 new)
+ok   every armour piece is recognised by set and tier
+ok   bare, you have no gear bonuses
+ok   tier I gloom armour keeps its 12% per piece
+ok   tier III gloom armour shields 18% per piece
+ok   higher tiers of shadow gear are quieter
+ok   all twelve enchantments are loaded (12)
+ok   a sword can carry Echo
+ok   boots of silence add to the quiet
+ok   luminite armour burns shades that come close
+ok   the anvil pins the ash clasp to a chestplate
+ok   an artifact only goes on a chestplate
+ok   the clasp quiets your steps
+ok   the clasp takes the fall away
+ok   the Architect's seal sees through phantom walls
+ok   no seal, no sight
+ok   about thirty journal milestones are achievements (31)
+ok   a small entry stays in the journal only
+ok   the advancement tab has a root
+ok   language en_us names the 2.0 gear 
+ok   language ru_ru names the 2.0 gear 
+ok   a blow with Echo queues its echo
+ok   nobody has chosen an ending at first
+ok   after the dark ending the mind never climbs above 60 (60.0)
+ok   a creature of the Underside does not turn on one of its own
+ok   unless struck first
+ok   after the dawn the dark presses no harder than on the first night
+ok   burning the heart in a full lamp brings the dawn
+ok   the choice is made once
+ok   the heart is one of a kind
+ok   language en_us has the endings and the onslaught 
+ok   language ru_ru has the endings and the onslaught 
+ok   a bare altar echoes at level I
+ok   four candles and four thick ones (worth two each) make it echo at level III (12)
+ok   sixty-four candles open the abyss
+ok   a candelabrum counts thrice, a melted candle still shines
+ok   four candles shine brightly
+ok   a sword can take something from the altar (6)
+ok   the altar gives one enchantment of Umbra's for quartz and experience (1, xp 28)
+ok   the gloom anvil mends luminite with luminite, a quarter for each crystal (4)
+ok   and does not know foreign gear
+ok   and pins an artifact on a chestplate
+ok   2.6: the anvil infuses a boss's relic into a weapon, not into armour
+ok   armour: gloom, shadow, luminite, tier by tier, each better than the one before (15.0 17.0 20.0 25.0 28.0 30.0 33.0 37.0 40.0 )
+ok   a maze is never far: the nearest is 218 blocks away
+ok   bosses are a quarter stronger (the Watcher has 150.0)
+ok   a boss gets its second wind once and does not climb back a phase (60.0)
+ok   the Watcher's eye shrugs off most of a blow (40.0 of 100)
+ok   a flash takes no more than 2% of a boss
+ok   the trophy shelf takes six relics, one of each, and pays out when full (6, 16)
+ok   spear +3, dagger x2 from behind, Radiance II +3 (8.0, 5.0/10.0, 8.0)
+ok   the new weapons take sword enchantments
+ok   the echo staff's cry strikes what stands in its line (1, 25.0)
+ok   the luminite bow takes bow enchantments
+ok   a full set is noticed, and so is a broken one
+ok   Yan gives an errand, waits for it, and pays with a blueprint
+ok   the Keeper's bell makes the dark stagger back
+ok   the atlas marks a place once, and a far one of the same kind again
+ok   the Bellringer's ring makes heads swim (1)
+ok   the Weeper throws a shard of shadow, and is in the bestiary
+ok   in the second turn of the circle creatures have +50% health, bosses +100% (33.0, 300.0)
+ok   a new world starts at the first turn of the circle
+ok   a foggy night can be called
+ok   the Depths are built
+ok   the Keepers' chest waits in the sanctum
+ok   the Drowned Keeper guards it (320.0 hp)
+ok   the gallery is drowned, with air under the vault
+ok   the echo has sounded
+ok   the real lighthouse has its keeper
+ok   a flashed statue stays stone
+ok   and moves again after five seconds (9.2 blocks)
+ok   a survival player joins as on a real login
+ok   a statue counts as watched only in the player's view (facing true, away false, view 1.00,0.00, player (430.5, 250.0, 20.5), statue (452.5, 250.0, 20.5))
+ok   a torch in the hand burns a shade standing two blocks away
+ok   a statue does not move while a survival player looks at it
+ok   it runs the moment the player looks away (10.8 blocks)
+ok   looked at again, it freezes on the spot
+ok   and does not creep closer
+ok   a flashed statue stays stone even with nobody watching
+ok   and thaws on its own while a player is near (21.3 blocks)
+ok   statue trace (step:x, F=frozen, W=watched, ph=player head yaw) 132:x=452.5FW ph=-90 136:x=452.5FW ph=-90 140:x=452.5FW ph=-90 144:x=452.5FW ph=-90 148:x=452.5FW ph=-90 152:x=452.5FW ph=-90 156:x=452.5FW ph=-90 160:x=452.5FW ph=-90 164:x=452.5FW ph=-90 168:x=452.1-- ph=90 172:x=450.6-- ph=90 176:x=449.1-- ph=90 180:x=447.5-- ph=90 184:x=446.0-- ph=90 188:x=444.4-- ph=90 192:x=442.9-- ph=90 196:x=441.3-- ph=90 200:x=441.3FW ph=-90 204:x=441.3FW ph=-90 208:x=441.3FW ph=-90 212:x=441.3FW ph=-90 216:x=441.3FW ph=-90 220:x=452.5F- ph=90 224:x=452.5F- ph=90 228:x=452.5F- ph=90 232:x=452.5F- ph=90 236:x=452.5F- ph=90 240:x=452.5F- ph=90 244:x=452.5F- ph=90 248:x=452.5F- ph=90 252:x=452.5F- ph=90 256:x=452.5F- ph=90 260:x=452.5F- ph=90 264:x=452.5F- ph=90 268:x=452.5F- ph=90 272:x=452.5F- ph=90 276:x=452.5F- ph=90 280:x=452.5F- ph=90 284:x=452.5F- ph=90 288:x=452.5F- ph=90 292:x=452.5F- ph=90 296:x=452.5F- ph=90 300:x=452.5F- ph=90 304:x=452.5F- ph=90 308:x=452.5F- ph=90 312:x=452.5F- ph=90 316:x=452.3-- ph=90 320:x=451.0-- ph=90 324:x=449.5-- ph=90 328:x=447.9-- ph=90 332:x=446.4-- ph=90 336:x=444.8-- ph=90 340:x=443.3-- ph=90 344:x=441.7-- ph=90 348:x=440.1-- ph=90 352:x=438.6-- ph=90 356:x=437.0-- ph=90 360:x=435.5-- ph=90 364:x=433.9-- ph=90 368:x=432.4-- ph=90 372:x=431.3-- ph=90 376:x=431.1-- ph=90 380:x=431.2-- ph=90 
+ok   the player carries things (8)
+ok   the player dies
+ok   death empties the pockets (0 left)
+ok   and everything lies on the ground exactly once (8 of 8)
+ok   a dark double stands where they fell
+ok   a dead player can respawn
+ok   and comes back empty-handed (0 items)
+ok   nothing was duplicated or lost on the way (8 of 8 on the ground)
+ok   the journal, the freed shadow and the home survive death
+ok   sanity is full again (100.0)
+ok   resetting the spawn point is harmless and keeps the home
+ok   a second death drops everything once (9 of 9)
+ok   before leaving: got journal true, health 0.0
+ok   player data on disk: ./world/players/stats/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json, ./world/players/data/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.dat, ./world/players/advancements/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json
+ok   saved: Health=0.0f Pos=[5.5d,103.0d,10.5d] Inventory=[]
+ok   quitting on the death screen and coming back brings no items (0: umbra:journal x1; )
+ok   after returning: pos (0.0, 0.0, 0.0), health 20.0, got journal true
+ok   and the pile on the ground stays the only copy (9 of 9)
+ok   that player can still respawn afterwards
+ok   the onslaught knows the foot of the tower (BlockPos{x=700, y=220, z=120})
+ok   with nobody at the lighthouse, no onslaught starts
+ok   an onslaught starts
+ok   the first wave comes (1 / 8)
+ok   the raiders are marked as the onslaught's
+ok   light does not drive off an onslaught
+ok   three waves beaten, the onslaught is over
+ok   the lighthouse keeps its light
+ok   and pays in luminite at its foot (10)
+ok   a bound horn knows its lighthouse
+ok   when all is quiet the horn carries nobody
+ok   during an onslaught the horn answers and carries you to the tower
+ok   the second onslaught comes in force (8)
+ok   let through, the dark dims the lamp by a level (2)
+ok   and the rest of the onslaught melts away
+
+----- crash reports -----
+----- log excerpts -----
+1-[17Oct2026 12:09:26.863] [main/INFO] [net.neoforged.fml.startup.Entrypoint/]: JVM Uptime at startup: 172ms
+2-[17Oct2026 12:09:26.881] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Starting FancyModLoader version 12.0.12 (DEDICATED_SERVER in DEV)
+3:[17Oct2026 12:09:26.882] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Game directory: /home/runner/work/umbra-mod/umbra-mod/run-smoke
+4-[17Oct2026 12:09:26.931] [main/INFO] [net.neoforged.fml.loading.EarlyServiceDiscovery/]: Found 2 early service jars (out of 98) in 21ms
+5-[17Oct2026 12:09:26.932] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Early Services:
+6-[17Oct2026 12:09:26.932] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/loader/12.0.12/f097a25d6289aa0b289e7cdb6de83a5c8c72f77e/loader-12.0.12.jar
+7-[17Oct2026 12:09:26.933] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/earlydisplay/12.0.12/8437387fd35033b1ea0d3fac7cc28ced4efdc6b/earlydisplay-12.0.12.jar
+8-[17Oct2026 12:09:26.939] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: Not loading early display in headless mode.
+9-[17Oct2026 12:09:27.005] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.GameLocator/]: Detected a joined NeoForge and Minecraft configuration. Applying filtering...
+10:[17Oct2026 12:09:27.128] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.InDevFolderLocator/CORE]: Got mod coordinates umbra%%/home/runner/work/umbra-mod/umbra-mod/build/classes/java/main:umbra%%/home/runner/work/umbra-mod/umbra-mod/build/resources/main from env
+11-[17Oct2026 12:09:27.286] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+12-[17Oct2026 12:09:27.288] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+13-     Mod List:
+14-		Name Version (Mod Id)
+15-
+16-		Minecraft 26.3 (minecraft)
+17-		NeoForge 26.3.0.76 (neoforge)
+18:		Umbra 2.6.1 (umbra)
+19-[17Oct2026 12:09:28.783] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/home/runner/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar Service=FML Env=SERVER
+20-[17Oct2026 12:09:28.828] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Loading FML Plugins:
+21-[17Oct2026 12:09:28.828] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]:  - /home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/26.3.0.76/163993fbd027998d8d1a951f28ed5b344d96b6b6/neoforge-26.3.0.76-universal.jar > net.neoforged.neoforge-coremods-26.3.0.76.jar
+22-[17Oct2026 12:09:29.084] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Building game content classloader:
+23: - minecraft (composite(filtered(jar(/home/runner/work/umbra-mod/umbra-mod/build/moddev/artifacts/minecraft-patched-26.3.0.76.jar)), filtered(jar(/home/runner/work/umbra-mod/umbra-mod/build/moddev/artifacts/minecraft-patched-26.3.0.76.jar))))
+24- - mixinextras.neoforge (jar(/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/26.3.0.76/163993fbd027998d8d1a951f28ed5b344d96b6b6/neoforge-26.3.0.76-universal.jar > mixinextras-neoforge-0.5.5.jar))
+25- - neoforge (composite(filtered(jar(/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/26.3.0.76/163993fbd027998d8d1a951f28ed5b344d96b6b6/neoforge-26.3.0.76-universal.jar))))
+26- - net.neoforged.fml.generated (empty(VirtualJar/net.neoforged.fml.generated))
+27: - umbra (composite(folder(/home/runner/work/umbra-mod/umbra-mod/build/classes/java/main), folder(/home/runner/work/umbra-mod/umbra-mod/build/resources/main)))
+28-[17Oct2026 12:09:29.107] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Built game content classloader in 47ms
+29-[17Oct2026 12:09:30.719] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.5).
+30-[17Oct2026 12:09:38.091] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+31-[17Oct2026 12:09:38.097] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+32-[17Oct2026 12:09:38.100] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+33-[17Oct2026 12:09:38.102] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+34-[17Oct2026 12:09:38.104] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+35-[17Oct2026 12:09:38.106] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [time, set, time] and [time, set, timemarker] with inputs: [0, 0s, 0d, 0t]
+36-[17Oct2026 12:09:38.108] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [time, set, timemarker] and [time, set, time] with inputs: [012]
+37-[17Oct2026 12:09:38.110] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [time, of, clock, set, time] and [time, of, clock, set, timemarker] with inputs: [0, 0s, 0d, 0t]
+38-[17Oct2026 12:09:38.111] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [time, of, clock, set, timemarker] and [time, of, clock, set, time] with inputs: [012]
+39-[17Oct2026 12:09:38.181] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 26.3.0.76, for MC 26.3
+40:[17Oct2026 12:09:38.304] [modloading-worker-0/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: enabled
+41-[17Oct2026 12:09:38.611] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.VersionChecker/]: No mods enabled for version check
+42-[17Oct2026 12:09:38.701] [main/INFO] [com.mojang.authlib.services.MinecraftServicesDiscoveryService/]: Environment: Environment[discoveryUrl=https://discovery.minecraftservices.com/minecraft/client, name=PROD]
+43-[17Oct2026 12:09:39.849] [Worker-Main-3/INFO] [net.minecraft.server.Main/]: No existing world data, creating new world
+44-[17Oct2026 12:09:40.611] [Worker-Main-2/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 1898 advancements
+45-[17Oct2026 12:09:40.771] [main/INFO] [net.neoforged.neoforge.common.crafting.RecipePriorityManager/]: Loaded 0 recipe priority overrides
+46-[17Oct2026 12:09:40.956] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 26.3
+47-[17Oct2026 12:09:40.956] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+48-[17Oct2026 12:09:40.956] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+49-[17Oct2026 12:09:40.956] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+50-[17Oct2026 12:09:41.066] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+51-[17Oct2026 12:09:41.154] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+52-[17Oct2026 12:09:41.154] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+--
+62-[17Oct2026 12:09:45.311] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+63-[17Oct2026 12:09:45.315] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+64:[17Oct2026 12:09:45.318] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/umbra:underside
+65-[17Oct2026 12:09:45.387] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
+66:[17Oct2026 12:09:52.660] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   setup
+67-[17Oct2026 12:09:52.674] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 6286ms or 125 ticks behind
+68:[17Oct2026 12:09:53.752] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze walls built (3090)
+69:[17Oct2026 12:09:53.752] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze has linked quantum walls (453)
+70:[17Oct2026 12:09:53.752] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze has ladders between floors (12 blocks)
+71:[17Oct2026 12:09:53.752] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   ground floor chest
+72:[17Oct2026 12:09:53.752] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   upper floor chest
+73:[17Oct2026 12:09:53.753] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze core under the centre
+74:[17Oct2026 12:09:53.753] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze walls are unbreakable
+75:[17Oct2026 12:09:54.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   crafting table can be replaced
+76:[17Oct2026 12:09:54.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   mimic placed
+77:[17Oct2026 12:09:54.603] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   exposed mimic turns back into a crafting table
+78:[17Oct2026 12:09:54.605] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sprung mimic leaves air
+79:[17Oct2026 12:09:54.605] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sprung mimic releases silverfish (4)
+80:[17Oct2026 12:09:55.592] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   shadow entity created
+81:[17Oct2026 12:09:55.592] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   shadow added to the world
+82:[17Oct2026 12:09:57.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   unowned shadow dissipates
+83:[17Oct2026 12:09:58.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   darkness can be seeded in a sealed dark box
+84:[17Oct2026 12:09:59.880] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   darkness spreads (343 blocks)
+85:[17Oct2026 12:10:04.626] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   darkness recedes from light (343 -> 117)
+86:[17Oct2026 12:10:04.629] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   seedCluster runs
+87:[17Oct2026 12:10:05.097] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   dispeller burns living darkness (13 of 117)
+88:[17Oct2026 12:10:05.592] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze pattern 'flicker' changes walls (30)
+89:[17Oct2026 12:10:05.595] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze pattern 'wave' changes walls (82)
+90:[17Oct2026 12:10:05.601] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze pattern 'breath' changes walls (76)
+91:[17Oct2026 12:10:05.607] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze pattern 'rebuild' changes walls (90)
+92:[17Oct2026 12:10:05.610] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   maze pattern 'mirror' changes walls (51)
+93:[17Oct2026 12:10:06.182] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sanity can be set
+94:[17Oct2026 12:10:06.182] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sanity is capped at 100
+95:[17Oct2026 12:10:06.185] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sedative restores 30 sanity (50.0)
+96:[17Oct2026 12:10:06.185] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a pill is used up
+97:[17Oct2026 12:10:06.185] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   low sanity makes things nastier
+98:[17Oct2026 12:10:06.187] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a hallucination can appear
+99:[17Oct2026 12:10:06.674] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   luminite ore generates underground (867 blocks in 70 chunks)
+100:[17Oct2026 12:10:07.090] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   dusk stone frame opens a rift
+101:[17Oct2026 12:10:07.090] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   rift fills the whole frame
+102:[17Oct2026 12:10:07.091] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   breaking the frame closes the rift
+103:[17Oct2026 12:10:07.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside dimension exists
+104:[17Oct2026 12:10:08.192] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside is made of ash (210003 blocks)
+105:[17Oct2026 12:10:08.193] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside has a bedrock floor and roof (13734)
+106:[17Oct2026 12:10:08.193] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   gloom ore generates in the Underside (329)
+107:[17Oct2026 12:10:08.419] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a rift leads to the Underside
+108:[17Oct2026 12:10:08.419] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a return rift is built on arrival
+109:[17Oct2026 12:10:08.420] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   arrival spot is safe (300, 86, 302)
+110:[17Oct2026 12:10:09.494] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the rift leads back to the world
+111:[17Oct2026 12:10:09.506] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the same rift is reused next time
+112:[17Oct2026 12:10:09.602] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   all creatures can be created
+113:[17Oct2026 12:10:09.603] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the mimicker starts as a chest
+114:[17Oct2026 12:10:09.629] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a shade can be created
+115:[17Oct2026 12:10:09.644] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Dispeller destroys a shade
+116:[17Oct2026 12:10:14.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   crawler lives and ticks
+117:[17Oct2026 12:10:14.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the blind one does not see anyone
+118:[17Oct2026 12:10:14.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   mimicker lives and ticks
+119:[17Oct2026 12:10:14.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   touched, the chest shows its legs
+120:[17Oct2026 12:10:14.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   light eater lives and ticks
+121:[17Oct2026 12:10:14.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the light eater ate the torch
+122:[17Oct2026 12:10:14.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the light eater left the luminite next to it alone
+123:[17Oct2026 12:10:15.091] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   blocks drop themselves when broken (3/3)
+124:[17Oct2026 12:10:15.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   seals summon all four minibosses
+125:[17Oct2026 12:10:15.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Watcher is a boss (150.0 hp)
+126:[17Oct2026 12:10:18.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Watcher waits, unseen
+127:[17Oct2026 12:10:18.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Queen lives
+128:[17Oct2026 12:10:18.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Doppelganger lives
+129:[17Oct2026 12:10:18.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Shepherd wraps himself in darkness
+130:[17Oct2026 12:10:18.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the shroud makes him untouchable
+131:[17Oct2026 12:10:18.595] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   light burns the shroud away
+132:[17Oct2026 12:10:18.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   without the shroud he can be hurt
+133:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the key raises the Architect's maze
+134:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Architect stands in his maze
+135:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Primordial Shadow can be summoned
+136:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   she starts in phase 1
+137:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   phase 3 below a third of her health
+138:[17Oct2026 12:10:19.606] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   in phase 3 ordinary damage does nothing
+139:[17Oct2026 12:10:19.607] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   in phase 3 light hurts her
+140:[17Oct2026 12:10:19.612] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   defeating her frees your shadow
+141:[17Oct2026 12:10:20.089] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   journal entries unlock
+142:[17Oct2026 12:10:20.090] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an entry is written only once
+143:[17Oct2026 12:10:20.090] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   light arrows fit in a bow
+144:[17Oct2026 12:10:20.092] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the quantum compass finds the maze core
+145:[17Oct2026 12:10:20.341] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   spider for the ward test
+146:[17Oct2026 12:10:20.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   dispeller has 40 charges
+147:[17Oct2026 12:10:20.589] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   dawn has 256 charges
+148:[17Oct2026 12:10:20.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   lantern switches on
+149:[17Oct2026 12:10:20.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a lit lantern counts as light in hand
+150:[17Oct2026 12:10:20.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   lantern places its light
+151:[17Oct2026 12:10:20.590] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   lantern light level
+152:[17Oct2026 12:10:20.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an empty lantern gives no light
+153:[17Oct2026 12:10:20.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   smouldering torch is dim
+154:[17Oct2026 12:10:20.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   smouldering torch will burn out
+155:[17Oct2026 12:10:20.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   diamond ore can be a mimic
+156:[17Oct2026 12:10:20.591] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   ore mimic is an ore mimic
+157:[17Oct2026 12:10:20.595] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the dispeller exposes an ore mimic
+158:[17Oct2026 12:10:20.595] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   redstone ore can be a mimic
+159:[17Oct2026 12:10:20.596] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a mimic bites for four hearts (pig 10 -> 2.0)
+160:[17Oct2026 12:10:20.597] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a mimic bite never kills (1.0)
+161:[17Oct2026 12:10:20.597] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   chest mimic planted
+162:[17Oct2026 12:10:20.598] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   exposed chest mimic stays a chest with its hoard
+163:[17Oct2026 12:10:20.600] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sprung chest mimic is gone
+164:[17Oct2026 12:10:20.770] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   about one in eight loot chests is a mimic (58/400)
+165:[17Oct2026 12:10:20.771] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the maze has more chests (5)
+166:[17Oct2026 12:10:20.775] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   underside mazes are spaced out (100 in 140x140 chunks, min gap 6 chunks)
+167-[17Oct2026 12:10:23.186] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 2348ms or 46 ticks behind
+168:[17Oct2026 12:10:30.519] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a burning ward protects its circle
+169:[17Oct2026 12:10:30.520] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   but not beyond two chunks
+170:[17Oct2026 12:10:30.520] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the ward drives a spider away (18.1 blocks)
+171:[17Oct2026 12:10:30.520] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an unwatched statue moves (1.9 blocks)
+172:[17Oct2026 12:10:30.520] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   lantern light disappears without its lantern
+173:[17Oct2026 12:10:30.797] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   all journal recipes exist (0 missing)
+174:[17Oct2026 12:10:30.797] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   journal has 102 distinct entries
+175:[17Oct2026 12:10:30.802] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   journal entry with recipes unlocks
+176:[17Oct2026 12:10:30.803] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   no insight while sane
+177:[17Oct2026 12:10:30.803] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   first insight below 40
+178:[17Oct2026 12:10:30.804] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   third insight below 10
+179:[17Oct2026 12:10:30.806] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the whisper table refuses a sane mind
+180:[17Oct2026 12:10:30.807] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the whisper table wants its ingredients
+181:[17Oct2026 12:10:30.809] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the whisper table makes a tincture of silence
+182:[17Oct2026 12:10:30.809] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the ritual uses up its ingredients
+183:[17Oct2026 12:10:30.809] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the tincture of silence stops sanity loss
+184:[17Oct2026 12:10:30.809] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the blade of despair cuts deepest at zero sanity
+185:[17Oct2026 12:10:30.809] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and not at all when sane
+186:[17Oct2026 12:10:30.811] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a WATCH phantom appears
+187:[17Oct2026 12:10:30.812] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a AMBUSH phantom appears
+188:[17Oct2026 12:10:30.812] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a SHADOW phantom appears
+189:[17Oct2026 12:10:30.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   phantoms are in the world (3)
+190:[17Oct2026 12:10:30.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   spawn eggs are real spawn eggs
+191:[17Oct2026 12:10:30.816] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   mimic kinds group their blocks
+192:[17Oct2026 12:10:31.325] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a nightmare has its way out
+193:[17Oct2026 12:10:31.327] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a nightmare has no chests
+194:[17Oct2026 12:10:31.327] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a nightmare is sealed
+195:[17Oct2026 12:10:31.327] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   you wake inside the nightmare maze, on solid floor
+196:[17Oct2026 12:10:31.792] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'RING' has its bell
+197:[17Oct2026 12:10:31.795] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'RING' is built (10 containers, 9 lanterns, 95 logs, 9 folk)
+198:[17Oct2026 12:10:31.797] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a shadow villager has six trades (6)
+199:[17Oct2026 12:10:31.934] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'STREET' has its bell
+200:[17Oct2026 12:10:31.934] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'STREET' is built (14 containers, 18 lanterns, 136 logs, 9 folk)
+201:[17Oct2026 12:10:31.992] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'HAMLET' has its bell
+202:[17Oct2026 12:10:31.992] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   village 'HAMLET' is built (13 containers, 5 lanterns, 102 logs, 9 folk)
+203:[17Oct2026 12:10:32.001] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   about one in seven shadow villagers is a mimic (47/300)
+204:[17Oct2026 12:10:32.002] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   hitting a mimic villager first exposes it
+205:[17Oct2026 12:10:32.002] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an exposed mimic villager drops shards (4)
+206:[17Oct2026 12:10:32.006] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a real villager just gets hurt
+207:[17Oct2026 12:10:32.010] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   shadow villages are spaced out (225 in 180x180 chunks, min gap 7)
+208:[17Oct2026 12:10:33.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the citadel is built (1299 ms)
+209:[17Oct2026 12:10:33.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the citadel has a way back, facing the right way
+210:[17Oct2026 12:10:33.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the wide maze holds still (0 quantum columns)
+211:[17Oct2026 12:10:33.813] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the wide maze has a way in and a way out
+212:[17Oct2026 12:10:33.814] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the throne is sealed
+213:[17Oct2026 12:10:33.855] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Architect waits in an open hall
+214:[17Oct2026 12:10:33.855] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the hall of living darkness is full (2745)
+215:[17Oct2026 12:10:33.855] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the citadel has chests, some of them hungry, by chance (23, 9 mimics)
+216:[17Oct2026 12:10:33.855] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the library and the side passage hide phantom walls (60)
+217:[17Oct2026 12:10:33.856] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   statues and keepers stand guard (5, 2)
+218:[17Oct2026 12:10:33.887] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the citadel has nests and trap tiles (4, 18)
+219:[17Oct2026 12:10:33.937] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the citadel has spawner cages (4)
+220:[17Oct2026 12:10:33.938] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the vault holds 14 chests, some hungry (14, 6)
+221:[17Oct2026 12:10:33.938] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the first pair of chests by the vault door is real
+222:[17Oct2026 12:10:33.938] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the bypass hides behind a wall only the Architect's seal opens
+223:[17Oct2026 12:10:33.939] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the sealed wall lets through only one who wears the Architect's seal, not the mad
+224:[17Oct2026 12:10:33.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the vault can be reached without crossing the dark hall
+225:[17Oct2026 12:10:33.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the bypass has a reachable side room
+226:[17Oct2026 12:10:33.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the south fork has a reachable dead end
+227:[17Oct2026 12:10:33.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the garden is reachable
+228:[17Oct2026 12:10:33.959] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a nest calls 1 creatures and then waits (1)
+229:[17Oct2026 12:10:33.960] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   trap tile kind 2 springs once
+230:[17Oct2026 12:10:33.964] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   trap tile kind 4 springs once
+231:[17Oct2026 12:10:33.965] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   trap tile kind 1 springs once
+232:[17Oct2026 12:10:33.967] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   trap tile kind 3 springs once
+233:[17Oct2026 12:10:33.967] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   trap tile kind 0 springs once
+234:[17Oct2026 12:10:33.967] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   all five kinds of trap were found in the hall floor (5)
+235:[17Oct2026 12:10:33.968] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the phantom wall lets only a slipping mind through
+236:[17Oct2026 12:10:33.968] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   light turns a statue to stone
+237:[17Oct2026 12:10:33.969] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the key's door wakes the Architect
+238:[17Oct2026 12:10:33.969] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the seal is gone
+239:[17Oct2026 12:10:33.969] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Architect is in his hall
+240:[17Oct2026 12:10:33.974] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a citadel gate has a 3x4 doorway (12)
+241:[17Oct2026 12:10:33.974] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   citadels never overlap (gates 18 chunks apart)
+242:[17Oct2026 12:10:33.974] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   gate chunks are found again from their cell
+243:[17Oct2026 12:10:33.974] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a citadel is found from inside it
+244:[17Oct2026 12:10:34.646] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an explorer's camp has a campfire and a chest
+245:[17Oct2026 12:10:34.647] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   ash figures stand in the ash
+246:[17Oct2026 12:10:34.648] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   explorer notes go into the journal in order
+247:[17Oct2026 12:10:34.649] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a false dawn brightens the night
+248:[17Oct2026 12:10:34.649] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a death double can stand where you died
+249:[17Oct2026 12:10:35.343] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside is decorated (429 pieces in 49 chunks)
+250:[17Oct2026 12:10:36.117] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   journal entries sort into sections
+251:[17Oct2026 12:10:36.117] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   every journal section has entries (the atlas is a map)
+252:[17Oct2026 12:10:36.119] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a watcher for the move tests
+253:[17Oct2026 12:10:36.119] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a fresh boss is in phase 1
+254:[17Oct2026 12:10:36.119] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   below half health a boss enters phase 2
+255:[17Oct2026 12:10:36.119] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Primordial Shadow has a third phase
+256:[17Oct2026 12:10:36.120] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a boss leaps at its target
+257:[17Oct2026 12:10:36.120] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   jaws snap out of the floor in lines and rings (16)
+258:[17Oct2026 12:10:36.120] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a burst is marked on the floor
+259:[17Oct2026 12:10:36.120] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and goes off when its time comes
+260:[17Oct2026 12:10:36.121] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Architect's cage wall rises
+261:[17Oct2026 12:10:36.122] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and crumbles away again
+262:[17Oct2026 12:10:36.437] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   ash storms blow in about a quarter of the windows (21/80)
+263:[17Oct2026 12:10:36.437] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside has its own sounds
+264:[17Oct2026 12:10:36.437] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the humming loops and the crystal chime are gone
+265:[17Oct2026 12:10:36.438] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   no Underside biome hums in the background (7/7 files checked)
+266:[17Oct2026 12:10:36.438] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the light eater leaves every kind of luminite alone
+267:[17Oct2026 12:10:36.439] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   but it still eats ordinary light
+268:[17Oct2026 12:10:36.439] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Underside has crystal grottos, black lakes and a whispering forest (3/3)
+269:[17Oct2026 12:10:36.439] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   new journal entries are sorted
+270:[17Oct2026 12:10:36.501] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a sunken temple keeps a chest on its altar
+271:[17Oct2026 12:10:36.501] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the temple stands under water
+272:[17Oct2026 12:10:36.502] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lake does not rise above its shore (0)
+273:[17Oct2026 12:10:36.502] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   lurkers guard the temple (2)
+274:[17Oct2026 12:10:36.502] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   broken columns stand out of the water
+275:[17Oct2026 12:10:36.504] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   chest loot comes in stacks (largest 4)
+276:[17Oct2026 12:10:36.504] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   luminite spires grow in the grottos
+277:[17Oct2026 12:10:36.504] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   dead trees stand in the whispering forest
+278:[17Oct2026 12:10:36.846] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   two Architects for the stun test
+279:[17Oct2026 12:10:36.847] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a boss can be stunned for a moment
+280:[17Oct2026 12:10:36.848] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and drops its stone skin, taking +50% meanwhile (3.5 vs 15.0)
+281:[17Oct2026 12:10:36.848] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a boss calls at most four shades (4, 0, 4)
+282:[17Oct2026 12:10:36.849] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   without a light in hand the shroud holds
+283:[17Oct2026 12:10:36.849] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   two hits with a light only chip it
+284:[17Oct2026 12:10:36.849] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the third hit tears the shroud and lands
+285:[17Oct2026 12:10:36.850] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the tincture of silence gives Clarity
+286:[17Oct2026 12:10:36.850] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   Clarity wipes away darkness and nausea (and nothing else does)
+287:[17Oct2026 12:10:36.850] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the first page is read first
+288:[17Oct2026 12:10:36.851] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   finding the luminite is not enough: the mirror and the dispeller come from the Keepers' pages (true, true)
+289:[17Oct2026 12:10:36.851] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   pages are read in order
+290:[17Oct2026 12:10:36.852] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   all seven pages teach the whole craft
+291:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE abyss: columns 14, avg open height 36, min 9, max 83, water floor in 3
+292:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE ash_plains: columns 38, avg open height 46, min 2, max 100, water floor in 3
+293:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE crystal_grottos: columns 1, avg open height 15, min 15, max 15, water floor in 0
+294:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE inverted_forest: columns 10, avg open height 25, min 2, max 79, water floor in 0
+295:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE quantum_ruins: columns 28, avg open height 54, min 15, max 85, water floor in 2
+296:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE whispering_forest: columns 5, avg open height 29, min 15, max 37, water floor in 0
+297:[17Oct2026 12:10:41.387] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   PROFILE rows (4000,4000)ash_p:64-94 (4000,4053)ash_p:74-100 (4000,4106)abyss:23-54 (4000,4159)abyss:44-53 (4000,4212)abyss:26-53 (4000,4265)abyss:24-106 (4000,4318)abyss:23-79 (4000,4371)abyss:20-84w (4000,4424)abyss:20-34w (4000,4477)abyss:68-108 (4053,4000)ash_p:90-106 (4053,4053)ash_p:76-83 (4053,4159)ash_p:23-62 (4053,4212)ash_p:21-59 (4053,4265)ash_p:22-70 (4053,4318)abyss:23-97 (4053,4371)abyss:24-43 (4053,4477)abyss:96-104 (4106,4000)cryst:29-43 (4106,4053)ash_p:62-93 (4106,4159)ash_p:20-83w (4106,4212)ash_p:21-103 (4106,4265)ash_p:21-107 (4106,4318)ash_p:36-108 (4106,4371)abyss:20-73w (4106,4424)abyss:95-105 (4106,4477)abyss:96-106 (4159,4000)quant:24-105 (4159,4053)quant:24-55 (4159,4106)quant:47-104 (4159,4159)quant:60-109 (4159,4212)ash_p:22-90 (4159,4265)ash_p:21-120 (4159,4318)ash_p:33-109 (4159,4371)ash_p:21-64 (4159,4424)ash_p:22-51 (4159,4477)ash_p:80-106 (4212,4000)quant:68-85 (4212,4053)quant:24-82 (4212,4106)quant:21-78 (4212,4159)quant:20-94 (4212,4212)quant:22-89 (4212,4265)ash_p:74-109 (4212,4318)ash_p:66-106 (4212,4371)ash_p:74-101 (4212,4424)ash_p:39-83 (4212,4477)ash_p:20-107w (4265,4000)quant:50-79 (4265,4053)quant:41-55 (4265,4106)quant:21-103 (4265,4159)quant:21-105 (4265,4212)quant:23-99 (4265,4265)ash_p:23-104 (4265,4318)ash_p:27-120 (4265,4371)ash_p:57-111 (4265,4424)ash_p:55-87 (4265,4477)ash_p:68-111 (4318,4000)quant:22-105 (4318,4053)quant:20-85w (4318,4106)quant:54-95 (4318,4159)quant:20-91w (4318,4212)quant:22-98 (4318,4265)ash_p:23-104 (4318,4318)ash_p:83-105 (4318,4371)ash_p:24-66 (4318,4424)ash_p:28-43 (4318,4477)ash_p:20-41w (4371,4000)quant:28-76 (4371,4053)quant:22-93 (4371,4106)quant:45-80 (4371,4159)quant:48-89 (4371,4212)quant:26-70 (4371,4265)inver:59-90 (4371,4318)inver:42-60 (4371,4371)ash_p:88-89 (4371,4424)ash_p:24-35 (4424,4000)quant:42-92 (4424,4053)quant:62-108 (4424,4106)quant:57-81 (4424,4159)quant:50-80 (4424,4212)whisp:38-68 (4424,4265)inver:46-61 (4424,4318)inver:26-29 (4424,4371)inver:89-107 (4424,4424)ash_p:63-83 (4424,4477)ash_p:84-105 (4477,4000)whisp:41-70 (4477,4053)whisp:84-98 (4477,4106)whisp:68-99 (4477,4159)whisp:23-59 (4477,4212)inver:59-68 (4477,4265)inver:63-85 (4477,4318)inver:56-57 (4477,4371)inver:23-101 (4477,4424)inver:53-107 (4477,4477)ash_p:24-107 
+298:[17Oct2026 12:10:41.487] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lighthouse has its lamp at the top
+299:[17Oct2026 12:10:41.488] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lamp starts dead
+300:[17Oct2026 12:10:41.488] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a spiral stair winds up to the gallery (90 steps, top at 36)
+301:[17Oct2026 12:10:41.488] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the tower and its hollow fit under the roof of the Underside
+302:[17Oct2026 12:10:41.488] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the last step of the stair is set flush into the gallery floor
+303:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   there is one lighthouse in the world
+304:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   it stands a few hundred blocks from the middle (328)
+305:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the tower has a door
+306:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the keeper waits by the tower
+307:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lighthouse stands in a hollow it carved for itself
+308:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   four crystals wake the lamp
+309:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lamp stops growing at the top level
+310:[17Oct2026 12:10:41.489] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a stronger lamp shelters a wider circle
+311:[17Oct2026 12:10:41.491] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a burning lamp keeps the dark away
+312:[17Oct2026 12:10:41.491] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the circle has an edge
+313:[17Oct2026 12:10:41.491] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   no lighthouse stands beside a citadel gate
+314:[17Oct2026 12:10:41.491] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a creature is understood by stages
+315:[17Oct2026 12:10:41.492] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   kills are counted per creature
+316:[17Oct2026 12:10:41.493] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a villager offers an errand
+317:[17Oct2026 12:10:41.493] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an accepted errand is written into the journal
+318:[17Oct2026 12:10:41.494] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a finished errand takes its price and pays
+319:[17Oct2026 12:10:41.494] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   after the errand the villager just trades
+320:[17Oct2026 12:10:41.495] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a hunting errand counts kills made after it was taken
+321:[17Oct2026 12:10:41.498] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an errand to get somewhere is done on arrival
+322:[17Oct2026 12:10:41.498] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   reading Marta's map writes it into the journal
+323:[17Oct2026 12:10:41.500] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language en_us has all journal texts 
+324:[17Oct2026 12:10:41.502] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language ru_ru has all journal texts 
+325:[17Oct2026 12:10:43.945] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a lighthouse is really raised in the Underside, near chunk 15,-14 (platform 248, 22, -168)
+326:[17Oct2026 12:10:43.945] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the real lighthouse fits under the roof of the Underside (lamp at y=60)
+327:[17Oct2026 12:10:43.945] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lighthouse stands in an open grotto (96/96 open)
+328:[17Oct2026 12:10:43.945] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and it is raised only once
+329:[17Oct2026 12:10:44.157] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the three armour sets have all their pieces (32 new)
+330:[17Oct2026 12:10:44.157] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   every armour piece is recognised by set and tier
+331:[17Oct2026 12:10:44.158] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   bare, you have no gear bonuses
+332:[17Oct2026 12:10:44.158] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   tier I gloom armour keeps its 12% per piece
+333:[17Oct2026 12:10:44.158] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   tier III gloom armour shields 18% per piece
+334:[17Oct2026 12:10:44.158] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   higher tiers of shadow gear are quieter
+335:[17Oct2026 12:10:44.158] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   all twelve enchantments are loaded (12)
+336:[17Oct2026 12:10:44.159] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a sword can carry Echo
+337:[17Oct2026 12:10:44.159] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   boots of silence add to the quiet
+338:[17Oct2026 12:10:44.160] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   luminite armour burns shades that come close
+339:[17Oct2026 12:10:44.161] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the anvil pins the ash clasp to a chestplate
+340:[17Oct2026 12:10:44.161] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an artifact only goes on a chestplate
+341:[17Oct2026 12:10:44.161] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the clasp quiets your steps
+342:[17Oct2026 12:10:44.161] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the clasp takes the fall away
+343:[17Oct2026 12:10:44.162] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Architect's seal sees through phantom walls
+344:[17Oct2026 12:10:44.162] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   no seal, no sight
+345:[17Oct2026 12:10:44.162] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   about thirty journal milestones are achievements (31)
+346:[17Oct2026 12:10:44.162] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a small entry stays in the journal only
+347:[17Oct2026 12:10:44.162] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the advancement tab has a root
+348:[17Oct2026 12:10:44.163] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language en_us names the 2.0 gear 
+349:[17Oct2026 12:10:44.166] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language ru_ru names the 2.0 gear 
+350:[17Oct2026 12:10:44.242] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a blow with Echo queues its echo
+351:[17Oct2026 12:10:44.329] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   nobody has chosen an ending at first
+352:[17Oct2026 12:10:44.330] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   after the dark ending the mind never climbs above 60 (60.0)
+353:[17Oct2026 12:10:44.330] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a creature of the Underside does not turn on one of its own
+354:[17Oct2026 12:10:44.331] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   unless struck first
+355:[17Oct2026 12:10:44.331] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   after the dawn the dark presses no harder than on the first night
+356:[17Oct2026 12:10:44.988] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   burning the heart in a full lamp brings the dawn
+357:[17Oct2026 12:10:44.989] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the choice is made once
+358:[17Oct2026 12:10:44.989] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the heart is one of a kind
+359:[17Oct2026 12:10:44.990] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language en_us has the endings and the onslaught 
+360:[17Oct2026 12:10:44.991] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   language ru_ru has the endings and the onslaught 
+361:[17Oct2026 12:10:45.240] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a bare altar echoes at level I
+362:[17Oct2026 12:10:45.240] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   four candles and four thick ones (worth two each) make it echo at level III (12)
+363:[17Oct2026 12:10:45.241] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sixty-four candles open the abyss
+364:[17Oct2026 12:10:45.241] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a candelabrum counts thrice, a melted candle still shines
+365:[17Oct2026 12:10:45.241] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   four candles shine brightly
+366:[17Oct2026 12:10:45.242] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a sword can take something from the altar (6)
+367:[17Oct2026 12:10:45.244] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the altar gives one enchantment of Umbra's for quartz and experience (1, xp 28)
+368:[17Oct2026 12:10:45.244] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the gloom anvil mends luminite with luminite, a quarter for each crystal (4)
+369:[17Oct2026 12:10:45.244] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and does not know foreign gear
+370:[17Oct2026 12:10:45.245] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and pins an artifact on a chestplate
+371:[17Oct2026 12:10:45.245] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   2.6: the anvil infuses a boss's relic into a weapon, not into armour
+372:[17Oct2026 12:10:45.245] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   armour: gloom, shadow, luminite, tier by tier, each better than the one before (15.0 17.0 20.0 25.0 28.0 30.0 33.0 37.0 40.0 )
+373:[17Oct2026 12:10:45.245] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a maze is never far: the nearest is 218 blocks away
+374:[17Oct2026 12:10:45.246] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   bosses are a quarter stronger (the Watcher has 150.0)
+375:[17Oct2026 12:10:45.247] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a boss gets its second wind once and does not climb back a phase (60.0)
+376:[17Oct2026 12:10:45.247] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Watcher's eye shrugs off most of a blow (40.0 of 100)
+377:[17Oct2026 12:10:45.248] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a flash takes no more than 2% of a boss
+378:[17Oct2026 12:10:45.250] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the trophy shelf takes six relics, one of each, and pays out when full (6, 16)
+379:[17Oct2026 12:10:45.252] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   spear +3, dagger x2 from behind, Radiance II +3 (8.0, 5.0/10.0, 8.0)
+380:[17Oct2026 12:10:45.252] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the new weapons take sword enchantments
+381:[17Oct2026 12:10:45.255] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the echo staff's cry strikes what stands in its line (1, 25.0)
+382:[17Oct2026 12:10:45.255] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the luminite bow takes bow enchantments
+383:[17Oct2026 12:10:45.256] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a full set is noticed, and so is a broken one
+384:[17Oct2026 12:10:45.258] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   Yan gives an errand, waits for it, and pays with a blueprint
+385:[17Oct2026 12:10:45.259] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Keeper's bell makes the dark stagger back
+386:[17Oct2026 12:10:45.260] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the atlas marks a place once, and a far one of the same kind again
+387:[17Oct2026 12:10:45.261] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Bellringer's ring makes heads swim (1)
+388:[17Oct2026 12:10:45.262] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Weeper throws a shard of shadow, and is in the bestiary
+389:[17Oct2026 12:10:45.262] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   in the second turn of the circle creatures have +50% health, bosses +100% (33.0, 300.0)
+390:[17Oct2026 12:10:45.262] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a new world starts at the first turn of the circle
+391:[17Oct2026 12:10:45.263] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a foggy night can be called
+392:[17Oct2026 12:10:45.928] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Depths are built
+393:[17Oct2026 12:10:45.928] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Keepers' chest waits in the sanctum
+394:[17Oct2026 12:10:45.929] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the Drowned Keeper guards it (320.0 hp)
+395:[17Oct2026 12:10:45.929] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the gallery is drowned, with air under the vault
+396:[17Oct2026 12:10:46.079] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the echo has sounded
+397:[17Oct2026 12:10:46.178] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the real lighthouse has its keeper
+398:[17Oct2026 12:10:49.836] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a flashed statue stays stone
+399:[17Oct2026 12:10:54.819] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and moves again after five seconds (9.2 blocks)
+400-[17Oct2026 12:10:55.096] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: UmbraTester[embedded] logged in with entity id 7601 at (0.0, 0.0, 0.0)
+401-[17Oct2026 12:10:55.239] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester joined the game
+402:[17Oct2026 12:10:55.257] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a survival player joins as on a real login
+403:[17Oct2026 12:10:55.373] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a statue counts as watched only in the player's view (facing true, away false, view 1.00,0.00, player (430.5, 250.0, 20.5), statue (452.5, 250.0, 20.5))
+404:[17Oct2026 12:10:57.419] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a torch in the hand burns a shade standing two blocks away
+405:[17Oct2026 12:10:57.745] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a statue does not move while a survival player looks at it
+406:[17Oct2026 12:10:59.607] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   it runs the moment the player looks away (10.8 blocks)
+407-[17Oct2026 12:11:00.085] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 21948ms or 438 ticks behind
+408:[17Oct2026 12:11:00.139] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   looked at again, it freezes on the spot
+409:[17Oct2026 12:11:00.682] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and does not creep closer
+410:[17Oct2026 12:11:02.325] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a flashed statue stays stone even with nobody watching
+411:[17Oct2026 12:11:09.562] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and thaws on its own while a player is near (21.3 blocks)
+412:[17Oct2026 12:11:09.617] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   statue trace (step:x, F=frozen, W=watched, ph=player head yaw) 132:x=452.5FW ph=-90 136:x=452.5FW ph=-90 140:x=452.5FW ph=-90 144:x=452.5FW ph=-90 148:x=452.5FW ph=-90 152:x=452.5FW ph=-90 156:x=452.5FW ph=-90 160:x=452.5FW ph=-90 164:x=452.5FW ph=-90 168:x=452.1-- ph=90 172:x=450.6-- ph=90 176:x=449.1-- ph=90 180:x=447.5-- ph=90 184:x=446.0-- ph=90 188:x=444.4-- ph=90 192:x=442.9-- ph=90 196:x=441.3-- ph=90 200:x=441.3FW ph=-90 204:x=441.3FW ph=-90 208:x=441.3FW ph=-90 212:x=441.3FW ph=-90 216:x=441.3FW ph=-90 220:x=452.5F- ph=90 224:x=452.5F- ph=90 228:x=452.5F- ph=90 232:x=452.5F- ph=90 236:x=452.5F- ph=90 240:x=452.5F- ph=90 244:x=452.5F- ph=90 248:x=452.5F- ph=90 252:x=452.5F- ph=90 256:x=452.5F- ph=90 260:x=452.5F- ph=90 264:x=452.5F- ph=90 268:x=452.5F- ph=90 272:x=452.5F- ph=90 276:x=452.5F- ph=90 280:x=452.5F- ph=90 284:x=452.5F- ph=90 288:x=452.5F- ph=90 292:x=452.5F- ph=90 296:x=452.5F- ph=90 300:x=452.5F- ph=90 304:x=452.5F- ph=90 308:x=452.5F- ph=90 312:x=452.5F- ph=90 316:x=452.3-- ph=90 320:x=451.0-- ph=90 324:x=449.5-- ph=90 328:x=447.9-- ph=90 332:x=446.4-- ph=90 336:x=444.8-- ph=90 340:x=443.3-- ph=90 344:x=441.7-- ph=90 348:x=440.1-- ph=90 352:x=438.6-- ph=90 356:x=437.0-- ph=90 360:x=435.5-- ph=90 364:x=433.9-- ph=90 368:x=432.4-- ph=90 372:x=431.3-- ph=90 376:x=431.1-- ph=90 380:x=431.2-- ph=90 
+413:[17Oct2026 12:11:10.597] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the player carries things (8)
+414-[17Oct2026 12:11:10.650] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester has made the advancement [Suit Up]
+415-[17Oct2026 12:11:10.653] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester has made the advancement [Diamonds!]
+416-[17Oct2026 12:11:10.662] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester was killed by magic
+417:[17Oct2026 12:11:10.665] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the player dies
+418:[17Oct2026 12:11:10.665] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   death empties the pockets (0 left)
+419:[17Oct2026 12:11:10.666] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and everything lies on the ground exactly once (8 of 8)
+420:[17Oct2026 12:11:10.666] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a dark double stands where they fell
+421:[17Oct2026 12:11:10.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a dead player can respawn
+422:[17Oct2026 12:11:10.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and comes back empty-handed (0 items)
+423:[17Oct2026 12:11:10.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   nothing was duplicated or lost on the way (8 of 8 on the ground)
+424:[17Oct2026 12:11:10.958] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the journal, the freed shadow and the home survive death
+425:[17Oct2026 12:11:10.959] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   sanity is full again (100.0)
+426:[17Oct2026 12:11:11.221] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   resetting the spawn point is harmless and keeps the home
+427-[17Oct2026 12:11:11.564] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester died
+428:[17Oct2026 12:11:11.565] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a second death drops everything once (9 of 9)
+429:[17Oct2026 12:11:11.682] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   before leaving: got journal true, health 0.0
+430:[17Oct2026 12:11:12.251] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   player data on disk: ./world/players/stats/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json, ./world/players/data/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.dat, ./world/players/advancements/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json
+431:[17Oct2026 12:11:12.253] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   saved: Health=0.0f Pos=[5.5d,103.0d,10.5d] Inventory=[]
+432-[17Oct2026 12:11:12.266] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: UmbraTester[embedded] logged in with entity id 7674 at (0.0, 0.0, 0.0)
+433-[17Oct2026 12:11:12.268] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: System chat: UmbraTester joined the game
+434:[17Oct2026 12:11:12.272] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   quitting on the death screen and coming back brings no items (0: umbra:journal x1; )
+435:[17Oct2026 12:11:12.274] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   after returning: pos (0.0, 0.0, 0.0), health 20.0, got journal true
+436:[17Oct2026 12:11:12.366] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and the pile on the ground stays the only copy (9 of 9)
+437:[17Oct2026 12:11:12.581] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   that player can still respawn afterwards
+438:[17Oct2026 12:11:17.145] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the onslaught knows the foot of the tower (BlockPos{x=700, y=220, z=120})
+439:[17Oct2026 12:11:17.145] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   with nobody at the lighthouse, no onslaught starts
+440:[17Oct2026 12:11:17.146] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   an onslaught starts
+441:[17Oct2026 12:11:18.067] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the first wave comes (1 / 8)
+442:[17Oct2026 12:11:18.067] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the raiders are marked as the onslaught's
+443:[17Oct2026 12:11:18.067] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   light does not drive off an onslaught
+444-[17Oct2026 12:11:18.733] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 3696ms or 73 ticks behind
+445:[17Oct2026 12:11:23.819] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   three waves beaten, the onslaught is over
+446:[17Oct2026 12:11:23.819] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the lighthouse keeps its light
+447:[17Oct2026 12:11:23.819] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and pays in luminite at its foot (10)
+448:[17Oct2026 12:11:23.820] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   a bound horn knows its lighthouse
+449:[17Oct2026 12:11:23.821] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   when all is quiet the horn carries nobody
+450:[17Oct2026 12:11:23.821] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   during an onslaught the horn answers and carries you to the tower
+451:[17Oct2026 12:11:24.625] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   the second onslaught comes in force (8)
+452:[17Oct2026 12:11:24.924] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   let through, the dark dims the lamp by a level (2)
+453:[17Oct2026 12:11:24.924] [Server thread/INFO] [dev.umbra.Umbra/]: UMBRA SMOKETEST: ok   and the rest of the onslaught melts away
+454:[17Oct2026 12:11:29.089] [Server thread/INFO] [dev.umbra.Umbra/]: 
+455:UMBRA SMOKETEST: PASSED
+456-ok   setup
+457-ok   maze walls built (3090)
+458-ok   maze has linked quantum walls (453)
+459-ok   maze has ladders between floors (12 blocks)
+460-ok   ground floor chest
+461-ok   upper floor chest
+462-ok   maze core under the centre
+463-ok   maze walls are unbreakable
+464-ok   crafting table can be replaced
+465-ok   mimic placed
+466-ok   exposed mimic turns back into a crafting table
+467-ok   sprung mimic leaves air
+--
+811-ok   player data on disk: ./world/players/stats/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json, ./world/players/data/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.dat, ./world/players/advancements/5a0e7b42-6c1d-4f3a-9d58-0e3c7a1b2c4d.json
+812-ok   saved: Health=0.0f Pos=[5.5d,103.0d,10.5d] Inventory=[]
+813:ok   quitting on the death screen and coming back brings no items (0: umbra:journal x1; )
+814-ok   after returning: pos (0.0, 0.0, 0.0), health 20.0, got journal true
+815-ok   and the pile on the ground stays the only copy (9 of 9)
+816-ok   that player can still respawn afterwards
+817-ok   the onslaught knows the foot of the tower (BlockPos{x=700, y=220, z=120})
+818-ok   with nobody at the lighthouse, no onslaught starts
+819-ok   an onslaught starts
+820-ok   the first wave comes (1 / 8)
+821-ok   the raiders are marked as the onslaught's
+822-ok   light does not drive off an onslaught
+823-ok   three waves beaten, the onslaught is over
+824-ok   the lighthouse keeps its light
+825-ok   and pays in luminite at its foot (10)
+--
+837-[17Oct2026 12:11:32.315] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+838-[17Oct2026 12:11:32.317] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+839:[17Oct2026 12:11:32.319] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/umbra:underside
+840-[17Oct2026 12:11:32.352] [main/INFO] [net.neoforged.fml.loading.FMLLoader/]: Closing FML Loader 1904fc7b
+841-[17Oct2026 12:11:32.352] [main/INFO] [net.neoforged.fml.ModLoader/]: Clearing ModLoader
