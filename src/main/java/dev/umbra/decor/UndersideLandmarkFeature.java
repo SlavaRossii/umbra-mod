@@ -54,26 +54,26 @@ public record UndersideLandmarkFeature() implements Feature {
                 for (int y = 0; y <= 3; y++) {
                     BlockPos p = f.offset(x, y, z);
                     // another camp's chest or fire next door: leave it (clearing it at generation leaves its data behind)
-                    if (!level.getBlockState(p).hasBlockEntity()) level.setBlock(p, air, FLAGS);
+                    if (!level.getBlockState(p).hasBlockEntity()) dev.umbra.decor.UndersideDecorFeature.put(level, p, air, FLAGS);
                 }
             }
-        level.setBlock(f, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, f, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), FLAGS);
         // a little A-frame tent of grey wool to the north
         for (int z = -3; z <= -1; z++) {
-            level.setBlock(f.offset(-1, 0, z), vanilla("gray_wool"), FLAGS);
-            level.setBlock(f.offset(1, 0, z), vanilla("gray_wool"), FLAGS);
-            level.setBlock(f.offset(0, 1, z), vanilla("gray_wool"), FLAGS);
-            level.setBlock(f.offset(0, 0, z), vanilla("gray_carpet"), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(-1, 0, z), vanilla("gray_wool"), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(1, 0, z), vanilla("gray_wool"), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(0, 1, z), vanilla("gray_wool"), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(0, 0, z), vanilla("gray_carpet"), FLAGS);
         }
         BlockPos chest = f.offset(2, 0, -2);
         if (!level.getBlockState(chest).hasBlockEntity()) {
-            level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, chest, Blocks.CHEST.defaultBlockState(), FLAGS);
             RandomizableContainer.setBlockEntityLootTable(level, random, chest, CAMP_LOOT);
         }
         // what is left of the explorer
-        level.setBlock(f.offset(-2, 0, 2), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
-        level.setBlock(f.offset(-1, 0, 2), Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), FLAGS);
-        level.setBlock(f.offset(2, 0, 2), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState(), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(-2, 0, 2), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(-1, 0, 2), Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(2, 0, 2), dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState(), FLAGS);
     }
 
     private static BlockState vanilla(String id) {
@@ -85,11 +85,11 @@ public record UndersideLandmarkFeature() implements Feature {
         for (int x = -2; x <= 2; x++)
             for (int y = 0; y <= 5; y++) {
                 boolean frame = Math.abs(x) == 2 || y == 0 || y == 5;
-                if (frame && random.nextInt(3) != 0) level.setBlock(f.offset(x, y, 0), dusk, FLAGS);
+                if (frame && random.nextInt(3) != 0) dev.umbra.decor.UndersideDecorFeature.put(level, f.offset(x, y, 0), dusk, FLAGS);
             }
         for (int i = 0; i < 4; i++) {
             BlockPos p = UndersideDecorFeature.floor(level, f.offset(random.nextInt(7) - 3, 3, random.nextInt(5) + 1), 6);
-            if (p != null) level.setBlock(p, dusk, FLAGS);
+            if (p != null) dev.umbra.decor.UndersideDecorFeature.put(level, p, dusk, FLAGS);
         }
     }
 

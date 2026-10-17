@@ -65,7 +65,7 @@ public record BlackLakeFeature() implements Feature {
                     int dep = Math.max(1, (int) Math.round(depth * (1.0 - d) + 0.6));
                     for (int y = 0; y < dep; y++) {
                         BlockPos p = col.below(y);
-                        level.setBlock(p, water, FLAGS);
+                        dev.umbra.decor.UndersideDecorFeature.put(level, p, water, FLAGS);
                         placed.add(p);
                     }
                     for (int y = 1; y <= 3; y++) {
@@ -76,12 +76,12 @@ public record BlackLakeFeature() implements Feature {
                     for (int y = 0; y <= depth; y++) {
                         BlockPos p = col.below(y);
                         BlockState s = level.getBlockState(p);
-                        if (s.isAir() || !s.getFluidState().isEmpty()) level.setBlock(p, stone, FLAGS);
+                        if (s.isAir() || !s.getFluidState().isEmpty()) dev.umbra.decor.UndersideDecorFeature.put(level, p, stone, FLAGS);
                     }
                     if (level.getBlockState(col.above()).isAir()) {
-                        level.setBlock(col, soil, FLAGS);
-                        if (random.nextInt(14) == 0) level.setBlock(col.above(), Blocks.BONE_BLOCK.defaultBlockState(), FLAGS);
-                        else if (random.nextInt(30) == 0) level.setBlock(col.above(), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
+                        dev.umbra.decor.UndersideDecorFeature.put(level, col, soil, FLAGS);
+                        if (random.nextInt(14) == 0) dev.umbra.decor.UndersideDecorFeature.put(level, col.above(), Blocks.BONE_BLOCK.defaultBlockState(), FLAGS);
+                        else if (random.nextInt(30) == 0) dev.umbra.decor.UndersideDecorFeature.put(level, col.above(), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
                     }
                 }
             }
@@ -97,7 +97,7 @@ public record BlackLakeFeature() implements Feature {
                 if (d == Direction.UP) continue;
                 BlockPos q = p.relative(d);
                 BlockState s = level.getBlockState(q);
-                if (s.isAir() || (!s.getFluidState().isEmpty() && !s.is(Blocks.WATER))) level.setBlock(q, plug, FLAGS);
+                if (s.isAir() || (!s.getFluidState().isEmpty() && !s.is(Blocks.WATER))) dev.umbra.decor.UndersideDecorFeature.put(level, q, plug, FLAGS);
             }
         }
     }

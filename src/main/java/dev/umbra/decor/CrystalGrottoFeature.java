@@ -50,16 +50,16 @@ public record CrystalGrottoFeature() implements Feature {
                 for (int dz = -r; dz <= r; dz++) {
                     if (Math.abs(dx) + Math.abs(dz) > r) continue;
                     BlockPos p = base.relative(dir, i).offset(ox + dx, 0, oz + dz);
-                    if (level.getBlockState(p).isAir()) level.setBlock(p, block, FLAGS);
+                    if (level.getBlockState(p).isAir()) dev.umbra.decor.UndersideDecorFeature.put(level, p, block, FLAGS);
                 }
         }
         BlockPos tip = base.relative(dir, height).offset(lean * height / 4, 0, leanZ * height / 4);
-        if (level.getBlockState(tip).isAir()) level.setBlock(tip, cluster(dir), FLAGS);
+        if (level.getBlockState(tip).isAir()) dev.umbra.decor.UndersideDecorFeature.put(level, tip, cluster(dir), FLAGS);
         // small crystals around the foot
         for (int i = 0; i < 4 + random.nextInt(5); i++) {
             BlockPos p = base.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
             BlockPos support = p.relative(dir.getOpposite());
-            if (level.getBlockState(p).isAir() && level.getBlockState(support).isSolidRender()) level.setBlock(p, cluster(dir), FLAGS);
+            if (level.getBlockState(p).isAir() && level.getBlockState(support).isSolidRender()) dev.umbra.decor.UndersideDecorFeature.put(level, p, cluster(dir), FLAGS);
         }
     }
 

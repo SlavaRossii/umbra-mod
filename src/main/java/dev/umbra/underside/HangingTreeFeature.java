@@ -41,7 +41,7 @@ public record HangingTreeFeature() implements Feature {
         for (int i = 0; i < length; i++) {
             BlockPos q = p.below(i);
             if (!level.getBlockState(q).isAir()) break;
-            level.setBlock(q, log, Block.UPDATE_CLIENTS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, q, log, Block.UPDATE_CLIENTS);
             tip = q;
             // crooked branches
             if (i > 1 && random.nextInt(3) == 0) {
@@ -50,15 +50,15 @@ public record HangingTreeFeature() implements Feature {
                 for (int b = 1; b <= branch; b++) {
                     BlockPos bp = q.relative(d, b).below(b / 2);
                     if (!level.getBlockState(bp).isAir()) break;
-                    level.setBlock(bp, log.setValue(RotatedPillarBlock.AXIS, d.getAxis()), Block.UPDATE_CLIENTS);
+                    dev.umbra.decor.UndersideDecorFeature.put(level, bp, log.setValue(RotatedPillarBlock.AXIS, d.getAxis()), Block.UPDATE_CLIENTS);
                     if (random.nextInt(2) == 0 && level.getBlockState(bp.below()).isAir()) {
-                        level.setBlock(bp.below(), Blocks.PALE_HANGING_MOSS.defaultBlockState(), Block.UPDATE_CLIENTS);
+                        dev.umbra.decor.UndersideDecorFeature.put(level, bp.below(), Blocks.PALE_HANGING_MOSS.defaultBlockState(), Block.UPDATE_CLIENTS);
                     }
                 }
             }
         }
         if (random.nextInt(3) == 0 && level.getBlockState(tip.below()).isAir()) {
-            level.setBlock(tip.below(), Blocks.COBWEB.defaultBlockState(), Block.UPDATE_CLIENTS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, tip.below(), Blocks.COBWEB.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
         return true;
     }

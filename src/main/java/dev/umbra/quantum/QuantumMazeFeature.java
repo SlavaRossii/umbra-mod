@@ -104,7 +104,7 @@ public record QuantumMazeFeature() implements Feature {
                 int x = x0 + dx, z = z0 + dz;
                 int top = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
                 for (int y = g; y <= Math.max(g, top) + 1; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, new BlockPos(x, y, z), air);
-                for (int y = Math.min(top, g) - 1; y < g; y++) level.setBlock(new BlockPos(x, y, z), y == g - 1 ? grass : dirt, FLAGS);
+                for (int y = Math.min(top, g) - 1; y < g; y++) dev.umbra.decor.UndersideDecorFeature.put(level, new BlockPos(x, y, z), y == g - 1 ? grass : dirt, FLAGS);
             }
         return g;
     }
@@ -146,7 +146,7 @@ public record QuantumMazeFeature() implements Feature {
                 int x = corner.getX() + dx, z = corner.getZ() + dz;
                 int top = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);   // first free block
                 for (int i = 0; i < height; i++) {
-                    level.setBlock(new BlockPos(x, top + i, z), i == height - 1 ? grass : dirt, FLAGS);
+                    dev.umbra.decor.UndersideDecorFeature.put(level, new BlockPos(x, top + i, z), i == height - 1 ? grass : dirt, FLAGS);
                 }
             }
         }
@@ -162,8 +162,8 @@ public record QuantumMazeFeature() implements Feature {
                 int stepY = floorY + step;          // step 1 at floorY+1 (feet floorY+2), step 2 at floorY+2 ...
                 // air column over the step and a stone floor under it
                 for (int y = stepY + 1; y <= ground + 2; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, new BlockPos(x, y, z), air);
-                for (int y = floorY; y < stepY; y++) level.setBlock(new BlockPos(x, y, z), brick, FLAGS);
-                level.setBlock(new BlockPos(x, stepY, z), centre ? stair : brick, FLAGS);
+                for (int y = floorY; y < stepY; y++) dev.umbra.decor.UndersideDecorFeature.put(level, new BlockPos(x, y, z), brick, FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, new BlockPos(x, stepY, z), centre ? stair : brick, FLAGS);
             }
         }
     }

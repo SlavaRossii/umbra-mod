@@ -65,13 +65,13 @@ public record SunkenTempleFeature() implements Feature {
             for (int dz = -7; dz <= 7; dz++)
                 for (int y = y0; y <= surface; y++) {
                     BlockPos p = new BlockPos(c.getX() + dx, y, c.getZ() + dz);
-                    level.setBlock(p, water, FLAGS);
+                    dev.umbra.decor.UndersideDecorFeature.put(level, p, water, FLAGS);
                     pit.add(p);
                 }
         BlackLakeFeature.seal(level, pit, stone);
         // foundation
         for (int dx = -6; dx <= 6; dx++)
-            for (int dz = -6; dz <= 6; dz++) level.setBlock(c.offset(dx, -1, dz), dx % 3 == 0 && dz % 3 == 0 ? trim : dusk, FLAGS);
+            for (int dz = -6; dz <= 6; dz++) dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(dx, -1, dz), dx % 3 == 0 && dz % 3 == 0 ? trim : dusk, FLAGS);
         // walls, 9x9, 7 high, door on the north side
         for (int dx = -4; dx <= 4; dx++)
             for (int dz = -4; dz <= 4; dz++) {
@@ -82,31 +82,31 @@ public record SunkenTempleFeature() implements Feature {
                     boolean window = (Math.abs(dx) == 4 || Math.abs(dz) == 4) && (dx + dz) % 3 == 0 && y == 4;
                     boolean broken = y >= 5 && random.nextInt(4) == 0;
                     if (door || window || broken) continue;
-                    level.setBlock(c.offset(dx, y, dz), y == 0 || y == 6 ? trim : dusk, FLAGS);
+                    dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(dx, y, dz), y == 0 || y == 6 ? trim : dusk, FLAGS);
                 }
             }
         // roof, fallen in the middle
         for (int dx = -4; dx <= 4; dx++)
             for (int dz = -4; dz <= 4; dz++) {
                 if (dx * dx + dz * dz <= 5 + random.nextInt(4)) continue;
-                level.setBlock(c.offset(dx, 7, dz), dusk, FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(dx, 7, dz), dusk, FLAGS);
             }
         // rubble from the roof on the floor
-        for (int i = 0; i < 6; i++) level.setBlock(c.offset(random.nextInt(5) - 2, 0, random.nextInt(5) - 2), dusk, FLAGS);
+        for (int i = 0; i < 6; i++) dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(random.nextInt(5) - 2, 0, random.nextInt(5) - 2), dusk, FLAGS);
         // four broken columns at the corners, standing out of the water
         for (int[] q : new int[][]{{-6, -6}, {6, -6}, {-6, 6}, {6, 6}}) {
             int top = surface + 1 + random.nextInt(5);
-            for (int y = y0 - 1; y <= top; y++) level.setBlock(c.offset(q[0], y - y0, q[1]), y == top ? trim : dusk, FLAGS);
+            for (int y = y0 - 1; y <= top; y++) dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(q[0], y - y0, q[1]), y == top ? trim : dusk, FLAGS);
         }
         // altar and chest
-        level.setBlock(c.offset(0, 0, 2), trim, FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(0, 0, 2), trim, FLAGS);
         BlockPos chest = c.offset(0, 1, 2);
-        level.setBlock(chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH).setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
         // drowned lanterns, still burning
         BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState().setValue(LanternBlock.WATERLOGGED, true);
-        for (int[] q : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) level.setBlock(c.offset(q[0], 0, q[1]), lantern, FLAGS);
-        level.setBlock(c.offset(-1, 0, 3), ModBlocks.LUMINITE_CLUSTER.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
+        for (int[] q : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(q[0], 0, q[1]), lantern, FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(-1, 0, 3), ModBlocks.LUMINITE_CLUSTER.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true), FLAGS);
         // the guards
         for (int i = 0; i < 2; i++) {
             Lurker l = ModEntities.LURKER.get().create(level.getLevel(), EntitySpawnReason.STRUCTURE);
