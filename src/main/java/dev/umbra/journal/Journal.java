@@ -70,11 +70,13 @@ public final class Journal {
     public static final Map<String, List<String>> RECIPES = Map.ofEntries(
             Map.entry("start", List.of("journal", "sedative")),
             // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
+            Map.entry("yan_1", List.of("trophy_shelf")),
+            Map.entry("ash_storm", List.of("ash_clasp")),
             Map.entry("yan_gift_lantern", List.of("marta_lantern")),
             Map.entry("primordial_shadow", List.of("depths_key")),
             Map.entry("yan_gift_spyglass", List.of("yan_spyglass")),
             Map.entry("yan_gift_bell", List.of("keeper_bell")),
-            Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow")),
+            Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow", "luminite_shield")),
             Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic", "shadow_dagger", "shadow_knife")),
             Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",

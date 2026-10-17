@@ -37,6 +37,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      - name: Audit resources against the registrations
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 tools/audit.py | tee audit.txt
+
       - name: Build with Gradle
         run: |
           set -o pipefail

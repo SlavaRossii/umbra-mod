@@ -51,7 +51,11 @@ public record UndersideLandmarkFeature() implements Feature {
         for (int x = -3; x <= 3; x++)
             for (int z = -3; z <= 3; z++) {
                 dev.umbra.village.ShadowVillageFeature.foundation(level, f.offset(x, -1, z), ModBlocks.ASH_SOIL.get().defaultBlockState());
-                for (int y = 0; y <= 3; y++) level.setBlock(f.offset(x, y, z), air, FLAGS);
+                for (int y = 0; y <= 3; y++) {
+                    BlockPos p = f.offset(x, y, z);
+                    // another camp's chest or fire next door: leave it (clearing it at generation leaves its data behind)
+                    if (!level.getBlockState(p).hasBlockEntity()) level.setBlock(p, air, FLAGS);
+                }
             }
         level.setBlock(f, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), FLAGS);
         // a little A-frame tent of grey wool to the north
@@ -62,8 +66,10 @@ public record UndersideLandmarkFeature() implements Feature {
             level.setBlock(f.offset(0, 0, z), vanilla("gray_carpet"), FLAGS);
         }
         BlockPos chest = f.offset(2, 0, -2);
-        level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
-        RandomizableContainer.setBlockEntityLootTable(level, random, chest, CAMP_LOOT);
+        if (!level.getBlockState(chest).hasBlockEntity()) {
+            level.setBlock(chest, Blocks.CHEST.defaultBlockState(), FLAGS);
+            RandomizableContainer.setBlockEntityLootTable(level, random, chest, CAMP_LOOT);
+        }
         // what is left of the explorer
         level.setBlock(f.offset(-2, 0, 2), Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
         level.setBlock(f.offset(-1, 0, 2), Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), FLAGS);
