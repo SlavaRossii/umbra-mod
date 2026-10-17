@@ -111,7 +111,7 @@ public record CitadelGateFeature() implements Feature {
         // a chamber of air above, solid ground below
         for (int x = -6; x <= 6; x++)
             for (int z = -6; z <= 6; z++) {
-                for (int y = 0; y <= 8; y++) level.setBlock(floor.offset(x, y, z), air, FLAGS);
+                for (int y = 0; y <= 8; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, floor.offset(x, y, z), air);
                 dev.umbra.village.ShadowVillageFeature.foundation(level, floor.offset(x, -1, z), ModBlocks.ASH_STONE.get().defaultBlockState());
             }
         // two steps of dusk stone

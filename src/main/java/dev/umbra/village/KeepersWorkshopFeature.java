@@ -70,14 +70,14 @@ public record KeepersWorkshopFeature() implements Feature {
                     } else if (y == 4) {
                         level.setBlock(p, random.nextInt(7) == 0 ? air : planks, FLAGS);   // roof, with holes
                     } else {
-                        level.setBlock(p, air, FLAGS);
+                        dev.umbra.decor.UndersideDecorFeature.clear(level, p, air);
                     }
                 }
-                level.setBlock(c.offset(x, 5, z), air, FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.clear(level, c.offset(x, 5, z), air);
             }
         }
         // the door, in the middle of the west wall
-        for (int y = 1; y <= 2; y++) level.setBlock(c.offset(0, y, DEPTH / 2), air, FLAGS);
+        for (int y = 1; y <= 2; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, c.offset(0, y, DEPTH / 2), air);
         // furniture
         level.setBlock(c.offset(1, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), FLAGS);
         level.setBlock(c.offset(1, 1, 2), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.EAST), FLAGS);
