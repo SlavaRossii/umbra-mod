@@ -73,6 +73,7 @@ public class JournalScreen extends Screen {
             }).bounds(left + 4 + i * tw, top - 22, tw - 2, 20).build();
             addRenderableWidget(b);
         }
+        if (tab == Journal.ATLAS) return;   // the atlas is drawn, not listed
         // entry list
         List<String> list = entries();
         int pages = Math.max(1, (list.size() + ROWS - 1) / ROWS);
@@ -164,6 +165,10 @@ public class JournalScreen extends Screen {
         // leather cover, two pages
         g.fill(left - 4, top - 4, left + W + 4, top + H + 4, 0xFF24160E);
         g.outline(left - 4, top - 4, W + 8, H + 8, 0xFF4E3220);
+        if (tab == Journal.ATLAS) {
+            g.fill(left, top, left + W, top + H, 0xFFD8C6A0);
+            return;
+        }
         g.fill(left, top, left + LIST_W + 12, top + H, 0xFFCDBB97);
         g.fill(left + LIST_W + 12, top, left + W, top + H, 0xFFE2D2AE);
         g.fill(left + LIST_W + 11, top, left + LIST_W + 13, top + H, 0xFF8A7454);
@@ -179,6 +184,10 @@ public class JournalScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(g, mouseX, mouseY, partialTick);
+        if (tab == Journal.ATLAS) {
+            atlas(g, mouseX, mouseY);
+            return;
+        }
         g.centeredText(this.font, Component.translatable("journal.umbra.tab." + Journal.SECTIONS[tab]).withStyle(ChatFormatting.BOLD),
                 left + (LIST_W + 12) / 2, top + 7, 0xFF3A2614);
         int count = 0;
@@ -206,6 +215,57 @@ public class JournalScreen extends Screen {
         if (whisper != null) {
             g.centeredText(this.font, Component.translatable(whisper).withStyle(ChatFormatting.ITALIC), this.width / 2, top + H + 8, 0xFF8A1010);
         }
+    }
+
+    /** 2.6: the atlas: what you have found, round where you stand, in the world you stand in. North is up. */
+    private void atlas(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        int x0 = left + 8, y0 = top + 20, x1 = left + W - 8, y1 = top + H - 8;
+        int cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+        g.centeredText(this.font, Component.translatable("journal.umbra.tab.atlas").withStyle(ChatFormatting.BOLD), left + W / 2, top + 6, 0xFF3A2614);
+        g.outline(x0, y0, x1 - x0, y1 - y0, 0xFF8A7454);
+        if (me == null) return;
+        String here = dev.umbra.journal.Atlas.dim(me.level());
+        var places = dev.umbra.journal.Atlas.places(me).stream().filter(p -> p.dim().equals(here)).toList();
+        double far = 64;
+        for (var p : places) far = Math.max(far, Math.max(Math.abs(p.x() - me.getX()), Math.abs(p.z() - me.getZ())) * 1.15);
+        double scale = Math.min((x1 - x0) / 2.0 - 8, (y1 - y0) / 2.0 - 8) / far;
+        // a faint grid every hundred blocks (or a thousand, when far)
+        int step = far > 1500 ? 1000 : far > 300 ? 200 : 50;
+        for (int k = -(int) (far / step) - 1; k <= far / step + 1; k++) {
+            int gx = (int) Math.round(cx + (Math.floorDiv((int) me.getX(), step) * step + k * step - me.getX()) * scale);
+            int gy = (int) Math.round(cy + (Math.floorDiv((int) me.getZ(), step) * step + k * step - me.getZ()) * scale);
+            if (gx > x0 && gx < x1) g.fill(gx, y0 + 1, gx + 1, y1 - 1, 0x22604830);
+            if (gy > y0 && gy < y1) g.fill(x0 + 1, gy, x1 - 1, gy + 1, 0x22604830);
+        }
+        g.text(this.font, Component.literal("N"), cx - 2, y0 + 3, 0xFF6E5A40, false);
+        Component hover = null;
+        for (var p : places) {
+            int px = (int) Math.round(cx + (p.x() - me.getX()) * scale), py = (int) Math.round(cy + (p.z() - me.getZ()) * scale);
+            px = Math.max(x0 + 4, Math.min(x1 - 4, px));
+            py = Math.max(y0 + 4, Math.min(y1 - 4, py));
+            int col = switch (p.kind()) {
+                case "lighthouse" -> 0xFFE0B040;
+                case "citadel" -> 0xFF6A2A8A;
+                case "shadow_village" -> 0xFF4A4A60;
+                case "maze" -> 0xFF2A7A8A;
+                case "sunken_temple" -> 0xFF2A5A9A;
+                case "underside" -> 0xFF101010;
+                case "depths" -> 0xFF1A3A5A;
+                default -> 0xFF9A1A1A;     // a boss
+            };
+            g.fill(px - 3, py - 3, px + 4, py + 4, 0xFF2A1E14);
+            g.fill(px - 2, py - 2, px + 3, py + 3, col);
+            if (Math.abs(mouseX - px) <= 4 && Math.abs(mouseY - py) <= 4) {
+                int dist = (int) Math.round(Math.hypot(p.x() - me.getX(), p.z() - me.getZ()));
+                hover = Component.translatable("journal.umbra.atlas.place", Component.translatable("journal.umbra.atlas." + p.kind()), dist, p.x(), p.z());
+            }
+        }
+        // you
+        g.fill(cx - 2, cy - 2, cx + 3, cy + 3, 0xFFFFFFFF);
+        g.outline(cx - 3, cy - 3, 7, 7, 0xFF2A1E14);
+        if (places.isEmpty()) g.centeredText(this.font, Component.translatable("journal.umbra.atlas.empty").withStyle(ChatFormatting.ITALIC), cx, y1 - 14, 0xFF6E5A40);
+        if (hover != null) g.centeredText(this.font, hover, cx, y1 - 14, 0xFF3A2614);
+        else g.text(this.font, Component.translatable("journal.umbra.atlas.scale", step), x0 + 4, y1 - 12, 0xFF6E5A40, false);
     }
 
     @Override

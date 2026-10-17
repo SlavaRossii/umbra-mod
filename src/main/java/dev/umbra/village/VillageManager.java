@@ -72,6 +72,7 @@ public final class VillageManager {
         var layout = VillageBuilder.Layout.values()[random.nextInt(VillageBuilder.Layout.values().length)];
         BlockPos bell = VillageBuilder.build(level, centre, random, layout);
         lc.setData(ModAttachments.VILLAGE, bell.asLong());
+        dev.umbra.journal.Atlas.mark(player, "shadow_village", bell);
     }
 
     /** /umbra village: builds one right here. */

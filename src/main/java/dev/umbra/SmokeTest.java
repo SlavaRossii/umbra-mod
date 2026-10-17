@@ -1490,6 +1490,13 @@ final class SmokeTest {
             bellTarget.discard();
         }
 
+        // 2.6: the atlas marks what is found, once per place
+        fake.setData(dev.umbra.registry.ModAttachments.PLACES, java.util.List.of());
+        dev.umbra.journal.Journal.unlock(fake, "sunken_temple");
+        boolean again = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(5, 0, 5));
+        boolean other = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(500, 0, 0));
+        check(dev.umbra.journal.Atlas.places(fake).size() == 2 && !again && other, "the atlas marks a place once, and a far one of the same kind again");
+
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);
         check(dev.umbra.night.NightEvents.FOG.equals(dev.umbra.night.NightEvents.tonight(level)), "a foggy night can be called");

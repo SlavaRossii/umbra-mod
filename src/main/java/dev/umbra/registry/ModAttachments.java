@@ -63,6 +63,14 @@ public final class ModAttachments {
                     .build());
 
     /** Whether the player already received the journal. */
+    /** 2.6: places marked in the journal's atlas: "kind|dimension|x|z". */
+    public static final Supplier<AttachmentType<java.util.List<String>>> PLACES = ATTACHMENTS.register("places",
+            () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
+                    .serialize(Codec.STRING.listOf().fieldOf("places"))
+                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .copyOnDeath()
+                    .build());
+
     public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENTS.register("got_journal",
             () -> AttachmentType.builder(() -> false)
                     .serialize(Codec.BOOL.fieldOf("value"))

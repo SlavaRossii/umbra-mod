@@ -35,7 +35,9 @@ public final class Journal {
             "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
-    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests"};
+    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests", "atlas"};
+    /** The atlas tab: a map, not a list of entries. */
+    public static final int ATLAS = 7;
 
     /** Index into {@link #SECTIONS} for an entry. */
     public static int section(String id) {
@@ -106,6 +108,7 @@ public final class Journal {
         player.setData(ModAttachments.JOURNAL, List.copyOf(list));
         awardRecipes(player, id);
         award(player, id);
+        Atlas.onUnlock(player, id);
         if (id.startsWith("insight")) {
             player.sendSystemMessage(Component.translatable("message.umbra.insight",
                     Component.translatable("journal.umbra." + id + ".title")).withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD));

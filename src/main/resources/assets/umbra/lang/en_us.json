@@ -758,5 +758,22 @@
   "journal.umbra.yan_gift_spyglass.title": "Yan's Spyglass",
   "journal.umbra.yan_gift_spyglass.text": "Copper and echo quartz. Look at a creature through it, and it glows after, even behind a wall.",
   "journal.umbra.yan_gift_bell.title": "The Keeper's Bell",
-  "journal.umbra.yan_gift_bell.text": "The Keepers rang these when the dark came close. It backs away from the ring, but not for long."
+  "journal.umbra.yan_gift_bell.text": "The Keepers rang these when the dark came close. It backs away from the ring, but not for long.",
+  "journal.umbra.tab.atlas": "Atlas",
+  "journal.umbra.atlas.place": "%s — %s blocks (%s, %s)",
+  "journal.umbra.atlas.empty": "Nothing to mark here yet.",
+  "journal.umbra.atlas.scale": "A square: %s blocks",
+  "journal.umbra.atlas.lighthouse": "The lighthouse",
+  "journal.umbra.atlas.citadel": "The citadel",
+  "journal.umbra.atlas.shadow_village": "A shadow village",
+  "journal.umbra.atlas.sunken_temple": "The sunken temple",
+  "journal.umbra.atlas.maze": "A quantum maze",
+  "journal.umbra.atlas.underside": "The way into the Underside",
+  "journal.umbra.atlas.depths": "The way into the Depths",
+  "journal.umbra.atlas.watcher": "The Watcher",
+  "journal.umbra.atlas.mimic_queen": "The Mimic Queen",
+  "journal.umbra.atlas.shepherd": "The Shepherd",
+  "journal.umbra.atlas.doppelganger": "The Doppelganger",
+  "journal.umbra.atlas.architect": "The Architect",
+  "journal.umbra.atlas.primordial_shadow": "The Primordial Shadow"
 }

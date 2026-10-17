@@ -758,5 +758,22 @@
   "journal.umbra.yan_gift_spyglass.title": "Труба Яна",
   "journal.umbra.yan_gift_spyglass.text": "Медь и эхо-кварц. Если смотреть в неё на тварь, она потом светится даже за стеной.",
   "journal.umbra.yan_gift_bell.title": "Колокольчик Хранителя",
-  "journal.umbra.yan_gift_bell.text": "Хранители звонили в такие, когда тьма подходила близко. Она отступает от звона, но ненадолго."
+  "journal.umbra.yan_gift_bell.text": "Хранители звонили в такие, когда тьма подходила близко. Она отступает от звона, но ненадолго.",
+  "journal.umbra.tab.atlas": "Атлас",
+  "journal.umbra.atlas.place": "%s — %s бл. (%s, %s)",
+  "journal.umbra.atlas.empty": "Здесь пока нечего отметить.",
+  "journal.umbra.atlas.scale": "Клетка: %s бл.",
+  "journal.umbra.atlas.lighthouse": "Маяк",
+  "journal.umbra.atlas.citadel": "Цитадель",
+  "journal.umbra.atlas.shadow_village": "Деревня теней",
+  "journal.umbra.atlas.sunken_temple": "Затонувший храм",
+  "journal.umbra.atlas.maze": "Квантовый лабиринт",
+  "journal.umbra.atlas.underside": "Проход в Изнанку",
+  "journal.umbra.atlas.depths": "Спуск в Глубины",
+  "journal.umbra.atlas.watcher": "Смотрящий",
+  "journal.umbra.atlas.mimic_queen": "Королева мимиков",
+  "journal.umbra.atlas.shepherd": "Пастух",
+  "journal.umbra.atlas.doppelganger": "Двойник",
+  "journal.umbra.atlas.architect": "Архитектор",
+  "journal.umbra.atlas.primordial_shadow": "Первородная тень"
 }
