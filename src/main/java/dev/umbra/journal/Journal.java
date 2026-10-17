@@ -32,7 +32,9 @@ public final class Journal {
             "weak_watcher", "weak_mimic_queen", "weak_shepherd", "weak_doppelganger", "weak_architect", "weak_primordial_shadow",
             "night_blood_moon", "night_fog", "night_silence", "trophy_shelf", "yan_dawn",
             // 2.6: Yan's gifts for his errands
-            "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell",
+            // 2.6: who throws from the dark and who rings the bell
+            "weeper", "bellringer"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests", "atlas"};
@@ -47,7 +49,7 @@ public final class Journal {
         if (id.startsWith("quest_")) return 6;
         if (id.startsWith("weak_")) return 4;
         return switch (id) {
-            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper" -> 3;
+            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer" -> 3;
             case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
             default -> 0;
         };

@@ -26,6 +26,8 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.BLIND, "blind", 0.5F, Animations::blind, null));
         event.registerEntityRenderer(ModEntities.MIMICKER.get(), ctx -> new UmbraRenderer<dev.umbra.mob.Mimicker>(ctx, ModLayers.MIMICKER, "mimicker", 0.5F, Animations::mimicker,
                 (e, st) -> st.flag = e.isHidden()));
+        event.registerEntityRenderer(ModEntities.WEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WEEPER, "weeper", 0.4F, Animations::weeper, null));
+        event.registerEntityRenderer(ModEntities.BELLRINGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.BELLRINGER, "bellringer", 0.5F, Animations::bellringer, null));
         event.registerEntityRenderer(ModEntities.SHADE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADE, "shade", 0.3F, Animations::shade, null));
         event.registerEntityRenderer(ModEntities.PHANTOM_ZOMBIE.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/zombie/zombie.png")));
         event.registerEntityRenderer(ModEntities.PHANTOM_SKELETON.get(), ctx -> new SilhouetteRenderer<>(ctx, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/skeleton/skeleton.png")));
@@ -55,6 +57,8 @@ public final class UmbraClient {
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(ModLayers.CRAWLER, GeneratedModels::crawler);
         event.registerLayerDefinition(ModLayers.BLIND, GeneratedModels::blind);
+        event.registerLayerDefinition(ModLayers.WEEPER, GeneratedModels::weeper);
+        event.registerLayerDefinition(ModLayers.BELLRINGER, GeneratedModels::bellringer);
         event.registerLayerDefinition(ModLayers.LIGHT_EATER, GeneratedModels::lightEater);
         event.registerLayerDefinition(ModLayers.SHADE, GeneratedModels::shade);
         event.registerLayerDefinition(ModLayers.STATUE, GeneratedModels::citadelStatue);

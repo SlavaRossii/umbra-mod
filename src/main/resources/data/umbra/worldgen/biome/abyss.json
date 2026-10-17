@@ -51,6 +51,15 @@
                 "max_inclusive": 5
               },
               "weight": 30
+            },
+            {
+              "type": "umbra:weeper",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 12
             }
           ]
         }

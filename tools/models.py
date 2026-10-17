@@ -517,8 +517,45 @@ def ash_figure():
     return m
 
 
+def weeper():
+    """The Weeper: a tall, thin woman under a long veil, bent forward, arms too long; tears that glow run down the veil."""
+    m = Model("weeper")
+    def tears(px, x0, y0, w, h, rnd):
+        for x in range(x0 + 1, x0 + w - 1, 2):
+            for y in range(y0 + h // 3, y0 + h):
+                if (x * 7 + y) % 5 == 0:
+                    px[x, y] = (150, 220, 255, 255)
+    veil = P((58, 56, 70, 255), 8, front=tears)
+    dress = P((40, 38, 50, 255), 8)
+    skin = P((176, 170, 180, 255), 8)
+    shard = P((90, 70, 130, 255), 10)
+    m.part("dress", "root", (0, 10, 0), (0, 0, 0), [C(-4, 0, -3, 8, 14, 6, dress)])
+    body = m.part("body", "root", (0, 10, 0), (0.3, 0, 0), [C(-3.5, -11, -2, 7, 11, 4, dress)])
+    m.part("head", body, (0, -11, -1), (0.35, 0, 0), [C(-3.5, -8, -3.5, 7, 8, 7, skin), C(-4.5, -9, -4.5, 9, 13, 9, veil)])
+    m.part("arm_r", body, (-4.5, -10, 0), (-0.4, 0, 0.1), [C(-1, 0, -1, 2, 19, 2, skin)])
+    arm = m.part("arm_l", body, (4.5, -10, 0), (-0.4, 0, -0.1), [C(-1, 0, -1, 2, 19, 2, skin)])
+    m.part("shard", arm, (0, 19, 0), (0, 0.6, 0), [C(-1, 0, -1, 2, 4, 2, shard)])
+    return m
+
+
+def bellringer():
+    """The Bellringer of the shadow villages: a hunched figure in a sackcloth hood, a bronze hand bell bigger than its head."""
+    m = Model("bellringer")
+    sack = P((84, 72, 58, 255), 12, front=stripes((64, 54, 44, 255), 4, True))
+    hood = P((70, 60, 48, 255), 10, front=eyes((255, 200, 90, 255), 0.55, 0.22, 1, glow=(150, 90, 30, 255)))
+    rope = P((120, 96, 60, 255), 8)
+    bronze = P((176, 128, 60, 255), 12)
+    m.part("legs", "root", (0, 14, 0), (0, 0, 0), [C(-4, 0, -3, 8, 10, 6, sack)])
+    body = m.part("body", "root", (0, 14, 0), (0.45, 0, 0), [C(-4.5, -11, -3, 9, 11, 6, sack)])
+    m.part("head", body, (0, -11, -1), (0.2, 0, 0), [C(-4, -8, -5, 8, 8, 8, hood)])
+    m.part("arm_l", body, (5.5, -10, 0), (-0.2, 0, -0.1), [C(-1.5, -1, -1.5, 3, 12, 3, sack)])
+    arm = m.part("arm_r", body, (-5.5, -10, 0), (-1.2, 0, 0.1), [C(-1.5, -1, -1.5, 3, 12, 3, sack)])
+    m.part("bell", arm, (0, 12, 0), (1.2, 0, 0), [C(-0.5, 0, -0.5, 1, 3, 1, rope), C(-3, 3, -3, 6, 2, 6, bronze), C(-4, 5, -4, 8, 4, 8, bronze)])
+    return m
+
+
 MODELS = [crawler, blind, light_eater, shade, statue, keeper, watcher, mimic_queen, shepherd, architect,
-          primordial_shadow, shadow_villager, lurker, mimicker, lamp_keeper, ash_figure]
+          primordial_shadow, shadow_villager, lurker, mimicker, lamp_keeper, ash_figure, weeper, bellringer]
 
 
 # ------------------------------------------------------------------ UV packing + painting

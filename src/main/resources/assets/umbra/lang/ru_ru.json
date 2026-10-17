@@ -775,5 +775,17 @@
   "journal.umbra.atlas.shepherd": "Пастух",
   "journal.umbra.atlas.doppelganger": "Двойник",
   "journal.umbra.atlas.architect": "Архитектор",
-  "journal.umbra.atlas.primordial_shadow": "Первородная тень"
+  "journal.umbra.atlas.primordial_shadow": "Первородная тень",
+  "entity.umbra.weeper": "Плакальщица",
+  "entity.umbra.bellringer": "Звонарь",
+  "item.umbra.weeper_spawn_egg": "Яйцо призыва плакальщицы",
+  "item.umbra.bellringer_spawn_egg": "Яйцо призыва звонаря",
+  "journal.umbra.weeper.title": "Плакальщица",
+  "journal.umbra.weeper.look": "Высокая фигура под вуалью держится поодаль. Слышно, как она плачет.",
+  "journal.umbra.weeper.text": "Она бросает осколки тени из темноты и отступает, если подойти. От осколка на миг слепнешь.",
+  "journal.umbra.weeper.weak": "Догнать её трудно — бей издалека: лук, ножи, посох. Вспышка света обращает её в бегство.",
+  "journal.umbra.bellringer.title": "Звонарь",
+  "journal.umbra.bellringer.look": "Сгорбленный в мешковине, с бронзовым колоколом в руке. Стоит у деревенского колокола.",
+  "journal.umbra.bellringer.text": "Когда он звонит, кружится голова, а все твари вокруг идут на звук.",
+  "journal.umbra.bellringer.weak": "Звонит раз в десять секунд и только вблизи: держись дальше двенадцати блоков и бей издалека. Свет глушит колокол."
 }

@@ -73,6 +73,14 @@ public final class VillageManager {
         BlockPos bell = VillageBuilder.build(level, centre, random, layout);
         lc.setData(ModAttachments.VILLAGE, bell.asLong());
         dev.umbra.journal.Atlas.mark(player, "shadow_village", bell);
+        // 2.6: the Bellringer keeps the bell
+        BlockPos stand = Hallucinations.findStandable(level, bell.offset(2, 0, 1), 5);
+        var ringer = dev.umbra.registry.ModEntities.BELLRINGER.get().create(level, net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
+        if (ringer != null && stand != null) {
+            ringer.snapTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, random.nextFloat() * 360, 0);
+            ringer.setPersistenceRequired();
+            level.addFreshEntity(ringer);
+        }
     }
 
     /** /umbra village: builds one right here. */

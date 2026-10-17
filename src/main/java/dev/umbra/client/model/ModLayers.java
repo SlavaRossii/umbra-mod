@@ -8,6 +8,8 @@ import net.minecraft.resources.Identifier;
 public final class ModLayers {
     public static final ModelLayerLocation CRAWLER = layer("crawler");
     public static final ModelLayerLocation BLIND = layer("blind");
+    public static final ModelLayerLocation WEEPER = layer("weeper");
+    public static final ModelLayerLocation BELLRINGER = layer("bellringer");
     public static final ModelLayerLocation LIGHT_EATER = layer("light_eater");
     public static final ModelLayerLocation SHADE = layer("shade");
     public static final ModelLayerLocation STATUE = layer("citadel_statue");

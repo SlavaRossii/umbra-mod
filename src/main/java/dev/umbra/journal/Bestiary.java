@@ -24,6 +24,8 @@ public final class Bestiary {
             ids = Map.ofEntries(
                     Map.entry(ModEntities.CRAWLER.get(), "crawler"),
                     Map.entry(ModEntities.BLIND.get(), "blind"),
+                    Map.entry(ModEntities.WEEPER.get(), "weeper"),
+                    Map.entry(ModEntities.BELLRINGER.get(), "bellringer"),
                     Map.entry(ModEntities.LIGHT_EATER.get(), "light_eater"),
                     Map.entry(ModEntities.MIMICKER.get(), "mimicker"),
                     Map.entry(ModEntities.SHADE.get(), "shade"),
@@ -41,7 +43,7 @@ public final class Bestiary {
     }
 
     /** Creature ids with a bestiary page (the same ids as their journal entries). */
-    public static final List<String> CREATURES = List.of("crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper",
+    public static final List<String> CREATURES = List.of("crawler", "blind", "weeper", "bellringer", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper",
             "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow");
 
     public static final List<String> BOSSES = List.of("watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow");

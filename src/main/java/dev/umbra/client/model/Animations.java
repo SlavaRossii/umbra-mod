@@ -271,6 +271,24 @@ public final class Animations {
     }
 
     /** The ash figure barely sways, as if the wind could take it apart. */
+    public static void weeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, w = st.walkAnimationPos, s = Math.min(1.0F, st.walkAnimationSpeed);
+        look(p.apply("head"), st, 0.5F);
+        // she sobs: the shoulders shake; the arms hang and sway as she drifts
+        p.apply("body").xRot += Mth.sin(t * 0.9F) * 0.025F;
+        p.apply("arm_r").xRot += Mth.cos(w * 0.6662F) * s * 0.3F + Mth.sin(t * 0.07F) * 0.05F;
+        p.apply("arm_l").xRot -= Mth.cos(w * 0.6662F) * s * 0.3F;
+        if (st.attack > 0) p.apply("arm_l").xRot -= Mth.sin(st.attack * Mth.PI) * 2.0F;   // the throw
+    }
+
+    public static void bellringer(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, w = st.walkAnimationPos, s = Math.min(1.0F, st.walkAnimationSpeed);
+        look(p.apply("head"), st, 0.6F);
+        p.apply("body").zRot += Mth.cos(w * 0.6662F) * s * 0.08F;      // a limping waddle
+        p.apply("bell").zRot += Mth.sin(t * 0.3F) * 0.06F;
+        if (st.attack > 0) p.apply("arm_r").zRot += Mth.sin(st.attack * Mth.PI * 2) * 0.9F;   // the ring
+    }
+
     public static void ashFigure(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks;
         p.apply("body").zRot += Mth.sin(t * 0.03F) * 0.02F;

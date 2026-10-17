@@ -105,6 +105,7 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDamage);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onImpact);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.mob.Weeper::onShard);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onIncoming);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
@@ -116,6 +117,8 @@ public class Umbra {
         event.put(ModEntities.CRAWLER.get(), Crawler.createAttributes().build());
         event.put(ModEntities.LURKER.get(), dev.umbra.lake.Lurker.createAttributes().build());
         event.put(ModEntities.BLIND.get(), Blind.createAttributes().build());
+        event.put(ModEntities.WEEPER.get(), dev.umbra.mob.Weeper.createAttributes().build());
+        event.put(ModEntities.BELLRINGER.get(), dev.umbra.mob.Bellringer.createAttributes().build());
         event.put(ModEntities.LIGHT_EATER.get(), LightEater.createAttributes().build());
         event.put(ModEntities.MIMICKER.get(), Mimicker.createAttributes().build());
         event.put(ModEntities.SHADE.get(), Shade.createAttributes().build());
@@ -151,6 +154,7 @@ public class Umbra {
         event.register(ModEntities.CRAWLER.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.BLIND.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.MIMICKER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.WEEPER.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.SHADE.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.LIGHT_EATER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }

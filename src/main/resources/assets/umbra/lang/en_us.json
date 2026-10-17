@@ -775,5 +775,17 @@
   "journal.umbra.atlas.shepherd": "The Shepherd",
   "journal.umbra.atlas.doppelganger": "The Doppelganger",
   "journal.umbra.atlas.architect": "The Architect",
-  "journal.umbra.atlas.primordial_shadow": "The Primordial Shadow"
+  "journal.umbra.atlas.primordial_shadow": "The Primordial Shadow",
+  "entity.umbra.weeper": "Weeper",
+  "entity.umbra.bellringer": "Bellringer",
+  "item.umbra.weeper_spawn_egg": "Weeper Spawn Egg",
+  "item.umbra.bellringer_spawn_egg": "Bellringer Spawn Egg",
+  "journal.umbra.weeper.title": "The Weeper",
+  "journal.umbra.weeper.look": "A tall veiled figure keeps her distance. You can hear her crying.",
+  "journal.umbra.weeper.text": "She throws shards of shadow from the dark and backs off if you come close. A shard blinds you for a moment.",
+  "journal.umbra.weeper.weak": "She is hard to catch: strike from afar, bow, knives, staff. A flash of light sends her running.",
+  "journal.umbra.bellringer.title": "The Bellringer",
+  "journal.umbra.bellringer.look": "Hunched in sackcloth, a bronze bell in hand. It stands by the village bell.",
+  "journal.umbra.bellringer.text": "When it rings, your head swims and every creature around comes to the sound.",
+  "journal.umbra.bellringer.weak": "It rings once in ten seconds and only up close: stay beyond twelve blocks and strike from afar. Light chokes the bell."
 }

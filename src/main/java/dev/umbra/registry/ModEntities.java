@@ -64,6 +64,10 @@ public final class ModEntities {
     // --- Creatures of the Underside ---
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.lake.Lurker>> LURKER = ENTITIES.registerEntityType("lurker",
             dev.umbra.lake.Lurker::new, MobCategory.MONSTER, b -> b.sized(1.2F, 0.7F).eyeHeight(0.35F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.mob.Weeper>> WEEPER = ENTITIES.registerEntityType("weeper",
+            dev.umbra.mob.Weeper::new, MobCategory.MONSTER, b -> b.sized(0.6F, 2.1F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.mob.Bellringer>> BELLRINGER = ENTITIES.registerEntityType("bellringer",
+            dev.umbra.mob.Bellringer::new, MobCategory.MONSTER, b -> b.sized(0.7F, 1.8F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Crawler>> CRAWLER = ENTITIES.registerEntityType("crawler",
             Crawler::new, MobCategory.MONSTER, b -> b.sized(1.3F, 0.8F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Blind>> BLIND = ENTITIES.registerEntityType("blind",

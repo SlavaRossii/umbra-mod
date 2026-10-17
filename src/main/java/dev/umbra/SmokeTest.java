@@ -578,7 +578,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 95 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 95, "journal has 95 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 100 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 100, "journal has 100 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1496,6 +1496,30 @@ final class SmokeTest {
         boolean again = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(5, 0, 5));
         boolean other = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(500, 0, 0));
         check(dev.umbra.journal.Atlas.places(fake).size() == 2 && !again && other, "the atlas marks a place once, and a far one of the same kind again");
+
+        // 2.6: the Bellringer's ring, the Weeper's shard
+        var ringer = ModEntities.BELLRINGER.get().create(level, EntitySpawnReason.COMMAND);
+        if (ringer != null) {
+            ringer.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 2.5, 0, 0);
+            level.addFreshEntity(ringer);
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);
+            fake.removeAllEffects();
+            int struck = ringer.ring(level);
+            check(struck >= 1 && fake.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA), "the Bellringer's ring makes heads swim (" + struck + ")");
+            ringer.discard();
+            fake.removeAllEffects();
+        }
+        var weeper = ModEntities.WEEPER.get().create(level, EntitySpawnReason.COMMAND);
+        if (weeper != null) {
+            weeper.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 6.5, 0, 0);
+            level.addFreshEntity(weeper);
+            int before = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
+            weeper.performRangedAttack(fake, 1.0F);
+            int after = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
+            check(after == before + 1 && dev.umbra.journal.Bestiary.ids().containsKey(ModEntities.WEEPER.get()), "the Weeper throws a shard of shadow, and is in the bestiary");
+            weeper.discard();
+            level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).forEach(net.minecraft.world.entity.Entity::discard);
+        }
 
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);
