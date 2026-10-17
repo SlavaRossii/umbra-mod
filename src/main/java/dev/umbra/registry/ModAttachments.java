@@ -31,7 +31,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<String>> ENDING = ATTACHMENTS.register("ending",
             () -> AttachmentType.builder(() -> "")
                     .serialize(Codec.STRING.fieldOf("value"))
-                    .sync(ByteBufCodecs.STRING_UTF8)
+                    .sync(ModAttachments::ownerOnly, ByteBufCodecs.STRING_UTF8)
                     .copyOnDeath()
                     .build());
 
@@ -59,7 +59,7 @@ public final class ModAttachments {
     /** Tonight's event where this player is ("", "blood_moon", "fog", "silence"), synced for the fog and the hush. */
     public static final Supplier<AttachmentType<String>> NIGHT_EVENT = ATTACHMENTS.register("night_event",
             () -> AttachmentType.builder(() -> "")
-                    .sync(ByteBufCodecs.STRING_UTF8)
+                    .sync(ModAttachments::ownerOnly, ByteBufCodecs.STRING_UTF8)
                     .build());
 
     /** Whether the player already received the journal. */
@@ -67,7 +67,7 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<java.util.List<String>>> PLACES = ATTACHMENTS.register("places",
             () -> AttachmentType.<java.util.List<String>>builder(() -> java.util.List.of())
                     .serialize(Codec.STRING.listOf().fieldOf("places"))
-                    .sync(net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .sync(ModAttachments::ownerOnly, net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
                     .copyOnDeath()
                     .build());
 
