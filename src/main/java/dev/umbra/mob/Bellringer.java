@@ -58,18 +58,20 @@ public class Bellringer extends Monster implements LightSensitive {
         if (ringTimer > 0) ringTimer--;
         LivingEntity t = this.getTarget();
         if (ringTimer == 0 && t != null && t.distanceTo(this) < RING_RADIUS + 2) {
-            ring(level);
+            ring(level, java.util.List.of());
             ringTimer = RING_EVERY;
         }
     }
 
     /** Rings: players near reel, the dark around comes. Returns how many players were struck. */
-    public int ring(ServerLevel level) {
+    public int ring(ServerLevel level, java.util.List<Player> also) {
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 3.0F, 0.6F);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BELL_RESONATE, SoundSource.HOSTILE, 2.0F, 0.5F);
         level.sendParticles(ParticleTypes.SONIC_BOOM, this.getX(), this.getY() + 1.2, this.getZ(), 1, 0, 0, 0, 0);
         int n = 0;
-        for (Player p : level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(RING_RADIUS), x -> !x.isSpectator() && !x.isCreative())) {
+        java.util.Set<Player> near = new java.util.LinkedHashSet<>(level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(RING_RADIUS), x -> !x.isSpectator() && !x.isCreative()));
+        for (Player p : also) if (p.distanceTo(this) <= RING_RADIUS) near.add(p);
+        for (Player p : near) {
             p.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 120, 0));
             p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1));
             dev.umbra.sanity.Sanity.add(p, -2.0F);

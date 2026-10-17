@@ -1505,7 +1505,7 @@ final class SmokeTest {
             level.addFreshEntity(ringer);
             fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);
             fake.removeAllEffects();
-            int struck = ringer.ring(level);
+            int struck = ringer.ring(level, java.util.List.of(fake));
             check(struck >= 1 && fake.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA), "the Bellringer's ring makes heads swim (" + struck + ")");
             ringer.discard();
             fake.removeAllEffects();
@@ -1837,8 +1837,8 @@ final class SmokeTest {
         int[] per = new int[dev.umbra.journal.Journal.SECTIONS.length];
         for (String id : dev.umbra.journal.Journal.ENTRIES) per[dev.umbra.journal.Journal.section(id)]++;
         boolean none = false;
-        for (int n : per) none |= n == 0;
-        check(!none, "every journal section has entries");
+        for (int i = 0; i < per.length; i++) none |= per[i] == 0 && i != dev.umbra.journal.Journal.ATLAS;
+        check(!none, "every journal section has entries (the atlas is a map)");
 
         BlockPos c = new BlockPos(160, Y + 60, 30);
         for (int x = -8; x <= 8; x++)
