@@ -177,7 +177,9 @@ final class SmokeMulti {
             // ---- a shared home fills up only so far
             case 55 -> {
                 BlockPos home = new BlockPos(X0 + 20, Y, 8);
-                for (int i = 0; i < 6; i++) level.setBlock(home.offset(i, 0, 3), Blocks.CRAFTING_TABLE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                // plenty of furniture, so the random search always finds some (six tables made the check flaky)
+                for (int i = -6; i <= 6; i++)
+                    for (int j = -6; j <= 6; j += 3) level.setBlock(home.offset(i, 0, j), Blocks.CRAFTING_TABLE.defaultBlockState(), Block.UPDATE_CLIENTS);
                 int placed = 0;
                 for (int round = 0; round < 4; round++) {
                     int room = dev.umbra.mimic.MimicManager.MAX_AT_HOME - dev.umbra.mimic.MimicManager.mimicsAround(level, home);
@@ -186,7 +188,7 @@ final class SmokeMulti {
                 int there = dev.umbra.mimic.MimicManager.mimicsAround(level, home);
                 SmokeTest.check(there > 0 && there <= dev.umbra.mimic.MimicManager.MAX_AT_HOME, "a home shared by many hides at most " + dev.umbra.mimic.MimicManager.MAX_AT_HOME + " mimics (" + there + ")");
                 for (BlockPos p : BlockPos.betweenClosed(home.offset(-12, -6, -12), home.offset(12, 6, 12))) {
-                    if (level.getBlockState(p).getBlock() instanceof dev.umbra.mimic.MimicBlock) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    if (level.getBlockState(p).getBlock() instanceof dev.umbra.mimic.MimicBlock || level.getBlockState(p).is(Blocks.CRAFTING_TABLE)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
             }
             case 60 -> {
