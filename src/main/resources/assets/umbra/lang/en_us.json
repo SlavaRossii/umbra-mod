@@ -620,9 +620,9 @@
   "block.umbra.echo_altar": "Echo Altar",
   "block.umbra.gloom_anvil": "Gloom Anvil",
   "block.umbra.luminite_candle": "Luminite Candle",
-  "block.umbra.echo_altar.status": "Candles around: %s, echo %s. Price: %s echo quartz and %s levels. Candles short of the next echo: %s.",
+  "block.umbra.echo_altar.status": "Candles around: %s, echo %s. Price: %s echo quartz and %s experience points. Candles short of the next echo: %s.",
   "block.umbra.echo_altar.nothing": "The echo has nothing to say to this.",
-  "block.umbra.echo_altar.price": "The altar asks %s echo quartz and %s levels of experience.",
+  "block.umbra.echo_altar.price": "The altar asks %s echo quartz and %s experience points.",
   "block.umbra.echo_altar.done": "The echo answered: %s.",
   "block.umbra.echo_altar.cursed": "The echo answered: %s… and something whispered back.",
   "block.umbra.gloom_anvil.pinned": "Pinned on: %s.",
@@ -704,5 +704,6 @@
   "tip.umbra.trophy_shepherd": "Its place is on Yan's shelf.",
   "tip.umbra.trophy_doppelganger": "Its place is on Yan's shelf.",
   "tip.umbra.trophy_architect": "Its place is on Yan's shelf.",
-  "tip.umbra.trophy_primordial_shadow": "Its place is on Yan's shelf."
+  "tip.umbra.trophy_primordial_shadow": "Its place is on Yan's shelf.",
+  "block.umbra.sealed_phantom_wall": "Sealed Phantom Wall"
 }

@@ -85,9 +85,38 @@ public class EchoAltarBlock extends Block {
         return power >= ABYSS ? 8 : 1 + power;
     }
 
-    /** Experience levels it asks. */
+    /** Experience it asks, said in levels: as much experience as it takes to climb from nothing to that level. */
     public static int xpCost(int power) {
         return power >= ABYSS ? 30 : 3 * power + 2;
+    }
+
+    /** Experience points it takes to climb from level 0 to {@code level}, as in vanilla. */
+    public static int pointsFor(int level) {
+        if (level <= 16) return level * level + 6 * level;
+        if (level <= 31) return (int) (2.5 * level * level - 40.5 * level + 360);
+        return (int) (4.5 * level * level - 162.5 * level + 2220);
+    }
+
+    /** Points of experience the altar takes: the price in levels, counted from zero. */
+    public static int xpPoints(int power) {
+        return pointsFor(xpCost(power));
+    }
+
+    /** All the experience a player carries, in points. */
+    public static int pointsOf(Player player) {
+        return pointsFor(player.experienceLevel) + Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
+    }
+
+    /** Takes points, not levels: from a high level the same price costs far fewer levels, as in vanilla. */
+    public static void takePoints(Player player, int points) {
+        int left = Math.max(0, pointsOf(player) - points);
+        int level = 0;
+        while (pointsFor(level + 1) <= left) level++;
+        player.experienceLevel = level;
+        player.experienceProgress = 0.0F;
+        player.experienceProgress = (left - pointsFor(level)) / (float) player.getXpNeededForNextLevel();
+        player.totalExperience = Math.max(0, player.totalExperience - points);
+        player.giveExperienceLevels(0);     // let the client hear of it
     }
 
     /** The level an enchantment gets at this power: up to its limit, and one past it from the abyss. */
@@ -122,7 +151,7 @@ public class EchoAltarBlock extends Block {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             int c = candles(level, pos), p = power(c);
-            player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.status", c, p, quartzCost(p), xpCost(p), next(c)));
+            player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.status", c, p, quartzCost(p), xpPoints(p), next(c)));
         }
         return InteractionResult.SUCCESS;
     }
@@ -140,12 +169,12 @@ public class EchoAltarBlock extends Block {
         }
         int quartz = quartzCost(power), xp = xpCost(power);
         if (!player.isCreative()) {
-            if (player.experienceLevel < xp || player.getInventory().countItem(ModItems.ECHO_QUARTZ.get()) < quartz) {
-                player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.price", quartz, xp).withStyle(ChatFormatting.DARK_PURPLE));
+            if (pointsOf(player) < xpPoints(power) || player.getInventory().countItem(ModItems.ECHO_QUARTZ.get()) < quartz) {
+                player.sendOverlayMessage(Component.translatable("block.umbra.echo_altar.price", quartz, xpPoints(power)).withStyle(ChatFormatting.DARK_PURPLE));
                 return InteractionResult.FAIL;
             }
             take(player, quartz);
-            player.giveExperienceLevels(-xp);
+            takePoints(player, xpPoints(power));
         }
         RandomSource random = server.getRandom();
         Holder<Enchantment> pick = options.get(random.nextInt(options.size()));

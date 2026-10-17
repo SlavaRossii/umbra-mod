@@ -131,15 +131,22 @@ public class Umbra {
         event.put(ModEntities.PRIMORDIAL_SHADOW.get(), PrimordialShadow.createAttributes().build());
     }
 
+    /** Out in the world they need the dark; a spawner cage (the citadel's, lit by luminite) calls them anyway. */
+    private static <T extends Monster> boolean darkOrCaged(net.minecraft.world.entity.EntityType<T> type, net.minecraft.world.level.ServerLevelAccessor level,
+                                                           net.minecraft.world.entity.EntitySpawnReason reason, net.minecraft.core.BlockPos pos, net.minecraft.util.RandomSource random) {
+        if (reason == net.minecraft.world.entity.EntitySpawnReason.SPAWNER) return Monster.checkAnyLightMonsterSpawnRules(type, level, reason, pos, random);
+        return Monster.checkMonsterSpawnRules(type, level, reason, pos, random);
+    }
+
     private static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         var ground = SpawnPlacementTypes.ON_GROUND;
         var heightmap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
         event.register(ModEntities.LURKER.get(), net.minecraft.world.entity.SpawnPlacementTypes.IN_WATER, net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 dev.umbra.lake.Lurker::checkSpawn, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(ModEntities.CRAWLER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(ModEntities.BLIND.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.CRAWLER.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.BLIND.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.MIMICKER.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(ModEntities.SHADE.get(), ground, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.SHADE.get(), ground, heightmap, Umbra::darkOrCaged, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.LIGHT_EATER.get(), SpawnPlacementTypes.NO_RESTRICTIONS, heightmap, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 

@@ -57,6 +57,7 @@ def main():
     for name in BOSSES:
         im = icon(name)
         im.save(A + 'textures/item/trophy_%s.png' % name)
+        im.save(A + 'textures/block/trophy_%s.png' % name)      # block models only see the blocks atlas
         json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": "umbra:item/trophy_" + name}}, open(A + 'models/item/trophy_%s.json' % name, 'w'), indent=2)
         json.dump({"model": {"type": "minecraft:model", "model": "umbra:item/trophy_" + name}}, open(A + 'items/trophy_%s.json' % name, 'w'), indent=2)
         # every boss leaves its relic
@@ -76,9 +77,16 @@ def main():
     slots = [(3, 2), (8, 2), (13, 2), (3, 9), (8, 9), (13, 9)]
     for i, name in enumerate(BOSSES):
         x, y = slots[i]
-        el = b.box((x - 1.5, y, 9.5), (x + 1.5, y + 4, 12.5), "relic", light=6 if name in ("watcher", "primordial_shadow") else 0)
+        # the relic stands on the board like a little plaque: its picture on the front, a thin edge round it
+        el = b.box((x - 2, y, 10.5), (x + 2, y + 5, 11.5), "relic", light=6 if name in ("watcher", "primordial_shadow") else 0)
+        el["faces"]["north"]["uv"] = [0, 0, 16, 16]
+        el["faces"]["south"]["uv"] = [16, 0, 0, 16]
+        for side in ("east", "west"):
+            el["faces"][side]["uv"] = [0, 0, 1, 16]
+        for side in ("up", "down"):
+            el["faces"][side]["uv"] = [0, 0, 16, 1]
         b.model(A + 'models/block/trophy_shelf_%s.json' % name, "minecraft:block/block",
-                {"particle": "umbra:item/trophy_" + name, "relic": "umbra:item/trophy_" + name}, [el])
+                {"particle": "umbra:block/trophy_" + name, "relic": "umbra:block/trophy_" + name}, [el])
     rot = {"north": 0, "east": 90, "south": 180, "west": 270}
     parts = []
     for f, y in rot.items():

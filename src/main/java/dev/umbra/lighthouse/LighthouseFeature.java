@@ -32,13 +32,15 @@ public record LighthouseFeature() implements Feature {
     public static final ResourceKey<LootTable> LOOT = ResourceKey.create(Registries.LOOT_TABLE,
             Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "chests/lighthouse_house"));
     /** Height of the lamp above the platform floor. */
-    public static final int LAMP_Y = 28;
+    public static final int LAMP_Y = 38;
     /** Radius of the hollow round the tower. */
     public static final int HOLLOW = 15;
     /** Where the keeper's house door and the keeper stand, relative to the tower axis. */
     public static final int HOUSE_Z = 8;
     /** Platform floor limits: the whole thing must fit between the cave's floor and its roof (128). */
-    public static final int MIN_FLOOR = 14, MAX_FLOOR = 128 - LAMP_Y - 14;
+    public static final int MIN_FLOOR = 8, MAX_FLOOR = 128 - (LAMP_Y + 12) - 6;
+    /** How far below the cave floor the platform is sunk: the lighthouse stands in a pit of its own. */
+    public static final int SINK = 12;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
     @Override
@@ -100,7 +102,7 @@ public record LighthouseFeature() implements Feature {
     /** A cave floor for the platform, kept between the cave's floor and roof (the hollow is carved round it anyway). */
     public static BlockPos floorAt(WorldGenLevel level, int x, int z) {
         BlockPos g = CitadelGateFeature.findSolidGround(level, x, z);
-        int y = g == null ? 48 : g.getY() - 1;
+        int y = g == null ? 40 : g.getY() - 1 - SINK;
         y = Math.max(MIN_FLOOR, Math.min(MAX_FLOOR, y));
         return new BlockPos(x, y, z);
     }
@@ -137,7 +139,10 @@ public record LighthouseFeature() implements Feature {
                 double d = Math.sqrt(x * x + (z - 2) * (z - 2));
                 if (d > HOLLOW) continue;
                 int top = LAMP_Y + 12 - (int) Math.round(Math.pow(d / HOLLOW, 2) * 14);
-                for (int y = 1; y <= top; y++) level.setBlock(floor.offset(x, y, z), air, FLAGS);
+                for (int y = 1; y <= top; y++) {
+                    BlockPos p = floor.offset(x, y, z);
+                    if (!level.getBlockState(p).is(Blocks.BEDROCK)) level.setBlock(p, air, FLAGS);   // never hole the roof
+                }
             }
 
         // 1. the rock the lighthouse stands on: a platform 17 wide and 21 long, propped up to the ground
@@ -187,11 +192,11 @@ public record LighthouseFeature() implements Feature {
                 for (int turn = 0; turn < 16; turn++) {
                     int half = turn * 16 + bucket + 1;                // in half blocks above the floor
                     int y = (half + 1) / 2;
-                    if (y >= gy) break;
+                    if (y > gy) break;                                // the last step is set into the gallery floor, flush with it
                     level.setBlock(floor.offset(x, y, z), half % 2 == 1 ? slabB : slabT, FLAGS);
                     topY = y;
                 }
-                if (topY >= gy - 4) level.setBlock(floor.offset(x, gy, z), air, FLAGS);
+                if (topY >= gy - 4 && topY < gy) level.setBlock(floor.offset(x, gy, z), air, FLAGS);
             }
 
         // 4. the lamp room: a square of glass around the lamp, a door to the gallery on the south side

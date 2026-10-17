@@ -195,10 +195,26 @@ def face(t, uv=None, cull=None, tint=None):
 
 def box(frm, to, tex_all=None, faces=None, rot=None, light=0, shade=True):
     fs = {}
+    x1, y1, z1 = frm
+    x2, y2, z2 = to
+    auto = {"north": [16 - x2, 16 - y2, 16 - x1, 16 - y1], "south": [x1, 16 - y2, x2, 16 - y1],
+            "east": [16 - z2, 16 - y2, 16 - z1, 16 - y1], "west": [z1, 16 - y2, z2, 16 - y1],
+            "up": [x1, z1, x2, z2], "down": [x1, 16 - z2, x2, 16 - z1]}
     for side in ("north", "south", "east", "west", "up", "down"):
         t = (faces or {}).get(side, tex_all)
         if t:
-            fs[side] = face(t)
+            uv = auto[side]
+            if min(uv) < 0 or max(uv) > 16:     # past the block: the game cannot read the texture there, slide the window back in
+                for i in (0, 1):
+                    lo, hi = uv[i], uv[i + 2]
+                    if lo < 0:
+                        lo, hi = 0, min(16, hi - lo)
+                    if hi > 16:
+                        lo, hi = max(0, lo - (hi - 16)), 16
+                    uv[i], uv[i + 2] = lo, hi
+                fs[side] = face(t, uv=uv)
+            else:
+                fs[side] = face(t)
     e = {"from": list(frm), "to": list(to), "faces": fs}
     if rot:
         e["rotation"] = rot
@@ -294,10 +310,23 @@ def write_models():
     model(MI + 'luminite_shield_3d.json', "minecraft:item/handheld",
           {"particle": "umbra:item/luminite_shield_rim", "face": "umbra:item/luminite_shield_face", "rim": "umbra:item/luminite_shield_rim"},
           els, {"display": display, "gui_light": "front"})
-    # in the hand the 3D model, in the inventory the picture
+    # raised: the same shield held up in front, as vanilla holds its own while blocking
+    raised = dict(display)
+    raised.update({
+        "thirdperson_righthand": {"rotation": [45, 135, 0], "translation": [3.51, 11, -2], "scale": [1, 1, 1]},
+        "thirdperson_lefthand": {"rotation": [45, 135, 0], "translation": [13.51, 3, 5], "scale": [1, 1, 1]},
+        "firstperson_righthand": {"rotation": [0, 180, -5], "translation": [-15, 5, -11], "scale": [1.25, 1.25, 1.25]},
+        "firstperson_lefthand": {"rotation": [0, 180, -5], "translation": [5, 5, -11], "scale": [1.25, 1.25, 1.25]},
+    })
+    model(MI + 'luminite_shield_3d_blocking.json', "minecraft:item/handheld",
+          {"particle": "umbra:item/luminite_shield_rim", "face": "umbra:item/luminite_shield_face", "rim": "umbra:item/luminite_shield_rim"},
+          els, {"display": raised, "gui_light": "front"})
+    # in the hand the 3D model (raised while blocking), in the inventory the picture
     json.dump({"model": {"type": "minecraft:select", "property": "minecraft:display_context",
                          "cases": [{"when": ["gui", "ground", "fixed"], "model": {"type": "minecraft:model", "model": "umbra:item/luminite_shield"}}],
-                         "fallback": {"type": "minecraft:model", "model": "umbra:item/luminite_shield_3d"}}},
+                         "fallback": {"type": "minecraft:condition", "property": "minecraft:using_item",
+                                      "on_true": {"type": "minecraft:model", "model": "umbra:item/luminite_shield_3d_blocking"},
+                                      "on_false": {"type": "minecraft:model", "model": "umbra:item/luminite_shield_3d"}}}},
               open(ITEMS + 'luminite_shield.json', 'w'), indent=2)
 
     # the lighthouse lamp: a cage of brass round a core whose glow pulses faster as it grows

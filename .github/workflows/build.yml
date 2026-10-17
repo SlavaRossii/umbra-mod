@@ -146,6 +146,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: No broken Umbra models or textures
+        run: |
+          if grep -nE "(Rejecting|Unable to bake|Missing model|Missing texture|Unable to load model|Unable to resolve texture).*umbra" run-client/logs/latest.log; then
+            echo "::error::Umbra has models the game cannot draw (see above)"; exit 1; fi
+
   smoke-test:
     needs: build
     runs-on: ubuntu-latest

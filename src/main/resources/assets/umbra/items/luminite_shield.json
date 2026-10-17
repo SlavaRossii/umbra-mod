@@ -16,8 +16,16 @@
       }
     ],
     "fallback": {
-      "type": "minecraft:model",
-      "model": "umbra:item/luminite_shield_3d"
+      "type": "minecraft:condition",
+      "property": "minecraft:using_item",
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "umbra:item/luminite_shield_3d_blocking"
+      },
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "umbra:item/luminite_shield_3d"
+      }
     }
   }
 }

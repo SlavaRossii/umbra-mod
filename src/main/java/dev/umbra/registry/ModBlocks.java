@@ -186,6 +186,14 @@ public final class ModBlocks {
                     .noOcclusion()
                     .isSuffocating((s, l, p) -> false)
                     .pushReaction(PushReaction.IMMOVEABLE));
+    public static final DeferredBlock<dev.umbra.citadel.PhantomWallBlock> SEALED_PHANTOM_WALL = BLOCKS.registerBlock("sealed_phantom_wall",
+            p -> new dev.umbra.citadel.PhantomWallBlock(p, true),
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_TILES)
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .noOcclusion()
+                    .isSuffocating((s, l, p) -> false)
+                    .pushReaction(PushReaction.IMMOVEABLE));
 
     /** The lamp of the great lighthouse: dead until fed luminite, grows with it. */
     public static final DeferredBlock<dev.umbra.lighthouse.LighthouseLampBlock> LIGHTHOUSE_LAMP = BLOCKS.registerBlock("lighthouse_lamp",

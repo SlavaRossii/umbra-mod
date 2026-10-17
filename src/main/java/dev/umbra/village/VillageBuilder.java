@@ -49,7 +49,7 @@ public final class VillageBuilder {
 
     private static BlockPos floorNear(WorldGenLevel level, BlockPos at) {
         BlockPos f = ShadowVillageFeature.findFloor(level, at.above(6), at.getY() + 6, at.getY() - 8);
-        if (f == null) f = ShadowVillageFeature.findFloor(level, at.above(12), at.getY() + 12, at.getY() - 30);
+        if (f == null) f = ShadowVillageFeature.findFloor(level, at, at.getY(), at.getY() - 30);   // only down: never up onto a ledge
         return f == null ? at : f;
     }
 

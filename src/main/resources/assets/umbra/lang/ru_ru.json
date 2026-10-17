@@ -620,9 +620,9 @@
   "block.umbra.echo_altar": "Алтарь эха",
   "block.umbra.gloom_anvil": "Мрачная наковальня",
   "block.umbra.luminite_candle": "Люминитовая свеча",
-  "block.umbra.echo_altar.status": "Свечей вокруг: %s, эхо %s. Цена: %s эхо-кварца и %s ур. опыта. До следующего эха не хватает свечей: %s.",
+  "block.umbra.echo_altar.status": "Свечей вокруг: %s, эхо %s. Цена: %s эхо-кварца и %s очков опыта. До следующего эха не хватает свечей: %s.",
   "block.umbra.echo_altar.nothing": "Эху нечего сказать этой вещи.",
-  "block.umbra.echo_altar.price": "Алтарь просит %s эхо-кварца и %s уровней опыта.",
+  "block.umbra.echo_altar.price": "Алтарь просит %s эхо-кварца и %s очков опыта.",
   "block.umbra.echo_altar.done": "Эхо отозвалось: %s.",
   "block.umbra.echo_altar.cursed": "Эхо отозвалось: %s… и что-то прошептало в ответ.",
   "block.umbra.gloom_anvil.pinned": "Закреплено: %s.",
@@ -704,5 +704,6 @@
   "tip.umbra.trophy_shepherd": "Его место на полке у Яна.",
   "tip.umbra.trophy_doppelganger": "Его место на полке у Яна.",
   "tip.umbra.trophy_architect": "Его место на полке у Яна.",
-  "tip.umbra.trophy_primordial_shadow": "Его место на полке у Яна."
+  "tip.umbra.trophy_primordial_shadow": "Его место на полке у Яна.",
+  "block.umbra.sealed_phantom_wall": "Запечатанная призрачная стена"
 }

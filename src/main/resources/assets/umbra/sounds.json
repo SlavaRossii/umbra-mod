@@ -151,13 +151,24 @@
     "subtitle": "subtitles.umbra.yan",
     "sounds": [
       {
-        "name": "umbra:voice/yan_mumble1"
+        "name": "umbra:voice/yan_mumble1",
+        "weight": 3
       },
       {
-        "name": "umbra:voice/yan_mumble2"
+        "name": "umbra:voice/yan_mumble2",
+        "weight": 3
       },
       {
-        "name": "umbra:voice/yan_mumble3"
+        "name": "umbra:voice/yan_mumble3",
+        "weight": 3
+      },
+      {
+        "name": "umbra:voice/yan_sigh",
+        "weight": 2
+      },
+      {
+        "name": "umbra:voice/yan_chuckle",
+        "weight": 1
       },
       {
         "name": "umbra:voice/yan_cough",

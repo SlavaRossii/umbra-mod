@@ -39,10 +39,11 @@ for i, (s, layers) in enumerate(g.EXTRAS.items()):
                                        ("inner", "humanoid_leggings", 0.5, ["body", "right_leg", "left_leg"])):
         tex = np.array(Image.open(g.T + folder + "/" + s + ".png").convert("RGBA")).astype(float) / 255
         cubes = [(BASE[p][0], (0, 0, 0), BASE[p][1], BASE[p][2], grow) for p in parts if not (layer == "outer" and p.endswith("leg") and False)]
-        for part, name, uv, c, pose, ck in layers[layer]:
+        items = layers[layer]
+        for (part, name, c, pose, ck, infl), uv in zip(items, g.pack([it[2] for it in items])):
             px, py, pz, rx, ry, rz = pose
             pp = BASE[part][0]
-            cubes.append(((pp[0] + px, pp[1] + py, pp[2] + pz), (rx, ry, rz), c, uv, 0.0))
+            cubes.append(((pp[0] + px, pp[1] + py, pp[2] + pz), (rx, ry, rz), c, uv, infl))
         for piv, r, c, uv, grow_ in cubes:
             M = rot(*r); t = np.array(piv, float)
             for name, (xs, ys, zs, (fu, fv, fw, fh)) in faces(c, uv, grow_).items():
@@ -56,5 +57,5 @@ for i, (s, layers) in enumerate(g.EXTRAS.items()):
                 colors.append(col)
     ax.add_collection3d(Poly3DCollection(polys, facecolors=colors, edgecolors=(0, 0, 0, 0.3), linewidths=0.3))
     ax.set_xlim(-14, 14); ax.set_ylim(-14, 14); ax.set_zlim(-26, 4)
-    ax.view_init(elev=12, azim=-55); ax.set_title(s); ax.set_axis_off()
+    ax.view_init(elev=12, azim=float(sys.argv[2]) if len(sys.argv) > 2 else -55); ax.set_title(s); ax.set_axis_off()
 plt.tight_layout(); plt.savefig(sys.argv[1], dpi=80)

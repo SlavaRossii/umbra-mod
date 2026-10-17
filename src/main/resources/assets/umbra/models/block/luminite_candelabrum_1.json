@@ -180,16 +180,40 @@
       ],
       "faces": {
         "north": {
-          "texture": "#flame"
+          "texture": "#flame",
+          "uv": [
+            7.5,
+            0,
+            8.5,
+            2
+          ]
         },
         "south": {
-          "texture": "#flame"
+          "texture": "#flame",
+          "uv": [
+            7.5,
+            0,
+            8.5,
+            2
+          ]
         },
         "east": {
-          "texture": "#flame"
+          "texture": "#flame",
+          "uv": [
+            7.5,
+            0,
+            8.5,
+            2
+          ]
         },
         "west": {
-          "texture": "#flame"
+          "texture": "#flame",
+          "uv": [
+            7.5,
+            0,
+            8.5,
+            2
+          ]
         },
         "up": {
           "texture": "#flame"

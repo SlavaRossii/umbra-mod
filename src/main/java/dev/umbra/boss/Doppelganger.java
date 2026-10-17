@@ -60,7 +60,7 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 150.0)
+                .add(Attributes.MAX_HEALTH, 125.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.33)
                 .add(Attributes.ATTACK_DAMAGE, 4.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0);

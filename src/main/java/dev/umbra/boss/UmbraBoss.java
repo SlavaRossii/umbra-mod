@@ -61,7 +61,10 @@ public abstract class UmbraBoss extends Monster {
     public void aiStep() {
         if (guard > 0 && this.level() instanceof ServerLevel g) {
             guard--;
+            // the second wind mends, but never back over the line it has just crossed (or it would cross it again, and again)
+            float before = this.getHealth();
             this.heal(this.getMaxHealth() * GUARD_HEAL / GUARD_TICKS);
+            if (phase() < lastPhase) this.setHealth(before);
             if (guard % 5 == 0) g.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, this.getX(), this.getY() + this.getBbHeight() * 0.5, this.getZ(), 6, 0.8, 1.0, 0.8, 0.02);
             bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
         }
@@ -161,8 +164,8 @@ public abstract class UmbraBoss extends Monster {
     private int lastPhase = 1;
 
     /** Call from bossTick: announces when the phase changes. */
-    protected int trackPhase(ServerLevel level) {
-        int p = phase();
+    public int trackPhase(ServerLevel level) {
+        int p = Math.max(phase(), lastPhase);   // a boss never goes back a phase, and gets each second wind once
         if (p != lastPhase) {
             // a second wind: shielded for a moment while a quarter of its health comes back
             if (p > lastPhase) {

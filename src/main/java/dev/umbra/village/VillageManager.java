@@ -62,8 +62,8 @@ public final class VillageManager {
             lc.setData(ModAttachments.VILLAGE, Long.MAX_VALUE); // no village in the abyss
             return;
         }
-        BlockPos centre = ShadowVillageFeature.findFloor(level, column.above(20), Math.min(120, column.getY() + 20), Math.max(10, column.getY() - 40));
-        if (centre == null) centre = ShadowVillageFeature.findFloor(level, column.atY(120), 120, 10);
+        BlockPos centre = ShadowVillageFeature.groundFloor(level, column, Math.min(120, column.getY() + 20), Math.max(10, column.getY() - 40), column.getY());
+        if (centre == null) centre = ShadowVillageFeature.groundFloor(level, column, 120, 10, column.getY());
         if (centre == null) {
             lc.setData(ModAttachments.VILLAGE, Long.MAX_VALUE);
             return;

@@ -752,7 +752,7 @@ final class SmokeTest {
             BlockState s = level.getBlockState(p);
             if (s.is(ModBlocks.MAZE_CORE.get())) cores++;
             else if (s.is(ModBlocks.LIVING_DARKNESS.get())) dark++;
-            else if (s.is(ModBlocks.PHANTOM_WALL.get())) phantom++;
+            else if (s.is(ModBlocks.PHANTOM_WALL.get()) || s.is(ModBlocks.SEALED_PHANTOM_WALL.get())) phantom++;
             else if (s.is(Blocks.CHEST)) {
                 chests++;
                 if (dev.umbra.mimic.MimicChests.isMimic(level, p)) mimics++;
@@ -822,7 +822,11 @@ final class SmokeTest {
             if (s.is(ModBlocks.SHADOW_NEST.get())) nests++;
             else if (s.is(ModBlocks.TRAP_PLATE.get())) plates++;
         }
-        check(nests == 4 && plates == 8, "the citadel has nests and trap tiles (" + nests + ", " + plates + ")");
+        check(nests == 4 && plates >= 14, "the citadel has nests and trap tiles (" + nests + ", " + plates + ")");
+        int cages = 0;
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(-3, -2, -dev.umbra.citadel.Citadel.HALF_WIDTH), o.offset(dev.umbra.citadel.Citadel.LENGTH, 9, dev.umbra.citadel.Citadel.HALF_WIDTH)))
+            if (level.getBlockEntity(p) instanceof net.minecraft.world.level.block.entity.SpawnerBlockEntity) cages++;
+        check(cages == dev.umbra.citadel.Citadel.SPAWNERS, "the citadel has spawner cages (" + cages + ")");
 
         // the chests in the vault: every other one is a mimic, always
         int vaultMimics = 0, vaultChests = 0;
@@ -835,7 +839,22 @@ final class SmokeTest {
         boolean firstReal = true;
         for (int z : new int[]{-10, 10}) firstReal &= !dev.umbra.mimic.MimicChests.isMimic(level, o.offset(dev.umbra.citadel.Citadel.VAULT_FROM + 2, 0, z));
         check(firstReal, "the first pair of chests by the vault door is real");
-        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1 + dev.umbra.citadel.Citadel.MAZE_SIZE + 2, 1, -4)).is(ModBlocks.PHANTOM_WALL.get()), "the bypass hides behind a phantom wall");
+        check(level.getBlockState(o.offset(dev.umbra.citadel.Citadel.MAZE_1 + dev.umbra.citadel.Citadel.MAZE_SIZE + 2, 1, -4)).is(ModBlocks.SEALED_PHANTOM_WALL.get()), "the bypass hides behind a wall only the Architect's seal opens");
+        {
+            var wall = (dev.umbra.citadel.PhantomWallBlock) ModBlocks.SEALED_PHANTOM_WALL.get();
+            FakePlayer f = FakePlayerFactory.getMinecraft(level);
+            ItemStack keepChest = f.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+            f.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ItemStack.EMPTY);
+            f.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(ModItems.MADMAN_MASK.get()));
+            boolean maskNo = !wall.lets(f);
+            f.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
+            ItemStack chest = new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE);
+            chest.set(dev.umbra.registry.ModComponents.ARTIFACT.get(), dev.umbra.gear.Gear.ARCHITECT_SEAL);
+            f.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, chest);
+            boolean sealYes = wall.lets(f);
+            f.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, keepChest);
+            check(maskNo && sealYes, "the sealed wall lets through only one who wears the Architect's seal, not the mad");
+        }
 
         // the hall of living darkness is shut for this walk: the vault must still be reachable through the bypass,
         // and so must the side room and the dead end
@@ -860,11 +879,11 @@ final class SmokeTest {
             if (m.getType() == type) m.discard();
         }
 
-        // trap tiles: three kinds, each once
+        // trap tiles: five kinds, each once
         FakePlayer victim = FakePlayerFactory.getMinecraft(level);
         boolean[] done = new boolean[dev.umbra.citadel.TrapPlateBlock.KINDS];
         int sprung = 0;
-        for (int x = 2; x <= 14 && sprung < 3; x++) {
+        for (int x = 2; x <= 14 && sprung < dev.umbra.citadel.TrapPlateBlock.KINDS; x++) {
             BlockPos at = o.offset(x, -1, 0);
             int k = dev.umbra.citadel.TrapPlateBlock.kind(at);
             if (done[k]) continue;
@@ -876,6 +895,8 @@ final class SmokeTest {
             boolean effect = switch (k) {
                 case 0 -> level.getEntitiesOfClass(dev.umbra.mob.Crawler.class, new net.minecraft.world.phys.AABB(at).inflate(10)).size() == crawlers + 3;
                 case 1 -> victim.hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
+                case 3 -> victim.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS);
+                case 4 -> level.getEntitiesOfClass(net.minecraft.world.entity.projectile.arrow.Arrow.class, new net.minecraft.world.phys.AABB(at).inflate(8)).size() >= 4;
                 default -> true;
             };
             check(first && !second && effect && level.getBlockState(at).getValue(dev.umbra.citadel.TrapPlateBlock.TRIGGERED), "trap tile kind " + k + " springs once");
@@ -884,7 +905,8 @@ final class SmokeTest {
             victim.removeAllEffects();
             level.setBlock(at, ModBlocks.MAZE_WALL.get().defaultBlockState(), Block.UPDATE_CLIENTS);
         }
-        check(sprung == 3, "all three kinds of trap were found in the hall floor (" + sprung + ")");
+        check(sprung == dev.umbra.citadel.TrapPlateBlock.KINDS, "all five kinds of trap were found in the hall floor (" + sprung + ")");
+        for (var a : level.getEntitiesOfClass(net.minecraft.world.entity.projectile.arrow.Arrow.class, dev.umbra.citadel.Citadel.bounds(o))) a.discard();
         for (var m : level.getEntitiesOfClass(dev.umbra.mob.Crawler.class, dev.umbra.citadel.Citadel.bounds(o))) m.discard();
     }
 
@@ -902,8 +924,8 @@ final class SmokeTest {
                 if (n.getX() < o.getX() || n.getX() > o.getX() + dev.umbra.citadel.Citadel.SEAL_X - 1 || Math.abs(n.getZ() - o.getZ()) > dev.umbra.citadel.Citadel.HALF_WIDTH) continue;
                 if (seen.contains(n.asLong())) continue;
                 // (a phantom wall is a way for whoever sees through it)
-                if (!level.getBlockState(n).isAir() && !level.getBlockState(n).is(ModBlocks.TRAP_PLATE.get()) && !level.getBlockState(n).is(ModBlocks.PHANTOM_WALL.get())) continue;
-                if (!level.getBlockState(n.above()).isAir() && !level.getBlockState(n.above()).is(ModBlocks.PHANTOM_WALL.get())) continue;
+                if (!level.getBlockState(n).isAir() && !level.getBlockState(n).is(ModBlocks.TRAP_PLATE.get()) && !level.getBlockState(n).is(ModBlocks.PHANTOM_WALL.get()) && !level.getBlockState(n).is(ModBlocks.SEALED_PHANTOM_WALL.get())) continue;
+                if (!level.getBlockState(n.above()).isAir() && !level.getBlockState(n.above()).is(ModBlocks.PHANTOM_WALL.get()) && !level.getBlockState(n.above()).is(ModBlocks.SEALED_PHANTOM_WALL.get())) continue;
                 seen.add(n.asLong());
                 queue.add(n);
             }
@@ -928,7 +950,13 @@ final class SmokeTest {
             }
         }
         check(steps > 40 && maxY >= dev.umbra.lighthouse.LighthouseFeature.LAMP_Y - 3, "a spiral stair winds up to the gallery (" + steps + " steps, top at " + maxY + ")");
-        check(dev.umbra.lighthouse.LighthouseFeature.MAX_FLOOR + dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 8 < 128, "the tower fits under the roof of the Underside");
+        check(dev.umbra.lighthouse.LighthouseFeature.MAX_FLOOR + dev.umbra.lighthouse.LighthouseFeature.LAMP_Y + 12 < 124, "the tower and its hollow fit under the roof of the Underside");
+        boolean landing = false;
+        for (BlockPos p : BlockPos.betweenClosed(f.offset(-3, dev.umbra.lighthouse.LighthouseFeature.LAMP_Y - 1, -3), f.offset(3, dev.umbra.lighthouse.LighthouseFeature.LAMP_Y - 1, 3))) {
+            BlockState st = level.getBlockState(p);
+            if (st.is(Blocks.STONE_BRICK_SLAB) && st.getValue(net.minecraft.world.level.block.SlabBlock.TYPE) == net.minecraft.world.level.block.state.properties.SlabType.TOP) landing = true;
+        }
+        check(landing, "the last step of the stair is set flush into the gallery floor");
         int[] one = dev.umbra.lighthouse.LighthouseFeature.site(level.getSeed());
         check(java.util.Arrays.equals(one, dev.umbra.lighthouse.LighthouseFeature.nearest(level.getSeed(), 5000, -5000)) && java.util.Arrays.equals(one, dev.umbra.lighthouse.LighthouseFeature.nearest(level.getSeed(), -3000, 0)), "there is one lighthouse in the world");
         double far = Math.sqrt(Math.pow(one[0] * 16 + 8, 2) + Math.pow(one[1] * 16 + 8, 2));
@@ -1301,7 +1329,8 @@ final class SmokeTest {
         ItemStack after = fake.getMainHandItem();
         int umbra = 0;
         for (var key : dev.umbra.gear.Gear.ALL_ENCHANTS) if (!key.equals(dev.umbra.gear.Gear.WHISPER_CURSE)) umbra += dev.umbra.gear.Gear.level(level, after, key) > 0 ? 1 : 0;
-        check(umbra == 1 && fake.experienceLevel == 30 - dev.umbra.craft.EchoAltarBlock.xpCost(3)
+        check(umbra == 1 && Math.abs(dev.umbra.craft.EchoAltarBlock.pointsOf(fake) - (dev.umbra.craft.EchoAltarBlock.pointsFor(30) - dev.umbra.craft.EchoAltarBlock.xpPoints(3))) <= 1
+                && fake.experienceLevel > 30 - dev.umbra.craft.EchoAltarBlock.xpCost(3)
                 && fake.getInventory().countItem(ModItems.ECHO_QUARTZ.get()) == 8 - dev.umbra.craft.EchoAltarBlock.quartzCost(3), "the altar gives one enchantment of Umbra's for quartz and experience (" + umbra + ", xp " + fake.experienceLevel + ")");
 
         // the anvil mends Umbra's gear with its own stuff, and pins artifacts (the logic of its window)
@@ -1337,7 +1366,18 @@ final class SmokeTest {
             w.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);
             w.setNoAi(true);
             level.addFreshEntity(w);
-            check(w.getMaxHealth() >= 180, "bosses are half as strong again (the Watcher has " + w.getMaxHealth() + ")");
+            check(w.getMaxHealth() >= 150 && w.getMaxHealth() < 160, "bosses are a quarter stronger (the Watcher has " + w.getMaxHealth() + ")");
+            // the second wind comes once per phase and never lifts it back over the line
+            w.setHealth(w.getMaxHealth() * 0.45F);
+            w.trackPhase(level);
+            boolean guarded = w.isGuarded();
+            for (int i = 0; i < 100; i++) w.aiStep();
+            int ph = w.trackPhase(level);
+            boolean under = w.getHealth() <= w.getMaxHealth() * 0.5F + 0.01F && w.getHealth() > w.getMaxHealth() * 0.45F;
+            w.setHealth(w.getMaxHealth() * 0.4F);
+            w.trackPhase(level);
+            check(guarded && under && ph == 2 && !w.isGuarded(), "a boss gets its second wind once and does not climb back a phase (" + w.getHealth() + ")");
+            w.setHealth(w.getMaxHealth());
             float before = w.getHealth();
             w.hurtServer(level, level.damageSources().magic(), 100.0F);
             check(before - w.getHealth() < 100.0F * 0.5F, "the Watcher's eye shrugs off most of a blow (" + (before - w.getHealth()) + " of 100)");

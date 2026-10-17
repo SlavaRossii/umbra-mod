@@ -68,6 +68,42 @@ public record ShadowVillageFeature() implements Feature {
         return null;
     }
 
+    /**
+     * The real ground for a village in this column: of all the floors between {@code top} and {@code bottom}, the one
+     * with the widest flat footing round it (a ledge or the top of a pillar has none), and of equals the one nearest
+     * {@code near}. Before 2.5 the highest floor won, and villages sat on ledges high up the cave walls.
+     */
+    public static BlockPos groundFloor(WorldGenLevel level, BlockPos column, int top, int bottom, int near) {
+        BlockPos best = null;
+        int bestScore = -1;
+        for (int y = top; y > bottom; y--) {
+            BlockPos p = new BlockPos(column.getX(), y, column.getZ());
+            BlockState below = level.getBlockState(p.below());
+            if (below.isAir() || !below.getFluidState().isEmpty() || below.canBeReplaced()) continue;
+            boolean room = true;
+            for (int dy = 0; dy < 4 && room; dy++) room = level.getBlockState(p.above(dy)).isAir();
+            if (!room) continue;
+            int support = 0;
+            for (int dx = -10; dx <= 10; dx += 2)
+                for (int dz = -10; dz <= 10; dz += 2) {
+                    for (int dy = -2; dy <= 2; dy++) {       // ground within two blocks up or down counts as the same floor
+                        BlockPos q = p.offset(dx, dy, dz);
+                        if (!level.getBlockState(q.below()).isAir() && level.getBlockState(q).isAir() && level.getBlockState(q.above()).isAir()) {
+                            support++;
+                            break;
+                        }
+                    }
+                }
+            int score = support * 64 - Math.min(63, Math.abs(y - near));
+            if (score > bestScore) {
+                bestScore = score;
+                best = p;
+            }
+            y -= 3;                                         // the same floor is not counted again just below
+        }
+        return best;
+    }
+
     public static void build(WorldGenLevel level, BlockPos centre, RandomSource random) {
         plaza(level, centre, random);
         int huts = 4 + random.nextInt(2);

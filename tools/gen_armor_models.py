@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Umbra's armour in 3D: the vanilla armour shell plus pieces of its own for each set (luminite crystals, the shadow's
 hood and cloak, gloom pauldrons and horns). Writes
-  * src/main/java/dev/umbra/client/ArmorModels.java  (LayerDefinitions: the vanilla mesh + extra cubes, textures 64x64)
-  * the equipment textures at 64x64: the old 64x32 layout on top, the extra cubes painted below
+  * src/main/java/dev/umbra/client/ArmorModels.java  (LayerDefinitions: the vanilla mesh + extra cubes, textures 64x96)
+  * the equipment textures at 64x96: the old 64x32 layout on top, the extra cubes painted below
   * 64x32 copies for baby mobs in humanoid_baby/ (their model keeps the vanilla layout)
 Run from the repo root: python3 tools/gen_armor_models.py
 """
@@ -17,50 +17,110 @@ EQ = 'src/main/resources/assets/umbra/equipment/'
 JAVA = 'src/main/java/dev/umbra/client/ArmorModels.java'
 
 PALETTE = {
-    "luminite": {"a": (175, 240, 255), "b": (90, 180, 225), "c": (230, 250, 255)},
-    "shadow": {"a": (62, 48, 84), "b": (40, 30, 56), "c": (130, 80, 180)},
-    "gloom": {"a": (70, 58, 92), "b": (44, 36, 60), "c": (170, 90, 230)},
+    "luminite": {"a": (175, 240, 255), "b": (90, 180, 225), "c": (230, 250, 255), "d": (70, 80, 96)},
+    "shadow": {"a": (62, 48, 84), "b": (34, 26, 48), "c": (130, 80, 180), "d": (22, 18, 30)},
+    "gloom": {"a": (78, 64, 100), "b": (44, 36, 60), "c": (170, 90, 230), "d": (30, 26, 38)},
 }
+H = 96   # texture height: the vanilla 64x32 layout on top, the extra pieces in the 64 rows below
 
-# extras: set -> layer ("outer"/"inner") -> list of (part, name, (u, v), (x, y, z, w, h, d), (px, py, pz, rx, ry, rz), colour key)
+# extras: set -> layer -> list of (part, name, (x, y, z, w, h, d), (px, py, pz, rx, ry, rz), colour, inflate)
+# 2.5: each set has its own silhouette. Gloom is heavy plate with horns and spiked pauldrons; shadow a hood, a long
+# cloak, a scarf and wraps; luminite a crown of crystals, crystal clusters on the shoulders, the back and the heels.
 EXTRAS = {
-    "luminite": {
+    "gloom": {
         "outer": [
-            ("head", "spike0", (0, 32), (-1, -6, -1, 2, 6, 2), (0, -8, 0, 0, 0.785, 0), "a"),
-            ("head", "spike1", (8, 32), (-1, -4, -1, 2, 4, 2), (-3, -8, 1, 0.25, 0.785, -0.35), "b"),
-            ("head", "spike2", (16, 32), (-1, -4, -1, 2, 4, 2), (3, -8, 1, 0.25, 0.785, 0.35), "b"),
-            ("right_arm", "shard_r", (0, 40), (-2, -4, -2, 4, 4, 4), (-2, -2, 0, 0, 0.785, -0.3), "a"),
-            ("left_arm", "shard_l", (16, 40), (-2, -4, -2, 4, 4, 4), (2, -2, 0, 0, 0.785, 0.3), "a"),
-            ("body", "core", (32, 32), (-1.5, -1.5, -1, 3, 3, 1), (0, 4, -3, 0, 0, 0.785), "c"),
+            ("head", "horn_r", (-1, -3, -1, 2, 3, 2), (-4.6, -6.6, -0.5, 0, 0, -0.6), "b", 0),
+            ("head", "horn_r_tip", (-0.5, -4, -0.5, 1, 4, 1), (-6.3, -8.6, -0.5, 0.25, 0, -1.0), "d", 0),
+            ("head", "horn_l", (-1, -3, -1, 2, 3, 2), (4.6, -6.6, -0.5, 0, 0, 0.6), "b", 0),
+            ("head", "horn_l_tip", (-0.5, -4, -0.5, 1, 4, 1), (6.3, -8.6, -0.5, 0.25, 0, 1.0), "d", 0),
+            ("head", "crest", (-0.5, -2, -5, 1, 2, 9), (0, -8.6, 0.5, 0, 0, 0), "c", 0),
+            ("head", "brow", (-4, -1, -1, 8, 1, 1), (0, -5.2, -4.9, 0, 0, 0), "d", 0.2),
+            ("right_arm", "pauldron_r", (-3, -2, -3.5, 6, 3, 7), (-1.6, -2.9, 0, 0, 0, 0.25), "a", 0),
+            ("right_arm", "pauldron_r_spike", (-0.5, -3, -0.5, 1, 3, 1), (-2.8, -4.8, 0, 0, 0, -0.3), "d", 0),
+            ("left_arm", "pauldron_l", (-3, -2, -3.5, 6, 3, 7), (1.6, -2.9, 0, 0, 0, -0.25), "a", 0),
+            ("left_arm", "pauldron_l_spike", (-0.5, -3, -0.5, 1, 3, 1), (2.8, -4.8, 0, 0, 0, 0.3), "d", 0),
+            ("right_arm", "gauntlet_r", (-2, 0, -2, 4, 3, 4), (-1, 7, 0, 0, 0, 0), "b", 1.2),
+            ("left_arm", "gauntlet_l", (-2, 0, -2, 4, 3, 4), (1, 7, 0, 0, 0, 0), "b", 1.2),
+            ("body", "gorget", (-4, -1, -2.5, 8, 2, 5), (0, 0.4, 0, 0, 0, 0), "b", 0.6),
+            ("body", "ridge", (-1, 0, -1, 2, 7, 1), (0, 1.5, -3.3, 0, 0, 0), "c", 0),
+            ("right_leg", "toe_r", (-2, -1, -1, 4, 2, 2), (0, 11.6, -2.9, 0, 0, 0), "a", 0),
+            ("left_leg", "toe_l", (-2, -1, -1, 4, 2, 2), (0, 11.6, -2.9, 0, 0, 0), "a", 0),
+            ("right_leg", "cuff_r", (-2, -1, -2, 4, 2, 4), (0, 9, 0, 0, 0, 0), "d", 1.3),
+            ("left_leg", "cuff_l", (-2, -1, -2, 4, 2, 4), (0, 9, 0, 0, 0, 0), "d", 1.3),
         ],
         "inner": [
-            ("body", "buckle", (0, 32), (-1.5, -1.5, -1, 3, 3, 1), (0, 10, -2.6, 0, 0, 0.785), "c"),
+            ("body", "belt", (-4, -1, -2, 8, 2, 4), (0, 11, 0, 0, 0, 0), "d", 0.8),
+            ("body", "tasset", (-3, 0, -0.5, 6, 4, 1), (0, 12, -3.1, -0.1, 0, 0), "a", 0),
+            ("right_leg", "knee_r", (-2, 0, -1, 4, 3, 1), (0, 3, -2.6, 0, 0, 0), "a", 0),
+            ("left_leg", "knee_l", (-2, 0, -1, 4, 3, 1), (0, 3, -2.6, 0, 0, 0), "a", 0),
         ],
     },
     "shadow": {
         "outer": [
-            ("head", "hood", (0, 32), (-5.5, -10, -5.5, 11, 11, 11), (0, 0, 0, 0, 0, 0), "a"),
-            ("body", "cloak", (44, 32), (-4.5, 0, 0, 9, 16, 1), (0, 0, 2.8, 0.12, 0, 0), "b"),
-            ("body", "scarf", (0, 54), (-4.5, -1, -3, 9, 2, 6), (0, 0, 0, 0, 0, 0), "c"),
+            ("head", "hood", (-4, -8, -4, 8, 9, 8), (0, 0, 0, 0, 0, 0), "a", 1.4),
+            ("head", "hood_peak", (-1.5, -2, -1.5, 3, 2, 3), (0, -9.2, -3.0, -0.6, 0, 0), "a", 0),
+            ("body", "cloak", (-4.5, 0, 0, 9, 19, 1), (0, 0, 2.9, 0.16, 0, 0), "b", 0),
+            ("body", "cloak_hem", (-4.5, 0, 0, 9, 2, 1), (0, 18.7, 6.0, 0.35, 0, 0), "d", 0),
+            ("body", "scarf", (-4, -1, -2.5, 8, 2, 5), (0, 0.5, 0, 0, 0, 0), "c", 0.6),
+            ("body", "scarf_tail", (-1, 0, -0.5, 2, 8, 1), (1.6, 1, -3.4, -0.12, 0, 0.12), "c", 0),
+            ("right_arm", "mantle_r", (-3, -1, -3, 5, 2, 6), (-0.8, -2.4, 0, 0, 0, 0.4), "b", 0),
+            ("left_arm", "mantle_l", (-2, -1, -3, 5, 2, 6), (0.8, -2.4, 0, 0, 0, -0.4), "b", 0),
+            ("right_arm", "wrap_r", (-2, 0, -2, 4, 3, 4), (-1, 6, 0, 0, 0, 0), "d", 1.15),
+            ("left_arm", "wrap_l", (-2, 0, -2, 4, 3, 4), (1, 6, 0, 0, 0, 0), "d", 1.15),
+            ("right_leg", "bwrap_r", (-2, 0, -2, 4, 3, 4), (0, 8, 0, 0, 0, 0), "d", 1.2),
+            ("left_leg", "bwrap_l", (-2, 0, -2, 4, 3, 4), (0, 8, 0, 0, 0, 0), "d", 1.2),
         ],
         "inner": [
-            ("body", "sash", (0, 32), (-4.5, -1, -2.5, 9, 2, 5), (0, 11, 0, 0, 0, 0), "c"),
+            ("body", "sash", (-4, -1, -2, 8, 2, 4), (0, 11, 0, 0, 0, 0), "c", 0.7),
+            ("body", "sash_end", (-1, 0, -0.5, 2, 6, 1), (2.6, 12, -2.9, -0.08, 0, -0.1), "c", 0),
+            ("right_leg", "strap_r", (-2, 0, -2, 4, 1, 4), (0, 4, 0, 0, 0, 0), "d", 0.75),
+            ("left_leg", "strap_l", (-2, 0, -2, 4, 1, 4), (0, 4, 0, 0, 0, 0), "d", 0.75),
         ],
     },
-    "gloom": {
+    "luminite": {
         "outer": [
-            ("right_arm", "pauldron_r", (0, 32), (-3.5, -2, -3, 6, 3, 6), (-1, -2.5, 0, 0, 0, 0.2), "a"),
-            ("left_arm", "pauldron_l", (24, 32), (-2.5, -2, -3, 6, 3, 6), (1, -2.5, 0, 0, 0, -0.2), "a"),
-            ("head", "horn_r", (48, 32), (-0.5, -5, -0.5, 1, 5, 1), (-4, -7, 0, 0, 0, -0.5), "b"),
-            ("head", "horn_l", (52, 32), (-0.5, -5, -0.5, 1, 5, 1), (4, -7, 0, 0, 0, 0.5), "b"),
-            ("body", "ridge", (0, 44), (-3, 0, -1, 6, 6, 1), (0, 1, -2.6, 0, 0, 0), "c"),
+            ("head", "circlet", (-4, -1, -4, 8, 1, 8), (0, -6.2, 0, 0, 0, 0), "d", 1.3),
+            ("head", "spike0", (-1, -6, -1, 2, 6, 2), (0, -8.6, -1.5, 0, 0.785, 0), "a", 0),
+            ("head", "spike1", (-1, -4, -1, 2, 4, 2), (-3, -8.4, -1, 0.2, 0.785, -0.35), "b", 0),
+            ("head", "spike2", (-1, -4, -1, 2, 4, 2), (3, -8.4, -1, 0.2, 0.785, 0.35), "b", 0),
+            ("head", "spike3", (-0.5, -3, -0.5, 1, 3, 1), (-4.8, -7.0, 1.5, 0, 0.785, -0.6), "c", 0),
+            ("head", "spike4", (-0.5, -3, -0.5, 1, 3, 1), (4.8, -7.0, 1.5, 0, 0.785, 0.6), "c", 0),
+            ("right_arm", "shard_r", (-1.5, -5, -1.5, 3, 5, 3), (-2.6, -2.6, 0, 0, 0.785, -0.45), "a", 0),
+            ("right_arm", "shard_r2", (-1, -3, -1, 2, 3, 2), (-1.2, -2.8, 2.2, 0.35, 0.785, -0.2), "b", 0),
+            ("left_arm", "shard_l", (-1.5, -5, -1.5, 3, 5, 3), (2.6, -2.6, 0, 0, 0.785, 0.45), "a", 0),
+            ("left_arm", "shard_l2", (-1, -3, -1, 2, 3, 2), (1.2, -2.8, 2.2, 0.35, 0.785, 0.2), "b", 0),
+            ("body", "core", (-1.5, -1.5, -1, 3, 3, 1), (0, 4, -3.2, 0, 0, 0.785), "c", 0),
+            ("body", "back_r", (-1, -5, -1, 2, 6, 2), (-2, 3, 3.2, -0.45, 0.785, 0.25), "a", 0),
+            ("body", "back_l", (-1, -5, -1, 2, 6, 2), (2, 3, 3.2, -0.45, 0.785, -0.25), "b", 0),
+            ("right_leg", "spur_r", (-1, -1, -1, 2, 3, 2), (0, 10.5, 2.8, 0.6, 0.785, 0), "a", 0),
+            ("left_leg", "spur_l", (-1, -1, -1, 2, 3, 2), (0, 10.5, 2.8, 0.6, 0.785, 0), "a", 0),
+            ("right_leg", "anklet_r", (-2, -0.5, -2, 4, 1, 4), (0, 9.5, 0, 0, 0, 0), "d", 1.25),
+            ("left_leg", "anklet_l", (-2, -0.5, -2, 4, 1, 4), (0, 9.5, 0, 0, 0, 0), "d", 1.25),
         ],
         "inner": [
-            ("right_leg", "knee_r", (0, 32), (-2, 0, -1, 4, 3, 1), (0, 3, -2.4, 0, 0, 0), "a"),
-            ("left_leg", "knee_l", (12, 32), (-2, 0, -1, 4, 3, 1), (0, 3, -2.4, 0, 0, 0), "a"),
+            ("body", "buckle", (-1.5, -1.5, -1, 3, 3, 1), (0, 10.5, -2.7, 0, 0, 0.785), "c", 0),
+            ("right_leg", "knee_r", (-1, -1.5, -1, 2, 3, 2), (0, 4, -2.6, 0, 0.785, 0), "a", 0),
+            ("left_leg", "knee_l", (-1, -1.5, -1, 2, 3, 2), (0, 4, -2.6, 0, 0.785, 0), "a", 0),
         ],
     },
 }
+
+
+def pack(cubes):
+    """Shelf-packs the UV islands of the extra cubes into the rows below the vanilla layout. Returns [(u, v)]."""
+    sizes = [(2 * math.ceil(d) + 2 * math.ceil(w), math.ceil(d) + math.ceil(h)) for (x, y, z, w, h, d) in cubes]
+    order = sorted(range(len(cubes)), key=lambda i: -sizes[i][1])
+    out = [None] * len(cubes)
+    u, v, row = 0, 32, 0
+    for i in order:
+        sw, sh = sizes[i]
+        if u + sw > 64:
+            u, v, row = 0, v + row, 0
+        out[i] = (u, v)
+        u += sw
+        row = max(row, sh)
+    assert v + row <= H, "the extra pieces do not fit in the texture"
+    return out
 
 
 def clamp(v):
@@ -87,20 +147,21 @@ def textures():
         rnd = random.Random(s)
         for layer, folder in (("outer", "humanoid"), ("inner", "humanoid_leggings")):
             old = Image.open(T + folder + '/' + s + '.png').convert('RGBA')
-            if old.size == (64, 64):          # already converted: keep the top half as it is
-                old = old.crop((0, 0, 64, 32))
+            old = old.crop((0, 0, 64, 32))          # the vanilla layout; anything below is ours and is redrawn
             if layer == "outer":
                 import os
                 os.makedirs(T + 'humanoid_baby', exist_ok=True)
                 old.save(T + 'humanoid_baby/' + s + '.png')
-            img = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
+            img = Image.new('RGBA', (64, H), (0, 0, 0, 0))
             img.paste(old, (0, 0))
             px = img.load()
-            for part, name, (u, v), (x, y, z, w, h, d), pose, ck in layers[layer]:
+            items = layers[layer]
+            uvs = pack([c[2] for c in items])
+            for (part, name, (x, y, z, w, h, d), pose, ck, infl), (u, v) in zip(items, uvs):
                 paint_cube(px, u, v, w, h, d, PALETTE[s][ck], rnd)
                 if name == "hood":   # the face shows through
                     fw, fh, fd = math.ceil(w), math.ceil(h), math.ceil(d)
-                    for xx in range(u + fd + 2, u + fd + fw - 2):
+                    for xx in range(u + fd + 1, u + fd + fw - 1):
                         for yy in range(v + fd + 3, v + fd + fh - 1):
                             px[xx, yy] = (0, 0, 0, 0)
                     for xx in range(u + fd, u + fd + fw):     # a bright trim round the opening
@@ -140,9 +201,10 @@ def java():
     for s, layers in EXTRAS.items():
         for layer in ("outer", "inner"):
             out.append(f"            case \"{s}/{layer}\" -> {{")
-            for part, name, (u, v), (x, y, z, w, h, d), (px, py, pz, rx, ry, rz), ck in layers[layer]:
+            items = layers[layer]
+            for (part, name, (x, y, z, w, h, d), (px, py, pz, rx, ry, rz), ck, infl), (u, v) in zip(items, pack([c[2] for c in items])):
                 out.append(f"                root.getChild(\"{part}\").addOrReplaceChild(\"{name}\", CubeListBuilder.create().texOffs({u}, {v})"
-                           f".addBox({jf(x)}, {jf(y)}, {jf(z)}, {jf(math.ceil(w))}, {jf(math.ceil(h))}, {jf(math.ceil(d))}),")
+                           f".addBox({jf(x)}, {jf(y)}, {jf(z)}, {jf(math.ceil(w))}, {jf(math.ceil(h))}, {jf(math.ceil(d))}, new CubeDeformation({jf(infl)})),")
                 out.append(f"                        PartPose.offsetAndRotation({jf(px)}, {jf(py)}, {jf(pz)}, {jf(rx)}, {jf(ry)}, {jf(rz)}));")
             out.append("            }")
     out += ["            default -> { }",
@@ -165,7 +227,7 @@ def java():
             "            PartDefinition empty = root.addOrReplaceChild(part, CubeListBuilder.create(), PartPose.ZERO);",
             "            if (part.equals(\"head\")) empty.addOrReplaceChild(\"hat\", CubeListBuilder.create(), PartPose.ZERO);",
             "        }",
-            "        return LayerDefinition.create(mesh, 64, 64);",
+            "        return LayerDefinition.create(mesh, 64, %d);" % H,
             "    }",
             "}"]
     open(JAVA, 'w').write("\n".join(out) + "\n")

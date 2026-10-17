@@ -191,6 +191,9 @@ public final class Citadel {
         wideMaze(level, o.offset(MAZE_1, 0, -MAZE_SIZE / 2), random);
         corridor(level, o, MAZE_1 + MAZE_SIZE, DARK_FROM - 1);
         forks(level, o, random);
+        // 2.5: more cracked tiles: in the maze's floor and down the corridor after it
+        for (int i = 0; i < 6; i++) plate(level, o.offset(MAZE_1 + 2 + random.nextInt(MAZE_SIZE - 4), -1, random.nextInt(MAZE_SIZE - 4) - MAZE_SIZE / 2 + 2));
+        for (int x = MAZE_1 + MAZE_SIZE + 1; x < DARK_FROM; x += 3) plate(level, o.offset(x, -1, random.nextInt(3) - 1));
 
         // 4. the hall of living darkness: pillars, statues
         fill(level, o.offset(DARK_FROM, 0, -5), o.offset(DARK_TO, 4, 5), ModBlocks.LIVING_DARKNESS.get().defaultBlockState());
@@ -215,6 +218,8 @@ public final class Citadel {
         plate(level, o.offset(VAULT_FROM + 6, -1, -4));
         plate(level, o.offset(VAULT_FROM + 12, -1, 4));
         nest(level, o.offset(VAULT_FROM + 10, 0, -6));
+        cage(level, ModEntities.CRAWLER.get(), o.offset(VAULT_FROM + 5, 0, 6));
+        cage(level, ModEntities.SHADE.get(), o.offset(VAULT_TO - 5, 0, -6));
         lanterns(level, o, VAULT_FROM, VAULT_TO, -11, 11, 5);
         spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset((VAULT_FROM + VAULT_TO) / 2, 0, 0));
         spawn(level, ModEntities.CITADEL_STATUE.get(), o.offset(VAULT_TO - 3, 0, 6));
@@ -237,6 +242,9 @@ public final class Citadel {
         RandomizableContainer.setBlockEntityLootTable(level, random, lib, LIBRARY_LOOT);
         lanterns(level, o, LIBRARY_FROM, LIBRARY_TO, -9, 9, 6);
         spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset((LIBRARY_FROM + LIBRARY_TO) / 2, 0, 0));
+        cage(level, ModEntities.BLIND.get(), o.offset(LIBRARY_TO - 2, 0, -8));
+        plate(level, o.offset(LIBRARY_FROM + 5, -1, 0));
+        plate(level, o.offset(LIBRARY_FROM + 15, -1, 2));
         // the secret: behind the north shelves, a wall a sane mind cannot pass
         int sx = SECRET_X;
         fill(level, o.offset(sx - 3, 0, -19), o.offset(sx + 3, 3, -14), air);
@@ -296,10 +304,11 @@ public final class Citadel {
         fill(level, o.offset(x0, 0, -16), o.offset(x0 + 2, 3, -3), air);
         fill(level, o.offset(x0, 0, -16), o.offset(VAULT_FROM - 1, 3, -14), air);
         // the way in is a wall only a broken mind or the Architect's seal sees through
-        fill(level, o.offset(x0, 0, -5), o.offset(x0 + 2, 3, -4), ModBlocks.PHANTOM_WALL.get().defaultBlockState());
+        fill(level, o.offset(x0, 0, -5), o.offset(x0 + 2, 3, -4), ModBlocks.SEALED_PHANTOM_WALL.get().defaultBlockState());   // only the Architect's seal opens it
         fill(level, o.offset(VAULT_FROM - 3, 0, -16), o.offset(VAULT_FROM - 1, 3, -8), air);
         lanterns(level, o, x0, VAULT_FROM - 1, -16, -14, 3);
         nest(level, o.offset(88, 0, -15));
+        cage(level, ModEntities.CRAWLER.get(), o.offset(96, 0, -16));
         plate(level, o.offset(75, -1, -15));
         plate(level, o.offset(100, -1, -14));
         // the side room off the bypass
@@ -423,6 +432,17 @@ public final class Citadel {
         for (int x = x0 + 2; x <= x1 - 2; x += 5) {
             level.setBlock(o.offset(x, ceiling, z0 + 1), lantern, FLAGS);
             level.setBlock(o.offset(x, ceiling, z1 - 1), lantern, FLAGS);
+        }
+    }
+
+    /** 2.5: a spawner cage that keeps calling one kind of creature (lit or not: see Umbra#darkOrCaged). */
+    public static final int SPAWNERS = 4;
+
+    private static void cage(ServerLevel level, EntityType<?> type, BlockPos at) {
+        level.setBlock(at, Blocks.SPAWNER.defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(at) instanceof net.minecraft.world.level.block.entity.SpawnerBlockEntity cage) {
+            cage.setEntityId(type, level.getRandom());
+            cage.setChanged();
         }
     }
 

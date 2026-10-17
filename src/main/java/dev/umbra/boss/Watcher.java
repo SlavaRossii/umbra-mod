@@ -35,7 +35,7 @@ public class Watcher extends UmbraBoss implements LightSensitive {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 180.0)
+                .add(Attributes.MAX_HEALTH, 150.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.42)
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
                 .add(Attributes.FOLLOW_RANGE, 48.0)

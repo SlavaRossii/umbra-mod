@@ -56,7 +56,7 @@ public final class UndersideAmbience {
         // the storm
         float storm = AshStorm.at(player);
         if (storm > 0.3F) {
-            if (r.nextInt(4) == 0) play(player, ModSounds.GUST, around(player, r, 2, 6), 0.6F + storm, 0.8F + r.nextFloat() * 0.3F);
+            if (r.nextInt(5) == 0) play(player, ModSounds.GUST, around(player, r, 3, 7), 0.25F + 0.3F * storm, 0.8F + r.nextFloat() * 0.3F);   // 2.5: quieter, it was drowning everything
             if (r.nextInt(30) == 0) play(player, ModSounds.STEPS_BEHIND, behind(player, 5 + r.nextInt(4)), 1.0F, 0.9F);
             if (storm > 0.9F && r.nextInt(10) == 0) Sanity.add(player, -0.5F);
         }

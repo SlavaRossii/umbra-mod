@@ -1,39 +1,75 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "umbra:item/trophy_architect",
-    "relic": "umbra:item/trophy_architect"
+    "particle": "umbra:block/trophy_architect",
+    "relic": "umbra:block/trophy_architect"
   },
   "elements": [
     {
       "from": [
-        6.5,
+        6,
         9,
-        9.5
+        10.5
       ],
       "to": [
-        9.5,
-        13,
-        12.5
+        10,
+        14,
+        11.5
       ],
       "faces": {
         "north": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "south": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ]
         },
         "east": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            0,
+            0,
+            1,
+            16
+          ]
         },
         "west": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            0,
+            0,
+            1,
+            16
+          ]
         },
         "up": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            0,
+            0,
+            16,
+            1
+          ]
         },
         "down": {
-          "texture": "#relic"
+          "texture": "#relic",
+          "uv": [
+            0,
+            0,
+            16,
+            1
+          ]
         }
       }
     }

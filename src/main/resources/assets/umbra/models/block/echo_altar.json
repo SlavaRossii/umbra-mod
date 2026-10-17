@@ -118,16 +118,40 @@
       ],
       "faces": {
         "north": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            7
+          ]
         },
         "south": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            7
+          ]
         },
         "east": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            7
+          ]
         },
         "west": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            7
+          ]
         },
         "up": {
           "texture": "#crystal"
@@ -160,16 +184,40 @@
       ],
       "faces": {
         "north": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            10,
+            0,
+            12,
+            4
+          ]
         },
         "south": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            4,
+            0,
+            6,
+            4
+          ]
         },
         "east": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            8,
+            0,
+            10,
+            4
+          ]
         },
         "west": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6,
+            0,
+            8,
+            4
+          ]
         },
         "up": {
           "texture": "#crystal"
@@ -202,16 +250,40 @@
       ],
       "faces": {
         "north": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            4,
+            0,
+            6,
+            4
+          ]
         },
         "south": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            10,
+            0,
+            12,
+            4
+          ]
         },
         "east": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            6,
+            0,
+            8,
+            4
+          ]
         },
         "west": {
-          "texture": "#crystal"
+          "texture": "#crystal",
+          "uv": [
+            8,
+            0,
+            10,
+            4
+          ]
         },
         "up": {
           "texture": "#crystal"
