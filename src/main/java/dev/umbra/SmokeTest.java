@@ -139,6 +139,7 @@ final class SmokeTest {
                 case 679 -> testLighthouseKeeper(server);
                 case 673 -> testEndings22(level);
                 case 674 -> testCraft23(level);
+                case 676 -> testDepths26(server);
                 case RAID_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -578,7 +579,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 101 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 101, "journal has 101 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 102 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 102, "journal has 102 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1623,6 +1624,21 @@ final class SmokeTest {
                 }
             }
         }
+    }
+
+    /** 2.6: the drowned halls of the Keepers, built where nothing else is. */
+    private static void testDepths26(MinecraftServer server) {
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under == null) return;
+        dev.umbra.depths.Depths.build(under, under.getRandom());
+        BlockPos o = dev.umbra.depths.Depths.ORIGIN;
+        check(dev.umbra.depths.Depths.isBuilt(under), "the Depths are built");
+        BlockPos chest = o.offset(dev.umbra.depths.Depths.LENGTH - 4, 2, 0);
+        check(under.getBlockState(chest).is(Blocks.CHEST), "the Keepers' chest waits in the sanctum");
+        var keeper = under.getEntitiesOfClass(dev.umbra.citadel.CitadelKeeper.class, new AABB(o).inflate(120, 20, 30), e -> e.entityTags().contains("umbra_drowned_keeper"));
+        check(keeper.size() == 1 && keeper.get(0).getMaxHealth() >= 300, "the Drowned Keeper guards it (" + (keeper.isEmpty() ? 0 : keeper.get(0).getMaxHealth()) + " hp)");
+        check(under.getBlockState(o.offset(dev.umbra.depths.Depths.GALLERY_FROM + 5, 3, 0)).is(Blocks.WATER)
+                && under.getBlockState(o.offset(dev.umbra.depths.Depths.GALLERY_FROM + 5, 5, 0)).isAir(), "the gallery is drowned, with air under the vault");
     }
 
     private static void testLighthouseKeeper(MinecraftServer server) {

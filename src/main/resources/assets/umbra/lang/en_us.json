@@ -792,5 +792,16 @@
   "dialogue.umbra.yan.cycle": "Yan: “Again, then. The lamp remembers the way. Go, and come back.”",
   "dialogue.umbra.yan.offer": "Yan: “If you want to walk this road once more, crouch and tell me. The dark will be fiercer, but it will give more too.”",
   "journal.umbra.new_cycle.title": "The Circle Turns",
-  "journal.umbra.new_cycle.text": "Yan turned the circle. All as it was, only the creatures are tougher and the bosses call shades. But they leave more behind."
+  "journal.umbra.new_cycle.text": "Yan turned the circle. All as it was, only the creatures are tougher and the bosses call shades. But they leave more behind.",
+  "item.umbra.depths_key": "Key of the Depths",
+  "item.umbra.keepers_pearl": "The Keepers' Pearl",
+  "tip.umbra.depths_key": "Lower it into the black water of the Underside. Down there someone still keeps the lamps.",
+  "tip.umbra.keepers_pearl": "Warm, like a palm.",
+  "artifact.umbra.keepers_pearl": "Artifact: the Keepers' Pearl",
+  "artifact.umbra.keepers_pearl.effect": "On a chestplate: breathe under water, the mind wears down more slowly.",
+  "entity.umbra.drowned_keeper": "The Drowned Keeper",
+  "message.umbra.depths.enter": "The water closes over your head. Below, lamps are burning.",
+  "message.umbra.depths.water": "The key goes cold: it wants the black water of the Underside.",
+  "journal.umbra.depths.title": "The Depths",
+  "journal.umbra.depths.text": "Under the black water lie the Keepers' halls. They are drowned, but the lamps still burn. At the very end waits the one who stayed to guard them."
 }

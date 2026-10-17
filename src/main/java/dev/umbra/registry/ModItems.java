@@ -186,6 +186,11 @@ public final class ModItems {
     public static final DeferredItem<dev.umbra.lighthouse.YanErrands.KeeperBellItem> KEEPER_BELL = ITEMS.registerItem("keeper_bell",
             dev.umbra.lighthouse.YanErrands.KeeperBellItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE));
 
+    // --- 2.6: the Depths ---
+    public static final DeferredItem<dev.umbra.depths.Depths.KeyItem> DEPTHS_KEY = ITEMS.registerItem("depths_key",
+            dev.umbra.depths.Depths.KeyItem::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> KEEPERS_PEARL = ITEMS.registerSimpleItem("keepers_pearl", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+
     /** Damage and speed as vanilla counts them (on top of the hand's 1 and 4), and extra reach. */
     private static net.minecraft.world.item.component.ItemAttributeModifiers weapon(String name, double damage, double speed, double reach) {
         var b = net.minecraft.world.item.component.ItemAttributeModifiers.builder()

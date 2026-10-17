@@ -60,7 +60,7 @@ public class GloomAnvilMenu extends ItemCombinerMenu {
             costOut[0] = 1;
             return out;
         }
-        String artifact = stuff.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : stuff.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : null;
+        String artifact = stuff.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : stuff.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : stuff.is(ModItems.KEEPERS_PEARL.get()) ? Gear.KEEPERS_PEARL : null;
         if (artifact != null) {
             if (!gear.is(ItemTags.CHEST_ARMOR) || artifact.equals(gear.get(ModComponents.ARTIFACT.get()))) return ItemStack.EMPTY;
             ItemStack out = gear.copyWithCount(1);

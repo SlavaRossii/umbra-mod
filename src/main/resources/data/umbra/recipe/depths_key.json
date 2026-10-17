@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": "umbra:trophy_primordial_shadow",
+    "Q": "umbra:echo_quartz",
+    "L": "umbra:luminite_crystal"
+  },
+  "pattern": [
+    "QLQ",
+    "LTL",
+    "QLQ"
+  ],
+  "result": {
+    "id": "umbra:depths_key",
+    "count": 1
+  }
+}

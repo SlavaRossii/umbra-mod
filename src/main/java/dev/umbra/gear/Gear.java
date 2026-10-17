@@ -33,6 +33,8 @@ public final class Gear {
     public static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public static final String ASH_CLASP = "ash_clasp";
+    /** 2.6: from the Depths: breath under water, a steadier mind. */
+    public static final String KEEPERS_PEARL = "keepers_pearl";
     public static final String ARCHITECT_SEAL = "architect_seal";
 
     public static final ResourceKey<Enchantment> ECHO = key("echo");
@@ -139,6 +141,7 @@ public final class Gear {
             if (p != null && p[0] == GLOOM) shield += 0.09F + 0.03F * p[1];
         }
         shield += 0.06F * armorLevels(player, VOID);
+        if (hasArtifact(player, KEEPERS_PEARL)) shield += 0.2F;
         return Math.min(0.85F, shield);
     }
 

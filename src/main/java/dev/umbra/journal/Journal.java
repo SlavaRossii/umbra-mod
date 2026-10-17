@@ -36,7 +36,9 @@ public final class Journal {
             // 2.6: who throws from the dark and who rings the bell
             "weeper", "bellringer",
             // 2.6: the circle turns
-            "new_cycle"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "new_cycle",
+            // 2.6: the drowned halls
+            "depths"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests", "atlas"};
@@ -69,6 +71,7 @@ public final class Journal {
             Map.entry("start", List.of("journal", "sedative")),
             // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
             Map.entry("yan_gift_lantern", List.of("marta_lantern")),
+            Map.entry("primordial_shadow", List.of("depths_key")),
             Map.entry("yan_gift_spyglass", List.of("yan_spyglass")),
             Map.entry("yan_gift_bell", List.of("keeper_bell")),
             Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow")),

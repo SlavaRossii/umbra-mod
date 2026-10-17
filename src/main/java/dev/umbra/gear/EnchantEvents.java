@@ -183,7 +183,7 @@ public final class EnchantEvents {
 
     public static void onAnvil(AnvilUpdateEvent event) {
         ItemStack left = event.getLeft(), right = event.getRight();
-        String artifact = right.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : right.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : null;
+        String artifact = right.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : right.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : right.is(ModItems.KEEPERS_PEARL.get()) ? Gear.KEEPERS_PEARL : null;
         if (artifact == null || !left.is(ItemTags.CHEST_ARMOR)) return;
         ItemStack out = left.copy();
         out.set(ModComponents.ARTIFACT.get(), artifact);
@@ -201,8 +201,8 @@ public final class EnchantEvents {
         String a = stack.get(ModComponents.ARTIFACT.get());
         if (a != null) {
             event.getToolTip().add(Component.translatable("artifact.umbra." + a).withStyle(ChatFormatting.GOLD));
-        } else if (stack.is(ModItems.ASH_CLASP.get()) || stack.is(ModItems.ARCHITECT_SEAL.get())) {
-            String id = stack.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : Gear.ARCHITECT_SEAL;
+        } else if (stack.is(ModItems.ASH_CLASP.get()) || stack.is(ModItems.ARCHITECT_SEAL.get()) || stack.is(ModItems.KEEPERS_PEARL.get())) {
+            String id = stack.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : stack.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : Gear.KEEPERS_PEARL;
             event.getToolTip().add(Component.translatable("artifact.umbra." + id + ".effect").withStyle(ChatFormatting.GRAY));
             event.getToolTip().add(Component.translatable("artifact.umbra.how").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }

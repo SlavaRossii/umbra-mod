@@ -84,6 +84,11 @@ public final class ModAttachments {
                     .build());
 
     /** Where the player came into the citadel (gate position), to send them back there. */
+    /** 2.6: where a player came down into the Depths (packed BlockPos), to go back up. */
+    public static final Supplier<AttachmentType<Long>> DEPTHS_RETURN = ATTACHMENTS.register("depths_return",
+            () -> AttachmentType.builder(() -> Long.MIN_VALUE)
+                    .serialize(Codec.LONG.fieldOf("water"))
+                    .build());
     public static final Supplier<AttachmentType<Long>> CITADEL_RETURN = ATTACHMENTS.register("citadel_return",
             () -> AttachmentType.builder(() -> Long.MIN_VALUE)
                     .serialize(Codec.LONG.fieldOf("gate"))
