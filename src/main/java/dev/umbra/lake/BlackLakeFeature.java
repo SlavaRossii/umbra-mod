@@ -70,7 +70,7 @@ public record BlackLakeFeature() implements Feature {
                     }
                     for (int y = 1; y <= 3; y++) {
                         BlockPos p = col.above(y);
-                        if (!level.getBlockState(p).isAir()) level.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
+                        if (!level.getBlockState(p).isAir()) dev.umbra.decor.UndersideDecorFeature.clear(level, p, Blocks.AIR.defaultBlockState());
                     }
                 } else if (d <= 1.45) {
                     for (int y = 0; y <= depth; y++) {

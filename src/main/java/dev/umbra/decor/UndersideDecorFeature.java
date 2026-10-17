@@ -26,6 +26,14 @@ public record UndersideDecorFeature() implements Feature {
         return CODEC;
     }
 
+    /**
+     * Clears a block during generation unless something with a block entity stands there (a chest or a fire of
+     * another feature next door): replacing it with air at generation leaves its data behind and loses the chest.
+     */
+    public static void clear(net.minecraft.world.level.WorldGenLevel level, net.minecraft.core.BlockPos p, net.minecraft.world.level.block.state.BlockState s) {
+        if (!level.getBlockState(p).hasBlockEntity()) level.setBlock(p, s, net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+    }
+
     /** Walks down from {@code origin} to the first air block standing on solid ground. */
     public static BlockPos floor(WorldGenLevel level, BlockPos origin, int maxSteps) {
         BlockPos p = origin;

@@ -103,7 +103,7 @@ public record QuantumMazeFeature() implements Feature {
             for (int dz = -half; dz <= half; dz++) {
                 int x = x0 + dx, z = z0 + dz;
                 int top = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-                for (int y = g; y <= Math.max(g, top) + 1; y++) level.setBlock(new BlockPos(x, y, z), air, FLAGS);
+                for (int y = g; y <= Math.max(g, top) + 1; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, new BlockPos(x, y, z), air);
                 for (int y = Math.min(top, g) - 1; y < g; y++) level.setBlock(new BlockPos(x, y, z), y == g - 1 ? grass : dirt, FLAGS);
             }
         return g;
@@ -161,7 +161,7 @@ public record QuantumMazeFeature() implements Feature {
                 boolean centre = dz == 0;
                 int stepY = floorY + step;          // step 1 at floorY+1 (feet floorY+2), step 2 at floorY+2 ...
                 // air column over the step and a stone floor under it
-                for (int y = stepY + 1; y <= ground + 2; y++) level.setBlock(new BlockPos(x, y, z), air, FLAGS);
+                for (int y = stepY + 1; y <= ground + 2; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, new BlockPos(x, y, z), air);
                 for (int y = floorY; y < stepY; y++) level.setBlock(new BlockPos(x, y, z), brick, FLAGS);
                 level.setBlock(new BlockPos(x, stepY, z), centre ? stair : brick, FLAGS);
             }
