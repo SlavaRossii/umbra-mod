@@ -146,7 +146,6 @@ public final class YanErrands {
                 if (away.lengthSqr() > 1.0E-4) {
                     Vec3 v = away.normalize().scale(1.1);
                     m.push(v.x, 0.35, v.z);
-                    m.hurtMarked = true;
                 }
                 m.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
                 m.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1));

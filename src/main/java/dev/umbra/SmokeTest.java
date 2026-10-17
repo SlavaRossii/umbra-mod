@@ -1493,9 +1493,9 @@ final class SmokeTest {
         // 2.6: the atlas marks what is found, once per place
         fake.setData(dev.umbra.registry.ModAttachments.PLACES, java.util.List.of());
         dev.umbra.journal.Journal.unlock(fake, "sunken_temple");
-        boolean again = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(5, 0, 5));
+        boolean twice = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(5, 0, 5));
         boolean other = dev.umbra.journal.Atlas.mark(fake, "sunken_temple", fake.blockPosition().offset(500, 0, 0));
-        check(dev.umbra.journal.Atlas.places(fake).size() == 2 && !again && other, "the atlas marks a place once, and a far one of the same kind again");
+        check(dev.umbra.journal.Atlas.places(fake).size() == 2 && !twice && other, "the atlas marks a place once, and a far one of the same kind again");
 
         // 2.6: the Bellringer's ring, the Weeper's shard
         var ringer = ModEntities.BELLRINGER.get().create(level, EntitySpawnReason.COMMAND);
