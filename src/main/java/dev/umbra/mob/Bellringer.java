@@ -65,7 +65,6 @@ public class Bellringer extends Monster implements LightSensitive {
 
     /** Rings: players near reel, the dark around comes. Returns how many players were struck. */
     public int ring(ServerLevel level) {
-        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 3.0F, 0.6F);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BELL_RESONATE, SoundSource.HOSTILE, 2.0F, 0.5F);
         level.sendParticles(ParticleTypes.SONIC_BOOM, this.getX(), this.getY() + 1.2, this.getZ(), 1, 0, 0, 0, 0);

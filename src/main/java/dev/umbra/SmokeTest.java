@@ -1513,10 +1513,10 @@ final class SmokeTest {
         if (weeper != null) {
             weeper.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 6.5, 0, 0);
             level.addFreshEntity(weeper);
-            int before = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
+            int shardsBefore = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
             weeper.performRangedAttack(fake, 1.0F);
-            int after = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
-            check(after == before + 1 && dev.umbra.journal.Bestiary.ids().containsKey(ModEntities.WEEPER.get()), "the Weeper throws a shard of shadow, and is in the bestiary");
+            int shardsAfter = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).size();
+            check(shardsAfter == shardsBefore + 1 && dev.umbra.journal.Bestiary.ids().containsKey(ModEntities.WEEPER.get()), "the Weeper throws a shard of shadow, and is in the bestiary");
             weeper.discard();
             level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).forEach(net.minecraft.world.entity.Entity::discard);
         }
