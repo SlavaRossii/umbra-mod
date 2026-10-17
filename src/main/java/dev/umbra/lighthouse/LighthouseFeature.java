@@ -39,8 +39,6 @@ public record LighthouseFeature() implements Feature {
     public static final int HOUSE_Z = 8;
     /** Platform floor limits: the whole thing must fit between the cave's floor and its roof (128). */
     public static final int MIN_FLOOR = 8, MAX_FLOOR = 128 - (LAMP_Y + 12) - 6;
-    /** How far below the cave floor the platform is sunk: the lighthouse stands in a pit of its own. */
-    public static final int SINK = 12;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
     @Override
@@ -81,8 +79,8 @@ public record LighthouseFeature() implements Feature {
 
     /** "~N blocks to the north-east" towards the lighthouse. */
     public static net.minecraft.network.chat.Component describeNearest(net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.player.Player player, String key) {
-        int[] c = nearest(level.getSeed(), (int) player.getX(), (int) player.getZ());
-        double dx = c[0] * 16 + 8 - player.getX(), dz = c[1] * 16 + 8 - player.getZ();
+        BlockPos c = LighthouseManager.centre(level);
+        double dx = c.getX() + 0.5 - player.getX(), dz = c.getZ() + 0.5 - player.getZ();
         int dist = (int) Math.round(Math.sqrt(dx * dx + dz * dz));
         double yaw = Math.toDegrees(Math.atan2(-dx, dz));
         String[] dirs = {"s", "sw", "w", "nw", "n", "ne", "e", "se"};
@@ -93,16 +91,14 @@ public record LighthouseFeature() implements Feature {
 
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos origin) {
-        int cx = origin.getX() >> 4, cz = origin.getZ() >> 4;
-        if (!chosenChunk(level.getSeed(), cx, cz)) return false;
-        build(level, floorAt(level, cx * 16 + 8, cz * 16 + 8), random);
-        return true;
+        // 2.5: raised at runtime by LighthouseManager, where it can look round for room
+        return false;
     }
 
     /** A cave floor for the platform, kept between the cave's floor and roof (the hollow is carved round it anyway). */
     public static BlockPos floorAt(WorldGenLevel level, int x, int z) {
         BlockPos g = CitadelGateFeature.findSolidGround(level, x, z);
-        int y = g == null ? 40 : g.getY() - 1 - SINK;
+        int y = g == null ? 40 : g.getY() - 1;
         y = Math.max(MIN_FLOOR, Math.min(MAX_FLOOR, y));
         return new BlockPos(x, y, z);
     }

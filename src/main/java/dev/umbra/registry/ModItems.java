@@ -168,6 +168,14 @@ public final class ModItems {
     public static final DeferredItem<Item> SHADOW_DAGGER = ITEMS.registerSimpleItem("shadow_dagger", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -1.4F)
             .attributes(weapon("dagger", 4.0, -1.4, -0.5)).rarity(Rarity.UNCOMMON));
 
+    // --- 2.5: weapons for a distance ---
+    public static final DeferredItem<net.minecraft.world.item.BowItem> LUMINITE_BOW = ITEMS.registerItem("luminite_bow",
+            net.minecraft.world.item.BowItem::new, p -> p.durability(512).enchantable(1).repairable(LUMINITE_CRYSTAL.get()).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<dev.umbra.gear.RangedWeapons.ShadowKnifeItem> SHADOW_KNIFE = ITEMS.registerItem("shadow_knife",
+            dev.umbra.gear.RangedWeapons.ShadowKnifeItem::new, p -> p.stacksTo(16));
+    public static final DeferredItem<dev.umbra.gear.RangedWeapons.EchoStaffItem> ECHO_STAFF = ITEMS.registerItem("echo_staff",
+            dev.umbra.gear.RangedWeapons.EchoStaffItem::new, p -> p.stacksTo(1).durability(250).rarity(Rarity.RARE));
+
     /** Damage and speed as vanilla counts them (on top of the hand's 1 and 4), and extra reach. */
     private static net.minecraft.world.item.component.ItemAttributeModifiers weapon(String name, double damage, double speed, double reach) {
         var b = net.minecraft.world.item.component.ItemAttributeModifiers.builder()

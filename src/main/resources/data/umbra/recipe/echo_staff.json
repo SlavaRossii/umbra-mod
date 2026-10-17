@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "Q": "umbra:echo_quartz",
+    "C": "umbra:luminite_crystal",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " QC",
+    " SQ",
+    "S  "
+  ],
+  "result": {
+    "id": "umbra:echo_staff",
+    "count": 1
+  }
+}

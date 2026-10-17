@@ -723,5 +723,12 @@
   "set.umbra.luminite": "Full set: their blows weaker, light eaters burn near you.",
   "set.umbra.gloom.on": "The gloom steel closes round you. The Underside weighs less.",
   "set.umbra.shadow.on": "The shadow covers you whole. The dark turns clear.",
-  "set.umbra.luminite.on": "The crystals ring in tune. The light stays close."
+  "set.umbra.luminite.on": "The crystals ring in tune. The light stays close.",
+  "item.umbra.luminite_bow": "Luminite Bow",
+  "item.umbra.shadow_knife": "Shadow Knife",
+  "item.umbra.echo_staff": "Echo Staff",
+  "tip.umbra.luminite_bow": "Its arrows burn the things of the Underside and give them away in light.",
+  "tip.umbra.shadow_knife": "Throw it. Twice as bad in the back. Sometimes it comes back.",
+  "tip.umbra.echo_staff": "A cry that goes through armour. It eats echo quartz.",
+  "message.umbra.echo_staff.empty": "The staff has nothing to cry with: it needs echo quartz."
 }

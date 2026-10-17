@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "G": "umbra:gloom_ingot",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    " LS",
+    "G S",
+    " LS"
+  ],
+  "result": {
+    "id": "umbra:luminite_bow",
+    "count": 1
+  }
+}

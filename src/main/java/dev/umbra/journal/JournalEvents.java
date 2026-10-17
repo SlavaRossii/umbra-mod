@@ -44,8 +44,8 @@ public final class JournalEvents {
             if (dev.umbra.underside.AshStorm.at(player) > 0.5F) Journal.unlock(player, "ash_storm");
         }
         if (Underside.is(player.level())) {
-            int[] lh = dev.umbra.lighthouse.LighthouseFeature.nearest(((net.minecraft.server.level.ServerLevel) player.level()).getSeed(), (int) player.getX(), (int) player.getZ());
-            double dx = lh[0] * 16 + 8 - player.getX(), dz = lh[1] * 16 + 8 - player.getZ();
+            BlockPos lh = dev.umbra.lighthouse.LighthouseManager.centre((net.minecraft.server.level.ServerLevel) player.level());
+            double dx = lh.getX() + 0.5 - player.getX(), dz = lh.getZ() + 0.5 - player.getZ();
             if (dx * dx + dz * dz < 28 * 28) Journal.unlock(player, "lighthouse");
         }
         spot(player);

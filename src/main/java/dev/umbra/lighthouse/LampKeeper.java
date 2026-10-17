@@ -46,14 +46,19 @@ public class LampKeeper extends PathfinderMob {
         this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
     }
 
-    /** The lamp of this lighthouse: it stands on the axis of the chosen chunk, so no data needs saving. */
+    /** The lamp of the lighthouse: above the platform saved when it was raised (or, for one built by hand, at x, z). */
     public static BlockPos findLamp(ServerLevel level, double x, double z) {
-        int[] c = LighthouseFeature.nearest(level.getSeed(), (int) x, (int) z);
-        int lx = c[0] * 16 + 8, lz = c[1] * 16 + 8;
-        for (int y = 250; y > 5; y--) {
-            BlockPos p = new BlockPos(lx, y, lz);
-            if (level.getBlockState(p).is(ModBlocks.LIGHTHOUSE_LAMP.get())) return p;
+        BlockPos built = LighthouseManager.built(level);
+        if (built != null) {
+            BlockPos lamp = built.above(LighthouseFeature.LAMP_Y);
+            if (level.getBlockState(lamp).is(ModBlocks.LIGHTHOUSE_LAMP.get())) return lamp;
         }
+        int lx = (int) Math.floor(x), lz = (int) Math.floor(z);
+        for (int dz : new int[]{0, -LighthouseFeature.HOUSE_Z})            // on the axis, or seen from the keeper's door
+            for (int y = 250; y > 5; y--) {
+                BlockPos p = new BlockPos(lx, y, lz + dz);
+                if (level.getBlockState(p).is(ModBlocks.LIGHTHOUSE_LAMP.get())) return p;
+            }
         return null;
     }
 

@@ -1218,12 +1218,28 @@ final class SmokeTest {
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under == null) return;
         int[] c = dev.umbra.lighthouse.LighthouseFeature.nearest(under.getSeed(), 0, 0);
-        under.getChunk(c[0], c[1]);
-        BlockPos lamp = dev.umbra.lighthouse.LampKeeper.findLamp(under, c[0] * 16 + 8, c[1] * 16 + 8);
-        check(lamp != null, "a lighthouse is really generated in the Underside, in chunk " + c[0] + "," + c[1]);
+        // 2.5: it is raised at runtime once the neighbourhood is loaded; load it as a visitor would
+        int reach = (dev.umbra.lighthouse.LighthouseManager.SEARCH + dev.umbra.lighthouse.LighthouseManager.GROTTO + 16) >> 4;
+        for (int dx = -reach; dx <= reach; dx++)
+            for (int dz = -reach; dz <= reach; dz++) under.getChunk(c[0] + dx, c[1] + dz);
+        BlockPos platform = dev.umbra.lighthouse.LighthouseManager.raise(under);
+        BlockPos lamp = dev.umbra.lighthouse.LampKeeper.findLamp(under, platform.getX(), platform.getZ());
+        check(lamp != null, "a lighthouse is really raised in the Underside, near chunk " + c[0] + "," + c[1] + " (platform " + platform.toShortString() + ")");
         if (lamp == null) return;
-        under.setChunkForced(c[0], c[1], true);   // keep it loaded so its entities come to life
-        check(lamp.getY() + 8 < 256, "the real lighthouse fits under the sky (lamp at y=" + lamp.getY() + ")");
+        under.setChunkForced(platform.getX() >> 4, platform.getZ() >> 4, true);   // keep it loaded so its entities come to life
+        check(lamp.getY() + 16 < 128, "the real lighthouse fits under the roof of the Underside (lamp at y=" + lamp.getY() + ")");
+        // it stands in the open: air all round it at head height and higher, not in a pit between cliffs
+        int open = 0, samples = 0;
+        for (int i = 0; i < 16; i++) {
+            double a = i * Math.PI / 8;
+            for (int r : new int[]{12, 20})
+                for (int h : new int[]{2, 10, 20}) {
+                    samples++;
+                    if (under.getBlockState(platform.offset((int) Math.round(Math.cos(a) * r), h, (int) Math.round(Math.sin(a) * r))).isAir()) open++;
+                }
+        }
+        check(open >= samples * 0.85, "the lighthouse stands in an open grotto (" + open + "/" + samples + " open)");
+        check(dev.umbra.lighthouse.LighthouseManager.raise(under).equals(platform), "and it is raised only once");
     }
 
     // ------------------------------------------------------------------ 2.2: endings and the onslaught
@@ -1427,6 +1443,20 @@ final class SmokeTest {
             fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         }
         check(ModItems.LUMINITE_SPEAR.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.SWORDS), "the new weapons take sword enchantments");
+        // the echo staff cries through what stands in a line
+        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+        if (zombie != null) {
+            zombie.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 3.5, 0, 0);
+            zombie.setNoAi(true);
+            level.addFreshEntity(zombie);
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);          // yaw 0 looks south, at it
+            float before = zombie.getHealth();
+            int hit = dev.umbra.gear.RangedWeapons.cry(level, fake);
+            check(hit >= 1 && zombie.getHealth() < before, "the echo staff's cry strikes what stands in its line (" + hit + ", " + zombie.getHealth() + ")");
+            zombie.discard();
+        }
+        check(ModItems.LUMINITE_BOW.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.BOW_ENCHANTABLE), "the luminite bow takes bow enchantments");
+
         wear(fake, "gloom", 2);
         fake.tickCount = 11;
         dev.umbra.gear.WeaponEvents.setTick(fake);
@@ -1531,10 +1561,10 @@ final class SmokeTest {
     private static void testLighthouseKeeper(MinecraftServer server) {
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under == null) return;
-        int[] c = dev.umbra.lighthouse.LighthouseFeature.nearest(under.getSeed(), 0, 0);
-        BlockPos lamp = dev.umbra.lighthouse.LampKeeper.findLamp(under, c[0] * 16 + 8, c[1] * 16 + 8);
+        BlockPos platform = dev.umbra.lighthouse.LighthouseManager.centre(under);
+        BlockPos lamp = dev.umbra.lighthouse.LampKeeper.findLamp(under, platform.getX(), platform.getZ());
         check(lamp != null && !under.getEntitiesOfClass(dev.umbra.lighthouse.LampKeeper.class, new AABB(lamp).inflate(20, 70, 20)).isEmpty(), "the real lighthouse has its keeper");
-        under.setChunkForced(c[0], c[1], false);
+        under.setChunkForced(platform.getX() >> 4, platform.getZ() >> 4, false);
     }
 
     /** A UUID whose villager offers the given errand. */

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "umbra:shadow_shard",
+    "G": "umbra:gloom_ingot"
+  },
+  "pattern": [
+    "S",
+    "G"
+  ],
+  "result": {
+    "id": "umbra:shadow_knife",
+    "count": 4
+  }
+}

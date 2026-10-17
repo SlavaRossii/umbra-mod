@@ -82,6 +82,12 @@ public final class ModAttachments {
                     .build());
 
     /** On a village cell's chosen chunk: packed bell position once built; MIN = not built, MAX = no village here. */
+    /** On the Underside level: the platform of the one lighthouse, once it is raised (Long.MIN_VALUE before). */
+    public static final Supplier<AttachmentType<Long>> LIGHTHOUSE = ATTACHMENTS.register("lighthouse",
+            () -> AttachmentType.builder(() -> Long.MIN_VALUE)
+                    .serialize(Codec.LONG.fieldOf("platform"))
+                    .build());
+
     public static final Supplier<AttachmentType<Long>> VILLAGE = ATTACHMENTS.register("village",
             () -> AttachmentType.builder(() -> Long.MIN_VALUE)
                     .serialize(Codec.LONG.fieldOf("bell"))
