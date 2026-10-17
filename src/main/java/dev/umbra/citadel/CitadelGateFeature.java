@@ -117,19 +117,19 @@ public record CitadelGateFeature() implements Feature {
         // two steps of dusk stone
         for (int x = -4; x <= 4; x++)
             for (int z = -4; z <= 4; z++) {
-                level.setBlock(floor.offset(x, 0, z), dusk, FLAGS);
-                if (Math.abs(x) <= 3 && Math.abs(z) <= 3) level.setBlock(floor.offset(x, 1, z), dusk, FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, floor.offset(x, 0, z), dusk, FLAGS);
+                if (Math.abs(x) <= 3 && Math.abs(z) <= 3) dev.umbra.decor.UndersideDecorFeature.put(level, floor.offset(x, 1, z), dusk, FLAGS);
             }
         BlockPos top = floor.above(2);
         for (int x = -2; x <= 2; x++)
             for (int y = 0; y <= 5; y++) {
                 boolean frame = Math.abs(x) == 2 || y == 5;
-                level.setBlock(top.offset(x, y, 0), frame ? wall : (y <= 3 ? gate : wall), FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, top.offset(x, y, 0), frame ? wall : (y <= 3 ? gate : wall), FLAGS);
             }
         BlockState lantern = dev.umbra.registry.ModBlocks.LUMINITE_LANTERN_BLOCK.get().defaultBlockState();
         for (int[] p : new int[][]{{-3, -3}, {3, -3}, {-3, 3}, {3, 3}}) {
-            for (int y = 0; y < 3; y++) level.setBlock(top.offset(p[0], y, p[1]), wall, FLAGS);
-            level.setBlock(top.offset(p[0], 3, p[1]), lantern, FLAGS);
+            for (int y = 0; y < 3; y++) dev.umbra.decor.UndersideDecorFeature.put(level, top.offset(p[0], y, p[1]), wall, FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, top.offset(p[0], 3, p[1]), lantern, FLAGS);
         }
     }
 }

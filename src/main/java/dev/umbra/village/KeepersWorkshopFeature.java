@@ -58,17 +58,17 @@ public record KeepersWorkshopFeature() implements Feature {
                 for (int y = -1; y >= -3; y--) {
                     BlockPos p = c.offset(x, y, z);
                     if (!level.getBlockState(p).isAir() && level.getBlockState(p).getFluidState().isEmpty() && y < -1) break;
-                    level.setBlock(p, bricks, FLAGS);
+                    dev.umbra.decor.UndersideDecorFeature.put(level, p, bricks, FLAGS);
                 }
-                level.setBlock(c.offset(x, 0, z), random.nextInt(4) == 0 ? mossy : bricks, FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(x, 0, z), random.nextInt(4) == 0 ? mossy : bricks, FLAGS);
                 for (int y = 1; y <= 4; y++) {
                     BlockPos p = c.offset(x, y, z);
-                    if (corner) level.setBlock(p, log, FLAGS);
+                    if (corner) dev.umbra.decor.UndersideDecorFeature.put(level, p, log, FLAGS);
                     else if (edge && y <= 3) {
                         // the walls have stood for a long time: a few bricks have fallen out
-                        level.setBlock(p, random.nextInt(9) == 0 ? air : random.nextInt(3) == 0 ? mossy : random.nextInt(5) == 0 ? cracked : bricks, FLAGS);
+                        dev.umbra.decor.UndersideDecorFeature.put(level, p, random.nextInt(9) == 0 ? air : random.nextInt(3) == 0 ? mossy : random.nextInt(5) == 0 ? cracked : bricks, FLAGS);
                     } else if (y == 4) {
-                        level.setBlock(p, random.nextInt(7) == 0 ? air : planks, FLAGS);   // roof, with holes
+                        dev.umbra.decor.UndersideDecorFeature.put(level, p, random.nextInt(7) == 0 ? air : planks, FLAGS);   // roof, with holes
                     } else {
                         dev.umbra.decor.UndersideDecorFeature.clear(level, p, air);
                     }
@@ -79,21 +79,21 @@ public record KeepersWorkshopFeature() implements Feature {
         // the door, in the middle of the west wall
         for (int y = 1; y <= 2; y++) dev.umbra.decor.UndersideDecorFeature.clear(level, c.offset(0, y, DEPTH / 2), air);
         // furniture
-        level.setBlock(c.offset(1, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), FLAGS);
-        level.setBlock(c.offset(1, 1, 2), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.EAST), FLAGS);
-        level.setBlock(c.offset(1, 1, DEPTH - 2), Blocks.ANVIL.defaultBlockState(), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(1, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(1, 1, 2), Blocks.FURNACE.defaultBlockState().setValue(net.minecraft.world.level.block.FurnaceBlock.FACING, Direction.EAST), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(1, 1, DEPTH - 2), Blocks.ANVIL.defaultBlockState(), FLAGS);
         for (int z = 1; z < DEPTH - 1; z++) {
-            level.setBlock(c.offset(WIDTH - 2, 1, z), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
-            if (z % 2 == 1) level.setBlock(c.offset(WIDTH - 2, 2, z), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
+            dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(WIDTH - 2, 1, z), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
+            if (z % 2 == 1) dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(WIDTH - 2, 2, z), Blocks.BOOKSHELF.defaultBlockState(), FLAGS);
         }
-        level.setBlock(c.offset(WIDTH / 2, 3, DEPTH / 2), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
-        level.setBlock(c.offset(WIDTH / 2, 4, DEPTH / 2), planks, FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(WIDTH / 2, 3, DEPTH / 2), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, c.offset(WIDTH / 2, 4, DEPTH / 2), planks, FLAGS);
         for (int i = 0; i < 4; i++) {
             BlockPos web = c.offset(1 + random.nextInt(WIDTH - 2), 3, 1 + random.nextInt(DEPTH - 2));
-            if (level.getBlockState(web).isAir()) level.setBlock(web, Blocks.COBWEB.defaultBlockState(), FLAGS);
+            if (level.getBlockState(web).isAir()) dev.umbra.decor.UndersideDecorFeature.put(level, web, Blocks.COBWEB.defaultBlockState(), FLAGS);
         }
         BlockPos chest = c.offset(WIDTH - 3, 1, DEPTH / 2);
-        level.setBlock(chest, Blocks.CHEST.defaultBlockState().setValue(net.minecraft.world.level.block.ChestBlock.FACING, Direction.WEST), FLAGS);
+        dev.umbra.decor.UndersideDecorFeature.put(level, chest, Blocks.CHEST.defaultBlockState().setValue(net.minecraft.world.level.block.ChestBlock.FACING, Direction.WEST), FLAGS);
         RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
     }
 }

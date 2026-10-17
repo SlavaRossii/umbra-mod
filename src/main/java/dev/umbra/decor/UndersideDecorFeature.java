@@ -34,6 +34,11 @@ public record UndersideDecorFeature() implements Feature {
         if (!level.getBlockState(p).hasBlockEntity()) level.setBlock(p, s, net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
     }
 
+    /** Sets a block during generation unless a neighbour's chest, fire or skull already stands there. */
+    public static void put(net.minecraft.world.level.WorldGenLevel level, net.minecraft.core.BlockPos p, net.minecraft.world.level.block.state.BlockState s, int flags) {
+        if (!level.getBlockState(p).hasBlockEntity()) level.setBlock(p, s, flags);
+    }
+
     /** Walks down from {@code origin} to the first air block standing on solid ground. */
     public static BlockPos floor(WorldGenLevel level, BlockPos origin, int maxSteps) {
         BlockPos p = origin;
@@ -56,8 +61,8 @@ public record UndersideDecorFeature() implements Feature {
             case 6 -> pillar(level, f, random);
             case 7, 8 -> mushrooms(level, f, random);
             default -> {
-                level.setBlock(f, Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
-                level.setBlock(f.east(), Blocks.BONE_BLOCK.defaultBlockState(), FLAGS);
+                put(level, f, Blocks.SKELETON_SKULL.defaultBlockState(), FLAGS);
+                put(level, f.east(), Blocks.BONE_BLOCK.defaultBlockState(), FLAGS);
             }
         }
         return true;
@@ -67,7 +72,7 @@ public record UndersideDecorFeature() implements Feature {
         for (int i = 0; i < 3 + random.nextInt(4); i++) {
             BlockPos p = floor(level, f.offset(random.nextInt(5) - 2, 2, random.nextInt(5) - 2), 5);
             if (p == null) continue;
-            level.setBlock(p, random.nextInt(4) == 0 ? Blocks.SKELETON_SKULL.defaultBlockState()
+            put(level, p, random.nextInt(4) == 0 ? Blocks.SKELETON_SKULL.defaultBlockState()
                     : Blocks.BONE_BLOCK.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,
                     random.nextBoolean() ? Direction.Axis.X : Direction.Axis.Z), FLAGS);
         }
@@ -80,9 +85,9 @@ public record UndersideDecorFeature() implements Feature {
             for (int z = -r; z <= r; z++) {
                 if (x * x + z * z > r * r + 1) continue;
                 BlockPos p = floor(level, f.offset(x, 2, z), 5);
-                if (p != null) level.setBlock(p, ash, FLAGS);
+                if (p != null) put(level, p, ash, FLAGS);
             }
-        level.setBlock(f.above(), ash, FLAGS);
+        put(level, f.above(), ash, FLAGS);
     }
 
     private static void pillar(WorldGenLevel level, BlockPos f, RandomSource random) {
@@ -91,15 +96,15 @@ public record UndersideDecorFeature() implements Feature {
         if (h < 4 || h >= 24) return;
         BlockState ash = ModBlocks.ASH_STONE.get().defaultBlockState();
         for (int y = 0; y < h; y++) {
-            level.setBlock(f.above(y), ash, FLAGS);
-            if (y < 2 || y > h - 3) for (Direction d : Direction.Plane.HORIZONTAL) if (random.nextBoolean()) level.setBlock(f.above(y).relative(d), ash, FLAGS);
+            put(level, f.above(y), ash, FLAGS);
+            if (y < 2 || y > h - 3) for (Direction d : Direction.Plane.HORIZONTAL) if (random.nextBoolean()) put(level, f.above(y).relative(d), ash, FLAGS);
         }
     }
 
     private static void mushrooms(WorldGenLevel level, BlockPos f, RandomSource random) {
         for (int i = 0; i < 2 + random.nextInt(5); i++) {
             BlockPos p = floor(level, f.offset(random.nextInt(5) - 2, 2, random.nextInt(5) - 2), 5);
-            if (p != null && level.getBlockState(p.below()).isSolidRender()) level.setBlock(p, ModBlocks.GLOOM_MUSHROOM.get().defaultBlockState(), FLAGS);
+            if (p != null && level.getBlockState(p.below()).isSolidRender()) put(level, p, ModBlocks.GLOOM_MUSHROOM.get().defaultBlockState(), FLAGS);
         }
     }
 
@@ -110,7 +115,7 @@ public record UndersideDecorFeature() implements Feature {
         for (Direction d : Direction.values()) {
             BlockPos support = origin.relative(d);
             if (!level.getBlockState(support).isSolidRender()) continue;
-            level.setBlock(origin, cluster.defaultBlockState().setValue(AmethystClusterBlock.FACING, d.getOpposite()), FLAGS);
+            put(level, origin, cluster.defaultBlockState().setValue(AmethystClusterBlock.FACING, d.getOpposite()), FLAGS);
             return true;
         }
         return false;

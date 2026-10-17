@@ -35,11 +35,11 @@ public record DeadTreeFeature() implements Feature {
 
     public static void tree(WorldGenLevel level, BlockPos f, int h, RandomSource random) {
         BlockState log = ModBlocks.DEAD_LOG.get().defaultBlockState();
-        for (int y = 0; y < h; y++) level.setBlock(f.above(y), log, FLAGS);
+        for (int y = 0; y < h; y++) dev.umbra.decor.UndersideDecorFeature.put(level, f.above(y), log, FLAGS);
         // roots
         for (Direction d : Direction.Plane.HORIZONTAL) {
             if (random.nextInt(2) == 0 && level.getBlockState(f.relative(d)).isAir()) {
-                level.setBlock(f.relative(d), log.setValue(RotatedPillarBlock.AXIS, d.getAxis()), FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, f.relative(d), log.setValue(RotatedPillarBlock.AXIS, d.getAxis()), FLAGS);
             }
         }
         // branches, crooked and bare
@@ -51,8 +51,8 @@ public record DeadTreeFeature() implements Feature {
                 p = p.relative(d);
                 if (j == len && random.nextBoolean()) p = p.above();
                 if (!level.getBlockState(p).isAir()) break;
-                level.setBlock(p, log.setValue(RotatedPillarBlock.AXIS, j == len ? Direction.Axis.Y : d.getAxis()), FLAGS);
-                if (random.nextInt(5) == 0 && level.getBlockState(p.below()).isAir()) level.setBlock(p.below(), Blocks.COBWEB.defaultBlockState(), FLAGS);
+                dev.umbra.decor.UndersideDecorFeature.put(level, p, log.setValue(RotatedPillarBlock.AXIS, j == len ? Direction.Axis.Y : d.getAxis()), FLAGS);
+                if (random.nextInt(5) == 0 && level.getBlockState(p.below()).isAir()) dev.umbra.decor.UndersideDecorFeature.put(level, p.below(), Blocks.COBWEB.defaultBlockState(), FLAGS);
             }
         }
     }
