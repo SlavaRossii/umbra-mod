@@ -51,11 +51,12 @@ public final class Cycle {
         MinecraftServer server = player.level().getServer();
         int next = get(server) + 1;
         server.overworld().setData(ModAttachments.CYCLE, next);
+        // the world grows darker for everyone; only the one who asked starts their road again (others keep their ending)
+        player.setData(ModAttachments.ENDING, "");
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            p.setData(ModAttachments.ENDING, "");
             Journal.unlock(p, "new_cycle");
             p.sendSystemMessage(Component.translatable("message.umbra.cycle", next).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
-            p.level().playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.WITHER_SPAWN, SoundSource.AMBIENT, 0.6F, 0.5F);
+            dev.umbra.util.UmbraUtil.privateSound(p, net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.WITHER_SPAWN), SoundSource.AMBIENT, 0.6F, 0.5F);
         }
         return next;
     }
