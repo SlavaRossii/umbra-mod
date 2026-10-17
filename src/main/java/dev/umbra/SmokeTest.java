@@ -1412,12 +1412,12 @@ final class SmokeTest {
         if (crawler != null) {
             crawler.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 2.5, 0, 0);       // facing south (+z)
             crawler.setYBodyRot(0);
-            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);         // in front of it (north)
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 4.5, 0, 0);         // in front of it (south, where it looks)
             fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.LUMINITE_SPEAR.get()));
             float spear = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
             fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SHADOW_DAGGER.get()));
             float front = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
-            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 4.5, 0, 0);         // behind it
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);         // behind it (north)
             float back = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
             ItemStack radiant = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
             level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).get(dev.umbra.gear.Gear.RADIANCE).ifPresent(h -> radiant.enchant(h, 2));
