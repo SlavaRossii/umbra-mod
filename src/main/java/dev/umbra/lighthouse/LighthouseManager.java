@@ -166,7 +166,11 @@ public final class LighthouseManager {
     }
 
     private static void set(ServerLevel level, BlockPos p, BlockState s) {
-        if (level.getBlockState(p).is(Blocks.BEDROCK)) return;
+        BlockState old = level.getBlockState(p);
+        if (old.is(Blocks.BEDROCK)) return;
+        // a skull or chest the cave generated here is still "pending" in its chunk: wake it first, so that replacing
+        // it removes it for good (otherwise the chunk later complains about a block entity standing in thin air)
+        if (old.hasBlockEntity()) level.getBlockEntity(p);
         level.setBlock(p, s, FLAGS);
     }
 }
