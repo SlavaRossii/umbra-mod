@@ -1444,15 +1444,15 @@ final class SmokeTest {
         }
         check(ModItems.LUMINITE_SPEAR.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.SWORDS), "the new weapons take sword enchantments");
         // the echo staff cries through what stands in a line
-        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+        var zombie = ModEntities.SHADOW_VILLAGER.get().create(level, EntitySpawnReason.COMMAND);
         if (zombie != null) {
             zombie.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 3.5, 0, 0);
             zombie.setNoAi(true);
             level.addFreshEntity(zombie);
             fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);          // yaw 0 looks south, at it
             float before = zombie.getHealth();
-            int hit = dev.umbra.gear.RangedWeapons.cry(level, fake);
-            check(hit >= 1 && zombie.getHealth() < before, "the echo staff's cry strikes what stands in its line (" + hit + ", " + zombie.getHealth() + ")");
+            int cried = dev.umbra.gear.RangedWeapons.cry(level, fake);
+            check(cried >= 1 && zombie.getHealth() < before, "the echo staff's cry strikes what stands in its line (" + cried + ", " + zombie.getHealth() + ")");
             zombie.discard();
         }
         check(ModItems.LUMINITE_BOW.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.BOW_ENCHANTABLE), "the luminite bow takes bow enchantments");
