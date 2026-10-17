@@ -51,6 +51,15 @@ public class GloomAnvilMenu extends ItemCombinerMenu {
     public static ItemStack result(ItemStack gear, ItemStack stuff, int[] costOut) {
         costOut[0] = 0;
         if (gear.isEmpty() || stuff.isEmpty()) return ItemStack.EMPTY;
+        // 2.6: a boss's relic infused into a weapon
+        String relic = Infusions.relicOf(stuff);
+        if (relic != null) {
+            if (!Infusions.takes(gear) || relic.equals(gear.get(ModComponents.INFUSION.get()))) return ItemStack.EMPTY;
+            ItemStack out = gear.copyWithCount(1);
+            out.set(ModComponents.INFUSION.get(), relic);
+            costOut[0] = 1;
+            return out;
+        }
         String artifact = stuff.is(ModItems.ASH_CLASP.get()) ? Gear.ASH_CLASP : stuff.is(ModItems.ARCHITECT_SEAL.get()) ? Gear.ARCHITECT_SEAL : null;
         if (artifact != null) {
             if (!gear.is(ItemTags.CHEST_ARMOR) || artifact.equals(gear.get(ModComponents.ARTIFACT.get()))) return ItemStack.EMPTY;

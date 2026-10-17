@@ -80,7 +80,7 @@ public final class WeaponEvents {
         }
         // a player's blow in melee
         if (echoing || !(event.getSource().getEntity() instanceof ServerPlayer player) || event.getSource().getDirectEntity() != player) return;
-        event.setAmount(modify(player, target, event.getAmount()));
+        event.setAmount(dev.umbra.craft.Infusions.modify(player, target, modify(player, target, event.getAmount())));
     }
 
     public static void onDamage(LivingDamageEvent.Post event) {
@@ -91,6 +91,7 @@ public final class WeaponEvents {
         var hand = player.getMainHandItem();
         echoing = true;
         try {
+            dev.umbra.craft.Infusions.afterHit(level, player, target, dealt);
             // the scythe: a full swing cuts all round the target
             if (hand.is(ModItems.SHEPHERD_SCYTHE.get()) && player.getAttackStrengthScale(0.5F) > 0.9F) {
                 for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(3.0),

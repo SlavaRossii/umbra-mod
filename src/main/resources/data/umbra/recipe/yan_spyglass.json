@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "Q": "umbra:echo_quartz",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "Q",
+    "C",
+    "C"
+  ],
+  "result": {
+    "id": "umbra:yan_spyglass",
+    "count": 1
+  }
+}

@@ -171,6 +171,7 @@ public class Umbra {
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);
         dev.umbra.lighthouse.LighthouseManager.tick(player);
+        dev.umbra.lighthouse.YanErrands.tick(player);
         dev.umbra.underside.UndersideAmbience.tick(player);
         dev.umbra.ending.Endings.tick(player);
         dev.umbra.night.NightEvents.tick(player);

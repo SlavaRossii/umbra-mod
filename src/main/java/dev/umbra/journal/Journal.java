@@ -30,7 +30,9 @@ public final class Journal {
             "onslaught", "onslaught_won", "ending_light", "ending_dark",
             // 2.4: what the journal works out about each boss, strange nights, the trophy shelf, Yan after the dawn
             "weak_watcher", "weak_mimic_queen", "weak_shepherd", "weak_doppelganger", "weak_architect", "weak_primordial_shadow",
-            "night_blood_moon", "night_fog", "night_silence", "trophy_shelf", "yan_dawn"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "night_blood_moon", "night_fog", "night_silence", "trophy_shelf", "yan_dawn",
+            // 2.6: Yan's gifts for his errands
+            "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests"};
@@ -60,6 +62,9 @@ public final class Journal {
     public static final Map<String, List<String>> RECIPES = Map.ofEntries(
             Map.entry("start", List.of("journal", "sedative")),
             // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
+            Map.entry("yan_gift_lantern", List.of("marta_lantern")),
+            Map.entry("yan_gift_spyglass", List.of("yan_spyglass")),
+            Map.entry("yan_gift_bell", List.of("keeper_bell")),
             Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow")),
             Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic", "shadow_dagger", "shadow_knife")),
             Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",

@@ -19,5 +19,9 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> BOUND_LAMP = COMPONENTS.registerComponentType("bound_lamp",
             b -> b.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
+    /** 2.6: a boss's relic infused into a weapon at the gloom anvil (the boss's id: "watcher", "shepherd", ...). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> INFUSION = COMPONENTS.registerComponentType("infusion",
+            b -> b.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
     private ModComponents() {}
 }

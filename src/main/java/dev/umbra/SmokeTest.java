@@ -1360,6 +1360,10 @@ final class SmokeTest {
         check(dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD), new ItemStack(ModItems.ECHO_QUARTZ.get()), cost).isEmpty(), "and does not know foreign gear");
         ItemStack pinned = dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE), new ItemStack(ModItems.ASH_CLASP.get()), cost);
         check(dev.umbra.gear.Gear.ASH_CLASP.equals(pinned.get(dev.umbra.registry.ModComponents.ARTIFACT.get())) && cost[0] == 1, "and pins an artifact on a chestplate");
+        ItemStack infused = dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD), new ItemStack(ModItems.TROPHIES.get("watcher").get()), cost);
+        check("watcher".equals(infused.get(dev.umbra.registry.ModComponents.INFUSION.get())) && cost[0] == 1
+                && dev.umbra.craft.GloomAnvilMenu.result(new ItemStack(net.minecraft.world.item.Items.IRON_CHESTPLATE), new ItemStack(ModItems.TROPHIES.get("watcher").get()), cost).isEmpty(),
+                "2.6: the anvil infuses a boss's relic into a weapon, not into armour");
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
         fake.getInventory().clearContent();
@@ -1465,6 +1469,26 @@ final class SmokeTest {
         dev.umbra.gear.WeaponEvents.setTick(fake);
         check(on && !fake.entityTags().contains("umbra_set_gloom"), "a full set is noticed, and so is a broken one");
         wear(fake, null, 1);
+
+        // 2.6: Yan's errands: asked, waited for, rewarded with a blueprint
+        dev.umbra.journal.Journal.clear(fake);
+        fake.setData(dev.umbra.registry.ModAttachments.QUESTS_ACTIVE, java.util.List.of());
+        var first = dev.umbra.lighthouse.YanErrands.current(fake);
+        boolean asked = dev.umbra.lighthouse.YanErrands.talk(fake) && dev.umbra.lighthouse.YanErrands.active(fake, first);
+        boolean waits = dev.umbra.lighthouse.YanErrands.talk(fake) && !dev.umbra.journal.Journal.has(fake, first.gift());
+        dev.umbra.journal.Journal.unlock(fake, first.needs());
+        dev.umbra.lighthouse.YanErrands.talk(fake);
+        check(asked && waits && dev.umbra.journal.Journal.has(fake, first.gift()) && dev.umbra.lighthouse.YanErrands.current(fake) != first,
+                "Yan gives an errand, waits for it, and pays with a blueprint");
+        var bellTarget = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
+        if (bellTarget != null) {
+            bellTarget.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 3.5, 0, 0);
+            level.addFreshEntity(bellTarget);
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);
+            int rang = dev.umbra.lighthouse.YanErrands.KeeperBellItem.ring(level, fake);
+            check(rang >= 1 && bellTarget.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "the Keeper's bell makes the dark stagger back");
+            bellTarget.discard();
+        }
 
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);

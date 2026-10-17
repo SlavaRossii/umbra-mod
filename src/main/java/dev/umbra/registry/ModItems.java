@@ -176,6 +176,14 @@ public final class ModItems {
     public static final DeferredItem<dev.umbra.gear.RangedWeapons.EchoStaffItem> ECHO_STAFF = ITEMS.registerItem("echo_staff",
             dev.umbra.gear.RangedWeapons.EchoStaffItem::new, p -> p.stacksTo(1).durability(250).rarity(Rarity.RARE));
 
+    // --- 2.6: Yan's gifts ---
+    public static final DeferredItem<dev.umbra.lighthouse.YanErrands.MartaLanternItem> MARTA_LANTERN = ITEMS.registerItem("marta_lantern",
+            dev.umbra.lighthouse.YanErrands.MartaLanternItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<dev.umbra.lighthouse.YanErrands.YanSpyglassItem> YAN_SPYGLASS = ITEMS.registerItem("yan_spyglass",
+            dev.umbra.lighthouse.YanErrands.YanSpyglassItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE));
+    public static final DeferredItem<dev.umbra.lighthouse.YanErrands.KeeperBellItem> KEEPER_BELL = ITEMS.registerItem("keeper_bell",
+            dev.umbra.lighthouse.YanErrands.KeeperBellItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE));
+
     /** Damage and speed as vanilla counts them (on top of the hand's 1 and 4), and extra reach. */
     private static net.minecraft.world.item.component.ItemAttributeModifiers weapon(String name, double damage, double speed, double reach) {
         var b = net.minecraft.world.item.component.ItemAttributeModifiers.builder()

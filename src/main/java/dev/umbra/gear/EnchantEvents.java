@@ -194,6 +194,10 @@ public final class EnchantEvents {
 
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
+        String inf = stack.get(ModComponents.INFUSION.get());
+        if (inf != null) event.getToolTip().add(Component.translatable("infusion.umbra." + inf).withStyle(ChatFormatting.GOLD));
+        else if (dev.umbra.craft.Infusions.relicOf(stack) != null)
+            event.getToolTip().add(Component.translatable("infusion.umbra.how").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         String a = stack.get(ModComponents.ARTIFACT.get());
         if (a != null) {
             event.getToolTip().add(Component.translatable("artifact.umbra." + a).withStyle(ChatFormatting.GOLD));
