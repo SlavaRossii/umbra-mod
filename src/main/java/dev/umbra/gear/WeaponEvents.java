@@ -87,7 +87,7 @@ public final class WeaponEvents {
         if (echoing || !(event.getSource().getEntity() instanceof ServerPlayer player) || event.getSource().getDirectEntity() != player) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         LivingEntity target = event.getEntity();
-        float dealt = event.getNewDamage();
+        float dealt = event.getHealthDamage();
         var hand = player.getMainHandItem();
         echoing = true;
         try {
@@ -106,8 +106,7 @@ public final class WeaponEvents {
                 Vec3 back = target.position().subtract(Vec3.directionFromRotation(0.0F, target.yBodyRot).scale(0.8));
                 level.sendParticles(ParticleTypes.SQUID_INK, back.x, back.y + 1.0, back.z, 12, 0.2, 0.5, 0.2, 0.02);
                 level.playSound(null, back.x, back.y, back.z, SoundEvents.PHANTOM_BITE, SoundSource.PLAYERS, 0.8F, 0.6F);
-                target.invulnerableTime = 0;
-                target.hurtServer(level, level.damageSources().playerAttack(player), Math.max(1.0F, dealt * 0.5F));
+                EnchantEvents.later(level, target, player, 11, Math.max(1.0F, dealt * 0.5F));
             }
         } finally {
             echoing = false;

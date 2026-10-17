@@ -66,6 +66,11 @@ public final class EnchantEvents {
         ECHOES.add(new Echo(level, event.getEntity().getUUID(), player.getUUID(), level.getGameTime() + 5, event.getHealthDamage() * 0.35F * lvl));
     }
 
+    /** A blow that lands a little later (Echo, Shadow Cut): after the target's moment of invulnerability. */
+    public static void later(ServerLevel level, LivingEntity target, Player owner, int ticks, float damage) {
+        ECHOES.add(new Echo(level, target.getUUID(), owner.getUUID(), level.getGameTime() + ticks, damage));
+    }
+
     /** Resonance: a melee blow rings on in every monster within three blocks of the one struck (a third as hard). */
     public static void onResonance(LivingDamageEvent.Post event) {
         if (echoing) return;
