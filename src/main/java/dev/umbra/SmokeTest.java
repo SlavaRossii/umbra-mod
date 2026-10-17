@@ -578,7 +578,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 100 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 100, "journal has 100 distinct entries");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 101 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 101, "journal has 101 distinct entries");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1520,6 +1520,18 @@ final class SmokeTest {
             weeper.discard();
             level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).forEach(net.minecraft.world.entity.Entity::discard);
         }
+
+        // 2.6: New Game+: the circle makes the dark stronger, a boss more so
+        var c1 = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
+        var w1 = ModEntities.WATCHER.get().create(level, EntitySpawnReason.COMMAND);
+        if (c1 != null && w1 != null) {
+            float ch = c1.getMaxHealth(), wh = w1.getMaxHealth();
+            dev.umbra.ending.Cycle.apply(c1, 2);
+            dev.umbra.ending.Cycle.apply(w1, 2);
+            check(Math.abs(c1.getMaxHealth() - ch * 1.5F) < 0.1F && Math.abs(w1.getMaxHealth() - wh * 2.0F) < 0.1F && c1.getHealth() == c1.getMaxHealth(),
+                    "in the second turn of the circle creatures have +50% health, bosses +100% (" + c1.getMaxHealth() + ", " + w1.getMaxHealth() + ")");
+        }
+        check(dev.umbra.ending.Cycle.get(level) == 0, "a new world starts at the first turn of the circle");
 
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);

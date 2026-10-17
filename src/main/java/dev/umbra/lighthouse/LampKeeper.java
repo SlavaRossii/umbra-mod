@@ -72,6 +72,12 @@ public class LampKeeper extends PathfinderMob {
         if (!(player instanceof ServerPlayer sp) || !(this.level() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
         int lamp = lampLevel(level, getX(), getZ());
         this.playSound(dev.umbra.registry.ModSounds.YAN.value(), 1.0F, getVoicePitch());
+        // 2.6: after an ending, crouch and speak to him to turn the circle (New Game+)
+        if (dev.umbra.ending.Endings.chosen(sp) && sp.isShiftKeyDown()) {
+            dev.umbra.ending.Cycle.begin(sp);
+            sp.sendSystemMessage(Component.translatable("dialogue.umbra.yan.cycle").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            return InteractionResult.SUCCESS;
+        }
         // 2.6: once the lamp burns, Yan has errands (the lamp's own reward comes first)
         if (lamp >= 1 && Journal.has(sp, "yan_1") && !dev.umbra.ending.Endings.chosen(sp)
                 && !(lamp >= LighthouseLampBlock.MAX_LEVEL && !Journal.has(sp, "yan_4")) && YanErrands.talk(sp)) return InteractionResult.SUCCESS;
@@ -97,6 +103,7 @@ public class LampKeeper extends PathfinderMob {
             line = "dialogue.umbra.yan.level" + lamp;
         }
         sp.sendSystemMessage(Component.translatable(line).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        if (dev.umbra.ending.Endings.chosen(sp)) sp.sendSystemMessage(Component.translatable("dialogue.umbra.yan.offer").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         return InteractionResult.SUCCESS;
     }
 

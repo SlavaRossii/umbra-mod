@@ -34,7 +34,9 @@ public final class Journal {
             // 2.6: Yan's gifts for his errands
             "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell",
             // 2.6: who throws from the dark and who rings the bell
-            "weeper", "bellringer"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
+            "weeper", "bellringer",
+            // 2.6: the circle turns
+            "new_cycle"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
     public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests", "atlas"};

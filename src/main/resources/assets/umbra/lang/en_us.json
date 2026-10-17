@@ -787,5 +787,10 @@
   "journal.umbra.bellringer.title": "The Bellringer",
   "journal.umbra.bellringer.look": "Hunched in sackcloth, a bronze bell in hand. It stands by the village bell.",
   "journal.umbra.bellringer.text": "When it rings, your head swims and every creature around comes to the sound.",
-  "journal.umbra.bellringer.weak": "It rings once in ten seconds and only up close: stay beyond twelve blocks and strike from afar. Light chokes the bell."
+  "journal.umbra.bellringer.weak": "It rings once in ten seconds and only up close: stay beyond twelve blocks and strike from afar. Light chokes the bell.",
+  "message.umbra.cycle": "The circle has turned. This is the %s-th. The dark remembers you, and it is stronger.",
+  "dialogue.umbra.yan.cycle": "Yan: “Again, then. The lamp remembers the way. Go, and come back.”",
+  "dialogue.umbra.yan.offer": "Yan: “If you want to walk this road once more, crouch and tell me. The dark will be fiercer, but it will give more too.”",
+  "journal.umbra.new_cycle.title": "The Circle Turns",
+  "journal.umbra.new_cycle.text": "Yan turned the circle. All as it was, only the creatures are tougher and the bosses call shades. But they leave more behind."
 }

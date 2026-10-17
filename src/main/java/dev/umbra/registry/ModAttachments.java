@@ -90,6 +90,12 @@ public final class ModAttachments {
                     .build());
 
     /** On a village cell's chosen chunk: packed bell position once built; MIN = not built, MAX = no village here. */
+    /** 2.6, on the overworld level: how many times the circle has turned (New Game+). */
+    public static final Supplier<AttachmentType<Integer>> CYCLE = ATTACHMENTS.register("cycle",
+            () -> AttachmentType.builder(() -> 0)
+                    .serialize(Codec.INT.fieldOf("cycle"))
+                    .build());
+
     /** On the Underside level: the platform of the one lighthouse, once it is raised (Long.MIN_VALUE before). */
     public static final Supplier<AttachmentType<Long>> LIGHTHOUSE = ATTACHMENTS.register("lighthouse",
             () -> AttachmentType.builder(() -> Long.MIN_VALUE)
