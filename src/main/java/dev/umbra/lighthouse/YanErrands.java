@@ -50,7 +50,7 @@ public final class YanErrands {
     public static final List<String> GIFTS = ALL.stream().map(Errand::gift).toList();
 
     /** The errand Yan is on with this player now (the first not done), or null when all are done. */
-    public static Errand current(Player player) {
+    public static Errand current(ServerPlayer player) {
         for (Errand e : ALL) if (!Journal.has(player, e.gift())) return e;
         return null;
     }
@@ -143,7 +143,11 @@ public final class YanErrands {
             int n = 0;
             for (Mob m : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(RADIUS), x -> x.isAlive() && dev.umbra.gear.WeaponEvents.dark(x))) {
                 Vec3 away = m.position().subtract(player.position()).multiply(1, 0, 1);
-                if (away.lengthSqr() > 1.0E-4) m.knockback(1.2, -away.x, -away.z);
+                if (away.lengthSqr() > 1.0E-4) {
+                    Vec3 v = away.normalize().scale(1.1);
+                    m.push(v.x, 0.35, v.z);
+                    m.hurtMarked = true;
+                }
                 m.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
                 m.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1));
                 if (m instanceof dev.umbra.boss.UmbraBoss) continue;
