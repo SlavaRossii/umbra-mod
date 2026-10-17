@@ -1449,7 +1449,7 @@ final class SmokeTest {
         }
         check(ModItems.LUMINITE_SPEAR.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.SWORDS), "the new weapons take sword enchantments");
         // the echo staff cries through what stands in a line
-        var zombie = ModEntities.SHADOW_VILLAGER.get().create(level, EntitySpawnReason.COMMAND);
+        var zombie = ModEntities.BELLRINGER.get().create(level, EntitySpawnReason.COMMAND);   // not a villager: one in a few of those is a mimic and takes no harm
         if (zombie != null) {
             zombie.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 3.5, 0, 0);
             zombie.setNoAi(true);
