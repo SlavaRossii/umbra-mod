@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "G": "umbra:gloom_ingot",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "  L",
+    " G ",
+    "S  "
+  ],
+  "result": {
+    "id": "umbra:luminite_spear",
+    "count": 1
+  }
+}

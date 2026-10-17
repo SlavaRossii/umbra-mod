@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "umbra:gloom_ingot",
+    "Q": "umbra:echo_quartz",
+    "C": "umbra:shepherd_crook"
+  },
+  "pattern": [
+    "GGQ",
+    " C "
+  ],
+  "result": {
+    "id": "umbra:shepherd_scythe",
+    "count": 1
+  }
+}

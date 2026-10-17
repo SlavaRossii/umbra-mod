@@ -60,15 +60,15 @@ public final class Journal {
     public static final Map<String, List<String>> RECIPES = Map.ofEntries(
             Map.entry("start", List.of("journal", "sedative")),
             // 1.8.2: the lamp is what you find yourself; the rest of the craft is the Keepers' (see the keeper_N pages)
-            Map.entry("luminite", List.of("luminite_lamp")),
-            Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic")),
+            Map.entry("luminite", List.of("luminite_lamp", "luminite_spear")),
+            Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic", "shadow_dagger")),
             Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
                     "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass",
                     "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection")),
             Map.entry("watcher", List.of("underside_key")),
             Map.entry("mimic_queen", List.of("underside_key")),
-            Map.entry("shepherd", List.of("underside_key")),
+            Map.entry("shepherd", List.of("underside_key", "shepherd_scythe")),
             Map.entry("doppelganger", List.of("underside_key")),
             Map.entry("insight_1", List.of("whisper_table")),
             // the Keepers of the Vein: notes of the miners who guarded the luminite, one craft per page

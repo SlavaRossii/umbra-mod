@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "umbra:shadow_shard",
+    "I": "minecraft:stick"
+  },
+  "pattern": [
+    "S",
+    "S",
+    "I"
+  ],
+  "result": {
+    "id": "umbra:shadow_dagger",
+    "count": 1
+  }
+}

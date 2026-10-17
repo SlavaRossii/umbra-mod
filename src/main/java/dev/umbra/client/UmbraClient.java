@@ -167,6 +167,10 @@ public final class UmbraClient {
                 if (net.minecraft.locale.Language.getInstance().has(key))
                     event.getToolTip().add(net.minecraft.network.chat.Component.translatable(key)
                             .withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
+                int[] piece = dev.umbra.gear.Gear.piece(event.getItemStack());
+                if (piece != null)
+                    event.getToolTip().add(net.minecraft.network.chat.Component.translatable("set.umbra." + dev.umbra.gear.Gear.SETS[piece[0]])
+                            .withStyle(net.minecraft.ChatFormatting.DARK_AQUA));
             }
             if (!(event.getItemStack().getItem() instanceof dev.umbra.madness.DespairBladeItem) || event.getEntity() == null) return;
             float bonus = dev.umbra.madness.DespairBladeItem.bonus(event.getEntity());

@@ -101,6 +101,9 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onAnvil);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onTooltip);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.EnchantEvents::onIncoming);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onIncoming);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDamage);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDeath);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
     }
@@ -161,6 +164,7 @@ public class Umbra {
         Sanity.tick(player);
         dev.umbra.registry.ModEffects.tick(player);
         dev.umbra.gear.Gear.tick(player);
+        dev.umbra.gear.WeaponEvents.setTick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);

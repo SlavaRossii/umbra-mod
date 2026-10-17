@@ -160,6 +160,27 @@ public final class ModItems {
             dev.umbra.madness.SilenceTinctureItem::new, p -> p.stacksTo(8).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<dev.umbra.madness.MadmanMaskItem> MADMAN_MASK = ITEMS.registerItem("madman_mask",
             dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
+    // --- 2.5: weapons ---
+    public static final DeferredItem<Item> LUMINITE_SPEAR = ITEMS.registerSimpleItem("luminite_spear", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.8F)
+            .attributes(weapon("spear", 7.0, -2.8, 1.5)).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<Item> SHEPHERD_SCYTHE = ITEMS.registerSimpleItem("shepherd_scythe", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -3.0F)
+            .attributes(weapon("scythe", 8.0, -3.0, 0.5)).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> SHADOW_DAGGER = ITEMS.registerSimpleItem("shadow_dagger", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -1.4F)
+            .attributes(weapon("dagger", 4.0, -1.4, -0.5)).rarity(Rarity.UNCOMMON));
+
+    /** Damage and speed as vanilla counts them (on top of the hand's 1 and 4), and extra reach. */
+    private static net.minecraft.world.item.component.ItemAttributeModifiers weapon(String name, double damage, double speed, double reach) {
+        var b = net.minecraft.world.item.component.ItemAttributeModifiers.builder()
+                .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                        Item.BASE_ATTACK_DAMAGE_ID, damage, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE), net.minecraft.world.entity.EquipmentSlotGroup.MAINHAND)
+                .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                        Item.BASE_ATTACK_SPEED_ID, speed, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE), net.minecraft.world.entity.EquipmentSlotGroup.MAINHAND);
+        if (reach != 0) b.add(net.minecraft.world.entity.ai.attributes.Attributes.ENTITY_INTERACTION_RANGE, new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, name + "_reach"), reach, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE),
+                net.minecraft.world.entity.EquipmentSlotGroup.MAINHAND);
+        return b.build();
+    }
+
     public static final DeferredItem<dev.umbra.madness.DespairBladeItem> DESPAIR_BLADE = ITEMS.registerItem("despair_blade",
             dev.umbra.madness.DespairBladeItem::new, p -> p.sword(ModMaterials.GLOOM_TOOLS, 4.0F, -2.4F).rarity(Rarity.EPIC));
 

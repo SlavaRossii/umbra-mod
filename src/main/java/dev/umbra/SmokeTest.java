@@ -1102,7 +1102,7 @@ final class SmokeTest {
         var reg = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
         int found = 0;
         for (var key : dev.umbra.gear.Gear.ALL_ENCHANTS) if (reg.get(key).isPresent()) found++;
-        check(found == 9, "all nine enchantments are loaded (" + found + ")");
+        check(found == 12, "all twelve enchantments are loaded (" + found + ")");
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
         reg.get(dev.umbra.gear.Gear.ECHO).ifPresent(h -> sword.enchant(h, 2));
         check(dev.umbra.gear.Gear.level(level, sword, dev.umbra.gear.Gear.ECHO) == 2, "a sword can carry Echo");
@@ -1406,6 +1406,35 @@ final class SmokeTest {
         level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(sh).inflate(3)).forEach(net.minecraft.world.entity.Entity::discard);
         level.setBlock(sh, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        // 2.5: the weapons and their enchantments
+        var crawler = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
+        if (crawler != null) {
+            crawler.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 2.5, 0, 0);       // facing south (+z)
+            crawler.setYBodyRot(0);
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 0.5, 0, 0);         // in front of it (north)
+            fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.LUMINITE_SPEAR.get()));
+            float spear = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
+            fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SHADOW_DAGGER.get()));
+            float front = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
+            fake.snapTo(a.getX() + 0.5, a.getY(), a.getZ() + 4.5, 0, 0);         // behind it
+            float back = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
+            ItemStack radiant = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+            level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).get(dev.umbra.gear.Gear.RADIANCE).ifPresent(h -> radiant.enchant(h, 2));
+            fake.setItemInHand(InteractionHand.MAIN_HAND, radiant);
+            float rad = dev.umbra.gear.WeaponEvents.modify(fake, crawler, 5.0F);
+            check(spear == 8.0F && front == 5.0F && back == 10.0F && rad == 8.0F, "spear +3, dagger x2 from behind, Radiance II +3 (" + spear + ", " + front + "/" + back + ", " + rad + ")");
+            fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        }
+        check(ModItems.LUMINITE_SPEAR.get().getDefaultInstance().is(net.minecraft.tags.ItemTags.SWORDS), "the new weapons take sword enchantments");
+        wear(fake, "gloom", 2);
+        fake.tickCount = 11;
+        dev.umbra.gear.WeaponEvents.setTick(fake);
+        boolean on = fake.entityTags().contains("umbra_set_gloom");
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
+        dev.umbra.gear.WeaponEvents.setTick(fake);
+        check(on && !fake.entityTags().contains("umbra_set_gloom"), "a full set is noticed, and so is a broken one");
+        wear(fake, null, 1);
 
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);
