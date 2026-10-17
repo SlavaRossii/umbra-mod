@@ -136,7 +136,7 @@ public final class Depths {
         cage(level, ModEntities.CRAWLER.get(), o.offset(PILLARS_FROM + 16, 0, 7));
         for (int i = 0; i < 3; i++) spawn(level, ModEntities.WEEPER.get(), o.offset(PILLARS_FROM + 6 + i * 6, 1, (i % 2 == 0 ? -3 : 3)), 0);
         for (int i = 0; i < 2; i++) spawn(level, ModEntities.LURKER.get(), o.offset(GALLERY_FROM + 8 + i * 10, 1, 0), 0);
-        spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset(SANCTUM_FROM + 6, 1, 0), 9.0);   // the Drowned Keeper
+        spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset(SANCTUM_FROM + 6, 1, 0), 4.0);   // the Drowned Keeper
     }
 
     /** Half-width of the halls along x: the landing narrow, the gallery a corridor, the halls wide. */
