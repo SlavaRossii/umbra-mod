@@ -77,6 +77,8 @@ final class SmokeTest {
     private static final int LIFE_END = LIFE_FROM + 480;
     /** Then the onslaught on a lighthouse (see {@link #raidTick}). */
     private static final int RAID_END = LIFE_END + 220;
+    /** Then the server part (see SmokeMulti): two players at once. */
+    private static final int MULTI_END = RAID_END + 80;
 
     private static int tick;
     private static final List<String> failures = new ArrayList<>();
@@ -140,10 +142,11 @@ final class SmokeTest {
                 case 673 -> testEndings22(level);
                 case 674 -> testCraft23(level);
                 case 676 -> testDepths26(server);
-                case RAID_END -> finish(server);
+                case MULTI_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
                     if (tick > LIFE_END && tick < RAID_END) raidTick(level, tick - LIFE_END);
+                    if (tick > RAID_END && tick < MULTI_END) SmokeMulti.tick(server, level, tick - RAID_END);
                 }
             }
         } catch (Throwable t) {

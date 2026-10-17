@@ -63,14 +63,32 @@ public final class MimicManager {
             AWAY.put(player.getUUID(), 0);
             float chance = Math.min(0.95F, 0.6F * (float) Math.sqrt(Sanity.dread(player)));
             if (away >= MIN_AWAY_TICKS && !player.isCreative() && !dev.umbra.light.WardBlock.protects(level, net.minecraft.world.phys.Vec3.atCenterOf(home)) && UmbraConfig.on(UmbraConfig.MIMICS) && level.getRandom().nextFloat() < chance) {
-                int count = 1 + level.getRandom().nextInt(2);
-                int placed = substitute(level, home, count, level.getRandom());
+                // a shared base on a server: each returning player brings something back, but the house fills up only so far
+                int count = Math.min(1 + level.getRandom().nextInt(2), MAX_AT_HOME - mimicsAround(level, home));
+                int placed = count <= 0 ? 0 : substitute(level, home, count, level.getRandom());
                 Umbra.LOGGER.debug("Placed {} mimics around {}'s home", placed, player.getName().getString());
             }
         }
     }
 
     private static final int WILD_INTERVAL = 20 * 60;
+    /** At most this many mimics hide in one home at a time, however many people live there. */
+    public static final int MAX_AT_HOME = 4;
+
+    public static int mimicsAround(ServerLevel level, BlockPos home) {
+        int n = 0;
+        for (BlockPos p : BlockPos.betweenClosed(home.offset(-SEARCH_RADIUS, -SEARCH_HEIGHT, -SEARCH_RADIUS), home.offset(SEARCH_RADIUS, SEARCH_HEIGHT, SEARCH_RADIUS))) {
+            if (level.isLoaded(p) && level.getBlockState(p).getBlock() instanceof MimicBlock) n++;
+        }
+        return n;
+    }
+
+    /** Players (in survival) within 32 blocks, this one included: a group shares one helping of mimics, not one each. */
+    private static int group(ServerLevel level, ServerPlayer player) {
+        int n = 0;
+        for (ServerPlayer p : level.players()) if (!p.isSpectator() && !p.isCreative() && p.distanceToSqr(player) < 32 * 32) n++;
+        return Math.max(1, n);
+    }
 
     /**
      * Out in the world: underground an ore you are about to mine may be a mimic; at night, away from home,
@@ -80,7 +98,7 @@ public final class MimicManager {
         if (player.isCreative() || !UmbraConfig.on(UmbraConfig.MIMICS)) return;
         if (dev.umbra.light.WardBlock.protects(player)) return;
         RandomSource random = level.getRandom();
-        float dread = (float) Math.sqrt(Sanity.dread(player));
+        float dread = (float) Math.sqrt(Sanity.dread(player)) / group(level, player);
         boolean underground = dev.umbra.util.UmbraUtil.skyLight(level, player.blockPosition()) == 0 && player.getY() < 64;
         if (underground) {
             if (random.nextFloat() < 0.3F * dread) substituteNear(level, player, true, random);

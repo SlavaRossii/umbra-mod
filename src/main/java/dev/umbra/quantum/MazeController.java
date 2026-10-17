@@ -78,7 +78,7 @@ public final class MazeController {
             rt.data = null;
             next.start(new MazeContext(level, corner, inside, rt.columns, rt, 0));
             for (ServerPlayer p : inside) {
-                level.playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.WARDEN_HEARTBEAT, SoundSource.AMBIENT, 0.8F, 0.5F);
+                dev.umbra.util.Private.sound(p, SoundEvents.WARDEN_HEARTBEAT, SoundSource.AMBIENT, 0.8F, 0.5F);
             }
         }
         rt.ticksInPattern += ACTIVE_INTERVAL;
