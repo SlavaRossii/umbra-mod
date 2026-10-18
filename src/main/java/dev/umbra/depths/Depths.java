@@ -38,27 +38,98 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * 2.6: the Depths, the drowned halls of the Keepers. One sealed place for the whole world, deep in the rock of the
- * Underside far from everything (like the citadel's pocket), reached with the Key of the Depths from any water of the
- * Underside, and left the same way. Built on the first visit:
- * <ol>
- *   <li>the landing: a stair of stone out of a black pool, Keepers' lamps on the walls;</li>
- *   <li>the drowned gallery: water to the chin, a strip of air under the vault, and things in the water;</li>
- *   <li>the hall of pillars: dry, with cages that call the dark and Weepers in the gloom;</li>
- *   <li>the sanctum: the Drowned Keeper, and what the Keepers kept: a chest and their pearl.</li>
- * </ol>
+ * The Depths, the drowned halls of the Keepers. One sealed place for the whole world, deep in the rock of the
+ * Underside far from everything, reached with the Key of the Depths from any water of the Underside, and left the
+ * same way. Built on the first visit.
+ * <p>
+ * 2.7: drowned to the vault, every hall of it, and no air anywhere (the key gives one long breath; bring your own
+ * after that). The halls branch and wind: a landing, a gallery with two bell chambers off it, the hall of pillars
+ * with two valve rooms, a crossing to the north with a third valve, a fourth bell in a crypt, and behind three sluice
+ * gates the sanctum. What is to be done here:
+ * <ul>
+ *   <li>the Keepers' lamps have gone out: a luminite crystal lights one (light under water, and the mind mends near it);</li>
+ *   <li>three valves, one gate each: turn all three and the way to the sanctum is open;</li>
+ *   <li>currents at the mouths of two side passages drag you into them; at their ends, caches;</li>
+ *   <li>drowned acolytes in the water; words scratched in the walls of three rooms;</li>
+ *   <li>four bells: when all have rung, the Drowned Keeper wakes in the sanctum. Beaten, the bells go quiet and can
+ *       be rung again.</li>
+ * </ul>
  */
 public final class Depths {
     private Depths() {}
 
-    public static final BlockPos ORIGIN = new BlockPos(120000, 140, 0);
-    public static final int LENGTH = 96, HALF = 14, HEIGHT = 12;
-    public static final int GALLERY_FROM = 18, PILLARS_FROM = 46, SANCTUM_FROM = 72;
+    /** 2.7: a new place (the 2.6 halls, if a world has them, are left where they were). */
+    public static final BlockPos ORIGIN = new BlockPos(120000, 140, 4000);
+    public static final int VALVES = 3, BELLS = 4;
     public static final ResourceKey<LootTable> LOOT = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "chests/depths"));
+    public static final ResourceKey<LootTable> CACHE = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "chests/depths_cache"));
     private static final int FLAGS = Block.UPDATE_CLIENTS;
+    public static final String KEEPER_TAG = "umbra_drowned_keeper";
+
+    // ------------------------------------------------------------------ the plan (x east, z south, y up from the floor)
+
+    /** A hall: centre, half sizes, height of the water inside. */
+    public record Room(String name, int x, int z, int hx, int hz, int h) {
+        public boolean contains(BlockPos local) {
+            return Math.abs(local.getX() - x) <= hx && Math.abs(local.getZ() - z) <= hz && local.getY() >= 0 && local.getY() <= h;
+        }
+    }
+
+    public static final Room LANDING = new Room("landing", 0, 0, 4, 4, 6);
+    public static final Room GALLERY = new Room("gallery", 0, -28, 8, 5, 7);
+    public static final Room BELL_W = new Room("bell_w", -32, -30, 4, 4, 7);
+    public static final Room BELL_E = new Room("bell_e", 32, -22, 4, 4, 7);
+    public static final Room PILLARS = new Room("pillars", 0, -60, 11, 8, 10);
+    public static final Room VALVE_W = new Room("valve_w", -34, -68, 4, 4, 6);
+    public static final Room VALVE_E = new Room("valve_e", 34, -74, 4, 4, 6);
+    public static final Room BELL_N = new Room("bell_n", 24, -100, 5, 4, 8);
+    public static final Room VALVE_N = new Room("valve_n", -28, -102, 4, 4, 6);
+    public static final Room CRYPT = new Room("crypt", -14, -124, 4, 4, 7);
+    public static final Room CACHE_W = new Room("cache_w", -46, -47, 2, 2, 3);
+    public static final Room CACHE_E = new Room("cache_e", 46, -41, 2, 2, 3);
+    public static final Room SANCTUM = new Room("sanctum", 0, -152, 10, 10, 12);
+    public static final java.util.List<Room> ROOMS = java.util.List.of(LANDING, GALLERY, BELL_W, BELL_E, PILLARS, VALVE_W, VALVE_E, BELL_N, VALVE_N, CRYPT, CACHE_W, CACHE_E, SANCTUM);
+
+    /** Passages: runs of straight pieces through these points, three wide and four high. */
+    public static final int[][][] PASSAGES = {
+            {{0, -4}, {0, -10}, {6, -10}, {6, -17}, {0, -17}, {0, -23}},                       // landing - gallery
+            {{-8, -28}, {-16, -28}, {-16, -36}, {-24, -36}, {-24, -30}, {-28, -30}},            // gallery - west bell
+            {{8, -28}, {18, -28}, {18, -20}, {28, -20}, {28, -22}},                            // gallery - east bell
+            {{0, -33}, {0, -40}, {-6, -40}, {-6, -46}, {0, -46}, {0, -52}},                    // gallery - pillars
+            {{-11, -60}, {-20, -60}, {-20, -68}, {-30, -68}},                                  // pillars - west valve
+            {{11, -62}, {22, -62}, {22, -74}, {30, -74}},                                      // pillars - east valve
+            {{0, -68}, {0, -80}, {8, -80}, {8, -88}, {0, -88}},                                // pillars - the crossing
+            {{0, -88}, {14, -88}, {14, -100}, {19, -100}},                                     // crossing - north bell
+            {{0, -88}, {-16, -88}, {-16, -102}, {-24, -102}},                                  // crossing - north valve
+            {{0, -88}, {0, -100}, {-6, -100}, {-6, -112}, {0, -112}, {0, -142}},               // crossing - the gates - sanctum
+            {{-6, -106}, {-14, -106}, {-14, -120}},                                            // to the crypt
+            {{-36, -30}, {-46, -30}, {-46, -45}},                                              // west bell - its cache (current)
+            {{36, -22}, {46, -22}, {46, -39}},                                                 // east bell - its cache (current)
+    };
+
+    /** Where the sluice gates stand across the last passage, nearest first. */
+    public static final int[] GATES_Z = {-120, -127, -134};
+
+    /** Currents: box (min x, min z, max x, max z, in local coords) and the push (dx, dz). */
+    public static final int[][] CURRENTS = {
+            {-46, -31, -36, -29, -1, 0}, {-47, -45, -45, -31, 0, -1},     // into the west cache
+            {36, -23, 46, -21, 1, 0}, {45, -39, 47, -23, 0, -1},          // into the east cache
+    };
+
+    public static final BlockPos[] VALVE_AT = {local(VALVE_W.x - VALVE_W.hx, 2, VALVE_W.z), local(VALVE_E.x + VALVE_E.hx, 2, VALVE_E.z), local(VALVE_N.x - VALVE_N.hx, 2, VALVE_N.z)};
+    public static final BlockPos[] BELL_AT = {local(BELL_W.x, 2, BELL_W.z), local(BELL_E.x, 2, BELL_E.z), local(BELL_N.x, 2, BELL_N.z), local(CRYPT.x, 2, CRYPT.z)};
+    public static final BlockPos CHEST_AT = local(SANCTUM.x, 2, SANCTUM.z - SANCTUM.hz + 2);
+    public static final BlockPos BOSS_AT = local(SANCTUM.x, 2, SANCTUM.z);
+    public static final BlockPos ARRIVAL = local(0, 2, 0);
+
+    private static BlockPos local(int x, int y, int z) {
+        return ORIGIN.offset(x, y, z);
+    }
+
+    // ------------------------------------------------------------------ where things are
 
     public static AABB bounds() {
-        return new AABB(ORIGIN.getX() - 4, ORIGIN.getY() - 4, ORIGIN.getZ() - HALF - 2, ORIGIN.getX() + LENGTH + 2, ORIGIN.getY() + HEIGHT + 3, ORIGIN.getZ() + HALF + 2);
+        return new AABB(ORIGIN.getX() - 52, ORIGIN.getY() - 4, ORIGIN.getZ() - 166, ORIGIN.getX() + 52, ORIGIN.getY() + 16, ORIGIN.getZ() + 8);
     }
 
     public static boolean inside(Player p) {
@@ -66,17 +137,28 @@ public final class Depths {
     }
 
     public static boolean isBuilt(ServerLevel level) {
-        return level.getBlockState(ORIGIN.offset(-3, -3, 0)).is(Blocks.DEEPSLATE_TILES) && level.getBlockState(ORIGIN.offset(2, 1, 0)).isAir();
+        return level.getBlockState(BOSS_AT.below()).is(Blocks.POLISHED_DEEPSLATE) && level.getBlockState(ARRIVAL).is(Blocks.WATER);
     }
 
-    /** Into the Depths (built on the first visit); the way back is remembered. */
+    /** The hall a position is in, or null (in a passage, or outside). */
+    public static Room roomAt(BlockPos p) {
+        BlockPos l = p.subtract(ORIGIN);
+        for (Room r : ROOMS) if (r.contains(l)) return r;
+        return null;
+    }
+
+    /** Into the Depths (built on the first visit); the way back is remembered. The key gives one long breath. */
     public static void enter(ServerLevel underside, ServerPlayer player) {
         if (!isBuilt(underside)) build(underside, underside.getRandom());
         player.setData(ModAttachments.DEPTHS_RETURN, player.blockPosition().asLong());
         Journal.unlock(player, "depths");
         player.sendSystemMessage(Component.translatable("message.umbra.depths.enter").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.ITALIC));
-        player.teleport(new TeleportTransition(underside, Vec3.atBottomCenterOf(ORIGIN.offset(3, 1, 0)), Vec3.ZERO, -90.0F, 0.0F, TeleportTransition.PLAY_PORTAL_SOUND));
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WATER_BREATHING, BREATH, 0, false, true, true));
+        player.teleport(new TeleportTransition(underside, Vec3.atBottomCenterOf(ARRIVAL), Vec3.ZERO, 180.0F, 0.0F, TeleportTransition.PLAY_PORTAL_SOUND));
     }
+
+    /** The one long breath the key gives on the way down. */
+    public static final int BREATH = 20 * 90;
 
     /** Back to the water you came down through. */
     public static void leave(ServerLevel underside, ServerPlayer player) {
@@ -88,67 +170,96 @@ public final class Depths {
     // ------------------------------------------------------------------ building
 
     public static void build(ServerLevel level, RandomSource random) {
-        BlockPos o = ORIGIN;
+        // 1. what is hollow: halls and passages, as a set of local positions
+        java.util.Set<Long> hollow = new java.util.HashSet<>();
+        for (Room r : ROOMS)
+            for (int x = -r.hx; x <= r.hx; x++)
+                for (int z = -r.hz; z <= r.hz; z++)
+                    for (int y = 1; y <= r.h; y++) hollow.add(BlockPos.asLong(r.x + x, y, r.z + z));
+        for (int[][] run : PASSAGES)
+            for (int i = 0; i + 1 < run.length; i++) {
+                int x0 = run[i][0], z0 = run[i][1], x1 = run[i + 1][0], z1 = run[i + 1][1];
+                int dx = Integer.signum(x1 - x0), dz = Integer.signum(z1 - z0);
+                int x = x0, z = z0;
+                while (true) {
+                    for (int a = -1; a <= 1; a++)
+                        for (int b = -1; b <= 1; b++)
+                            for (int y = 1; y <= 4; y++) hollow.add(BlockPos.asLong(x + a, y, z + b));
+                    if (x == x1 && z == z1) break;
+                    x += dx;
+                    z += dz;
+                }
+            }
+        // 2. a skin of stone two thick round it, the floor under it, then the water
         BlockState shell = Blocks.DEEPSLATE_TILES.defaultBlockState();
-        BlockState floor = Blocks.POLISHED_DEEPSLATE.defaultBlockState();
         BlockState moss = Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
-        BlockState air = Blocks.AIR.defaultBlockState();
+        BlockState floor = Blocks.POLISHED_DEEPSLATE.defaultBlockState();
         BlockState water = Blocks.WATER.defaultBlockState();
-        BlockState lamp = ModBlocks.LUMINITE_LAMP.get().defaultBlockState();
-        // the shell, then the hollow of each hall
-        fill(level, o.offset(-3, -3, -HALF - 1), o.offset(LENGTH + 1, HEIGHT + 2, HALF + 1), shell);
-        for (int x = 0; x <= LENGTH; x++)
-            for (int z = -HALF; z <= HALF; z++) {
-                int w = width(x);
-                if (Math.abs(z) > w) continue;
-                level.setBlock(o.offset(x, 0, z), random.nextInt(7) == 0 ? moss : floor, FLAGS);
-                int top = x < GALLERY_FROM ? 8 : x < PILLARS_FROM ? 6 : x < SANCTUM_FROM ? 10 : 11;
-                for (int y = 1; y <= top; y++) level.setBlock(o.offset(x, y, z), air, FLAGS);
-            }
-        // 1. the landing: a black pool you came out of, a stair up out of it
-        for (int x = 1; x <= 6; x++)
-            for (int z = -4; z <= 4; z++)
-                for (int y = -2; y <= 0; y++) level.setBlock(o.offset(x + 6, y, z), water, FLAGS);
-        // 2. the drowned gallery: water up to y 4, a strip of air above, the way is lit from below
-        for (int x = GALLERY_FROM; x < PILLARS_FROM; x++)
-            for (int z = -width(x); z <= width(x); z++) {
-                for (int y = 1; y <= 4; y++) level.setBlock(o.offset(x, y, z), water, FLAGS);
-                if ((x + z) % 9 == 0) level.setBlock(o.offset(x, 0, z), Blocks.SEA_LANTERN.defaultBlockState(), FLAGS);
-            }
-        // 3. the hall of pillars
-        for (int x = PILLARS_FROM + 4; x < SANCTUM_FROM - 2; x += 6)
-            for (int z : new int[]{-6, 6})
-                fill(level, o.offset(x, 1, z), o.offset(x + 1, 10, z + 1), random.nextBoolean() ? moss : shell);
-        // 4. the sanctum: a dais, the chest, the pearl on a pedestal
-        fill(level, o.offset(LENGTH - 8, 1, -4), o.offset(LENGTH - 2, 1, 4), Blocks.POLISHED_DEEPSLATE.defaultBlockState());
-        BlockPos chest = o.offset(LENGTH - 4, 2, 0);
-        level.setBlock(chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, net.minecraft.core.Direction.WEST), FLAGS);
-        RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
-        // lamps of the Keepers in the walls, every few blocks, both sides
-        for (int x = 2; x < LENGTH; x += 5) {
-            int w = width(x);
-            level.setBlock(o.offset(x, 5, -w - 1), lamp, FLAGS);
-            level.setBlock(o.offset(x, 5, w + 1), lamp, FLAGS);
+        java.util.Set<Long> skin = new java.util.HashSet<>();
+        for (long h : hollow) {
+            int hx = BlockPos.getX(h), hy = BlockPos.getY(h), hz = BlockPos.getZ(h);
+            for (int a = -2; a <= 2; a++)
+                for (int b = -2; b <= 2; b++)
+                    for (int c = -2; c <= 2; c++) {
+                        long n = BlockPos.asLong(hx + a, hy + b, hz + c);
+                        if (!hollow.contains(n)) skin.add(n);
+                    }
         }
-        // the dark that lives here
-        cage(level, ModEntities.LURKER.get(), o.offset(PILLARS_FROM - 6, 0, -width(PILLARS_FROM - 6)));
-        cage(level, ModEntities.SHADE.get(), o.offset(PILLARS_FROM + 10, 0, -7));
-        cage(level, ModEntities.CRAWLER.get(), o.offset(PILLARS_FROM + 16, 0, 7));
-        for (int i = 0; i < 3; i++) spawn(level, ModEntities.WEEPER.get(), o.offset(PILLARS_FROM + 6 + i * 6, 1, (i % 2 == 0 ? -3 : 3)), 0);
-        for (int i = 0; i < 2; i++) spawn(level, ModEntities.LURKER.get(), o.offset(GALLERY_FROM + 8 + i * 10, 1, 0), 0);
-        spawn(level, ModEntities.CITADEL_KEEPER.get(), o.offset(SANCTUM_FROM + 6, 1, 0), 4.0);   // the Drowned Keeper
+        for (long n : skin) {
+            BlockPos p = ORIGIN.offset(BlockPos.getX(n), BlockPos.getY(n), BlockPos.getZ(n));
+            boolean underfoot = hollow.contains(BlockPos.asLong(BlockPos.getX(n), BlockPos.getY(n) + 1, BlockPos.getZ(n))) && BlockPos.getY(n) == 0;
+            level.setBlock(p, underfoot ? (random.nextInt(6) == 0 ? moss : floor) : (random.nextInt(5) == 0 ? moss : shell), FLAGS);
+        }
+        for (long h : hollow) level.setBlock(ORIGIN.offset(BlockPos.getX(h), BlockPos.getY(h), BlockPos.getZ(h)), water, FLAGS);
+        // 3. the halls' furniture
+        for (int x = PILLARS.x - PILLARS.hx + 3; x <= PILLARS.x + PILLARS.hx - 3; x += 5)
+            for (int z : new int[]{PILLARS.z - 4, PILLARS.z + 4})
+                for (int y = 1; y <= PILLARS.h; y++) level.setBlock(local(x, y, z), random.nextBoolean() ? moss : shell, FLAGS);
+        BlockState lamp = ModBlocks.DEPTHS_LAMP.get().defaultBlockState();
+        for (Room r : ROOMS) {
+            if (r.hx < 3) continue;
+            for (int[] c : new int[][]{{-1, -1}, {1, 1}, {-1, 1}, {1, -1}}) {
+                if (r != SANCTUM && r != PILLARS && c[0] != c[1]) continue;    // two lamps a hall, four in the big ones
+                level.setBlock(local(r.x + c[0] * (r.hx - 1), 1, r.z + c[1] * (r.hz - 1)), lamp, FLAGS);
+            }
+        }
+        for (BlockPos v : VALVE_AT) level.setBlock(v, ModBlocks.DEPTHS_VALVE.get().defaultBlockState(), FLAGS);
+        for (BlockPos b : BELL_AT) {
+            level.setBlock(b.below(), Blocks.DEEPSLATE_BRICK_WALL.defaultBlockState().setValue(net.minecraft.world.level.block.WallBlock.WATERLOGGED, true), FLAGS);
+            level.setBlock(b, ModBlocks.DEPTHS_BELL.get().defaultBlockState(), FLAGS);
+        }
+        for (int i = 0; i < GATES_Z.length; i++) setGate(level, i, true);
+        // the sanctum: a dais, the chest, the place he sleeps
+        for (int x = -3; x <= 3; x++)
+            for (int z = -2; z <= 2; z++) level.setBlock(local(SANCTUM.x + x, 1, SANCTUM.z - SANCTUM.hz + 2 + z), Blocks.POLISHED_DEEPSLATE.defaultBlockState(), FLAGS);
+        level.setBlock(BOSS_AT.below(), Blocks.POLISHED_DEEPSLATE.defaultBlockState(), FLAGS);
+        chest(level, random, CHEST_AT, LOOT, net.minecraft.core.Direction.SOUTH);
+        chest(level, random, local(CACHE_W.x, 1, CACHE_W.z - 1), CACHE, net.minecraft.core.Direction.SOUTH);
+        chest(level, random, local(CACHE_E.x, 1, CACHE_E.z - 1), CACHE, net.minecraft.core.Direction.SOUTH);
+        // 4. the dark that lives here
+        cage(level, ModEntities.ACOLYTE.get(), local(GALLERY.x + 6, 1, GALLERY.z + 4));
+        cage(level, ModEntities.ACOLYTE.get(), local(PILLARS.x - 9, 1, PILLARS.z));
+        cage(level, ModEntities.LURKER.get(), local(PILLARS.x + 9, 1, PILLARS.z + 6));
+        for (Room r : new Room[]{GALLERY, BELL_W, BELL_E, PILLARS, VALVE_W, VALVE_E, BELL_N, VALVE_N, CRYPT})
+            spawn(level, ModEntities.ACOLYTE.get(), local(r.x + random.nextInt(3) - 1, 2, r.z + random.nextInt(3) - 1));
+        for (int i = 0; i < 2; i++) spawn(level, ModEntities.LURKER.get(), local(GALLERY.x - 4 + i * 8, 3, GALLERY.z));
     }
 
-    /** Half-width of the halls along x: the landing narrow, the gallery a corridor, the halls wide. */
-    static int width(int x) {
-        if (x < GALLERY_FROM) return 5;
-        if (x < PILLARS_FROM) return 3;
-        if (x < SANCTUM_FROM) return 10;
-        return 8;
+    private static void chest(ServerLevel level, RandomSource random, BlockPos at, ResourceKey<LootTable> loot, net.minecraft.core.Direction facing) {
+        level.setBlock(at, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, facing).setValue(ChestBlock.WATERLOGGED, true), FLAGS);
+        RandomizableContainer.setBlockEntityLootTable(level, random, at, loot);
     }
 
-    private static void fill(ServerLevel level, BlockPos a, BlockPos b, BlockState s) {
-        for (BlockPos p : BlockPos.betweenClosed(a, b)) level.setBlock(p, s, FLAGS);
+    /** Raises ({@code shut}) or lifts gate {@code i}: iron bars across the last passage. */
+    static void setGate(ServerLevel level, int i, boolean shut) {
+        BlockState bars = Blocks.IRON_BARS.defaultBlockState().setValue(net.minecraft.world.level.block.IronBarsBlock.WATERLOGGED, true)
+                .setValue(net.minecraft.world.level.block.IronBarsBlock.EAST, true).setValue(net.minecraft.world.level.block.IronBarsBlock.WEST, true);
+        for (int x = -1; x <= 1; x++)
+            for (int y = 1; y <= 4; y++) level.setBlock(local(x, y, GATES_Z[i]), shut ? bars : Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    public static boolean gateShut(ServerLevel level, int i) {
+        return level.getBlockState(local(0, 2, GATES_Z[i])).is(Blocks.IRON_BARS);
     }
 
     private static void cage(ServerLevel level, EntityType<?> type, BlockPos at) {
@@ -159,26 +270,114 @@ public final class Depths {
         }
     }
 
-    /** Spawns a guard; {@code healthTimes} > 0 makes it a mini-boss with that many times its health. */
-    private static void spawn(ServerLevel level, EntityType<? extends Mob> type, BlockPos at, double healthTimes) {
+    private static void spawn(ServerLevel level, EntityType<? extends Mob> type, BlockPos at) {
         Mob m = type.create(level, EntitySpawnReason.STRUCTURE);
         if (m == null) return;
         m.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, level.getRandom().nextFloat() * 360, 0);
         m.setPersistenceRequired();
-        if (healthTimes > 0) {
-            var hp = m.getAttribute(Attributes.MAX_HEALTH);
-            if (hp != null) hp.addOrReplacePermanentModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "drowned_keeper"),
-                    healthTimes - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-            var dmg = m.getAttribute(Attributes.ATTACK_DAMAGE);
-            if (dmg != null) dmg.addOrReplacePermanentModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "drowned_keeper_dmg"),
-                    0.6, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-            m.setHealth(m.getMaxHealth());
-            m.setCustomName(Component.translatable("entity.umbra.drowned_keeper"));
-            m.setCustomNameVisible(true);
-            m.addTag("umbra_drowned_keeper");
-        }
         level.addFreshEntity(m);
     }
+
+    // ------------------------------------------------------------------ the valves, the bells, the Keeper
+
+    /** A valve was turned: as many gates are lifted as valves stand open. Returns that number. */
+    public static int valveTurned(ServerLevel level, BlockPos at) {
+        int open = 0;
+        for (BlockPos v : VALVE_AT) {
+            BlockState s = level.getBlockState(v);
+            if (s.getBlock() instanceof DepthsBlocks.Valve && s.getValue(DepthsBlocks.ON)) open++;
+        }
+        for (int i = 0; i < Math.min(open, GATES_Z.length); i++) {
+            if (!gateShut(level, i)) continue;
+            setGate(level, i, false);
+            BlockPos g = local(0, 2, GATES_Z[i]);
+            level.playSound(null, g, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 3.0F, 0.4F);
+            level.sendParticles(net.minecraft.core.particles.ParticleTypes.BUBBLE_COLUMN_UP, g.getX() + 0.5, g.getY() + 0.5, g.getZ() + 0.5, 40, 1.0, 1.2, 0.2, 0.1);
+        }
+        return open;
+    }
+
+    public static int bellsRung(ServerLevel level) {
+        int rung = 0;
+        for (BlockPos b : BELL_AT) {
+            BlockState s = level.getBlockState(b);
+            if (s.getBlock() instanceof DepthsBlocks.Bell && s.getValue(DepthsBlocks.ON)) rung++;
+        }
+        return rung;
+    }
+
+    /** A bell was rung; the fourth wakes the Keeper. Returns how many have rung. */
+    public static int bellRung(ServerLevel level, BlockPos at, ServerPlayer who) {
+        int rung = bellsRung(level);
+        if (rung >= BELLS && keeper(level) == null) wake(level, who);
+        return rung;
+    }
+
+    /** The Drowned Keeper, if he is awake. */
+    public static DrownedKeeper keeper(ServerLevel level) {
+        var list = level.getEntitiesOfClass(DrownedKeeper.class, bounds(), e -> e.isAlive());
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public static DrownedKeeper wake(ServerLevel level, ServerPlayer who) {
+        DrownedKeeper k = ModEntities.DROWNED_KEEPER.get().create(level, EntitySpawnReason.EVENT);
+        if (k == null) return null;
+        k.snapTo(BOSS_AT.getX() + 0.5, BOSS_AT.getY(), BOSS_AT.getZ() + 0.5, 0, 0);
+        k.setPersistenceRequired();
+        k.addTag(KEEPER_TAG);
+        level.addFreshEntity(k);
+        level.playSound(null, BOSS_AT, SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 3.0F, 0.5F);
+        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, bounds())) {
+            p.sendSystemMessage(Component.translatable("message.umbra.depths.wake").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.ITALIC));
+            Journal.unlock(p, "drowned_keeper");
+        }
+        return k;
+    }
+
+    /** He is beaten: the bells go quiet and can be rung again. */
+    public static void keeperDown(ServerLevel level) {
+        for (BlockPos b : BELL_AT) {
+            BlockState s = level.getBlockState(b);
+            if (s.getBlock() instanceof DepthsBlocks.Bell) level.setBlock(b, s.setValue(DepthsBlocks.ON, false), Block.UPDATE_ALL);
+        }
+    }
+
+    /** Lit lamps within reach of the sanctum's middle (they are what he cannot bear). */
+    public static int sanctumLamps(ServerLevel level) {
+        int n = 0;
+        for (BlockPos p : BlockPos.betweenClosed(local(SANCTUM.x - SANCTUM.hx, 1, SANCTUM.z - SANCTUM.hz), local(SANCTUM.x + SANCTUM.hx, 1, SANCTUM.z + SANCTUM.hz))) {
+            BlockState s = level.getBlockState(p);
+            if (s.getBlock() instanceof DepthsBlocks.Lamp && s.getValue(DepthsBlocks.ON)) n++;
+        }
+        return n;
+    }
+
+    // ------------------------------------------------------------------ every second inside
+
+    /** Every tick for every player: currents every tick, the rest once a second. */
+    public static void tick(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level) || !Underside.is(level) || !bounds().contains(player.position())) return;
+        // the currents drag
+        BlockPos l = player.blockPosition().subtract(ORIGIN);
+        if (player.isInWater() && !player.isSpectator()) {
+            for (int[] c : CURRENTS) {
+                if (l.getX() < c[0] || l.getX() > c[2] || l.getZ() < c[1] || l.getZ() > c[3]) continue;
+                player.push(c[4] * CURRENT, 0, c[5] * CURRENT);
+                player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
+                if (player.tickCount % 5 == 0)
+                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.BUBBLE, player.getX(), player.getY() + 1, player.getZ(), 4, 0.5, 0.5, 0.5, 0.1);
+                break;
+            }
+        }
+        if (player.tickCount % 20 != 9) return;
+        Room r = roomAt(player.blockPosition());
+        if (r == BELL_W) Journal.unlock(player, "depths_note_1");
+        if (r == VALVE_E) Journal.unlock(player, "depths_note_2");
+        if (r == SANCTUM) Journal.unlock(player, "depths_note_3");
+        if (dev.umbra.sanity.Sanity.enabled() && DepthsBlocks.nearLitLamp(level, player.blockPosition(), 6)) dev.umbra.sanity.Sanity.add(player, 0.5F);
+    }
+
+    public static final double CURRENT = 0.035;
 
     // ------------------------------------------------------------------ the key
 

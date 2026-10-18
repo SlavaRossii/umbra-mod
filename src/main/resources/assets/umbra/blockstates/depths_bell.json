@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "on=false,waterlogged=false": {
+      "model": "umbra:block/depths_bell"
+    },
+    "on=false,waterlogged=true": {
+      "model": "umbra:block/depths_bell"
+    },
+    "on=true,waterlogged=false": {
+      "model": "umbra:block/depths_bell_on"
+    },
+    "on=true,waterlogged=true": {
+      "model": "umbra:block/depths_bell_on"
+    }
+  }
+}

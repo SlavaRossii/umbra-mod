@@ -75,6 +75,8 @@ public final class ModTabs {
                 out.accept(ModItems.LURKER_SPAWN_EGG.get());
                 out.accept(ModItems.BLIND_SPAWN_EGG.get());
                 out.accept(ModItems.WEEPER_SPAWN_EGG.get());
+                out.accept(ModItems.ACOLYTE_SPAWN_EGG.get());
+                out.accept(ModItems.DROWNED_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.BELLRINGER_SPAWN_EGG.get());
                 out.accept(ModItems.LIGHT_EATER_SPAWN_EGG.get());
                 out.accept(ModItems.MIMICKER_SPAWN_EGG.get());

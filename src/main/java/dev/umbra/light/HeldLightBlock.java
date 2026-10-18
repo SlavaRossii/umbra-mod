@@ -19,12 +19,32 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * It checks itself twice a second and disappears as soon as no lit lantern is close by,
  * so nothing is ever left behind (not even after a crash: the first tick after loading cleans it up).
  */
-public class HeldLightBlock extends Block implements DarknessProof {
+public class HeldLightBlock extends Block implements DarknessProof, net.minecraft.world.level.block.SimpleWaterloggedBlock {
     public static final int LIGHT = 12;
     private static final int CHECK = 10;
 
+    /** 2.7: under water too (the Depths are drowned): it holds the water it stands in and gives it back. */
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty WATERLOGGED =
+            net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
+
     public HeldLightBlock(Properties properties) {
         super(properties);
+        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(WATERLOGGED);
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? net.minecraft.world.level.material.Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    /** What is left when the light goes: water if it stood in water. */
+    public static BlockState after(BlockState state) {
+        return state.hasProperty(WATERLOGGED) && state.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
     }
 
     @Override
@@ -51,6 +71,6 @@ public class HeldLightBlock extends Block implements DarknessProof {
                 return;
             }
         }
-        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pos, after(state), Block.UPDATE_ALL);
     }
 }

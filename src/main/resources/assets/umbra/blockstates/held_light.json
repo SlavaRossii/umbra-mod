@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "waterlogged=false": {
+      "model": "umbra:block/held_light"
+    },
+    "waterlogged=true": {
       "model": "umbra:block/held_light"
     }
   }

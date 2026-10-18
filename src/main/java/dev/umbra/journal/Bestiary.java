@@ -38,14 +38,16 @@ public final class Bestiary {
                     Map.entry(ModEntities.CITADEL_STATUE.get(), "statue"),
                     Map.entry(ModEntities.CITADEL_KEEPER.get(), "keeper"),
                     Map.entry(ModEntities.PRIMORDIAL_SHADOW.get(), "primordial_shadow"),
-                    Map.entry(ModEntities.FALLEN_KEEPER.get(), "fallen_keeper"));
+                    Map.entry(ModEntities.FALLEN_KEEPER.get(), "fallen_keeper"),
+                    Map.entry(ModEntities.ACOLYTE.get(), "acolyte"),
+                    Map.entry(ModEntities.DROWNED_KEEPER.get(), "drowned_keeper"));
         }
         return ids;
     }
 
     /** Creature ids with a bestiary page (the same ids as their journal entries). */
     public static final List<String> CREATURES = List.of("crawler", "blind", "weeper", "bellringer", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper",
-            "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper");
+            "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper", "acolyte", "drowned_keeper");
 
     public static final List<String> BOSSES = List.of("watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow");
 

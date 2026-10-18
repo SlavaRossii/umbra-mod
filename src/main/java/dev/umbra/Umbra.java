@@ -135,6 +135,8 @@ public class Umbra {
         event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());
         event.put(ModEntities.LAMP_KEEPER.get(), dev.umbra.lighthouse.LampKeeper.createAttributes().build());
         event.put(ModEntities.FALLEN_KEEPER.get(), dev.umbra.lighthouse.FallenKeeper.createAttributes().build());
+        event.put(ModEntities.ACOLYTE.get(), dev.umbra.depths.Acolyte.createAttributes().build());
+        event.put(ModEntities.DROWNED_KEEPER.get(), dev.umbra.depths.DrownedKeeper.createAttributes().build());
         event.put(ModEntities.WATCHER.get(), Watcher.createAttributes().build());
         event.put(ModEntities.MIMIC_QUEEN.get(), MimicQueen.createAttributes().build());
         event.put(ModEntities.SHEPHERD.get(), Shepherd.createAttributes().build());
@@ -182,6 +184,7 @@ public class Umbra {
         dev.umbra.lighthouse.LighthouseManager.tick(player);
         dev.umbra.lighthouse.YanErrands.tick(player);
         dev.umbra.depths.Depths.pearlTick(player);
+        dev.umbra.depths.Depths.tick(player);
         dev.umbra.underside.UndersideAmbience.tick(player);
         dev.umbra.ending.Endings.tick(player);
         dev.umbra.night.NightEvents.tick(player);

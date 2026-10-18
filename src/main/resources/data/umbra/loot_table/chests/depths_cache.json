@@ -1,0 +1,92 @@
+{
+  "type": "minecraft:chest",
+  "random_sequence": "umbra:chests/depths_cache",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "weight": 1,
+          "modifier": [
+            {
+              "type": "minecraft:set_potion",
+              "id": "minecraft:long_water_breathing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:echo_quartz",
+          "weight": 5,
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:luminite_crystal",
+          "weight": 5,
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:gloom_ingot",
+          "weight": 4,
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:seal_shard",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "weight": 3,
+          "modifier": [
+            {
+              "type": "minecraft:set_potion",
+              "id": "minecraft:long_water_breathing"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

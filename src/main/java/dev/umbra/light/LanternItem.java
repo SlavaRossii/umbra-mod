@@ -120,6 +120,10 @@ public class LanternItem extends Item {
                 level.setBlock(p, ModBlocks.HELD_LIGHT.get().defaultBlockState(), Block.UPDATE_ALL);
                 return;
             }
+            if (s.is(net.minecraft.world.level.block.Blocks.WATER) && level.getFluidState(p).isSource()) {
+                level.setBlock(p, ModBlocks.HELD_LIGHT.get().defaultBlockState().setValue(dev.umbra.light.HeldLightBlock.WATERLOGGED, true), Block.UPDATE_ALL);
+                return;
+            }
         }
     }
 }

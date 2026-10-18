@@ -113,6 +113,8 @@ public final class ModItems {
     // --- Spawn eggs ---
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LURKER_SPAWN_EGG = ITEMS.registerItem("lurker_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LURKER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> CRAWLER_SPAWN_EGG = ITEMS.registerItem("crawler_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.CRAWLER.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> ACOLYTE_SPAWN_EGG = ITEMS.registerItem("acolyte_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.ACOLYTE.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> DROWNED_KEEPER_SPAWN_EGG = ITEMS.registerItem("drowned_keeper_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.DROWNED_KEEPER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> WEEPER_SPAWN_EGG = ITEMS.registerItem("weeper_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.WEEPER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> BELLRINGER_SPAWN_EGG = ITEMS.registerItem("bellringer_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.BELLRINGER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> BLIND_SPAWN_EGG = ITEMS.registerItem("blind_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.BLIND.get()));

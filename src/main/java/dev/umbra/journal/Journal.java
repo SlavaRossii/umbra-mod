@@ -37,6 +37,9 @@ public final class Journal {
             "weeper", "bellringer",
             // 2.7: how Yan's story ends
             "fallen_keeper", "weak_fallen_keeper", "ending_fallen", "keeper_staff", "yan_farewell",
+            // 2.7: the drowned halls, what is to be done there and who lives there
+            "acolyte", "drowned_keeper", "weak_drowned_keeper", "depths_sluice", "depths_bells", "depths_lamps",
+            "depths_note_1", "depths_note_2", "depths_note_3",
             // 2.6: the drowned halls
             "depths"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
@@ -49,12 +52,12 @@ public final class Journal {
     public static int section(String id) {
         if (id.startsWith("insight")) return 1;
         if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
-        if (id.startsWith("note_") || id.startsWith("keeper_")) return 5;
+        if (id.startsWith("note_") || id.startsWith("depths_note_") || (id.startsWith("keeper_") && !id.equals("keeper_staff"))) return 5;
         if (id.startsWith("quest_")) return 6;
         if (id.startsWith("weak_")) return 4;
         return switch (id) {
-            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer" -> 3;
-            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper" -> 4;
+            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer", "acolyte" -> 3;
+            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper", "drowned_keeper" -> 4;
             default -> 0;
         };
     }

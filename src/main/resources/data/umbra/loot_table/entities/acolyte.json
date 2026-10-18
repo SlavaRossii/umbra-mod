@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:entity",
+  "random_sequence": "umbra:entities/acolyte",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:shadow_shard"
+        }
+      ],
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.35
+      }
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:echo_quartz"
+        }
+      ],
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.2
+      }
+    }
+  ]
+}
