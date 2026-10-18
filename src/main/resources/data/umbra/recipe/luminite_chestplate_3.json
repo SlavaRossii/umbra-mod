@@ -2,7 +2,7 @@
   "type": "minecraft:smithing_transform",
   "template": "umbra:echo_quartz",
   "base": "umbra:luminite_chestplate_2",
-  "addition": "umbra:luminite_block",
+  "addition": "umbra:seal_shard",
   "result": {
     "id": "umbra:luminite_chestplate_3"
   }

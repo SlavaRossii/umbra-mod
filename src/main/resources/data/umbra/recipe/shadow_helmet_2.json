@@ -2,7 +2,7 @@
   "type": "minecraft:smithing_transform",
   "template": "umbra:echo_quartz",
   "base": "umbra:shadow_helmet",
-  "addition": "umbra:gloom_ingot",
+  "addition": "umbra:shadow_shard",
   "result": {
     "id": "umbra:shadow_helmet_2"
   }

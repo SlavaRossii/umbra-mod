@@ -172,9 +172,13 @@ public final class UmbraClient {
                     event.getToolTip().add(net.minecraft.network.chat.Component.translatable(key)
                             .withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
                 int[] piece = dev.umbra.gear.Gear.piece(event.getItemStack());
-                if (piece != null)
+                if (piece != null) {
                     event.getToolTip().add(net.minecraft.network.chat.Component.translatable("set.umbra." + dev.umbra.gear.Gear.SETS[piece[0]])
                             .withStyle(net.minecraft.ChatFormatting.DARK_AQUA));
+                    if (piece[1] == 3)
+                        event.getToolTip().add(net.minecraft.network.chat.Component.translatable("set.umbra." + dev.umbra.gear.Gear.SETS[piece[0]] + ".master")
+                                .withStyle(net.minecraft.ChatFormatting.AQUA));
+                }
             }
             if (!(event.getItemStack().getItem() instanceof dev.umbra.madness.DespairBladeItem) || event.getEntity() == null) return;
             float bonus = dev.umbra.madness.DespairBladeItem.bonus(event.getEntity());

@@ -46,7 +46,7 @@ public class HeldLightBlock extends Block implements DarknessProof {
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         for (Player p : level.players()) {
-            if (p.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 2.5 * 2.5 && (LanternItem.carriesLit(p) || dev.umbra.lighthouse.YanErrands.holdsMartasLantern(p))) {
+            if (p.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 2.5 * 2.5 && (LanternItem.carriesLit(p) || dev.umbra.lighthouse.YanErrands.holdsMartasLantern(p) || dev.umbra.gear.SetPowers.shines(p))) {
                 level.scheduleTick(pos, this, CHECK);
                 return;
             }

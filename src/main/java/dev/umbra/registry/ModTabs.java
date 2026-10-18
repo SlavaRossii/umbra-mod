@@ -58,6 +58,7 @@ public final class ModTabs {
                 out.accept(ModItems.LUMINITE_BLOCK.get());
                 out.accept(ModItems.ECHO_QUARTZ_ORE.get());
                 out.accept(ModItems.ECHO_QUARTZ.get());
+                out.accept(ModItems.SEAL_SHARD.get());
                 out.accept(ModItems.GLOOM_SWORD.get());
                 out.accept(ModItems.GLOOM_PICKAXE.get());
                 out.accept(ModItems.GLOOM_AXE.get());

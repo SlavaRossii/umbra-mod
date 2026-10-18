@@ -73,6 +73,10 @@ public final class WeaponEvents {
 
     public static void onIncoming(LivingIncomingDamageEvent event) {
         LivingEntity target = event.getEntity();
+        if (target instanceof ServerPlayer hurt) {
+            SetPowers.incoming(event, hurt);
+            if (event.isCanceled()) return;
+        }
         // their blows on a player in a full set
         if (target instanceof ServerPlayer victim && event.getSource().getEntity() instanceof LivingEntity src && dark(src)) {
             if (Gear.pieces(victim, Gear.GLOOM) == 4) event.setAmount(event.getAmount() * GLOOM_SET_GUARD);

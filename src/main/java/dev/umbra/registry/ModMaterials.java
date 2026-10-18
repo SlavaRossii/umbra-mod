@@ -47,30 +47,38 @@ public final class ModMaterials {
     }
 
     /**
-     * 2.4: one ladder from the easiest to the hardest to get, each step a little better than the one before:
-     * gloom I, shadow I, luminite I (about iron), then the same at II (about diamond), then at III (past netherite).
-     * The sets differ in what they do besides (Gear): gloom steadies the mind, shadow hides, luminite shines.
+     * 2.7: three roles rather than one ladder; inside a set every tier is better than the one below, and every tier III
+     * (made from the shards of the four seals, so before the Architect) is better than netherite (20 defence, 3
+     * toughness, 0.1 knockback resistance: score 32).
+     * <ul>
+     *   <li>Gloom, the bastion: the most defence and the most footing; steadies the mind.</li>
+     *   <li>Luminite, the light: toughness, a light that burns the dark.</li>
+     *   <li>Shadow, the ghost: the lightest, the quickest, the quietest.</li>
+     * </ul>
      * @param set 0 gloom, 1 luminite, 2 shadow; @param tier 1..3
      */
     public static ArmorMaterial armor(int set, int tier) {
         return switch (set) {
             case 0 -> switch (tier) {
                 case 1 -> GLOOM_ARMOR;
-                case 2 -> mat(28, 3, 7, 6, 3, 16, 1.5F, 0.0F, GLOOM_REPAIR, GLOOM_ASSET);
-                default -> mat(38, 3, 8, 7, 3, 16, 3.0F, 0.10F, GLOOM_REPAIR, GLOOM_ASSET);
+                case 2 -> mat(30, 3, 8, 6, 3, 16, 2.5F, 0.05F, GLOOM_REPAIR, GLOOM_ASSET);
+                default -> mat(42, 4, 9, 7, 4, 16, 4.0F, 0.20F, GLOOM_REPAIR, GLOOM_ASSET);
             };
             case 1 -> switch (tier) {
-                case 1 -> mat(20, 2, 7, 5, 2, 22, 1.0F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
-                case 2 -> mat(34, 3, 8, 6, 3, 22, 2.5F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
-                default -> mat(44, 4, 9, 7, 4, 22, 4.0F, 0.12F, LUMINITE_REPAIR, LUMINITE_ASSET);
+                case 1 -> mat(20, 2, 6, 5, 2, 22, 1.0F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
+                case 2 -> mat(32, 3, 7, 6, 3, 22, 2.5F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
+                default -> mat(40, 3, 8, 7, 3, 22, 3.5F, 0.10F, LUMINITE_REPAIR, LUMINITE_ASSET);
             };
             default -> switch (tier) {
-                case 1 -> mat(18, 2, 6, 5, 2, 24, 0.5F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
-                case 2 -> mat(31, 3, 8, 6, 3, 24, 2.0F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
-                default -> mat(40, 4, 8, 7, 4, 24, 3.5F, 0.10F, SHADOW_REPAIR, SHADOW_ASSET);
+                case 1 -> mat(16, 2, 5, 4, 1, 24, 0.5F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
+                case 2 -> mat(28, 3, 7, 5, 2, 24, 2.0F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
+                default -> mat(38, 3, 8, 6, 3, 24, 3.5F, 0.10F, SHADOW_REPAIR, SHADOW_ASSET);
             };
         };
     }
+
+    /** Netherite's score, the line every tier III is above. */
+    public static final float NETHERITE_SCORE = 20 + 3.0F * 4;
 
     /** Defence + toughness of a full set: what the ladder is measured by (tests). */
     public static float score(int set, int tier) {

@@ -485,6 +485,15 @@ final class SmokeTest {
         fake.getMainHandItem().setDamageValue(fake.getMainHandItem().getMaxDamage() - 1);
         check(!dev.umbra.light.LanternItem.isLit(fake.getMainHandItem()), "an empty lantern gives no light");
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        level.setBlock(lightPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(fake.blockPosition(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        ItemStack marta = new ItemStack(ModItems.MARTA_LANTERN.get());
+        fake.setItemInHand(InteractionHand.MAIN_HAND, marta);
+        fake.tickCount = 8;
+        ModItems.MARTA_LANTERN.get().inventoryTick(marta, level, fake, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+        check(level.getBlockState(lightPos).is(ModBlocks.HELD_LIGHT.get()) || level.getBlockState(fake.blockPosition()).is(ModBlocks.HELD_LIGHT.get()),
+                "2.6.2: Marta's lantern really lights the way");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 
         // smouldering torch
         BlockPos t = PLATFORM.offset(-6, 0, -6);
@@ -1371,15 +1380,47 @@ final class SmokeTest {
         for (BlockPos p : new BlockPos[]{a, v, a.offset(2, 0, 0), a.offset(-2, 0, 1)}) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
         // 2.4: the armour ladder, the mazes, the bosses' second wind
-        int[][] ladder = {{0, 1}, {2, 1}, {1, 1}, {0, 2}, {2, 2}, {1, 2}, {0, 3}, {2, 3}, {1, 3}};
         boolean rising = true;
         StringBuilder sc = new StringBuilder();
-        for (int i = 0; i < ladder.length; i++) {
-            float sco = dev.umbra.registry.ModMaterials.score(ladder[i][0], ladder[i][1]);
-            sc.append(sco).append(' ');
-            if (i > 0) rising &= sco > dev.umbra.registry.ModMaterials.score(ladder[i - 1][0], ladder[i - 1][1]);
+        for (int set = 0; set < 3; set++)
+            for (int tier = 1; tier <= 3; tier++) {
+                float sco = dev.umbra.registry.ModMaterials.score(set, tier);
+                sc.append(dev.umbra.gear.Gear.SETS[set]).append(tier).append('=').append(sco).append(' ');
+                if (tier > 1) rising &= sco > dev.umbra.registry.ModMaterials.score(set, tier - 1);
+                if (tier == 3) rising &= sco > dev.umbra.registry.ModMaterials.NETHERITE_SCORE;
+            }
+        check(rising, "2.7 armour: in each set every tier beats the one below, every tier III beats netherite (" + sc + ")");
+        {
+            java.util.function.Function<String, ItemStack> armour = name -> ModItems.ARMOR_PIECES.stream().filter(d -> d.getId().getPath().equals(name))
+                    .findFirst().map(d -> new ItemStack(d.get())).orElse(ItemStack.EMPTY);
+            String[] pc = {"helmet", "chestplate", "leggings", "boots"};
+            for (int i = 0; i < 4; i++) fake.setItemSlot(dev.umbra.gear.Gear.ARMOR[i], armour.apply("gloom_" + pc[i] + "_3"));
+            fake.setHealth(fake.getMaxHealth());
+            boolean master = dev.umbra.gear.SetPowers.master(fake, dev.umbra.gear.Gear.GLOOM);
+            boolean low = dev.umbra.gear.SetPowers.bastion(level, fake, 2.0F);
+            boolean rose = dev.umbra.gear.SetPowers.bastion(level, fake, fake.getMaxHealth() * 0.8F);
+            boolean again = dev.umbra.gear.SetPowers.bastion(level, fake, fake.getMaxHealth() * 0.8F);
+            check(master && !low && rose && !again && fake.hasEffect(net.minecraft.world.effect.MobEffects.RESISTANCE),
+                    "2.7: full gloom III raises the bastion at death's edge, once in a while (master " + master + ", small blow " + low + ", rose " + rose + ", again " + again + ")");
+            fake.removeAllEffects();
+            for (int i = 0; i < 4; i++) fake.setItemSlot(dev.umbra.gear.Gear.ARMOR[i], armour.apply("shadow_" + pc[i]));
+            fake.tickCount = 13;
+            dev.umbra.gear.SetPowers.tick(fake);
+            double quick = fake.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+            for (int i = 0; i < 4; i++) fake.setItemSlot(dev.umbra.gear.Gear.ARMOR[i], ItemStack.EMPTY);
+            dev.umbra.gear.SetPowers.tick(fake);
+            double plain = fake.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+            check(quick > plain * 1.05, "2.7: a full shadow set is quicker on its feet (" + quick + " against " + plain + ")");
+            for (int i = 0; i < 4; i++) fake.setItemSlot(dev.umbra.gear.Gear.ARMOR[i], armour.apply("luminite_" + pc[i] + "_3"));
+            fake.tickCount = 4;
+            BlockPos head = BlockPos.containing(fake.getEyePosition());
+            dev.umbra.gear.SetPowers.tick(fake);
+            check(level.getBlockState(head).is(ModBlocks.HELD_LIGHT.get()) || level.getBlockState(fake.blockPosition()).is(ModBlocks.HELD_LIGHT.get()),
+                    "2.7: full luminite III shines like a lantern");
+            for (int i = 0; i < 4; i++) fake.setItemSlot(dev.umbra.gear.Gear.ARMOR[i], ItemStack.EMPTY);
+            fake.tickCount = 13;
+            dev.umbra.gear.SetPowers.tick(fake);
         }
-        check(rising, "armour: gloom, shadow, luminite, tier by tier, each better than the one before (" + sc + ")");
         BlockPos maze = dev.umbra.quantum.QuantumMazeFeature.nearest(level.getSeed(), 0, 0);
         check(Math.hypot(maze.getX(), maze.getZ()) < 24 * 16 * 1.5, "a maze is never far: the nearest is " + (int) Math.hypot(maze.getX(), maze.getZ()) + " blocks away");
         var w = ModEntities.WATCHER.get().create(level, EntitySpawnReason.COMMAND);

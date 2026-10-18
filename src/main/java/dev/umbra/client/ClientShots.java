@@ -67,12 +67,12 @@ public final class ClientShots {
         if (!ON) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null || mc.getSingleplayerServer() == null) {
-            if (++tick % 200 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: waiting for the world, screen {}", mc.screen == null ? "none" : mc.screen.getClass().getName());
+            if (++tick % 200 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: waiting for the world, screen {}", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
             return;
         }
-        if (mc.screen != null) {
-            if (++tick % 100 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: a screen is open: {}", mc.screen.getClass().getName());
-            if (tick % 100 == 0) mc.setScreen(null);
+        if (mc.gui.screen() != null) {
+            if (++tick % 100 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: a screen is open: {}", mc.gui.screen().getClass().getName());
+            if (tick % 100 == 0) mc.gui.setScreen(null);
             return;
         }
         tick++;
@@ -111,7 +111,6 @@ public final class ClientShots {
         }
         Pose p = POSES.get(pose);
         mc.options.setCameraType(p.camera);
-        mc.options.hideGui = p.hideGui;
         run(mc, p.commands);
         if (p.use) mc.options.keyUse.setDown(true);
         Umbra.LOGGER.info("UMBRA CLIENTSHOTS: pose {}", p.name);

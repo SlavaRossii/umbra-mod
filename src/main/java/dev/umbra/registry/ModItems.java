@@ -69,6 +69,8 @@ public final class ModItems {
     public static final DeferredItem<Item> RAW_GLOOM = ITEMS.registerSimpleItem("raw_gloom");
     public static final DeferredItem<Item> GLOOM_INGOT = ITEMS.registerSimpleItem("gloom_ingot");
     public static final DeferredItem<Item> ECHO_QUARTZ = ITEMS.registerSimpleItem("echo_quartz", p -> p.rarity(Rarity.UNCOMMON));
+    /** 2.7: what each of the four seal bosses leaves behind; tier III armour is made with it. */
+    public static final DeferredItem<Item> SEAL_SHARD = ITEMS.registerSimpleItem("seal_shard", p -> p.rarity(Rarity.RARE));
 
     // --- Gloom gear ---
     public static final DeferredItem<Item> GLOOM_SWORD = ITEMS.registerSimpleItem("gloom_sword", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.4F));

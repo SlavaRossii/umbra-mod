@@ -718,8 +718,8 @@
   "enchantment.umbra.clarity.desc": "Every creature of the Underside you kill gives back a little of your mind.",
   "enchantment.umbra.shadow_cut": "Shadow Cut",
   "enchantment.umbra.shadow_cut.desc": "Sometimes your shadow strikes again from behind the target.",
-  "set.umbra.gloom": "Full set: steadfast in the Underside, their blows weaker.",
-  "set.umbra.shadow": "Full set: sight in the dark; crouch and the far ones lose you.",
+  "set.umbra.gloom": "Full set: resistance in the Underside, their blows weaker.",
+  "set.umbra.shadow": "Full set: quicker on your feet, sight in the dark, crouch to slip from view.",
   "set.umbra.luminite": "Full set: their blows weaker, light eaters burn near you.",
   "set.umbra.gloom.on": "The gloom steel closes round you. The Underside weighs less.",
   "set.umbra.shadow.on": "The shadow covers you whole. The dark turns clear.",
@@ -803,5 +803,11 @@
   "message.umbra.depths.enter": "The water closes over your head. Below, lamps are burning.",
   "message.umbra.depths.water": "The key goes cold: it wants the black water of the Underside.",
   "journal.umbra.depths.title": "The Depths",
-  "journal.umbra.depths.text": "Under the black water lie the Keepers' halls. They are drowned, but the lamps still burn. At the very end waits the one who stayed to guard them."
+  "journal.umbra.depths.text": "Under the black water lie the Keepers' halls. They are drowned, but the lamps still burn. At the very end waits the one who stayed to guard them.",
+  "item.umbra.seal_shard": "Seal Shard",
+  "tip.umbra.seal_shard": "The seal broke, yet it holds. Its strength will go into armour.",
+  "set.umbra.gloom.master": "All tier III: \"Bastion\" - at death's edge a wall of steel (once in 90 s).",
+  "set.umbra.shadow.master": "All tier III: \"Slip\" - one blow in five of theirs goes through your shadow.",
+  "set.umbra.luminite.master": "All tier III: \"Halo\" - you shine yourself, the dark near you weakens.",
+  "set.umbra.gloom.bastion": "The steel stood up like a wall."
 }
