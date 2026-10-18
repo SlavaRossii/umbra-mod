@@ -146,7 +146,14 @@ public class LampKeeper extends PathfinderMob {
 
     /** The dark: one who took the Primordial heart into himself comes near, and the old keeper stands up. */
     public FallenKeeper tryFall(ServerLevel level) {
-        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(FALL_RANGE))) {
+        return tryFall(level, java.util.List.of());
+    }
+
+    /** @param also players to consider that the level may not list (the tests' fake ones) */
+    public FallenKeeper tryFall(ServerLevel level, java.util.List<ServerPlayer> also) {
+        java.util.List<ServerPlayer> near = new java.util.ArrayList<>(level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(FALL_RANGE)));
+        for (ServerPlayer p : also) if (p.distanceTo(this) <= FALL_RANGE) near.add(p);
+        for (ServerPlayer p : near) {
             if (p.isCreative() || p.isSpectator() || !dev.umbra.ending.Endings.isDark(p)) continue;
             return FallenKeeper.rise(level, this, p);
         }

@@ -96,7 +96,9 @@ public class FallenKeeper extends UmbraBoss {
         level.addFreshEntity(boss);
         level.sendParticles(ParticleTypes.END_ROD, yan.getX(), yan.getY() + 1.0, yan.getZ(), 80, 0.6, 1.0, 0.6, 0.15);
         level.playSound(null, yan.getX(), yan.getY(), yan.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.HOSTILE, 2.0F, 0.5F);
-        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, yan.getBoundingBox().inflate(48))) {
+        java.util.Set<ServerPlayer> told = new java.util.LinkedHashSet<>(level.getEntitiesOfClass(ServerPlayer.class, yan.getBoundingBox().inflate(48)));
+        told.add(who);
+        for (ServerPlayer p : told) {
             for (int i = 1; i <= 3; i++)
                 p.sendSystemMessage(Component.translatable("dialogue.umbra.yan.fall." + i).withStyle(i == 3 ? ChatFormatting.GOLD : ChatFormatting.GRAY, ChatFormatting.ITALIC));
             Journal.unlock(p, "fallen_keeper");
@@ -150,10 +152,17 @@ public class FallenKeeper extends UmbraBoss {
 
     /** The lantern flares: every player who took the dark and is near burns and loses some mind; then he is winded. */
     public int flare(ServerLevel level) {
+        return flare(level, java.util.List.of());
+    }
+
+    /** @param also players to count that the level may not list (the tests' fake ones) */
+    public int flare(ServerLevel level, java.util.List<ServerPlayer> also) {
         int burnt = 0;
         level.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getY() + 1.5, this.getZ(), 60, 0.4, 0.4, 0.4, 0.4);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.HOSTILE, 2.0F, 1.8F);
-        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(10))) {
+        java.util.Set<ServerPlayer> near = new java.util.LinkedHashSet<>(level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(10)));
+        near.addAll(also);
+        for (ServerPlayer p : near) {
             if (p.isCreative() || p.isSpectator()) continue;
             if (dev.umbra.ending.Endings.isDark(p)) {
                 p.hurtServer(level, level.damageSources().indirectMagic(this, this), FLARE);
@@ -214,10 +223,16 @@ public class FallenKeeper extends UmbraBoss {
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        if (!(this.level() instanceof ServerLevel level)) return;
+        if (this.level() instanceof ServerLevel level) fallen(level, java.util.List.of());
+    }
+
+    /** What his fall leaves: the world remembers, the echoes go, the dark ending closes for everyone near. */
+    public void fallen(ServerLevel level, java.util.List<ServerPlayer> also) {
         level.setData(ModAttachments.YAN.get(), "fallen");
         for (Mob m : level.getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(48), m -> m.entityTags().contains(ECHO_TAG))) m.discard();
-        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(64))) {
+        java.util.Set<ServerPlayer> near = new java.util.LinkedHashSet<>(level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(64)));
+        near.addAll(also);
+        for (ServerPlayer p : near) {
             Journal.unlock(p, "ending_fallen");
             dev.umbra.ending.Endings.fallenCredits(p);
         }

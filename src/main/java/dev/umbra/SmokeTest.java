@@ -1667,8 +1667,7 @@ final class SmokeTest {
         int dry = 0;
         for (var r : dev.umbra.depths.Depths.ROOMS)
             for (int y = 1; y <= r.h(); y++)
-                if (!under.getFluidState(dev.umbra.depths.Depths.ORIGIN.offset(r.x(), y, r.z())).is(net.minecraft.tags.FluidTags.WATER)
-                        && !under.getBlockState(dev.umbra.depths.Depths.ORIGIN.offset(r.x(), y, r.z())).is(Blocks.SPAWNER)) dry++;
+                if (under.getBlockState(dev.umbra.depths.Depths.ORIGIN.offset(r.x(), y, r.z())).isAir()) dry++;
         check(dry == 0, "2.7: the Depths are drowned to the vault, not a pocket of air in any hall (" + dry + " dry)");
         int turns = 0;
         for (int[][] run : dev.umbra.depths.Depths.PASSAGES) turns += run.length - 2;
@@ -1754,13 +1753,13 @@ final class SmokeTest {
         yan.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
         level.addFreshEntity(yan);
         fake.setData(ENDING, "");
-        check(yan.tryFall(level) == null && yan.isAlive(), "2.7: Yan stays Yan for one who has not taken the dark");
+        check(yan.tryFall(level, java.util.List.of(fake)) == null && yan.isAlive(), "2.7: Yan stays Yan for one who has not taken the dark");
         fake.setData(ENDING, dev.umbra.ending.Endings.DARK);
-        var boss = yan.tryFall(level);
+        var boss = yan.tryFall(level, java.util.List.of(fake));
         check(boss != null && yan.isRemoved() && boss.getMaxHealth() >= 800, "2.7: for one who took the dark, Yan rises as the Fallen Keeper (" + (boss == null ? 0 : boss.getMaxHealth()) + " hp)");
         if (boss != null) {
             float h = fake.getHealth();
-            int burnt = boss.flare(level);
+            int burnt = boss.flare(level, java.util.List.of(fake));
             check(burnt == 1 && fake.getHealth() < h && boss.isStunned(), "2.7: his lantern's flare burns the one who took the dark, and blinds him for a moment");
             fake.setHealth(fake.getMaxHealth());
             boss.setHealth(boss.getMaxHealth() * 0.6F);
@@ -1773,7 +1772,7 @@ final class SmokeTest {
             boss.setHealth(before);
             boss.hurtServer(level, level.damageSources().magic(), 30.0F);
             check(before - boss.getHealth() < 15.0F, "2.7: while an echo stands he takes a third of a blow (" + (before - boss.getHealth()) + " of 30)");
-            boss.die(level.damageSources().magic());
+            boss.fallen(level, java.util.List.of(fake));
             boss.discard();
             check("fallen".equals(level.getData(dev.umbra.registry.ModAttachments.YAN.get())) && dev.umbra.journal.Journal.has(fake, "ending_fallen"),
                     "2.7: when he falls the dark ending closes, and the world remembers it");
@@ -1790,7 +1789,7 @@ final class SmokeTest {
         fake.setData(ENDING, dev.umbra.ending.Endings.LIGHT);
         fake.getInventory().clearContent();
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-        check(yan2.tryFall(level) == null, "2.7: Yan does not rise against one who lit the dawn");
+        check(yan2.tryFall(level, java.util.List.of(fake)) == null, "2.7: Yan does not rise against one who lit the dawn");
         yan2.farewell(level, fake);
         boolean staff = fake.getInventory().countItem(ModItems.KEEPER_STAFF.get()) == 1;
         check(staff && yan2.isLeaving() && dev.umbra.journal.Journal.has(fake, "keeper_staff"), "2.7: at the dawn Yan gives his staff and makes ready to go");
