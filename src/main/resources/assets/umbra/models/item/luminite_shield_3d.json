@@ -19,10 +19,10 @@
       ],
       "faces": {
         "north": {
-          "texture": "#face"
+          "texture": "#rim"
         },
         "south": {
-          "texture": "#rim"
+          "texture": "#face"
         },
         "east": {
           "texture": "#rim"
@@ -170,12 +170,12 @@
       "from": [
         7,
         7,
-        6
+        8
       ],
       "to": [
         9,
         9,
-        7
+        9
       ],
       "faces": {
         "north": {
@@ -203,12 +203,12 @@
       "from": [
         7,
         3,
-        8
+        6
       ],
       "to": [
         9,
         12,
-        9
+        7
       ],
       "faces": {
         "north": {

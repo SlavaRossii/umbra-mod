@@ -292,11 +292,12 @@ def write_models():
 
     # the aegis in 3D: a kite shield, a rim, a boss and a strap; the flat icon stays for the inventory
     els = [
-        box((3, 1, 7), (13, 14, 8), faces={"north": "face", "south": "rim", "east": "rim", "west": "rim", "up": "rim", "down": "rim"}),
+        # 2.7: the face looks south, the strap is on the north: held, its back is towards you (like vanilla's)
+        box((3, 1, 7), (13, 14, 8), faces={"south": "face", "north": "rim", "east": "rim", "west": "rim", "up": "rim", "down": "rim"}),
         box((2, 4, 7.5), (3, 13, 8.5), "rim"), box((13, 4, 7.5), (14, 13, 8.5), "rim"),
         box((3, 14, 7.5), (13, 15, 8.5), "rim"), box((5, 0, 7.5), (11, 1, 8.5), "rim"),
-        box((7, 7, 6), (9, 9, 7), "face", light=12),
-        box((7, 3, 8), (9, 12, 9), "rim"),
+        box((7, 7, 8), (9, 9, 9), "face", light=12),
+        box((7, 3, 6), (9, 12, 7), "rim"),
     ]
     display = {
         # 2.6.2: vanilla's numbers are for its entity-rendered shield, whose origin is a corner; for a model of elements

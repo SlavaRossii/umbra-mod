@@ -93,7 +93,8 @@ public final class ModItems {
     }
 
     /** A real shield (right click to block, like the vanilla one), with the aegis' own powers on top (EnchantEvents.onIncoming). */
-    public static final DeferredItem<Item> LUMINITE_SHIELD = ITEMS.registerSimpleItem("luminite_shield", p -> p.stacksTo(1).durability(504).rarity(Rarity.UNCOMMON)
+    // 2.7: a ShieldItem, or first person treats it as a blocking sword and turns it on its edge out of sight
+    public static final DeferredItem<net.minecraft.world.item.ShieldItem> LUMINITE_SHIELD = ITEMS.registerItem("luminite_shield", net.minecraft.world.item.ShieldItem::new, p -> p.stacksTo(1).durability(504).rarity(Rarity.UNCOMMON)
             .component(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS,
                     new net.minecraft.world.item.component.BlocksAttacks(0.25F, 1.0F,
                             java.util.List.of(new net.minecraft.world.item.component.BlocksAttacks.DamageReduction(90.0F, java.util.Optional.empty(), 0.0F, 1.0F)),
