@@ -109,6 +109,7 @@ public final class Endings {
         }
         for (int i = 1; i <= 3; i++)
             player.sendSystemMessage(Component.translatable("ending.umbra.fallen." + i).withStyle(i == 3 ? ChatFormatting.DARK_PURPLE : ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        player.sendSystemMessage(Component.translatable("ending.umbra.thanks").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     public static boolean darkEnough(ServerPlayer player) {
@@ -125,7 +126,8 @@ public final class Endings {
         for (int i = 1; i <= LINES; i++) {
             player.sendSystemMessage(Component.translatable("ending.umbra." + which + "." + i).withStyle(i == LINES ? color : ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
-        player.sendSystemMessage(Component.translatable("ending.umbra.thanks").withStyle(ChatFormatting.DARK_GRAY));
+        // 2.7: the dark ending has one more page (Yan); its thanks come after it
+        if (LIGHT.equals(which)) player.sendSystemMessage(Component.translatable("ending.umbra.thanks").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     public static final int LINES = 5;
