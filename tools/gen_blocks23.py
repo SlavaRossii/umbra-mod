@@ -319,8 +319,8 @@ def write_models():
     raised.update({
         "thirdperson_righthand": {"rotation": [45, 135, 0], "translation": [4.91, -1.33, -0.31], "scale": [1, 1, 1]},
         "thirdperson_lefthand": {"rotation": [45, 135, 0], "translation": [3.6, -1.33, -1.31], "scale": [1, 1, 1]},
-        "firstperson_righthand": {"rotation": [0, 180, -5], "translation": [-4.22, 0.88, -3.48], "scale": [1.25, 1.25, 1.25]},
-        "firstperson_lefthand": {"rotation": [0, 180, -5], "translation": [-4.14, -0.86, -3.48], "scale": [1.25, 1.25, 1.25]},
+        "firstperson_righthand": {"rotation": [0, 180, -5], "translation": [-4.22, -3.5, -3.48], "scale": [1.25, 1.25, 1.25]},
+        "firstperson_lefthand": {"rotation": [0, 180, -5], "translation": [-4.14, -5.24, -3.48], "scale": [1.25, 1.25, 1.25]},
     })
     model(MI + 'luminite_shield_3d_blocking.json', "minecraft:item/handheld",
           {"particle": "umbra:item/luminite_shield_rim", "face": "umbra:item/luminite_shield_face", "rim": "umbra:item/luminite_shield_rim"},
