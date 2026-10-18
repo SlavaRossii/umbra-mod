@@ -85,7 +85,13 @@ public class FallenKeeper extends UmbraBoss {
     public static FallenKeeper rise(ServerLevel level, LampKeeper yan, ServerPlayer who) {
         FallenKeeper boss = ModEntities.FALLEN_KEEPER.get().create(level, EntitySpawnReason.EVENT);
         if (boss == null) return null;
-        boss.snapTo(yan.getX(), yan.getY(), yan.getZ(), yan.getYRot(), 0);
+        // he steps out to meet you (his house is too small for a fight): four blocks from you, towards where he stood
+        Vec3 to = yan.position().subtract(who.position());
+        Vec3 at = to.horizontalDistance() > 5 ? who.position().add(to.x / to.horizontalDistance() * 4, 0, to.z / to.horizontalDistance() * 4) : yan.position();
+        BlockPos ab = BlockPos.containing(at);
+        if (!level.getBlockState(ab).getCollisionShape(level, ab).isEmpty() || !level.getBlockState(ab.above()).getCollisionShape(level, ab.above()).isEmpty()
+                || !level.getBlockState(ab.above(2)).getCollisionShape(level, ab.above(2)).isEmpty()) at = yan.position();
+        boss.snapTo(at.x, at.y, at.z, yan.getYRot(), 0);
         boss.setTarget(who);
         level.addFreshEntity(boss);
         level.sendParticles(ParticleTypes.END_ROD, yan.getX(), yan.getY() + 1.0, yan.getZ(), 80, 0.6, 1.0, 0.6, 0.15);
