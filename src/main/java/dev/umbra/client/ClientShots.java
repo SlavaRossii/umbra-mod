@@ -115,6 +115,7 @@ public final class ClientShots {
         }
         Pose p = POSES.get(pose);
         mc.options.setCameraType(p.camera);
+        mc.options.fov().set(p.camera == CameraType.FIRST_PERSON ? 70 : 30);   // third person: zoomed in on the armour
         run(mc, p.commands);
         if (p.use) mc.options.keyUse.setDown(true);
         Umbra.LOGGER.info("UMBRA CLIENTSHOTS: pose {}", p.name);
