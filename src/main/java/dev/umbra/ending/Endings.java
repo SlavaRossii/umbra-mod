@@ -79,6 +79,7 @@ public final class Endings {
         player.removeEffect(MobEffects.DARKNESS);
         Journal.unlock(player, "ending_light");
         credits(player, LIGHT, ChatFormatting.GOLD);
+        player.sendSystemMessage(Component.translatable("ending.umbra.light.yan").withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
         return true;
     }
 
@@ -94,7 +95,20 @@ public final class Endings {
         if (Sanity.get(player) > DARK_SANITY_CAP) Sanity.set(player, DARK_SANITY_CAP);
         Journal.unlock(player, "ending_dark");
         credits(player, DARK, ChatFormatting.DARK_PURPLE);
+        // 2.7: and far away, at the lighthouse, an old man lifts his head
+        player.sendSystemMessage(Component.translatable("ending.umbra.dark.yan").withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
         return true;
+    }
+
+    /** 2.7: the dark ending's last page, when the Fallen Keeper falls. */
+    public static void fallenCredits(ServerPlayer player) {
+        if (player.connection != null) {
+            player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 120, 40));
+            player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("ending.umbra.fallen.title").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD)));
+            player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("ending.umbra.fallen.subtitle").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));
+        }
+        for (int i = 1; i <= 3; i++)
+            player.sendSystemMessage(Component.translatable("ending.umbra.fallen." + i).withStyle(i == 3 ? ChatFormatting.DARK_PURPLE : ChatFormatting.GRAY, ChatFormatting.ITALIC));
     }
 
     public static boolean darkEnough(ServerPlayer player) {

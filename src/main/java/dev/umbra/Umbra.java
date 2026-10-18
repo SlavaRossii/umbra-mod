@@ -106,8 +106,6 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mob.Weeper::onShard);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Cycle::onJoin);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Cycle::onDrops);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onIncoming);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
@@ -136,6 +134,7 @@ public class Umbra {
         event.put(ModEntities.CITADEL_KEEPER.get(), dev.umbra.citadel.CitadelKeeper.createAttributes().build());
         event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());
         event.put(ModEntities.LAMP_KEEPER.get(), dev.umbra.lighthouse.LampKeeper.createAttributes().build());
+        event.put(ModEntities.FALLEN_KEEPER.get(), dev.umbra.lighthouse.FallenKeeper.createAttributes().build());
         event.put(ModEntities.WATCHER.get(), Watcher.createAttributes().build());
         event.put(ModEntities.MIMIC_QUEEN.get(), MimicQueen.createAttributes().build());
         event.put(ModEntities.SHEPHERD.get(), Shepherd.createAttributes().build());

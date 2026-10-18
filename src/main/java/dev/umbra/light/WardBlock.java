@@ -74,12 +74,14 @@ public class WardBlock extends Block implements DarknessProof {
         Iterator<Map.Entry<Long, long[]>> it = wards.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Long, long[]> e = it.next();
-            if (now - e.getValue()[0] > PULSE * 3 || now < e.getValue()[0]) {
+            long[] v = e.getValue();
+            boolean expired = v.length > 2 ? now > v[2] : (now - v[0] > PULSE * 3 || now < v[0]);
+            if (expired) {
                 it.remove();
                 continue;
             }
             int r = (int) e.getValue()[1];
-            BlockPos w = BlockPos.of(e.getKey());
+            BlockPos w = BlockPos.of(v.length > 3 ? v[3] : e.getKey());
             double dx = pos.x - (w.getX() + 0.5), dz = pos.z - (w.getZ() + 0.5), dy = pos.y - (w.getY() + 0.5);
             if (dx * dx + dz * dz <= (double) r * r && Math.abs(dy) <= r) return true;
         }
@@ -88,6 +90,12 @@ public class WardBlock extends Block implements DarknessProof {
 
     public static boolean protects(Entity entity) {
         return protects(entity.level(), entity.position());
+    }
+
+    /** 2.7: a ward without a block (the Keeper's staff): {@code radius} blocks round {@code pos} for {@code ticks}. */
+    public static void circle(Level level, BlockPos pos, int radius, int ticks) {
+        long now = level.getGameTime();
+        ACTIVE.computeIfAbsent(level.dimension(), k -> new HashMap<>()).put(pos.asLong() ^ 0x5EA1_0000_0000L, new long[]{now, radius, now + ticks, pos.asLong()});
     }
 
     /** Forget everything (tests). */

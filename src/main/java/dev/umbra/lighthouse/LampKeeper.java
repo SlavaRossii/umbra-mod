@@ -72,10 +72,9 @@ public class LampKeeper extends PathfinderMob {
         if (!(player instanceof ServerPlayer sp) || !(this.level() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
         int lamp = lampLevel(level, getX(), getZ());
         this.playSound(dev.umbra.registry.ModSounds.YAN.value(), 1.0F, getVoicePitch());
-        // 2.6: after an ending, crouch and speak to him to turn the circle (New Game+)
-        if (dev.umbra.ending.Endings.chosen(sp) && sp.isShiftKeyDown()) {
-            dev.umbra.ending.Cycle.begin(sp);
-            sp.sendSystemMessage(Component.translatable("dialogue.umbra.yan.cycle").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        // 2.7: after the dawn he has one thing left to give, and then he goes
+        if (dev.umbra.ending.Endings.isLight(sp) && !Journal.has(sp, "keeper_staff")) {
+            farewell(level, sp);
             return InteractionResult.SUCCESS;
         }
         // 2.6: once the lamp burns, Yan has errands (the lamp's own reward comes first)
@@ -103,8 +102,55 @@ public class LampKeeper extends PathfinderMob {
             line = "dialogue.umbra.yan.level" + lamp;
         }
         sp.sendSystemMessage(Component.translatable(line).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-        if (dev.umbra.ending.Endings.chosen(sp)) sp.sendSystemMessage(Component.translatable("dialogue.umbra.yan.offer").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         return InteractionResult.SUCCESS;
+    }
+
+    // ------------------------------------------------------------------ 2.7: how Yan's story ends
+
+    /** Ticks until Yan is gone after giving his staff away (0 = he stays). */
+    private int leaving;
+    public static final int LEAVE_TICKS = 200;
+    public static final double FALL_RANGE = 16.0;
+
+    /** The dawn: Yan gives the Keeper's staff to the one who lit it, says goodbye and goes into the fog. */
+    public void farewell(ServerLevel level, ServerPlayer sp) {
+        Journal.unlock(sp, "keeper_staff");
+        Journal.unlock(sp, "yan_farewell");
+        dev.umbra.util.UmbraUtil.give(sp, new ItemStack(ModItems.KEEPER_STAFF.get()));
+        for (int i = 1; i <= 3; i++)
+            sp.sendSystemMessage(Component.translatable("dialogue.umbra.yan.farewell." + i).withStyle(i == 3 ? ChatFormatting.GOLD : ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        level.playSound(null, getX(), getY(), getZ(), SoundEvents.BELL_RESONATE, net.minecraft.sounds.SoundSource.NEUTRAL, 1.0F, 0.8F);
+        if (leaving <= 0) leaving = LEAVE_TICKS;
+    }
+
+    public boolean isLeaving() {
+        return leaving > 0;
+    }
+
+    @Override
+    protected void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
+        if (leaving > 0) {
+            leaving--;
+            if (leaving % 10 == 0)
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, getX(), getY() + 1.0, getZ(), 4 + (LEAVE_TICKS - leaving) / 20, 0.4, 0.8, 0.4, 0.01);
+            if (leaving == 0) {
+                level.setData(dev.umbra.registry.ModAttachments.YAN.get(), "gone");
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, getX(), getY() + 1.0, getZ(), 40, 0.4, 1.0, 0.4, 0.05);
+                this.discard();
+            }
+            return;
+        }
+        if (this.tickCount % 20 == 7) tryFall(level);
+    }
+
+    /** The dark: one who took the Primordial heart into himself comes near, and the old keeper stands up. */
+    public FallenKeeper tryFall(ServerLevel level) {
+        for (ServerPlayer p : level.getEntitiesOfClass(ServerPlayer.class, this.getBoundingBox().inflate(FALL_RANGE))) {
+            if (p.isCreative() || p.isSpectator() || !dev.umbra.ending.Endings.isDark(p)) continue;
+            return FallenKeeper.rise(level, this, p);
+        }
+        return null;
     }
 
     private void reward(ServerLevel level, ServerPlayer player) {

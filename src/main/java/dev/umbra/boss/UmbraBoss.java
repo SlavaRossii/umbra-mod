@@ -31,7 +31,6 @@ public abstract class UmbraBoss extends Monster {
             String id = dev.umbra.journal.Bestiary.ids().get(this.getType());
             if (id != null) for (ServerPlayer p : opponents(level)) dev.umbra.journal.Journal.unlock(p, "weak_" + id);
         }
-        dev.umbra.ending.Cycle.bossTick(level, this);
         bossTick(level);
     }
 

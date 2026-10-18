@@ -35,8 +35,8 @@ public final class Journal {
             "yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell",
             // 2.6: who throws from the dark and who rings the bell
             "weeper", "bellringer",
-            // 2.6: the circle turns
-            "new_cycle",
+            // 2.7: how Yan's story ends
+            "fallen_keeper", "weak_fallen_keeper", "ending_fallen", "keeper_staff", "yan_farewell",
             // 2.6: the drowned halls
             "depths"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
@@ -54,7 +54,7 @@ public final class Journal {
         if (id.startsWith("weak_")) return 4;
         return switch (id) {
             case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer" -> 3;
-            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow" -> 4;
+            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper" -> 4;
             default -> 0;
         };
     }

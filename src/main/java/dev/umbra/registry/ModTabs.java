@@ -35,7 +35,7 @@ public final class ModTabs {
                 out.accept(ModItems.LUMINITE_CANDELABRUM.get());
                 out.accept(ModItems.SILENCE_TINCTURE.get());
                 out.accept(ModItems.MADMAN_MASK.get());
-                out.accept(ModItems.DESPAIR_BLADE.get()); out.accept(ModItems.LUMINITE_SPEAR.get()); out.accept(ModItems.SHEPHERD_SCYTHE.get()); out.accept(ModItems.SHADOW_DAGGER.get()); out.accept(ModItems.LUMINITE_BOW.get()); out.accept(ModItems.SHADOW_KNIFE.get()); out.accept(ModItems.ECHO_STAFF.get()); out.accept(ModItems.MARTA_LANTERN.get()); out.accept(ModItems.YAN_SPYGLASS.get()); out.accept(ModItems.KEEPER_BELL.get()); out.accept(ModItems.DEPTHS_KEY.get()); out.accept(ModItems.KEEPERS_PEARL.get());
+                out.accept(ModItems.DESPAIR_BLADE.get()); out.accept(ModItems.LUMINITE_SPEAR.get()); out.accept(ModItems.SHEPHERD_SCYTHE.get()); out.accept(ModItems.SHADOW_DAGGER.get()); out.accept(ModItems.LUMINITE_BOW.get()); out.accept(ModItems.SHADOW_KNIFE.get()); out.accept(ModItems.ECHO_STAFF.get()); out.accept(ModItems.MARTA_LANTERN.get()); out.accept(ModItems.KEEPER_STAFF.get()); out.accept(ModItems.YAN_SPYGLASS.get()); out.accept(ModItems.KEEPER_BELL.get()); out.accept(ModItems.DEPTHS_KEY.get()); out.accept(ModItems.KEEPERS_PEARL.get());
                 out.accept(ModItems.LIGHT_ARROW.get());
                 out.accept(ModItems.QUANTUM_COMPASS.get());
                 out.accept(ModItems.MIRROR.get());
@@ -81,6 +81,7 @@ public final class ModTabs {
                 out.accept(ModItems.SHADE_SPAWN_EGG.get());
                 out.accept(ModItems.SHADOW_VILLAGER_SPAWN_EGG.get());
                 out.accept(ModItems.LAMP_KEEPER_SPAWN_EGG.get());
+                out.accept(ModItems.FALLEN_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.CITADEL_STATUE_SPAWN_EGG.get());
                 out.accept(ModItems.CITADEL_KEEPER_SPAWN_EGG.get());
                 out.accept(ModItems.SEAL_OF_WATCHING.get());

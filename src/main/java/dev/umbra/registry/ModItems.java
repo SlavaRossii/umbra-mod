@@ -218,6 +218,11 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> LIGHTHOUSE_LAMP = ITEMS.registerSimpleBlockItem("lighthouse_lamp", ModBlocks.LIGHTHOUSE_LAMP, p -> p.rarity(Rarity.EPIC));
     public static final DeferredItem<dev.umbra.lighthouse.MartaMapItem> MARTA_MAP = ITEMS.registerItem("marta_map",
             dev.umbra.lighthouse.MartaMapItem::new, p -> p.stacksTo(1).rarity(Rarity.UNCOMMON));
+    /** 2.7: Yan's own staff, his gift at the dawn. */
+    public static final DeferredItem<dev.umbra.lighthouse.KeeperStaffItem> KEEPER_STAFF = ITEMS.registerItem("keeper_staff",
+            dev.umbra.lighthouse.KeeperStaffItem::new, p -> p.stacksTo(1).durability(121).rarity(Rarity.EPIC).repairable(LUMINITE_CRYSTAL.get()));
+    public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> FALLEN_KEEPER_SPAWN_EGG = ITEMS.registerItem("fallen_keeper_spawn_egg",
+            net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.FALLEN_KEEPER.get()));
     public static final DeferredItem<net.minecraft.world.item.SpawnEggItem> LAMP_KEEPER_SPAWN_EGG = ITEMS.registerItem("lamp_keeper_spawn_egg",
             net.minecraft.world.item.SpawnEggItem::new, p -> p.spawnEgg(ModEntities.LAMP_KEEPER.get()));
     public static final DeferredItem<dev.umbra.lighthouse.KeeperHornItem> KEEPER_HORN = ITEMS.registerItem("keeper_horn",

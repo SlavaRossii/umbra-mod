@@ -140,6 +140,7 @@ final class SmokeTest {
                 case 673 -> testEndings22(level);
                 case 674 -> testCraft23(level);
                 case 676 -> testDepths26(server);
+                case 677 -> testYan27(level);
                 case RAID_END -> finish(server);
                 default -> {
                     if (tick > LIFE_FROM && tick < LIFE_END) SmokeLife.tick(server, level, tick - LIFE_FROM);
@@ -1563,18 +1564,6 @@ final class SmokeTest {
             level.getEntitiesOfClass(net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball.class, new net.minecraft.world.phys.AABB(a).inflate(12)).forEach(net.minecraft.world.entity.Entity::discard);
         }
 
-        // 2.6: New Game+: the circle makes the dark stronger, a boss more so
-        var c1 = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
-        var w1 = ModEntities.WATCHER.get().create(level, EntitySpawnReason.COMMAND);
-        if (c1 != null && w1 != null) {
-            float ch = c1.getMaxHealth(), wh = w1.getMaxHealth();
-            dev.umbra.ending.Cycle.apply(c1, 2);
-            dev.umbra.ending.Cycle.apply(w1, 2);
-            check(Math.abs(c1.getMaxHealth() - ch * 1.5F) < 0.1F && Math.abs(w1.getMaxHealth() - wh * 2.0F) < 0.1F && c1.getHealth() == c1.getMaxHealth(),
-                    "in the second turn of the circle creatures have +50% health, bosses +100% (" + c1.getMaxHealth() + ", " + w1.getMaxHealth() + ")");
-        }
-        check(dev.umbra.ending.Cycle.get(level) == 0, "a new world starts at the first turn of the circle");
-
         // night events: one can be called, and it holds for the night
         dev.umbra.night.NightEvents.force(level, dev.umbra.night.NightEvents.FOG);
         check(dev.umbra.night.NightEvents.FOG.equals(dev.umbra.night.NightEvents.tonight(level)), "a foggy night can be called");
@@ -1680,6 +1669,98 @@ final class SmokeTest {
         check(keeper.size() == 1 && keeper.get(0).getMaxHealth() >= 300, "the Drowned Keeper guards it (" + (keeper.isEmpty() ? 0 : keeper.get(0).getMaxHealth()) + " hp)");
         check(under.getBlockState(o.offset(dev.umbra.depths.Depths.GALLERY_FROM + 5, 3, 0)).is(Blocks.WATER)
                 && under.getBlockState(o.offset(dev.umbra.depths.Depths.GALLERY_FROM + 5, 5, 0)).isAir(), "the gallery is drowned, with air under the vault");
+    }
+
+    /** 2.7: how Yan's story ends, both ways, and his staff. */
+    private static void testYan27(ServerLevel level) {
+        BlockPos c = new BlockPos(220, Y + 60, -40);
+        for (int x = -12; x <= 12; x++)
+            for (int z = -12; z <= 12; z++) {
+                level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                for (int y = 0; y < 5; y++) level.setBlock(c.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        var ENDING = dev.umbra.registry.ModAttachments.ENDING.get();
+        String endingBefore = fake.getData(ENDING);
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 4.5, 180, 0);
+        fake.setHealth(fake.getMaxHealth());
+
+        // the dark: Yan stands up against the one who took it
+        var yan = ModEntities.LAMP_KEEPER.get().create(level, EntitySpawnReason.COMMAND);
+        if (yan == null) return;
+        yan.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        level.addFreshEntity(yan);
+        fake.setData(ENDING, "");
+        check(yan.tryFall(level) == null && yan.isAlive(), "2.7: Yan stays Yan for one who has not taken the dark");
+        fake.setData(ENDING, dev.umbra.ending.Endings.DARK);
+        var boss = yan.tryFall(level);
+        check(boss != null && yan.isRemoved() && boss.getMaxHealth() >= 800, "2.7: for one who took the dark, Yan rises as the Fallen Keeper (" + (boss == null ? 0 : boss.getMaxHealth()) + " hp)");
+        if (boss != null) {
+            float h = fake.getHealth();
+            int burnt = boss.flare(level);
+            check(burnt == 1 && fake.getHealth() < h && boss.isStunned(), "2.7: his lantern's flare burns the one who took the dark, and blinds him for a moment");
+            fake.setHealth(fake.getMaxHealth());
+            boss.setHealth(boss.getMaxHealth() * 0.6F);
+            boss.trackPhase(level);
+            boss.setHealth(boss.getMaxHealth() * 0.3F);
+            boss.trackPhase(level);
+            check(boss.phase() == 3 && boss.echoesStanding(level) == 2, "2.7: in his last phase Marta's echoes rise to keep him (" + boss.echoesStanding(level) + ")");
+            float before = boss.getHealth();
+            for (int i = 0; i < 100; i++) boss.aiStep();
+            boss.setHealth(before);
+            boss.hurtServer(level, level.damageSources().magic(), 30.0F);
+            check(before - boss.getHealth() < 15.0F, "2.7: while an echo stands he takes a third of a blow (" + (before - boss.getHealth()) + " of 30)");
+            boss.die(level.damageSources().magic());
+            boss.discard();
+            check("fallen".equals(level.getData(dev.umbra.registry.ModAttachments.YAN.get())) && dev.umbra.journal.Journal.has(fake, "ending_fallen"),
+                    "2.7: when he falls the dark ending closes, and the world remembers it");
+            check(level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new AABB(c).inflate(48), m -> m.entityTags().contains(dev.umbra.lighthouse.FallenKeeper.ECHO_TAG)).isEmpty(),
+                    "2.7: Marta's echoes go with him");
+        }
+        level.setData(dev.umbra.registry.ModAttachments.YAN.get(), "");
+
+        // the dawn: Yan gives his staff and goes
+        var yan2 = ModEntities.LAMP_KEEPER.get().create(level, EntitySpawnReason.COMMAND);
+        if (yan2 == null) return;
+        yan2.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        level.addFreshEntity(yan2);
+        fake.setData(ENDING, dev.umbra.ending.Endings.LIGHT);
+        fake.getInventory().clearContent();
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        check(yan2.tryFall(level) == null, "2.7: Yan does not rise against one who lit the dawn");
+        yan2.farewell(level, fake);
+        boolean staff = fake.getInventory().countItem(ModItems.KEEPER_STAFF.get()) == 1;
+        check(staff && yan2.isLeaving() && dev.umbra.journal.Journal.has(fake, "keeper_staff"), "2.7: at the dawn Yan gives his staff and makes ready to go");
+        yan2.discard();
+
+        // the staff: a beam through the dark, a circle, a refill at the lamp
+        ItemStack st = new ItemStack(ModItems.KEEPER_STAFF.get());
+        fake.setItemInHand(InteractionHand.MAIN_HAND, st);
+        var crawler = ModEntities.CRAWLER.get().create(level, EntitySpawnReason.COMMAND);
+        if (crawler != null) {
+            fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 0, 12);   // facing south (+z), a little down
+            crawler.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 6.5, 0, 0);
+            crawler.setNoAi(true);
+            level.addFreshEntity(crawler);
+            float ch = crawler.getHealth();
+            int struck = dev.umbra.lighthouse.KeeperStaffItem.beam(level, fake);
+            check(struck >= 1 && crawler.getHealth() < ch, "2.7: the staff's beam strikes the dark in its line (" + struck + ")");
+            crawler.discard();
+        }
+        dev.umbra.light.WardBlock.circle(level, c, dev.umbra.lighthouse.KeeperStaffItem.CIRCLE_RADIUS, 100);
+        check(dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(c).add(5, 0, 0)) && !dev.umbra.light.WardBlock.protects(level, Vec3.atCenterOf(c).add(25, 0, 0)),
+                "2.7: the Keeper's circle holds the dark off for its radius only");
+        st.setDamageValue(50);
+        BlockPos lamp = c.offset(6, 0, 0);
+        level.setBlock(lamp, ModBlocks.LIGHTHOUSE_LAMP.get().defaultBlockState().setValue(dev.umbra.lighthouse.LighthouseLampBlock.LEVEL, 2), Block.UPDATE_ALL);
+        ModItems.KEEPER_STAFF.get().useOn(new net.minecraft.world.item.context.UseOnContext(fake, InteractionHand.MAIN_HAND,
+                new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(lamp), net.minecraft.core.Direction.UP, lamp, false)));
+        check(fake.getMainHandItem().getDamageValue() == 0, "2.7: the staff drinks its fill at the burning lamp");
+        level.setBlock(lamp, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        fake.getInventory().clearContent();
+        fake.setData(ENDING, endingBefore);
     }
 
     private static void testLighthouseKeeper(MinecraftServer server) {
