@@ -40,6 +40,14 @@ public final class ClientCheck {
                 }
         }, "the 3D armour models bake");
         check(() -> {
+            var feet = ArmorModels.create("gloom", net.minecraft.world.entity.EquipmentSlot.FEET).bakeRoot();
+            if (feet.getChild("head").hasChild("horn_r") || feet.getChild("right_arm").hasChild("pauldron_r") || feet.getChild("body").hasChild("gorget"))
+                throw new IllegalStateException("gloom boots still carry the helmet's horns or the chestplate's pauldrons");
+            if (!feet.getChild("right_leg").hasChild("toe_r")) throw new IllegalStateException("gloom boots lost their toe caps");
+            var head = ArmorModels.create("shadow", net.minecraft.world.entity.EquipmentSlot.HEAD).bakeRoot();
+            if (head.getChild("body").hasChild("cloak")) throw new IllegalStateException("the shadow hood carries the cloak");
+        }, "each armour slot draws only its own piece");
+        check(() -> {
             for (var f : new java.util.function.Supplier<?>[]{
                     dev.umbra.client.model.GeneratedModels::mimicker, dev.umbra.client.model.GeneratedModels::lampKeeper,
                     dev.umbra.client.model.GeneratedModels::ashFigure, dev.umbra.client.model.GeneratedModels::primordialShadow}) {

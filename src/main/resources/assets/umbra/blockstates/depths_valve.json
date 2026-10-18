@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "on=false,waterlogged=false": {
+      "model": "umbra:block/depths_valve"
+    },
+    "on=false,waterlogged=true": {
+      "model": "umbra:block/depths_valve"
+    },
+    "on=true,waterlogged=false": {
+      "model": "umbra:block/depths_valve_on"
+    },
+    "on=true,waterlogged=true": {
+      "model": "umbra:block/depths_valve_on"
+    }
+  }
+}

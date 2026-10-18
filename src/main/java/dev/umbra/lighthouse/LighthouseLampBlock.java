@@ -132,6 +132,14 @@ public class LighthouseLampBlock extends Block implements DarknessProof {
         if (!level.isClientSide()) {
             int lvl = state.getValue(LEVEL);
             if (player instanceof ServerPlayer sp) Journal.unlock(sp, "lighthouse");
+            // 2.7: Yan has gone (or another took his staff first): the staff waits at the lamp for whoever lit the dawn
+            if (player instanceof ServerPlayer sp && level instanceof ServerLevel sl && dev.umbra.ending.Endings.isLight(sp) && !Journal.has(sp, "keeper_staff")
+                    && !sl.getData(dev.umbra.registry.ModAttachments.YAN.get()).isEmpty()) {
+                Journal.unlock(sp, "keeper_staff");
+                dev.umbra.util.UmbraUtil.give(sp, new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.KEEPER_STAFF.get()));
+                sp.sendSystemMessage(Component.translatable("block.umbra.lighthouse_lamp.staff").withStyle(net.minecraft.ChatFormatting.GOLD, net.minecraft.ChatFormatting.ITALIC));
+                return InteractionResult.SUCCESS;
+            }
             player.sendOverlayMessage(lvl == 0
                     ? Component.translatable("block.umbra.lighthouse_lamp.dead", PORTION - state.getValue(FILL))
                     : lvl >= MAX_LEVEL

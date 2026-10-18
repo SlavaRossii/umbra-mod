@@ -88,10 +88,11 @@ for s, spec in SETS.items():
 # recipes: tier I crafted, II and III by smithing (echo quartz as the template)
 CRAFT = {"helmet": ["XXX", "X X"], "chestplate": ["X X", "XXX", "XXX"], "leggings": ["XXX", "X X", "X X"], "boots": ["X X", "X X"]}
 BASE = {"luminite": "umbra:luminite_crystal", "shadow": "umbra:shadow_shard"}
+# 2.7: tools/gen_armor27.py owns these numbers now (kept the same here so a rerun agrees)
 ADD = {
-    "gloom": {2: "umbra:gloom_ingot", 3: "umbra:gloom_block"},
-    "luminite": {2: "umbra:luminite_crystal", 3: "umbra:luminite_block"},
-    "shadow": {2: "umbra:gloom_ingot", 3: "umbra:gloom_block"},
+    "gloom": {2: "umbra:gloom_ingot", 3: "umbra:seal_shard"},
+    "luminite": {2: "umbra:luminite_block", 3: "umbra:seal_shard"},
+    "shadow": {2: "umbra:shadow_shard", 3: "umbra:seal_shard"},
 }
 for s in SETS:
     for piece in PIECES:

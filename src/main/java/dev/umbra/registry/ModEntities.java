@@ -33,6 +33,16 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.lighthouse.LampKeeper>> LAMP_KEEPER = ENTITIES.registerEntityType("lamp_keeper",
             dev.umbra.lighthouse.LampKeeper::new, MobCategory.MISC, b -> b.sized(0.6F, 1.95F).clientTrackingRange(10));
 
+    /** 2.7: the drowned halls: those who stayed, and the last Keeper. */
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.depths.Acolyte>> ACOLYTE = ENTITIES.registerEntityType("acolyte",
+            dev.umbra.depths.Acolyte::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.depths.DrownedKeeper>> DROWNED_KEEPER = ENTITIES.registerEntityType("drowned_keeper",
+            dev.umbra.depths.DrownedKeeper::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10));
+
+    /** 2.7: Yan, against the one who took the dark. */
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.lighthouse.FallenKeeper>> FALLEN_KEEPER = ENTITIES.registerEntityType("fallen_keeper",
+            dev.umbra.lighthouse.FallenKeeper::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.95F).clientTrackingRange(10).fireImmune());
+
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.citadel.CitadelStatue>> CITADEL_STATUE = ENTITIES.registerEntityType("citadel_statue",
             dev.umbra.citadel.CitadelStatue::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(10).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.citadel.CitadelKeeper>> CITADEL_KEEPER = ENTITIES.registerEntityType("citadel_keeper",

@@ -107,11 +107,16 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDeath);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mob.Weeper::onShard);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Cycle::onJoin);
-        NeoForge.EVENT_BUS.addListener(dev.umbra.ending.Cycle::onDrops);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onIncoming);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
+        // CI: a dedicated server that only makes a world for the client screenshots, then stops
+        if (Boolean.getBoolean("umbra.makeworld"))
+            NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> {
+                // the client opens it without asking about the experimental settings (it would wait on that screen)
+                if (e.getServer().getWorldData() instanceof net.minecraft.world.level.storage.PrimaryLevelData pld) pld.withConfirmedWarning(true);
+                e.getServer().halt(false);
+            });
     }
 
     private static void onAttributes(EntityAttributeCreationEvent event) {
@@ -134,6 +139,9 @@ public class Umbra {
         event.put(ModEntities.CITADEL_KEEPER.get(), dev.umbra.citadel.CitadelKeeper.createAttributes().build());
         event.put(ModEntities.SHADOW_VILLAGER.get(), dev.umbra.village.ShadowVillager.createAttributes().build());
         event.put(ModEntities.LAMP_KEEPER.get(), dev.umbra.lighthouse.LampKeeper.createAttributes().build());
+        event.put(ModEntities.FALLEN_KEEPER.get(), dev.umbra.lighthouse.FallenKeeper.createAttributes().build());
+        event.put(ModEntities.ACOLYTE.get(), dev.umbra.depths.Acolyte.createAttributes().build());
+        event.put(ModEntities.DROWNED_KEEPER.get(), dev.umbra.depths.DrownedKeeper.createAttributes().build());
         event.put(ModEntities.WATCHER.get(), Watcher.createAttributes().build());
         event.put(ModEntities.MIMIC_QUEEN.get(), MimicQueen.createAttributes().build());
         event.put(ModEntities.SHEPHERD.get(), Shepherd.createAttributes().build());
@@ -174,12 +182,14 @@ public class Umbra {
         dev.umbra.registry.ModEffects.tick(player);
         dev.umbra.gear.Gear.tick(player);
         dev.umbra.gear.WeaponEvents.setTick(player);
+        dev.umbra.gear.SetPowers.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);
         dev.umbra.village.VillageManager.tick(player);
         dev.umbra.lighthouse.LighthouseManager.tick(player);
         dev.umbra.lighthouse.YanErrands.tick(player);
         dev.umbra.depths.Depths.pearlTick(player);
+        dev.umbra.depths.Depths.tick(player);
         dev.umbra.underside.UndersideAmbience.tick(player);
         dev.umbra.ending.Endings.tick(player);
         dev.umbra.night.NightEvents.tick(player);

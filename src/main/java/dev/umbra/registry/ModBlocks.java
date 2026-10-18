@@ -89,6 +89,18 @@ public final class ModBlocks {
             p -> new EternalWallTorchBlock(ParticleTypes.END_ROD, p),
             () -> torchProperties());
 
+    /** 2.7: the fixtures of the drowned halls (they stand in water and cannot be broken). */
+    public static final DeferredBlock<dev.umbra.depths.DepthsBlocks.Valve> DEPTHS_VALVE = BLOCKS.registerBlock("depths_valve",
+            dev.umbra.depths.DepthsBlocks.Valve::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().sound(net.minecraft.world.level.block.SoundType.METAL));
+    public static final DeferredBlock<dev.umbra.depths.DepthsBlocks.Bell> DEPTHS_BELL = BLOCKS.registerBlock("depths_bell",
+            dev.umbra.depths.DepthsBlocks.Bell::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().sound(net.minecraft.world.level.block.SoundType.ANVIL));
+    public static final DeferredBlock<dev.umbra.depths.DepthsBlocks.Lamp> DEPTHS_LAMP = BLOCKS.registerBlock("depths_lamp",
+            dev.umbra.depths.DepthsBlocks.Lamp::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().sound(net.minecraft.world.level.block.SoundType.GLASS)
+                    .lightLevel(s -> s.getValue(dev.umbra.depths.DepthsBlocks.ON) ? 15 : 2));
+
     /** Invisible light that follows a lit luminite lantern and removes itself when the lantern is gone. */
     public static final DeferredBlock<HeldLightBlock> HELD_LIGHT = BLOCKS.registerBlock("held_light",
             HeldLightBlock::new,

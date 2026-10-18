@@ -299,10 +299,13 @@ def write_models():
         box((7, 3, 8), (9, 12, 9), "rim"),
     ]
     display = {
-        "thirdperson_righthand": {"rotation": [0, 90, 0], "translation": [10, 6, -4], "scale": [1, 1, 1]},
-        "thirdperson_lefthand": {"rotation": [0, 90, 0], "translation": [10, 6, 12], "scale": [1, 1, 1]},
-        "firstperson_righthand": {"rotation": [0, 180, 5], "translation": [-10, 2, -10], "scale": [1.25, 1.25, 1.25]},
-        "firstperson_lefthand": {"rotation": [0, 180, 5], "translation": [10, 0, -10], "scale": [1.25, 1.25, 1.25]},
+        # 2.6.2: vanilla's numbers are for its entity-rendered shield, whose origin is a corner; for a model of elements
+        # (centred) they put the shield in the middle of the screen. These are vanilla's placement moved onto our centre
+        # (tools: the offset R*S*(corner - centre)), first person lifted so the top edge sits where vanilla's does.
+        "thirdperson_righthand": {"rotation": [0, 90, 0], "translation": [3.98, -1.52, 4], "scale": [1, 1, 1]},
+        "thirdperson_lefthand": {"rotation": [0, 90, 0], "translation": [3.98, -1.52, 4], "scale": [1, 1, 1]},
+        "firstperson_righthand": {"rotation": [0, 180, 5], "translation": [-0.86, -3.86, -2.48], "scale": [1.25, 1.25, 1.25]},
+        "firstperson_lefthand": {"rotation": [0, 180, 5], "translation": [-0.78, -4.12, -2.48], "scale": [1.25, 1.25, 1.25]},
         "gui": {"rotation": [15, -25, -5], "translation": [2, 3, 0], "scale": [0.65, 0.65, 0.65]},
         "ground": {"translation": [4, 4, 2], "scale": [0.25, 0.25, 0.25]},
         "fixed": {"rotation": [0, 180, 0], "scale": [0.5, 0.5, 0.5]},
@@ -313,10 +316,10 @@ def write_models():
     # raised: the same shield held up in front, as vanilla holds its own while blocking
     raised = dict(display)
     raised.update({
-        "thirdperson_righthand": {"rotation": [45, 135, 0], "translation": [3.51, 11, -2], "scale": [1, 1, 1]},
-        "thirdperson_lefthand": {"rotation": [45, 135, 0], "translation": [13.51, 3, 5], "scale": [1, 1, 1]},
-        "firstperson_righthand": {"rotation": [0, 180, -5], "translation": [-15, 5, -11], "scale": [1.25, 1.25, 1.25]},
-        "firstperson_lefthand": {"rotation": [0, 180, -5], "translation": [5, 5, -11], "scale": [1.25, 1.25, 1.25]},
+        "thirdperson_righthand": {"rotation": [45, 135, 0], "translation": [4.91, -1.33, -0.31], "scale": [1, 1, 1]},
+        "thirdperson_lefthand": {"rotation": [45, 135, 0], "translation": [3.6, -1.33, -1.31], "scale": [1, 1, 1]},
+        "firstperson_righthand": {"rotation": [0, 180, -5], "translation": [-4.22, 0.88, -3.48], "scale": [1.25, 1.25, 1.25]},
+        "firstperson_lefthand": {"rotation": [0, 180, -5], "translation": [-4.14, -0.86, -3.48], "scale": [1.25, 1.25, 1.25]},
     })
     model(MI + 'luminite_shield_3d_blocking.json', "minecraft:item/handheld",
           {"particle": "umbra:item/luminite_shield_rim", "face": "umbra:item/luminite_shield_face", "rim": "umbra:item/luminite_shield_rim"},

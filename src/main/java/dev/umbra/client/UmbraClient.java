@@ -41,6 +41,9 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
         event.registerEntityRenderer(ModEntities.LAMP_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LAMP_KEEPER, "lamp_keeper", 0.5F, Animations::lampKeeper, null));
+        event.registerEntityRenderer(ModEntities.ACOLYTE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WEEPER, "acolyte", 0.4F, Animations::weeper, null));
+        event.registerEntityRenderer(ModEntities.DROWNED_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "drowned_keeper", 0.7F, Animations::keeper, null));
+        event.registerEntityRenderer(ModEntities.FALLEN_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LAMP_KEEPER, "fallen_keeper", 0.6F, Animations::lampKeeper, null));
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
@@ -172,9 +175,13 @@ public final class UmbraClient {
                     event.getToolTip().add(net.minecraft.network.chat.Component.translatable(key)
                             .withStyle(net.minecraft.ChatFormatting.DARK_GRAY, net.minecraft.ChatFormatting.ITALIC));
                 int[] piece = dev.umbra.gear.Gear.piece(event.getItemStack());
-                if (piece != null)
+                if (piece != null) {
                     event.getToolTip().add(net.minecraft.network.chat.Component.translatable("set.umbra." + dev.umbra.gear.Gear.SETS[piece[0]])
                             .withStyle(net.minecraft.ChatFormatting.DARK_AQUA));
+                    if (piece[1] == 3)
+                        event.getToolTip().add(net.minecraft.network.chat.Component.translatable("set.umbra." + dev.umbra.gear.Gear.SETS[piece[0]] + ".master")
+                                .withStyle(net.minecraft.ChatFormatting.AQUA));
+                }
             }
             if (!(event.getItemStack().getItem() instanceof dev.umbra.madness.DespairBladeItem) || event.getEntity() == null) return;
             float bonus = dev.umbra.madness.DespairBladeItem.bonus(event.getEntity());
