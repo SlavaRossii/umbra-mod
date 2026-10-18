@@ -194,16 +194,26 @@ def java():
            "    public static ModelLayerLocation layer(String set, boolean inner) {",
            "        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, \"armor_\" + set), inner ? \"inner\" : \"outer\");",
            "    }", "",
-           "    public static MeshDefinition mesh(String set, boolean inner) {",
+           "    /**",
+           "     * The vanilla shell with the parts not in {@code keep} emptied first, then the extra cubes, but only on kept parts.",
+           "     * (addOrReplaceChild keeps the children of the part it replaces, so emptying a part afterwards left its horns,",
+           "     * pauldrons and cloak behind: boots alone wore a helmet and a chestplate. Fixed in 2.6.2.)",
+           "     */",
+           "    public static MeshDefinition mesh(String set, boolean inner, java.util.Set<String> keep) {",
            "        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(inner ? 0.5F : 1.0F), 0.0F);",
            "        PartDefinition root = mesh.getRoot();",
+           "        for (String part : new String[]{\"head\", \"body\", \"right_arm\", \"left_arm\", \"right_leg\", \"left_leg\"}) {",
+           "            if (keep.contains(part)) continue;",
+           "            PartDefinition empty = root.addOrReplaceChild(part, CubeListBuilder.create(), PartPose.ZERO);",
+           "            if (part.equals(\"head\")) empty.addOrReplaceChild(\"hat\", CubeListBuilder.create(), PartPose.ZERO);",
+           "        }",
            "        switch (set + (inner ? \"/inner\" : \"/outer\")) {"]
     for s, layers in EXTRAS.items():
         for layer in ("outer", "inner"):
             out.append(f"            case \"{s}/{layer}\" -> {{")
             items = layers[layer]
             for (part, name, (x, y, z, w, h, d), (px, py, pz, rx, ry, rz), ck, infl), (u, v) in zip(items, pack([c[2] for c in items])):
-                out.append(f"                root.getChild(\"{part}\").addOrReplaceChild(\"{name}\", CubeListBuilder.create().texOffs({u}, {v})"
+                out.append(f"                if (keep.contains(\"{part}\")) root.getChild(\"{part}\").addOrReplaceChild(\"{name}\", CubeListBuilder.create().texOffs({u}, {v})"
                            f".addBox({jf(x)}, {jf(y)}, {jf(z)}, {jf(math.ceil(w))}, {jf(math.ceil(h))}, {jf(math.ceil(d))}, new CubeDeformation({jf(infl)})),")
                 out.append(f"                        PartPose.offsetAndRotation({jf(px)}, {jf(py)}, {jf(pz)}, {jf(rx)}, {jf(ry)}, {jf(rz)}));")
             out.append("            }")
@@ -214,19 +224,13 @@ def java():
             "    /** One piece only, like vanilla: the parts of other slots are emptied (a model never shows armour you do not wear). */",
             "    public static LayerDefinition create(String set, net.minecraft.world.entity.EquipmentSlot slot) {",
             "        boolean inner = slot == net.minecraft.world.entity.EquipmentSlot.LEGS;",
-            "        MeshDefinition mesh = mesh(set, inner);",
-            "        PartDefinition root = mesh.getRoot();",
             "        java.util.Set<String> keep = switch (slot) {",
             "            case HEAD -> java.util.Set.of(\"head\");",
             "            case CHEST -> java.util.Set.of(\"body\", \"right_arm\", \"left_arm\");",
             "            case LEGS -> java.util.Set.of(\"body\", \"right_leg\", \"left_leg\");",
             "            default -> java.util.Set.of(\"right_leg\", \"left_leg\");",
             "        };",
-            "        for (String part : new String[]{\"head\", \"body\", \"right_arm\", \"left_arm\", \"right_leg\", \"left_leg\"}) {",
-            "            if (keep.contains(part)) continue;",
-            "            PartDefinition empty = root.addOrReplaceChild(part, CubeListBuilder.create(), PartPose.ZERO);",
-            "            if (part.equals(\"head\")) empty.addOrReplaceChild(\"hat\", CubeListBuilder.create(), PartPose.ZERO);",
-            "        }",
+            "        MeshDefinition mesh = mesh(set, inner, keep);",
             "        return LayerDefinition.create(mesh, 64, %d);" % H,
             "    }",
             "}"]

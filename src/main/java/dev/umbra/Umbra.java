@@ -111,6 +111,9 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onIncoming);
 
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
+        // CI: a dedicated server that only makes a world for the client screenshots, then stops
+        if (Boolean.getBoolean("umbra.makeworld"))
+            NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> e.getServer().halt(false));
     }
 
     private static void onAttributes(EntityAttributeCreationEvent event) {

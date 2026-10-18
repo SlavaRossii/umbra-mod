@@ -77,6 +77,22 @@ neoForge {
             systemProperty 'umbra.clientcheck', 'true'
         }
 
+        // CI: a dedicated server that makes a flat world for the screenshots and stops at once
+        makeWorld {
+            server()
+            gameDirectory = project.file('run-world')
+            programArgument '--nogui'
+            systemProperty 'umbra.makeworld', 'true'
+        }
+
+        // CI: the client opens that world, puts on armour and raises shields, the workflow takes screenshots
+        clientShots {
+            client()
+            gameDirectory = project.file('run-client')
+            systemProperty 'umbra.clientshots', 'true'
+            programArguments.addAll '--quickPlaySingleplayer', 'shots', '--width', '1280', '--height', '720'
+        }
+
         data {
             clientData()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it

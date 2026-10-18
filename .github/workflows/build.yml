@@ -95,7 +95,7 @@ jobs:
   client-check:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     continue-on-error: true
     steps:
       - name: Checkout repository
@@ -139,21 +139,59 @@ jobs:
           sleep 20
           tail -5 client-gradle.log || true
 
+      - name: Make a flat world for the screenshots
+        run: |
+          cp run-client/logs/latest.log client-title.log 2>/dev/null || true
+          mkdir -p run-world
+          echo "eula=true" > run-world/eula.txt
+          printf 'online-mode=false\nlevel-name=shots\nlevel-type=minecraft\\:flat\ngenerate-structures=false\nspawn-protection=0\n' > run-world/server.properties
+          timeout 8m ./gradlew runMakeWorld > makeworld.log 2>&1 || echo "world maker exited with $?"
+          tail -5 makeworld.log
+          mkdir -p run-client/saves && rm -rf run-client/saves/shots && cp -r run-world/shots run-client/saves/shots && ls run-client/saves/shots
+
+      - name: Screenshots in the world
+        env:
+          DISPLAY: ':99'
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          MESA_GL_VERSION_OVERRIDE: '4.6'
+          MESA_GLSL_VERSION_OVERRIDE: '460'
+          __GLX_VENDOR_LIBRARY_NAME: 'mesa'
+        run: |
+          mkdir -p run-client/shots
+          rm -f run-client/shots/*
+          ( timeout 15m ./gradlew runClientShots --stacktrace > shots-gradle.log 2>&1; echo "client exited with $?" >> shots-gradle.log ) &
+          for i in $(seq 1 900); do
+            for r in run-client/shots/*.req; do
+              [ -e "$r" ] || continue
+              n=$(basename "$r" .req)
+              import -window root -display :99 "run-client/shots/$n.png" || true
+              rm -f "$r"; touch "run-client/shots/$n.done"
+            done
+            if [ -f run-client/umbra-clientshots.txt ]; then break; fi
+            if grep -q "client exited" shots-gradle.log 2>/dev/null; then break; fi
+            sleep 1
+          done
+          cat run-client/umbra-clientshots.txt || echo "no shots report"
+          grep -n "UMBRA CLIENTSHOTS" run-client/logs/latest.log | tail -40 || true
+          ls run-client/shots
+          cd run-client/shots && for f in *.png; do [ -e "$f" ] && convert "$f" -resize 50% -quality 85 "${f%.png}.jpg" && rm "$f"; done; true
+
       - name: Publish client-check results
         if: always()
         run: |
           set +e
           { cat run-client/umbra-clientcheck.txt 2>/dev/null || echo "no report"; echo "----- warnings about models and textures -----";
-            grep -nE 'Missing|Unable to|Failed to|Exception|ERROR|umbra' run-client/logs/latest.log 2>/dev/null | grep -v 'UMBRA CLIENTCHECK: done' | head -400;
+            grep -nE 'Missing|Unable to|Failed to|Exception|ERROR|umbra' client-title.log 2>/dev/null | grep -v 'UMBRA CLIENTCHECK: done' | head -400;
             echo "----- gradle tail -----"; tail -80 client-gradle.log; } > client.txt
-          cp run-client/logs/latest.log client.log 2>/dev/null
-          .github/scripts/publish.sh ci-client client.txt client.log shot1.png shot2.png
+          cp client-title.log client.log 2>/dev/null
+          cp run-client/umbra-clientshots.txt shots.txt 2>/dev/null; grep -n "UMBRA CLIENTSHOTS\|Exception\|ERROR" run-client/logs/latest.log 2>/dev/null | head -200 >> shots.txt; tail -60 shots-gradle.log >> shots.txt 2>/dev/null
+          .github/scripts/publish.sh ci-client client.txt client.log shot1.png shot2.png shots.txt run-client/shots/*.jpg
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: No broken Umbra models or textures
         run: |
-          if grep -nE "(Rejecting|Unable to bake|Missing model|Missing texture|Unable to load model|Unable to resolve texture).*umbra" run-client/logs/latest.log; then
+          if grep -nE "(Rejecting|Unable to bake|Missing model|Missing texture|Unable to load model|Unable to resolve texture).*umbra" client-title.log run-client/logs/latest.log; then
             echo "::error::Umbra has models the game cannot draw (see above)"; exit 1; fi
 
   smoke-test:

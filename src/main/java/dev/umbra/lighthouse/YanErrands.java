@@ -110,6 +110,15 @@ public final class YanErrands {
         public MartaLanternItem(Properties properties) {
             super(properties);
         }
+
+        /** 2.6.2: it actually lights the way now, like a lit luminite lantern, and never burns down. */
+        @Override
+        public void inventoryTick(ItemStack stack, ServerLevel level, net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
+            if (!(entity instanceof Player player)) return;
+            if (slot != net.minecraft.world.entity.EquipmentSlot.MAINHAND && slot != net.minecraft.world.entity.EquipmentSlot.OFFHAND) return;
+            if (slot == net.minecraft.world.entity.EquipmentSlot.OFFHAND && player.getMainHandItem().is(this)) return;
+            if (player.tickCount % 4 == 0) dev.umbra.light.LanternItem.placeLight(level, player);
+        }
     }
 
     public static class YanSpyglassItem extends SpyglassItem {
