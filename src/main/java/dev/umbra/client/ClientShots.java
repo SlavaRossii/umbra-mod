@@ -68,6 +68,10 @@ public final class ClientShots {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null || mc.getSingleplayerServer() == null) {
             if (++tick % 200 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: waiting for the world, screen {}", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
+            if (tick > 20 * 240) {
+                write(Path.of("umbra-clientshots.txt"), "never got into the world (screen " + (mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName()) + ")\n");
+                mc.stop();
+            }
             return;
         }
         if (mc.gui.screen() != null) {

@@ -111,7 +111,11 @@ public class Umbra {
         if (Boolean.getBoolean("umbra.smoketest")) SmokeTest.install();
         // CI: a dedicated server that only makes a world for the client screenshots, then stops
         if (Boolean.getBoolean("umbra.makeworld"))
-            NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> e.getServer().halt(false));
+            NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> {
+                // the client opens it without asking about the experimental settings (it would wait on that screen)
+                if (e.getServer().getWorldData() instanceof net.minecraft.world.level.storage.PrimaryLevelData pld) pld.withConfirmedWarning(true);
+                e.getServer().halt(false);
+            });
     }
 
     private static void onAttributes(EntityAttributeCreationEvent event) {
