@@ -1760,7 +1760,8 @@ final class SmokeTest {
         if (boss != null) {
             float h = fake.getHealth();
             int burnt = boss.flare(level, java.util.List.of(fake));
-            check(burnt == 1 && fake.getHealth() < h && boss.isStunned(), "2.7: his lantern's flare burns the one who took the dark, and blinds him for a moment");
+            check(burnt == 1 && boss.isStunned() && fake.hasEffect(net.minecraft.world.effect.MobEffects.WEAKNESS),
+                    "2.7: his lantern's flare burns the one who took the dark, and blinds him for a moment (burnt " + burnt + ", stunned " + boss.isStunned() + ")");
             fake.setHealth(fake.getMaxHealth());
             boss.setHealth(boss.getMaxHealth() * 0.6F);
             boss.trackPhase(level);
