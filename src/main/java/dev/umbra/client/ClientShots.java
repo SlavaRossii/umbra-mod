@@ -56,14 +56,15 @@ public final class ClientShots {
                     "item replace entity @a armor.chest with umbra:" + set + "_chestplate_3", "item replace entity @a armor.head with umbra:" + set + "_helmet_3"));
         }
         // 2.7.1: the new creatures, three quarters on, and the weapons in the hand
-        String kill = "kill @e[type=!player]";
-        for (String[] mob : new String[][]{{"fallen_keeper", "6"}, {"drowned_keeper", "8"}, {"acolyte", "4"}}) {
+        // (moved far off, not killed: a killed Fallen Keeper would roll the credits over the next shots)
+        String away = "tp @e[tag=shot] ~ ~ ~2000";
+        for (String[] mob : new String[][]{{"fallen_keeper", "4.5"}, {"drowned_keeper", "6"}, {"acolyte", "3"}}) {
             for (String yaw : new String[]{"150", "210"}) {
-                POSES.add(new Pose(String.format("%02d_mob_%s_%s", n++, mob[0], yaw), CameraType.FIRST_PERSON, false, true, CLEAR, kill, fp,
-                        "execute as @p at @p run summon umbra:" + mob[0] + " ^ ^ ^" + mob[1] + " {NoAI:1b,PersistenceRequired:1b,Rotation:[" + yaw + "f,0f]}"));
+                POSES.add(new Pose(String.format("%02d_mob_%s_%s", n++, mob[0], yaw), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
+                        "execute as @p at @p run summon umbra:" + mob[0] + " ^ ^ ^" + mob[1] + " {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + yaw + "f,0f]}"));
             }
         }
-        POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, kill));
+        POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
                 "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow"}) {
             POSES.add(new Pose(String.format("%02d_hand_%s", n++, w), CameraType.FIRST_PERSON, false, false, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));

@@ -60,7 +60,21 @@ class W:
     def write(self, suffix="_3d"):
         tex = {m: "umbra:item/mat_" + m for m in sorted(self.used)}
         tex["particle"] = "umbra:item/" + self.name
-        g.model(MI + self.name + suffix + '.json', self.parent, tex, self.els)
+        g.model(MI + self.name + suffix + '.json', self.parent, tex, self.els, {"display": display(self.parent, self.scale)})
+
+    scale = 0.85
+
+
+# vanilla's own transforms for a held sprite (and a bow), shrunk a little: a 3D weapon reaches past its 16 x 16 square
+HANDHELD = {"thirdperson_righthand": ([0, -90, 55], [0, 4.0, 0.5], 0.85), "thirdperson_lefthand": ([0, 90, -55], [0, 4.0, 0.5], 0.85),
+            "firstperson_righthand": ([0, -90, 25], [1.13, 3.2, 1.13], 0.68), "firstperson_lefthand": ([0, 90, -25], [1.13, 3.2, 1.13], 0.68)}
+BOW = {"thirdperson_righthand": ([-80, 260, -40], [-1, -2, 2.5], 0.9), "thirdperson_lefthand": ([-80, -280, 40], [-1, -2, 2.5], 0.9),
+       "firstperson_righthand": ([0, -90, 25], [1.13, 3.2, 1.13], 0.68), "firstperson_lefthand": ([0, 90, -25], [1.13, 3.2, 1.13], 0.68)}
+
+
+def display(parent, k):
+    base = BOW if parent.endswith("bow") else HANDHELD
+    return {ctx: {"rotation": r, "translation": t, "scale": [round(s * k, 3)] * 3} for ctx, (r, t, s) in base.items()}
 
 
 def hilt(w, top=4.0, bottom=-2.5, wrap="leather", pommel="gloom"):
