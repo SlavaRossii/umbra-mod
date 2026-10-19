@@ -563,9 +563,9 @@ def embers(color=(255, 120, 40, 255), dim=(120, 40, 20, 255)):
         for x in range(x0, x0 + w):
             for y in range(max(y0, y0 + h - 3), y0 + h):
                 k = r.random()
-                if k < 0.18:
+                if k < 0.07 and y >= y0 + h - 2:
                     px[x, y] = color
-                elif k < 0.45:
+                elif k < 0.3:
                     px[x, y] = dim
     return f
 
@@ -699,8 +699,8 @@ def acolyte():
     kelp = P((44, 106, 60, 255), 10, front=kelp_lines(), back=kelp_lines())
     m.part("robe_a", "root", (0, 11, 0), (0, 0, 0), [C(-3.5, 0, -2.5, 7, 7, 5, robe)])
     m.part("robe_b", "robe_a", (0, 7, 0), (0, 0, 0), [C(-4, 0, -3, 8, 6, 6, robe_dark)])
-    body = m.part("body", "root", (0, 11, 0), (0.35, 0, 0), [C(-3, -10, -2, 6, 10, 4, robe), C(-3.5, -2, -2.5, 7, 1, 5, rope)])
-    head = m.part("head", body, (0, -10, -1), (0.3, 0, 0), [C(-3, -6, -3, 6, 6, 6, face), C(-3.5, -7, -3.5, 7, 2, 7, hood),
+    body = m.part("body", "root", (0, 11, 0), (0.2, 0, 0), [C(-3, -10, -2, 6, 10, 4, robe), C(-3.5, -2, -2.5, 7, 1, 5, rope)])
+    head = m.part("head", body, (0, -10, -1), (0.05, 0, 0), [C(-3, -6, -3, 6, 6, 6, face), C(-3.5, -7, -3.5, 7, 2, 7, hood),
                                                          C(-3.5, -5, 0.5, 7, 6, 3, hood), C(-3.8, -5, -3.5, 1, 5, 4, hood),
                                                          C(2.8, -5, -3.5, 1, 5, 4, hood)])
     m.part("hood_tip", head, (0, -7, 2), (0.6, 0, 0), [C(-1, -1, 0, 2, 2, 4, hood)])

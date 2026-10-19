@@ -58,6 +58,7 @@ public final class ClientShots {
         // 2.7.1: the new creatures, three quarters on, and the weapons in the hand
         // (moved far off, not killed: a killed Fallen Keeper would roll the credits over the next shots)
         String away = "tp @e[tag=shot] ~ ~ ~2000";
+        String noSlimes = "kill @e[type=minecraft:slime]";
         for (String[] mob : new String[][]{{"fallen_keeper", "4.5"}, {"drowned_keeper", "6"}, {"acolyte", "3"}}) {
             for (String yaw : new String[]{"150", "210"}) {
                 POSES.add(new Pose(String.format("%02d_mob_%s_%s", n++, mob[0], yaw), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
@@ -67,7 +68,7 @@ public final class ClientShots {
         POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
                 "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow"}) {
-            POSES.add(new Pose(String.format("%02d_hand_%s", n++, w), CameraType.FIRST_PERSON, false, false, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
+            POSES.add(new Pose(String.format("%02d_hand_%s", n++, w), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_hand_luminite_bow_drawn", n++), CameraType.FIRST_PERSON, true, false));
         for (String w : new String[]{"luminite_spear", "shepherd_scythe", "keeper_staff", "gloom_axe", "luminite_bow"}) {
@@ -102,7 +103,7 @@ public final class ClientShots {
         if (pose == -1) {
             if (tick < 200) return;
             run(mc, "gamemode creative @a", "difficulty easy", "time set 6000", "weather clear", "effect give @a minecraft:night_vision infinite 0 true",
-                    "gamerule doDaylightCycle false", "gamerule advance_time false", "kill @e[type=!player]");
+                    "gamerule doDaylightCycle false", "gamerule advance_time false", "gamerule doMobSpawning false", "gamerule spawn_mobs false", "kill @e[type=!player]");
             try {
                 Files.createDirectories(DIR);
             } catch (Exception e) {

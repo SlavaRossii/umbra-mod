@@ -632,9 +632,9 @@ public final class GeneratedModels {
         PartDefinition p_robe_b = p_robe_a.addOrReplaceChild("robe_b", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, 0.0F, -3.0F, 8.0F, 6.0F, 6.0F),
                 PartPose.offsetAndRotation(0.0F, 7.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition p_body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(4, 0).addBox(-3.0F, -10.0F, -2.0F, 6.0F, 10.0F, 4.0F).texOffs(40, 38).addBox(-3.5F, -2.0F, -2.5F, 7.0F, 1.0F, 5.0F),
-                PartPose.offsetAndRotation(0.0F, 11.0F, 0.0F, 0.35F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(0.0F, 11.0F, 0.0F, 0.2F, 0.0F, 0.0F));
         PartDefinition p_head = p_body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(28, 16).addBox(-3.0F, -6.0F, -3.0F, 6.0F, 6.0F, 6.0F).texOffs(24, 28).addBox(-3.5F, -7.0F, -3.5F, 7.0F, 2.0F, 7.0F).texOffs(0, 38).addBox(-3.5F, -5.0F, 0.5F, 7.0F, 6.0F, 3.0F).texOffs(20, 38).addBox(-3.8F, -5.0F, -3.5F, 1.0F, 5.0F, 4.0F).texOffs(30, 38).addBox(2.8F, -5.0F, -3.5F, 1.0F, 5.0F, 4.0F),
-                PartPose.offsetAndRotation(0.0F, -10.0F, -1.0F, 0.3F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(0.0F, -10.0F, -1.0F, 0.05F, 0.0F, 0.0F));
         PartDefinition p_hood_tip = p_head.addOrReplaceChild("hood_tip", CubeListBuilder.create().texOffs(0, 47).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F),
                 PartPose.offsetAndRotation(0.0F, -7.0F, 2.0F, 0.6F, 0.0F, 0.0F));
         PartDefinition p_kelp_a = p_head.addOrReplaceChild("kelp_a", CubeListBuilder.create().texOffs(52, 16).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 10.0F, 1.0F),
