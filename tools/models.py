@@ -554,8 +554,169 @@ def bellringer():
     return m
 
 
+# ------------------------------------------------------------------ 2.7.1: the drowned and the fallen
+
+def embers(color=(255, 120, 40, 255), dim=(120, 40, 20, 255)):
+    """Burnt edges: the lower rows smoulder."""
+    def f(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 17 + h * 3 + x0)
+        for x in range(x0, x0 + w):
+            for y in range(max(y0, y0 + h - 3), y0 + h):
+                k = r.random()
+                if k < 0.18:
+                    px[x, y] = color
+                elif k < 0.45:
+                    px[x, y] = dim
+    return f
+
+
+def specks(color, n=6):
+    def f(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 5 + h * 11 + y0)
+        for _ in range(max(1, n * w * h // 64)):
+            px[x0 + r.randint(0, w - 1), y0 + r.randint(0, h - 1)] = color
+    return f
+
+
+def kelp_lines(color=(50, 120, 66, 255), dark=(28, 70, 40, 255)):
+    def f(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 23 + y0)
+        for _ in range(max(1, w // 3)):
+            x = x0 + r.randint(0, w - 1)
+            for y in range(y0 + r.randint(0, max(0, h // 3)), y0 + h):
+                px[x, y] = color if (y + x) % 3 else dark
+    return f
+
+
+def visor(color, y=0.45):
+    def f(px, x0, y0, w, h, rnd):
+        yy = y0 + int(h * y)
+        for x in range(x0 + 1, x0 + w - 1):
+            px[x, yy] = (20, 30, 30, 255)
+        for x in (x0 + w // 2 - 2, x0 + w // 2 + 1):
+            px[x, yy] = color
+    return f
+
+
+def fallen_keeper():
+    """Yan, fallen: taller and gaunt, in a burnt cloak in tatters, the beard gone grey as ash, violet light where his
+    eyes were; a halo of gold burns behind his head, and the lantern on his staff burns gold."""
+    m = Model("fallen_keeper")
+    cloth = P((36, 28, 42, 255), 8, front=embers(), back=embers(), left=embers(), right=embers())
+    robe = P((44, 34, 52, 255), 8, front=stripes((32, 24, 40, 255), 4, True))
+    mantle = P((30, 24, 36, 255), 8, front=embers(), down=embers())
+    leather = P((64, 44, 34, 255), 8)
+    boots = P((30, 24, 22, 255), 6)
+    ash = P((126, 118, 124, 255), 8)
+    face = P((120, 112, 118, 255), 8, front=combine(eyes((235, 160, 255, 255), 0.42, 0.22, 1, glow=(150, 70, 200, 255)),
+                                                     specks((70, 64, 70, 255), 3)))
+    hood = P((26, 20, 32, 255), 6, front=embers((200, 90, 255, 255), (80, 40, 110, 255)))
+    beard = P((150, 146, 150, 255), 10)
+    gold = P((255, 212, 110, 255), 6)
+    brass = P((168, 118, 52, 255), 10)
+    glow = P((255, 232, 160, 255), 4)
+    wood = P((58, 40, 30, 255), 8)
+    m.part("leg_r", "root", (-2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 12, 4, robe), C(-2.5, 9, -2.5, 5, 3, 5, boots)])
+    m.part("leg_l", "root", (2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 12, 4, robe), C(-2.5, 9, -2.5, 5, 3, 5, boots)])
+    m.part("skirt_front", "root", (0, 12, -2.5), (-0.05, 0, 0), [C(-4.5, 0, -1, 9, 10, 1, cloth)])
+    m.part("skirt_back", "root", (0, 12, 2.5), (0.08, 0, 0), [C(-4.5, 0, 0, 9, 11, 1, cloth)])
+    body = m.part("body", "root", (0, 12, 0), (0.12, 0, 0), [C(-4.5, -12, -2.5, 9, 12, 5, robe), C(-5, -2, -3, 10, 2, 6, leather)])
+    m.part("mantle", body, (0, -12, 0), (0, 0, 0), [C(-6, -0.5, -3.5, 12, 3, 7, mantle)])
+    for i, (x, length) in enumerate(((-5, 19), (-3, 22), (-1, 17), (1, 21), (3, 16), (4.5, 20))):
+        m.part(f"cloak_{i}", body, (x, -11, 3.2), (0.12, 0, 0), [C(-1, 0, 0, 2, length, 1, cloth)])
+    head = m.part("head", body, (0, -12, -0.5), (0, 0, 0), [C(-4, -8, -4, 8, 8, 8, face),
+                                                         C(-4.5, -9, -4.5, 9, 3, 9, hood), C(-4.5, -6, 0.5, 9, 7, 4, hood),
+                                                         C(-4.8, -6, -4.5, 1, 6, 5, hood), C(3.8, -6, -4.5, 1, 6, 5, hood)])
+    m.part("beard", head, (0, 0, -4), (0.1, 0, 0), [C(-3, -2, -1, 6, 5, 1, beard), C(-2, 3, -1, 4, 3, 1, beard), C(-1, 6, -1, 2, 2, 1, beard)])
+    halo = m.part("halo", head, (0, -5, 6), (0, 0, 0), [C(-5, -5, 0, 10, 1, 1, gold), C(-5, 4, 0, 10, 1, 1, gold),
+                                                        C(-5, -4, 0, 1, 8, 1, gold), C(4, -4, 0, 1, 8, 1, gold),
+                                                        C(-0.5, -8, 0, 1, 3, 1, gold), C(-0.5, 5, 0, 1, 3, 1, gold),
+                                                        C(-8, -0.5, 0, 3, 1, 1, gold), C(5, -0.5, 0, 3, 1, 1, gold)])
+    m.part("arm_l", body, (5.5, -11, 0), (0.1, 0, -0.12), [C(-1.5, -1, -1.5, 3, 11, 3, robe), C(-2, 4, -2, 4, 4, 4, cloth)])
+    m.part("claws", "arm_l", (0, 10, 0), (-0.3, 0, 0), [C(-1.5, 0, -1, 1, 4, 1, ash), C(-0.5, 0, -1, 1, 5, 1, ash), C(0.5, 0, -1, 1, 4, 1, ash)])
+    arm = m.part("arm_r", body, (-5.5, -11, 0), (-0.55, 0, 0.05), [C(-1.5, -1, -1.5, 3, 11, 3, robe), C(-2, 4, -2, 4, 4, 4, cloth)])
+    staff = m.part("staff", arm, (0, 10, -0.5), (0.55, 0, 0), [C(-0.5, -22, -0.5, 1, 32, 1, wood), C(-0.5, -22, -5, 1, 1, 5, wood),
+                                                              C(-1, -12, -1, 2, 1, 2, brass), C(-1, -3, -1, 2, 1, 2, brass)])
+    m.part("lantern", staff, (0, -21, -4.5), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 2, 1, brass), C(-2, 2, -2, 4, 1, 4, brass),
+                                                        C(-1.5, 3, -1.5, 3, 4, 3, glow), C(-2, 7, -2, 4, 1, 4, brass),
+                                                        C(-2, 3, -2, 1, 4, 1, brass), C(1, 3, 1, 1, 4, 1, brass)])
+    return m
+
+
+def drowned_keeper():
+    """The last Keeper, gone under: a broad knight in armour turned green, barnacles and shells grown on it, kelp
+    hanging from his shoulders, a chain wrapped round him and an anchor swinging from his left fist; a teal light in
+    the slit of his helm."""
+    m = Model("drowned_keeper")
+    shells = specks((206, 200, 184, 255), 5)
+    armor = P((56, 98, 92, 255), 12, front=combine(shells, specks((110, 76, 56, 255), 3)), up=shells, left=shells, right=shells)
+    dark = P((30, 54, 54, 255), 8)
+    rust = P((112, 70, 48, 255), 10)
+    plate = P((60, 104, 98, 255), 10, front=rune((120, 255, 220, 255)))
+    helm = P((52, 92, 88, 255), 10, front=visor((140, 255, 230, 255)), up=shells)
+    fin = P((44, 120, 104, 255), 8, left=stripes((30, 80, 70, 255), 2, True), right=stripes((30, 80, 70, 255), 2, True))
+    barnacle = P((204, 198, 182, 255), 10)
+    shell = P((214, 160, 140, 255), 10, up=stripes((170, 110, 96, 255), 2, True))
+    chain = P((92, 98, 104, 255), 10, front=stripes((60, 64, 70, 255), 2, True))
+    kelp = P((44, 112, 62, 255), 10, front=kelp_lines(), back=kelp_lines())
+    m.part("leg_r", "root", (-3.5, 12, 0), (0, 0, 0), [C(-3, 0, -3, 6, 12, 6, armor), C(-3.5, 2, -3.6, 7, 3, 1, dark), C(-3.5, 9, -4, 7, 3, 7, dark)])
+    m.part("leg_l", "root", (3.5, 12, 0), (0, 0, 0), [C(-3, 0, -3, 6, 12, 6, armor), C(-3.5, 2, -3.6, 7, 3, 1, dark), C(-3.5, 9, -4, 7, 3, 7, dark)])
+    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-7, -14, -4, 14, 14, 8, armor), C(-5, -12, -4.6, 10, 7, 1, plate),
+                                                        C(-7.5, -2, -4.5, 15, 2, 9, rust), C(-6, -4, -4.6, 12, 2, 1, dark),
+                                                        C(3, -6, -4.8, 2, 2, 1, barnacle), C(-5, -9, -4.8, 1, 1, 1, barnacle),
+                                                        C(-6, -13, 3.5, 4, 3, 1, shell)])
+    m.part("chain_belt", body, (0, -7, -4.6), (0, 0, 0.6), [C(-9, -0.5, -0.5, 18, 1, 1, chain)])
+    head = m.part("head", body, (0, -14, -0.5), (0, 0, 0), [C(-4.5, -9, -4.5, 9, 9, 9, helm), C(-5, -3, -5, 10, 3, 1, dark)])
+    m.part("fin", head, (0, -9, 0), (0, 0, 0), [C(-0.5, -4, -4, 1, 4, 9, fin), C(-0.5, -5, -1, 1, 1, 5, fin)])
+    m.part("helm_shell", head, (4.5, -6, -1), (0, 0, 0.3), [C(0, -2, -2, 1, 4, 4, shell)])
+    for side, sx in (("r", -1), ("l", 1)):
+        pd = m.part(f"pauldron_{side}", body, (sx * 8, -13, 0), (0, 0, sx * -0.2),
+                    [C(-3.5, -1, -4, 7, 3, 8, armor), C(-3, -2.5, -3, 6, 2, 6, dark), C(-1, -3.5, -1, 2, 1, 2, barnacle)])
+        m.part(f"shell_{side}", pd, (0, -2.5, 2), (0.4, 0, 0), [C(-2, -2, -0.5, 4, 3, 1, shell)])
+        m.part(f"arm_{side}", body, (sx * 8.5, -11, 0), (0, 0, sx * -0.08),
+               [C(-2.5, 0, -2.5, 5, 13, 5, armor), C(-3, 9, -3, 6, 5, 6, dark)])
+    a = m.part("chain_a", "arm_l", (0, 14, 0), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 5, 1, chain)])
+    b = m.part("chain_b", a, (0, 5, 0), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 5, 1, chain)])
+    m.part("anchor", b, (0, 5, 0), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 7, 1, rust), C(-3, 1, -0.5, 6, 1, 1, rust),
+                                               C(-4, 5, -0.5, 8, 1, 1, rust), C(-4, 3, -0.5, 1, 2, 1, rust), C(3, 3, -0.5, 1, 2, 1, rust)])
+    for i, (x, z, length) in enumerate(((-7, -3.5, 14), (-4, 4, 18), (5, 4, 16), (7, -3, 12), (0, 4.5, 20))):
+        m.part(f"kelp_{i}", body, (x, -13, z), (0.05 if z > 0 else -0.05, 0, 0), [C(-0.5, 0, -0.5, 1, length, 1, kelp)])
+    return m
+
+
+def acolyte():
+    """A drowned acolyte: thin as a reed, a sodden robe clinging to it, the hood pulled low with green light inside,
+    kelp caught on the hood, long forearms that end in webbed hands."""
+    m = Model("acolyte")
+    wet = stripes((22, 40, 46, 255), 3, True)
+    robe = P((34, 60, 66, 255), 8, front=wet, back=wet)
+    robe_dark = P((26, 46, 52, 255), 8, front=combine(wet, embers((60, 110, 100, 255), (20, 36, 40, 255))), back=wet)
+    skin = P((118, 148, 150, 255), 8)
+    face = P((70, 92, 96, 255), 6, front=eyes((150, 255, 190, 255), 0.5, 0.22, 1, glow=(60, 150, 100, 255)))
+    hood = P((28, 50, 56, 255), 8)
+    rope = P((92, 80, 60, 255), 8)
+    rust = P((116, 70, 46, 255), 8)
+    kelp = P((44, 106, 60, 255), 10, front=kelp_lines(), back=kelp_lines())
+    m.part("robe_a", "root", (0, 11, 0), (0, 0, 0), [C(-3.5, 0, -2.5, 7, 7, 5, robe)])
+    m.part("robe_b", "robe_a", (0, 7, 0), (0, 0, 0), [C(-4, 0, -3, 8, 6, 6, robe_dark)])
+    body = m.part("body", "root", (0, 11, 0), (0.35, 0, 0), [C(-3, -10, -2, 6, 10, 4, robe), C(-3.5, -2, -2.5, 7, 1, 5, rope)])
+    head = m.part("head", body, (0, -10, -1), (0.3, 0, 0), [C(-3, -6, -3, 6, 6, 6, face), C(-3.5, -7, -3.5, 7, 2, 7, hood),
+                                                         C(-3.5, -5, 0.5, 7, 6, 3, hood), C(-3.8, -5, -3.5, 1, 5, 4, hood),
+                                                         C(2.8, -5, -3.5, 1, 5, 4, hood)])
+    m.part("hood_tip", head, (0, -7, 2), (0.6, 0, 0), [C(-1, -1, 0, 2, 2, 4, hood)])
+    m.part("kelp_a", head, (2.5, -7, -1), (0, 0, -0.15), [C(-0.5, 0, -0.5, 1, 10, 1, kelp)])
+    m.part("kelp_b", head, (-2, -7, 1), (0.1, 0, 0.2), [C(-0.5, 0, -0.5, 1, 13, 1, kelp)])
+    m.part("kelp_c", body, (1, -9, 2), (0.1, 0, 0), [C(-0.5, 0, -0.5, 1, 15, 1, kelp)])
+    for side, sx in (("r", -1), ("l", 1)):
+        up = m.part(f"arm_{side}", body, (sx * 3.8, -9, 0), (-0.3, 0, sx * -0.08), [C(-1, 0, -1, 2, 8, 2, robe)])
+        fore = m.part(f"fore_{side}", up, (0, 8, 0), (-0.4, 0, 0), [C(-0.75, 0, -0.75, 1.5, 8, 1.5, skin), C(-1.25, 5, -1.25, 2.5, 1, 2.5, rust)])
+        m.part(f"hand_{side}", fore, (0, 8, 0), (0, 0, 0), [C(-1.5, 0, -0.5, 3, 3, 1, skin)])
+    return m
+
+
 MODELS = [crawler, blind, light_eater, shade, statue, keeper, watcher, mimic_queen, shepherd, architect,
-          primordial_shadow, shadow_villager, lurker, mimicker, lamp_keeper, ash_figure, weeper, bellringer]
+          primordial_shadow, shadow_villager, lurker, mimicker, lamp_keeper, ash_figure, weeper, bellringer,
+          fallen_keeper, drowned_keeper, acolyte]
 
 
 # ------------------------------------------------------------------ UV packing + painting

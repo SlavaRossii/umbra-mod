@@ -41,9 +41,9 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.CITADEL_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "citadel_keeper", 0.6F, Animations::keeper, null));
         event.registerEntityRenderer(ModEntities.SHADOW_VILLAGER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHADOW_VILLAGER, "shadow_villager", 0.5F, Animations::shadowVillager, null));
         event.registerEntityRenderer(ModEntities.LAMP_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LAMP_KEEPER, "lamp_keeper", 0.5F, Animations::lampKeeper, null));
-        event.registerEntityRenderer(ModEntities.ACOLYTE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WEEPER, "acolyte", 0.4F, Animations::weeper, null));
-        event.registerEntityRenderer(ModEntities.DROWNED_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.KEEPER, "drowned_keeper", 0.7F, Animations::keeper, null));
-        event.registerEntityRenderer(ModEntities.FALLEN_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LAMP_KEEPER, "fallen_keeper", 0.6F, Animations::lampKeeper, null));
+        event.registerEntityRenderer(ModEntities.ACOLYTE.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ACOLYTE, "acolyte", 0.4F, Animations::acolyte, null));
+        event.registerEntityRenderer(ModEntities.DROWNED_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.DROWNED_KEEPER, "drowned_keeper", 0.7F, Animations::drownedKeeper, null));
+        event.registerEntityRenderer(ModEntities.FALLEN_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.FALLEN_KEEPER, "fallen_keeper", 0.6F, Animations::fallenKeeper, null));
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
@@ -75,6 +75,9 @@ public final class UmbraClient {
         event.registerLayerDefinition(ModLayers.LURKER, GeneratedModels::lurker);
         event.registerLayerDefinition(ModLayers.MIMICKER, GeneratedModels::mimicker);
         event.registerLayerDefinition(ModLayers.LAMP_KEEPER, GeneratedModels::lampKeeper);
+        event.registerLayerDefinition(ModLayers.FALLEN_KEEPER, GeneratedModels::fallenKeeper);
+        event.registerLayerDefinition(ModLayers.DROWNED_KEEPER, GeneratedModels::drownedKeeper);
+        event.registerLayerDefinition(ModLayers.ACOLYTE, GeneratedModels::acolyte);
         event.registerLayerDefinition(ModLayers.ASH_FIGURE, GeneratedModels::ashFigure);
     }
 

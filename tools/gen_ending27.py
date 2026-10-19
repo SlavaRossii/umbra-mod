@@ -49,7 +49,7 @@ def fallen():
                 po[x, y] = (int(r * 0.6), int(g * 0.5), int(b * 0.4), a)
             else:
                 po[x, y] = (int(r * 0.6), int(g * 0.55), int(b * 0.65), a)
-    out.save(A + 'textures/entity/fallen_keeper.png')
+    # 2.7.1: the Fallen Keeper has his own model and texture now (tools/models.py)
     egg = Image.open(A + 'textures/item/lamp_keeper_spawn_egg.png').convert('RGBA')
     ep = egg.load()
     for y in range(egg.height):

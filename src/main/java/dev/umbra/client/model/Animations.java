@@ -294,4 +294,69 @@ public final class Animations {
         p.apply("body").zRot += Mth.sin(t * 0.03F) * 0.02F;
         p.apply("head").xRot += Mth.sin(t * 0.02F) * 0.03F;
     }
+
+    // ---------------------------------------------------------------- 2.7.1
+
+    /** Yan, fallen: a slow, heavy walk, the cloak in rags swaying, the halo turning, the lantern swinging on its hook. */
+    public static void fallenKeeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
+        walk(p, st, 0.7F, 0.0F);
+        look(p.apply("head"), st, 0.9F);
+        for (int i = 0; i < 6; i++) p.apply("cloak_" + i).xRot += Mth.sin(t * 0.07F + i * 0.9F) * 0.07F + s * 0.35F;
+        p.apply("skirt_front").xRot -= s * 0.25F * Math.abs(Mth.cos(st.walkAnimationPos * 0.6662F));
+        p.apply("skirt_back").xRot += s * 0.3F;
+        ModelPart halo = p.apply("halo");
+        halo.zRot += t * 0.03F;
+        halo.y += Mth.sin(t * 0.08F) * 0.5F;
+        p.apply("lantern").zRot += Mth.sin(t * 0.06F) * 0.2F;
+        p.apply("lantern").xRot += Mth.cos(t * 0.05F) * 0.12F;
+        p.apply("arm_l").zRot -= 0.1F + Mth.sin(t * 0.05F) * 0.06F;
+        p.apply("claws").xRot -= Mth.sin(t * 0.11F) * 0.15F;
+        if (st.attack > 0) {
+            float a = Mth.sin(st.attack * Mth.PI);
+            p.apply("arm_r").xRot -= a * 1.6F;   // the staff comes down
+            p.apply("arm_l").xRot -= a * 0.8F;
+        }
+    }
+
+    /** The Drowned Keeper: a heavy tread, kelp drifting as in water, the anchor swinging on its chain, a two-fisted slam. */
+    public static void drownedKeeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
+        walk(p, st, 0.6F, 0.35F);
+        look(p.apply("head"), st, 0.7F);
+        p.apply("body").y += Mth.sin(t * 0.06F) * 0.4F;
+        for (int i = 0; i < 5; i++) {
+            ModelPart k = p.apply("kelp_" + i);
+            k.xRot += Mth.sin(t * 0.05F + i * 1.3F) * 0.15F + s * 0.2F;
+            k.zRot += Mth.cos(t * 0.04F + i) * 0.1F;
+        }
+        p.apply("chain_a").xRot += Mth.sin(t * 0.05F) * 0.2F - s * 0.3F;
+        p.apply("chain_b").xRot += Mth.sin(t * 0.05F + 0.6F) * 0.2F;
+        p.apply("anchor").zRot += Mth.sin(t * 0.07F) * 0.15F;
+        p.apply("fin").zRot += Mth.sin(t * 0.09F) * 0.05F;
+        slam(p, st, 2.2F);
+    }
+
+    /** The acolyte swims: bent forward, arms sweeping, the robe and the kelp trailing; it grabs with both hands. */
+    public static void acolyte(Function<String, ModelPart> p, UmbraRenderState st) {
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
+        look(p.apply("head"), st, 0.6F);
+        p.apply("body").xRot += s * 0.5F;
+        float stroke = Mth.sin(t * 0.25F) * (0.25F + s * 0.6F);
+        p.apply("arm_r").xRot += stroke;
+        p.apply("arm_l").xRot -= stroke;
+        p.apply("fore_r").xRot -= Math.abs(stroke) * 0.6F;
+        p.apply("fore_l").xRot -= Math.abs(stroke) * 0.6F;
+        p.apply("robe_a").xRot += s * 0.4F + Mth.sin(t * 0.12F) * 0.05F;
+        p.apply("robe_b").xRot += s * 0.3F + Mth.sin(t * 0.12F + 1.2F) * 0.12F;
+        p.apply("kelp_a").zRot += Mth.sin(t * 0.08F) * 0.2F;
+        p.apply("kelp_b").zRot += Mth.cos(t * 0.07F) * 0.2F;
+        p.apply("kelp_c").xRot += Mth.sin(t * 0.06F) * 0.15F + s * 0.4F;
+        p.apply("hood_tip").xRot += Mth.sin(t * 0.1F) * 0.1F;
+        if (st.attack > 0) {
+            float a = Mth.sin(st.attack * Mth.PI);
+            p.apply("arm_r").xRot -= a * 1.5F;
+            p.apply("arm_l").xRot -= a * 1.5F;
+        }
+    }
 }

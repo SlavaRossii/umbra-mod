@@ -50,7 +50,9 @@ public final class ClientCheck {
         check(() -> {
             for (var f : new java.util.function.Supplier<?>[]{
                     dev.umbra.client.model.GeneratedModels::mimicker, dev.umbra.client.model.GeneratedModels::lampKeeper,
-                    dev.umbra.client.model.GeneratedModels::ashFigure, dev.umbra.client.model.GeneratedModels::primordialShadow}) {
+                    dev.umbra.client.model.GeneratedModels::ashFigure, dev.umbra.client.model.GeneratedModels::primordialShadow,
+                    dev.umbra.client.model.GeneratedModels::fallenKeeper, dev.umbra.client.model.GeneratedModels::drownedKeeper,
+                    dev.umbra.client.model.GeneratedModels::acolyte}) {
                 ((net.minecraft.client.model.geom.builders.LayerDefinition) f.get()).bakeRoot();
             }
         }, "the new creature models bake");
