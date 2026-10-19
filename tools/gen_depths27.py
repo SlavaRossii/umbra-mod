@@ -92,8 +92,7 @@ def drowned(r, gg, b, a):
 
 
 def creatures():
-    recolour(A + 'textures/entity/weeper.png', A + 'textures/entity/acolyte.png', drowned)
-    recolour(A + 'textures/entity/citadel_keeper.png', A + 'textures/entity/drowned_keeper.png', drowned)
+    # 2.7.1: the acolyte and the Drowned Keeper have their own models and textures now (tools/models.py)
     for name, src in (("acolyte", "weeper"), ("drowned_keeper", "citadel_keeper")):
         egg = A + f'textures/item/{src}_spawn_egg.png'
         if not os.path.exists(egg):
