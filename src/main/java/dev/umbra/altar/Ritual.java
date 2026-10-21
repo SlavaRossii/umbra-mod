@@ -3,6 +3,7 @@ package dev.umbra.altar;
 import dev.umbra.registry.ModEntities;
 import dev.umbra.registry.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -83,13 +84,32 @@ public final class Ritual {
     /** What the Doppelganger takes from you: three hearts. */
     public static final float BLOOD = 6.0F;
 
-    public static int lights(ServerLevel level, BlockPos altar) {
-        int n = 0;
+    /**
+     * The lights round the altar that shine: a glowing ore shut in the stone lights nothing and does not count (the
+     * Underside's rock is full of echo quartz), a torch, a lantern in a hand, lava, a glowing mushroom do.
+     */
+    public static List<BlockPos> lights(ServerLevel level, BlockPos altar) {
+        List<BlockPos> list = new ArrayList<>();
         for (BlockPos p : BlockPos.betweenClosed(altar.offset(-DARK_RADIUS, -4, -DARK_RADIUS), altar.offset(DARK_RADIUS, 6, DARK_RADIUS))) {
-            if (p.equals(altar)) continue;
-            if (level.getBlockState(p).getLightEmission() > 0) n++;
+            if (p.equals(altar) || level.getBlockState(p).getLightEmission() <= 0) continue;
+            if (shines(level, p)) list.add(p.immutable());
         }
-        return n;
+        return list;
+    }
+
+    private static boolean shines(ServerLevel level, BlockPos p) {
+        for (Direction d : Direction.values())
+            if (!level.getBlockState(p.relative(d)).canOcclude()) return true;
+        return false;
+    }
+
+    /** Smoke over every light that still spoils the dark, so they can be found. */
+    public static void showLights(ServerLevel level, List<BlockPos> lights) {
+        for (int i = 0; i < lights.size() && i < 24; i++) {
+            BlockPos p = lights.get(i);
+            level.sendParticles(ParticleTypes.LARGE_SMOKE, p.getX() + 0.5, p.getY() + 0.7, p.getZ() + 0.5, 6, 0.15, 0.2, 0.15, 0.01);
+            level.sendParticles(ParticleTypes.SOUL, p.getX() + 0.5, p.getY() + 0.9, p.getZ() + 0.5, 1, 0.1, 0.1, 0.1, 0.02);
+        }
     }
 
     public static List<BlockPos> fullChests(ServerLevel level, BlockPos altar) {
@@ -124,8 +144,10 @@ public final class Ritual {
     public Component placeProblem(ServerLevel level, BlockPos altar, ServerPlayer caller) {
         return switch (id) {
             case "watching" -> {
-                int n = lights(level, altar);
-                yield n > 0 ? Component.translatable("message.umbra.altar.need.dark", n) : null;
+                List<BlockPos> lights = lights(level, altar);
+                if (lights.isEmpty()) yield null;
+                if (caller != null) showLights(level, lights);
+                yield Component.translatable("message.umbra.altar.need.dark", lights.size());
             }
             case "mimicry" -> {
                 int n = fullChests(level, altar).size();

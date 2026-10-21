@@ -895,7 +895,7 @@
   "message.umbra.altar.laid.mimicry": "Печать подмены легла на жертвенник. Она просит: %s. И четыре полных сундука рядом.",
   "message.umbra.altar.laid.herding": "Печать пастуха легла на жертвенник. Она просит: %s. И три костра душ вокруг.",
   "message.umbra.altar.laid.reflection": "Печать отражения легла на жертвенник. Она просит: %s. И воду вокруг. И твою кровь.",
-  "message.umbra.altar.need.dark": "Слишком светло: огней рядом — %s. Смотрящий приходит только в темноту.",
+  "message.umbra.altar.need.dark": "Слишком светло: огней рядом — %s (над ними поднялся дым). Смотрящий приходит только в темноту.",
   "message.umbra.altar.need.chests": "Полных сундуков рядом: %s из %s.",
   "message.umbra.altar.need.fires": "Костров душ вокруг: %s из %s.",
   "message.umbra.altar.need.water": "Воды вокруг: %s из %s. Ему нужно отражение.",

@@ -1711,6 +1711,14 @@ final class SmokeTest {
         under.setBlock(c.offset(4, 0, 0), Blocks.TORCH.defaultBlockState(), Block.UPDATE_ALL);
         check(dev.umbra.altar.Ritual.WATCHING.placeProblem(under, c, fake) != null && !altar.begin(under, fake), "the Watcher's rite wants the dark: a torch near the altar spoils it");
         under.setBlock(c.offset(4, 0, 0), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        // 2.8.0: the Underside's rock is full of echo quartz: ore shut in the stone lights nothing, ore open to the air does
+        under.setBlock(c.offset(3, -3, 0), ModBlocks.ECHO_QUARTZ_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+        boolean shut = dev.umbra.altar.Ritual.lights(under, c).isEmpty();
+        under.setBlock(c.offset(3, -1, 0), ModBlocks.ECHO_QUARTZ_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+        int open = dev.umbra.altar.Ritual.lights(under, c).size();
+        under.setBlock(c.offset(3, -3, 0), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        under.setBlock(c.offset(3, -1, 0), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        check(shut && open == 1, "glowing ore shut in the rock does not spoil the dark, ore open to the air does (" + shut + ", " + open + ")");
         check(altar.begin(under, fake) && altar.riteRunning() && under.getBlockState(c).getValue(dev.umbra.altar.SummoningAltarBlock.GLOW) == 2,
                 "in the dark it wakes: the rite begins and the runes blaze");
         for (int i = 0; i < 30; i++) altar.tickForTest(under);
@@ -1790,6 +1798,13 @@ final class SmokeTest {
         fake.snapTo(c.getX() + 30.5, c.getY(), c.getZ() + 0.5, 0, 0);
         altar.tickForTest(under);
         check(!altar.riteRunning() && altar.offerings().isEmpty() && !altar.seal().isEmpty(), "walk away mid-rite and it breaks: the offerings burn, the seal stays");
+        // a rite nobody holds any more (the world was closed in the middle of it) fades, and takes nothing
+        altar.offer(new ItemStack(ModItems.MIRROR.get()), fake);
+        altar.offer(new ItemStack(Items.GLASS, 2), fake);
+        altar.beginForTest(under, null);
+        altar.tickForTest(under);
+        check(!altar.riteRunning() && altar.offerings().size() == 2 && !altar.seal().isEmpty()
+                && under.getBlockState(c).getValue(dev.umbra.altar.SummoningAltarBlock.GLOW) == 1, "a rite left over from a closed world fades, and the offerings stay");
         boolean had = !altar.seal().isEmpty() && under.getBlockEntity(c) == altar;
         under.destroyBlock(c, false);
         check(had && under.getBlockState(c).isAir() && dev.umbra.altar.SummoningAltarBlockEntity.lastDrops.stream().anyMatch(st -> st.is(ModItems.SEAL_OF_REFLECTION.get())),
