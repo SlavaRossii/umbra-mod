@@ -23,6 +23,18 @@ public class UmbraRenderer<T extends Mob> extends MobRenderer<T, UmbraRenderStat
         this.extract = extract;
     }
 
+    /** Adds a layer drawn at full brightness from {@code textures/entity/<texture>_glow.png}: what shines in the dark. */
+    public UmbraRenderer<T> glowing(String texture) {
+        Identifier glow = Identifier.fromNamespaceAndPath(Umbra.MODID, "textures/entity/" + texture + "_glow.png");
+        this.addLayer(new net.minecraft.client.renderer.entity.layers.EyesLayer<>(this) {
+            @Override
+            public net.minecraft.client.renderer.rendertype.RenderType renderType() {
+                return net.minecraft.client.renderer.rendertype.RenderTypes.eyes(glow);
+            }
+        });
+        return this;
+    }
+
     @Override
     public UmbraRenderState createRenderState() {
         return new UmbraRenderState();
