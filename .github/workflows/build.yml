@@ -95,7 +95,7 @@ jobs:
   client-check:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     continue-on-error: true
     steps:
       - name: Checkout repository
@@ -159,8 +159,8 @@ jobs:
         run: |
           mkdir -p run-client/shots
           rm -f run-client/shots/*
-          ( timeout 15m ./gradlew runClientShots --stacktrace > shots-gradle.log 2>&1; echo "client exited with $?" >> shots-gradle.log ) &
-          for i in $(seq 1 900); do
+          ( timeout 28m ./gradlew runClientShots --stacktrace > shots-gradle.log 2>&1; echo "client exited with $?" >> shots-gradle.log ) &
+          for i in $(seq 1 1700); do
             for r in run-client/shots/*.req; do
               [ -e "$r" ] || continue
               n=$(basename "$r" .req)

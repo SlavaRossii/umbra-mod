@@ -75,9 +75,18 @@ public final class ClientShots {
             POSES.add(new Pose(String.format("%02d_third_%s", n++, w), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_third_luminite_bow_drawn", n++), CameraType.THIRD_PERSON_FRONT, true, true));
+        // 2.7.2: every building and every creature and block of the mod, built far off and looked at from a good place
+        for (String what : dev.umbra.command.Showcase.ALL)
+            POSES.add(new Pose(String.format("%02d_tour_%s", n++, what), CameraType.FIRST_PERSON, false, true, CLEAR, "execute as @p run umbra showcase " + what));
+        POSES.add(new Pose(String.format("%02d_tour_end", n++), CameraType.FIRST_PERSON, false, true, "tp @e[tag=shot] ~ ~-300 ~"));
     }
 
-    private static int tick, pose = -1, wait;
+    /** Ticks to let the world settle before the picture: a far trip needs its chunks drawn. */
+    private static int settle(Pose p) {
+        return p.name.contains("_tour_") ? 220 : 50;
+    }
+
+    private static int tick, pose = -1, wait, outside;
     private static final List<String> report = new ArrayList<>();
 
     private ClientShots() {}
@@ -87,16 +96,18 @@ public final class ClientShots {
         if (!ON) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null || mc.getSingleplayerServer() == null) {
-            if (++tick % 200 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: waiting for the world, screen {}", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
-            if (tick > 20 * 240) {
+            if (++outside % 200 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: waiting for the world, screen {}", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
+            if (outside > 20 * 240) {
                 write(Path.of("umbra-clientshots.txt"), "never got into the world (screen " + (mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName()) + ")\n");
                 mc.stop();
             }
             return;
         }
+        outside = 0;
         if (mc.gui.screen() != null) {
-            if (++tick % 100 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: a screen is open: {}", mc.gui.screen().getClass().getName());
-            if (tick % 100 == 0) mc.gui.setScreen(null);
+            String sc = mc.gui.screen().getClass().getSimpleName();
+            if (++tick % 100 == 0) Umbra.LOGGER.info("UMBRA CLIENTSHOTS: a screen is open: {}", sc);
+            if (tick % 100 == 0 && !sc.contains("Loading") && !sc.contains("Receiving")) mc.gui.setScreen(null);
             return;
         }
         tick++;
@@ -115,12 +126,12 @@ public final class ClientShots {
         if (pose >= POSES.size()) return;
         Pose p = POSES.get(pose);
         wait++;
-        if (wait == 50) {
+        if (wait == settle(p)) {
             report.add(String.format("%s  using=%s hand=%s main=%s off=%s", p.name, mc.player.isUsingItem(), mc.player.getUsedItemHand(),
                     mc.player.getMainHandItem(), mc.player.getOffhandItem()));
             write(DIR.resolve(p.name + ".req"), "");
         }
-        if (wait > 50 && (Files.exists(DIR.resolve(p.name + ".done")) || wait > 600)) next(mc);
+        if (wait > settle(p) && (Files.exists(DIR.resolve(p.name + ".done")) || wait > settle(p) + 550)) next(mc);
     }
 
     private static void next(Minecraft mc) {

@@ -56,6 +56,10 @@ public final class UmbraCommand {
                 .then(Commands.literal("storm").executes(UmbraCommand::storm))
                 .then(Commands.literal("temple").executes(UmbraCommand::temple))
                 .then(Commands.literal("forest").executes(UmbraCommand::forest))
+                .then(Commands.literal("showcase").then(Commands.argument("what", com.mojang.brigadier.arguments.StringArgumentType.word())
+                        .suggests((c, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(Showcase.ALL, b))
+                        .executes(ctx -> Showcase.show(ctx.getSource().getPlayerOrException(),
+                                com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "what")) ? 1 : 0)))
                 .then(journal())
                 .then(village()));
     }
