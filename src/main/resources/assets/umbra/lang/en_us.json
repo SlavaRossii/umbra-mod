@@ -895,7 +895,7 @@
   "message.umbra.altar.laid.mimicry": "The seal of mimicry lies on the altar. It asks for: %s. And four full chests nearby.",
   "message.umbra.altar.laid.herding": "The seal of herding lies on the altar. It asks for: %s. And three soul campfires around it.",
   "message.umbra.altar.laid.reflection": "The seal of reflection lies on the altar. It asks for: %s. And water around it. And your blood.",
-  "message.umbra.altar.need.dark": "Too much light: %s lights nearby. The Watcher comes only to the dark.",
+  "message.umbra.altar.need.dark": "Too much light: %s lights nearby (smoke rises over them). The Watcher comes only to the dark.",
   "message.umbra.altar.need.chests": "Full chests nearby: %s of %s.",
   "message.umbra.altar.need.fires": "Soul campfires around: %s of %s.",
   "message.umbra.altar.need.water": "Water around: %s of %s. It needs a reflection.",

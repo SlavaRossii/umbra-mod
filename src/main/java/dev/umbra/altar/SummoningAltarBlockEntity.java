@@ -202,7 +202,12 @@ public class SummoningAltarBlockEntity extends BlockEntity {
 
     private void riteTick(ServerLevel level) {
         Ritual r = ritual();
-        if (r == null || caller == null || !caller.isAlive() || caller.level() != level
+        if (caller == null) {
+            // the world was closed mid-rite: nobody holds it now, so it fades, and what lies on the altar stays
+            stop(level, 1);
+            return;
+        }
+        if (r == null || !caller.isAlive() || caller.level() != level
                 || caller.distanceToSqr(Vec3.atCenterOf(worldPosition)) > REACH * REACH) {
             fail(level, "message.umbra.altar.fail.left");
             return;
