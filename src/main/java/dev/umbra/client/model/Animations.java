@@ -188,19 +188,44 @@ public final class Animations {
         }
     }
 
+    /**
+     * 2.7.4: the Architect, a building that walks. Heavy steps; the mallet comes down from overhead on a strike while
+     * the dividers open; the keystone in his chest turns; the arch behind his head rises and settles; the plumb bobs
+     * swing on their chains; pieces of the maze's walls go round him, turning over, faster as he weakens.
+     */
     public static void architect(Function<String, ModelPart> p, UmbraRenderState st) {
-        float t = st.ageInTicks;
-        walk(p, st, 0.9F, 0.5F);
-        look(p.apply("head"), st, 0.9F);
-        ModelPart orbit = p.apply("orbit");
-        orbit.yRot += t * 0.06F;
-        for (int i = 0; i < 4; i++) {
-            ModelPart c = p.apply("cube" + i);
-            c.y += Mth.sin(t * 0.1F + i * 1.57F) * 2.0F;
-            c.xRot += t * 0.08F;
-            c.zRot += t * 0.05F;
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
+        int phase = st.health > 0.66F ? 1 : st.health > 0.33F ? 2 : 3;
+        walk(p, st, 0.7F, 0.35F);
+        look(p.apply("head"), st, 0.5F);
+        ModelPart body = p.apply("body");
+        body.zRot += Mth.cos(st.walkAnimationPos * 0.6662F) * s * 0.05F;
+        body.y += Math.abs(Mth.cos(st.walkAnimationPos * 0.6662F)) * s * 0.8F;
+        p.apply("keystone").zRot += t * 0.05F;
+        p.apply("arch").y += Mth.sin(t * 0.06F) * 0.6F;
+        for (int i = 0; i < 3; i++) {
+            ModelPart pl = p.apply("plumb_" + i);
+            pl.xRot += Mth.sin(t * 0.09F + i * 1.3F) * 0.12F + s * 0.25F;
+            pl.zRot += Mth.cos(t * 0.07F + i * 0.9F) * 0.08F;
         }
-        slam(p, st, 2.0F);
+        float open = 0.05F + Mth.sin(t * 0.05F) * 0.04F;
+        if (st.attack > 0) {
+            float a = Mth.sin(st.attack * Mth.PI);
+            p.apply("arm_r").xRot -= a * 2.6F;
+            p.apply("fore_r").xRot += a * 0.4F;
+            p.apply("arm_l").xRot -= a * 0.9F;
+            open += a * 0.35F;
+            body.xRot += a * 0.15F;
+        }
+        p.apply("divider_a").zRot += open;
+        p.apply("divider_b").zRot -= open;
+        p.apply("orbit").yRot += t * (0.03F + phase * 0.015F);
+        for (int i = 0; i < 5; i++) {
+            ModelPart f = p.apply("fragment_" + i);
+            f.y += Mth.sin(t * 0.08F + i * 1.26F) * 1.5F;
+            f.xRot += t * 0.02F * (i % 2 == 0 ? 1 : -1);
+            f.zRot += Mth.sin(t * 0.04F + i) * 0.3F;
+        }
     }
 
     /**

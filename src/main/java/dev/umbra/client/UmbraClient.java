@@ -50,7 +50,7 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null));
         event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new MirrorRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));
-        event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null));
+        event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<dev.umbra.boss.Architect>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null).glowing("architect"));
         event.registerEntityRenderer(ModEntities.PRIMORDIAL_SHADOW.get(), ctx -> new UmbraRenderer<dev.umbra.boss.PrimordialShadow>(ctx, ModLayers.PRIMORDIAL_SHADOW, "primordial_shadow", 1.0F,
                 Animations::primordialShadow, null).glowing("primordial_shadow"));
         event.registerEntityRenderer(ModEntities.LIGHT_EATER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LIGHT_EATER, "light_eater", 0.3F,

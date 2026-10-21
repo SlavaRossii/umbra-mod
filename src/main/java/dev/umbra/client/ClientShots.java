@@ -72,6 +72,13 @@ public final class ClientShots {
                     night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
                     "execute as @p at @p run summon umbra:primordial_shadow ^ ^1 ^9 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
         }
+        // 2.7.4: the Architect, the same in all his phases
+        for (String[] v : new String[][]{{"day", "150"}, {"day", "215"}, {"night", "180"}}) {
+            boolean night = v[0].equals("night");
+            POSES.add(new Pose(String.format("%02d_mob_architect_%s_%s", n++, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
+                    night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
+                    "execute as @p at @p run summon umbra:architect ^ ^ ^7 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
+        }
         POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away, "time set 6000",
                 "effect give @a minecraft:night_vision infinite 0 true"));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
