@@ -176,16 +176,46 @@ public final class Animations {
         p.apply("body").y += Math.abs(Mth.sin(w)) * -1.0F * s;
     }
 
+    /**
+     * 2.7.5: the Shepherd hangs above the ground and sways; the torn hem and the strips of his mantle drift; the bell
+     * swings; his flock circles low around him. On a strike the scythe goes round in a wide flat sweep.
+     */
     public static void shepherd(Function<String, ModelPart> p, UmbraRenderState st) {
-        float t = st.ageInTicks;
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         look(p.apply("head"), st, 0.8F);
-        p.apply("skirt").xRot += Mth.sin(st.walkAnimationPos * 0.6F) * 0.08F * Math.min(1.0F, st.walkAnimationSpeed);
-        p.apply("skirt").zRot += Mth.sin(t * 0.07F) * 0.03F;
-        p.apply("arm_l").xRot += Mth.sin(t * 0.06F) * 0.05F;
+        float hover = Mth.sin(t * 0.07F) * 0.8F;
+        ModelPart body = p.apply("body"), skirt = p.apply("skirt");
+        body.y += hover;
+        skirt.y += hover;
+        body.xRot += s * 0.15F;
+        skirt.xRot += s * 0.2F + Mth.sin(t * 0.05F) * 0.03F;
+        skirt.zRot += Mth.sin(t * 0.06F) * 0.03F;
+        for (int i = 0; i < 8; i++) {
+            ModelPart tt = p.apply("tatter_" + i);
+            tt.xRot += Mth.sin(t * 0.11F + i * 0.8F) * 0.18F + s * 0.35F;
+            tt.zRot += Mth.cos(t * 0.09F + i * 1.1F) * 0.1F;
+        }
+        for (int i = 0; i < 3; i++) {
+            ModelPart c = p.apply("cape_" + i);
+            c.xRot += Mth.sin(t * 0.08F + i) * 0.08F + s * 0.4F;
+            c.zRot += Mth.cos(t * 0.07F + i * 1.3F) * 0.05F;
+        }
+        ModelPart bell = p.apply("bell");
+        bell.xRot += Mth.sin(t * 0.12F) * 0.15F - s * 0.3F;
+        bell.zRot += Mth.cos(t * 0.1F) * 0.1F;
+        p.apply("arm_l").xRot += Mth.sin(t * 0.06F) * 0.06F;
+        p.apply("finger_l_0").xRot -= Mth.sin(t * 0.1F) * 0.15F;
+        p.apply("finger_l_1").xRot -= Mth.sin(t * 0.1F + 0.6F) * 0.15F;
         if (st.attack > 0) {
             float a = Mth.sin(st.attack * Mth.PI);
-            p.apply("arm_r").xRot -= a * 1.8F;   // the crook comes down
+            ModelPart arm = p.apply("arm_r");
+            arm.xRot -= a * 1.3F;
+            arm.zRot += a * 0.6F;
+            body.yRot += (st.attack - 0.5F) * 1.6F * a;
+            p.apply("scythe").xRot += a * 0.5F;
         }
+        p.apply("herd").yRot += t * 0.04F;
+        for (int i = 0; i < 4; i++) p.apply("wisp_" + i).y += Mth.sin(t * 0.15F + i * 1.6F) * 1.0F;
     }
 
     /**
