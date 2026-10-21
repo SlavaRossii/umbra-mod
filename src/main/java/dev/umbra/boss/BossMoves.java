@@ -189,6 +189,81 @@ public final class BossMoves {
         }
     }
 
+    /**
+     * 2.7.7: tears, the Watcher's attack from afar. Each tear is a drop flying in a shallow arc (a trail of falling
+     * water and a glint, so it is seen coming); it bursts on the first wall or player it meets. A shield in front of you
+     * stops it. A tear that strikes hurts, and the eyes fill: a few seconds of darkness and a little of your mind.
+     */
+    public static final class Tears {
+        public static final double GRAVITY = 0.025;
+        public static final int LIFE = 80;
+        private final List<double[]> flying = new ArrayList<>(); // x, y, z, vx, vy, vz, age
+
+        /** Weeps {@code n} tears from {@code from} at {@code at}, fanned over {@code spreadDeg} degrees. */
+        public void shoot(ServerLevel level, Vec3 from, Vec3 at, int n, float spreadDeg, double speed) {
+            Vec3 d = at.subtract(from);
+            double t = Math.max(4.0, d.length() / speed);
+            Vec3 v = new Vec3(d.x / t, d.y / t + 0.5 * GRAVITY * t, d.z / t);
+            for (int i = 0; i < n; i++) {
+                float off = n == 1 ? 0 : (i / (float) (n - 1) - 0.5F) * spreadDeg * Mth.DEG_TO_RAD;
+                double c = Math.cos(off), s = Math.sin(off);
+                flying.add(new double[]{from.x, from.y, from.z, v.x * c - v.z * s, v.y, v.x * s + v.z * c, 0});
+            }
+            level.playSound(null, from.x, from.y, from.z, SoundEvents.TRIDENT_THROW.value(), SoundSource.HOSTILE, 0.8F, 1.7F);
+        }
+
+        /** Moves the tears on; returns how many struck one of {@code targets} this tick. */
+        public int tick(ServerLevel level, LivingEntity owner, List<? extends ServerPlayer> targets, float damage) {
+            int[] hits = {0};
+            flying.removeIf(t -> {
+                Vec3 prev = new Vec3(t[0], t[1], t[2]);
+                t[4] -= GRAVITY;
+                t[0] += t[3];
+                t[1] += t[4];
+                t[2] += t[5];
+                t[6]++;
+                Vec3 pos = new Vec3(t[0], t[1], t[2]);
+                level.sendParticles(ParticleTypes.FALLING_WATER, pos.x, pos.y, pos.z, 2, 0.05, 0.05, 0.05, 0.0);
+                if ((int) t[6] % 2 == 0) level.sendParticles(ParticleTypes.GLOW, pos.x, pos.y, pos.z, 1, 0.0, 0.0, 0.0, 0.0);
+                for (ServerPlayer p : targets) {
+                    AABB box = p.getBoundingBox().inflate(0.25);
+                    if (p.isAlive() && (box.contains(pos) || box.clip(prev, pos).isPresent())) {
+                        hits[0]++;
+                        boolean hurt = p.hurtServer(level, level.damageSources().thrown(owner, owner), damage);
+                        if (hurt) {
+                            p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 50, 0));
+                            dev.umbra.sanity.Sanity.add(p, -1.0F);
+                        }
+                        splash(level, pos);
+                        return true;
+                    }
+                }
+                BlockPos at = BlockPos.containing(pos);
+                if (!level.getBlockState(at).getCollisionShape(level, at).isEmpty() || t[6] > LIFE) {
+                    splash(level, pos);
+                    return true;
+                }
+                return false;
+            });
+            return hits[0];
+        }
+
+        private static void splash(ServerLevel level, Vec3 pos) {
+            level.sendParticles(ParticleTypes.SPLASH, pos.x, pos.y, pos.z, 14, 0.2, 0.15, 0.2, 0.1);
+            level.sendParticles(ParticleTypes.FALLING_WATER, pos.x, pos.y, pos.z, 6, 0.25, 0.1, 0.25, 0.0);
+            level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.POINTED_DRIPSTONE_DRIP_WATER, SoundSource.HOSTILE, 1.0F, 0.8F);
+        }
+
+        public int size() {
+            return flying.size();
+        }
+
+        /** On death or unload nothing must keep flying. */
+        public void clear() {
+            flying.clear();
+        }
+    }
+
     /** Announces a new phase to everyone fighting. */
     public static void phase(ServerLevel level, UmbraBoss boss, int phase) {
         level.playSound(null, boss.getX(), boss.getY(), boss.getZ(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.7F, 1.4F);

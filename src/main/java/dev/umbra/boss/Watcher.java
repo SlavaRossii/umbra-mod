@@ -28,6 +28,22 @@ public class Watcher extends UmbraBoss implements LightSensitive {
     private int attackCooldown;
     private int fangTimer;
     private int gaze;
+    // 2.7.7: it weeps at you from afar
+    private final BossMoves.Tears tears = new BossMoves.Tears();
+    private int tearTimer;
+    private int cry = -1;
+    /** Ticks the tears take to well up before they fly (the lids tremble, then squeeze). */
+    public static final int CRY_WINDUP = 15;
+    public static final byte EVENT_CRY = 90, EVENT_LIT = 91, EVENT_CRY_STOP = 92;
+
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> WATCHED =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(Watcher.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+
+    // client side only: what its model needs to know
+    /** Its own clock, which stops while nobody looks at it. */
+    public float clientClock;
+    public float clientLastAge = -1.0F;
+    public int cryAt = -1000, litAt = -1000;
 
     public Watcher(EntityType<? extends Watcher> type, Level level) {
         super(type, level, BossEvent.BossBarColor.WHITE);
@@ -47,6 +63,38 @@ public class Watcher extends UmbraBoss implements LightSensitive {
     protected void registerGoals() {
     }
 
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(WATCHED, false);
+    }
+
+    /** Is someone looking at it (as the server last saw it)? */
+    public boolean watchedNow() {
+        return this.entityData.get(WATCHED);
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == EVENT_CRY) cryAt = this.tickCount;
+        else if (id == EVENT_CRY_STOP) cryAt = -1000;
+        else if (id == EVENT_LIT) litAt = this.tickCount;
+        else super.handleEntityEvent(id);
+    }
+
+    public BossMoves.Tears tears() {
+        return tears;
+    }
+
+    @Override
+    protected void stunnedTick(ServerLevel level) {
+        tears.tick(level, this, opponents(level), tearDamage());
+    }
+
+    private float tearDamage() {
+        return phase() == 1 ? 4.0F : 5.0F;
+    }
+
     /** True if any opponent is looking at us. */
     public boolean isWatched(ServerLevel level) {
         for (ServerPlayer p : opponents(level)) {
@@ -59,6 +107,7 @@ public class Watcher extends UmbraBoss implements LightSensitive {
     @Override
     protected void bossTick(ServerLevel level) {
         if (attackCooldown > 0) attackCooldown--;
+        tears.tick(level, this, opponents(level), tearDamage());
         ServerPlayer target = null;
         double best = Double.MAX_VALUE;
         for (ServerPlayer p : opponents(level)) {
@@ -68,13 +117,33 @@ public class Watcher extends UmbraBoss implements LightSensitive {
                 target = p;
             }
         }
+        boolean watched = target != null && isWatched(level);
+        this.entityData.set(WATCHED, watched);
         if (target == null) return;
         this.setTarget(target);
         int phase = trackPhase(level);
         mirrorTick(level);
 
-        if (isWatched(level)) {
+        if (watched) {
             unseenTicks = 0;
+            // the tears well up while it stares, standing still; then they fly
+            if (cry >= 0) {
+                this.getNavigation().stop();
+                this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+                if (++cry >= CRY_WINDUP) {
+                    cry = -1;
+                    Vec3 from = this.getEyePosition().add(this.getLookAngle().scale(1.2)).add(0, -0.3, 0);
+                    tears.shoot(level, from, target.getEyePosition().add(0, -0.4, 0), phase == 1 ? 3 : 5, phase == 1 ? 16.0F : 34.0F, 0.85);
+                }
+                return;
+            }
+            if (++tearTimer >= (phase == 1 ? 100 : 65) && best > 5 && best < 26 && this.hasLineOfSight(target)) {
+                tearTimer = 0;
+                cry = 0;
+                level.broadcastEntityEvent(this, EVENT_CRY);
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.DROWNED_HURT_WATER, SoundSource.HOSTILE, 1.2F, 0.5F);
+                return;
+            }
             this.getNavigation().moveTo(target, 1.4);
             if (best < 2.6 && attackCooldown == 0) {
                 this.doHurtTarget(level, target);
@@ -97,6 +166,11 @@ public class Watcher extends UmbraBoss implements LightSensitive {
                 }
             }
         } else {
+            if (cry >= 0) {
+                // you looked away: the tears dry
+                cry = -1;
+                level.broadcastEntityEvent(this, EVENT_CRY_STOP);
+            }
             this.getNavigation().stop();
             this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
             if (++unseenTicks > (phase == 1 ? 20 * 8 : 20 * 5)) {
@@ -140,6 +214,7 @@ public class Watcher extends UmbraBoss implements LightSensitive {
 
     @Override
     public void onLit(ServerLevel level, Player source) {
+        level.broadcastEntityEvent(this, EVENT_LIT);
         this.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 2));
         lightHurt(level, source, 6.0F);
     }

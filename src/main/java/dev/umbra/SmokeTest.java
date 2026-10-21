@@ -2066,6 +2066,15 @@ final class SmokeTest {
         bursts.tick(level, watcher, 1.0F);
         check(bursts.size() == 0, "and goes off when its time comes");
 
+        // 2.7.7: the Watcher's tears
+        var tears = new dev.umbra.boss.BossMoves.Tears();
+        fake.snapTo(c.getX() + 6.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        tears.shoot(level, new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5), fake.getEyePosition().add(0, -0.4, 0), 3, 16.0F, 0.85);
+        check(tears.size() == 3, "the Watcher weeps three tears at once");
+        int teared = 0;
+        for (int i = 0; i < 100 && tears.size() > 0; i++) teared += tears.tick(level, watcher, java.util.List.of(fake), 1.0F);
+        check(teared >= 1 && tears.size() == 0, "its tears fly in an arc, strike the one it weeps at and burst on the floor (" + teared + " hit)");
+
         var temp = new dev.umbra.boss.BossMoves.TempBlocks();
         BlockPos w = c.offset(-3, 0, -3);
         temp.place(level, w, ModBlocks.MAZE_WALL.get().defaultBlockState(), 0);

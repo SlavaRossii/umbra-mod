@@ -46,7 +46,20 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.FALLEN_KEEPER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.FALLEN_KEEPER, "fallen_keeper", 0.6F, Animations::fallenKeeper, null));
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
-        event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
+        event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<dev.umbra.boss.Watcher>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, (w, st) -> {
+            // its own clock runs only while someone looks at it (a still exhibit, without AI, is shown awake)
+            boolean watched = w.watchedNow() || w.isNoAi();
+            float age = st.ageInTicks;
+            if (w.clientLastAge < 0 || age < w.clientLastAge || age - w.clientLastAge > 20) w.clientLastAge = age;
+            if (watched) w.clientClock += age - w.clientLastAge;
+            w.clientLastAge = age;
+            st.clock = w.clientClock;
+            st.flag = watched;
+            float cry = age - w.cryAt, lit = age - w.litAt;
+            st.timer = cry >= 0 && cry < 30 ? cry : -1.0F;
+            st.timer2 = lit >= 0 && lit < 60 ? lit : -1.0F;
+            st.bright = w.level().getBrightness(net.minecraft.world.level.LightLayer.BLOCK, w.blockPosition().above(2));
+        }).glowing("watcher"));
         event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<dev.umbra.boss.MimicQueen>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null).glowing("mimic_queen"));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<dev.umbra.boss.Shepherd>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null).glowing("shepherd"));
         event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new MirrorRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));

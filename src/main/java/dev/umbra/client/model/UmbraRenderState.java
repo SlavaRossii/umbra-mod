@@ -14,4 +14,11 @@ public class UmbraRenderState extends LivingEntityRenderState {
     public boolean flag;
     /** Creature-specific variant (statue pose, boss phase...). */
     public int variant;
+    /** Creature-specific clock (the Watcher's stops while nobody looks at it). */
+    public float clock;
+    /** Creature-specific timers: ticks since something began, or -1 (the Watcher: weeping, being lit). */
+    public float timer = -1.0F;
+    public float timer2 = -1.0F;
+    /** Block light where it stands, 0..15. */
+    public float bright;
 }
