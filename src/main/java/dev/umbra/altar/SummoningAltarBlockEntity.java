@@ -366,8 +366,12 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         return this.saveCustomOnly(registries);
     }
 
+    /** For the self-test: how many times an altar has been taken down with its contents. */
+    public static int removals;
+
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        removals++;
         if (level != null) Containers.dropContents(level, pos, items);
         super.preRemoveSideEffects(pos, state);
     }

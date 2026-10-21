@@ -118,7 +118,7 @@ def arm(m, hand_y, x=8.0, z=8.0):
     o = [x, hand_y + 1.0, z + 1.4]
     rot = {"origin": o, "axis": "x", "angle": 22.5}
     m.box((x - 2.0, hand_y - 0.6, z + 1.4), (x + 2.0, hand_y + 2.8, z + 3.2), "cuff", rot=rot)
-    m.box((x - 1.8, hand_y - 0.4, z + 3.2), (x + 1.8, hand_y + 2.6, z + 26), "sleeve", rot=rot)
+    m.box((x - 1.8, hand_y - 0.4, z + 3.2), (x + 1.8, hand_y + 2.6, min(32.0, z + 27.5)), "sleeve", rot=rot)
 
 
 LANTERNS = {"luminite_lantern": lambda m, **kw: luminite(m, True, **kw), "luminite_lantern_off": lambda m, **kw: luminite(m, False, **kw),
@@ -135,19 +135,20 @@ DISPLAY_3D = {
     "head": {"rotation": [0, 0, 0], "translation": [0, 10, 0], "scale": [0.8, 0.8, 0.8]},
 }
 # first person: the arm reaches out from the bottom right; the lantern hangs ahead of you
-FP_YAW = 36.0
+FP_YAW = 28.0
 DISPLAY_FP = {
-    "firstperson_righthand": {"rotation": [0, FP_YAW, 0], "translation": [-5.5, 5.5, -3.0], "scale": [0.5, 0.5, 0.5]},
-    "firstperson_lefthand": {"rotation": [0, FP_YAW, 0], "translation": [-5.5, 5.5, -3.0], "scale": [0.5, 0.5, 0.5]},
+    "firstperson_righthand": {"rotation": [0, FP_YAW, 0], "translation": [-4.5, 5.5, -1.5], "scale": [0.5, 0.5, 0.5]},
+    "firstperson_lefthand": {"rotation": [0, FP_YAW, 0], "translation": [-4.5, 5.5, -1.5], "scale": [0.5, 0.5, 0.5]},
 }
 
 
 def build(name, with_arm):
+    """In first person the lantern stands nearer the front of the box (z 4.5), so the sleeve fits in it (to z 32)."""
     m = M()
-    y0 = 1.5 if with_arm else 1.5
-    hand_y = LANTERNS[name](m, x=8.0, y=y0, z=8.0)
+    z = 4.5 if with_arm else 8.0
+    hand_y = LANTERNS[name](m, x=8.0, y=1.5, z=z)
     if with_arm:
-        arm(m, hand_y)
+        arm(m, hand_y, z=z)
     return m
 
 
