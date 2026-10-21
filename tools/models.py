@@ -375,11 +375,11 @@ def architect():
     return m
 
 
-def veins(color=(190, 110, 255, 255), dim=(90, 40, 140, 255)):
+def veins(color=(190, 110, 255, 255), dim=(90, 40, 140, 255), sparse=1):
     """Glowing veins branching through a face (they go to the glow layer: they shine in the dark)."""
     def f(px, x0, y0, w, h, rnd):
         r = random.Random(w * 31 + h * 7 + x0 * 3 + y0)
-        for _ in range(max(1, (w + h) // 6)):
+        for _ in range(max(1, (w + h) // (6 * sparse))):
             x, y = x0 + r.randint(0, w - 1), y0 + r.randint(0, h - 1)
             for _ in range(r.randint(3, 3 + (w + h) // 3)):
                 if x0 <= x < x0 + w and y0 <= y < y0 + h:
@@ -408,8 +408,9 @@ def primordial_shadow():
     m = Model("primordial_shadow")
     m.glow = True
     VIOLET, BRIGHT = (190, 110, 255, 255), (245, 215, 255, 255)
-    void = P((6, 4, 11, 255), 4, front=veins(), back=veins())
-    smoke = P((16, 11, 24, 255), 7, front=veins((150, 80, 220, 255)), left=veins((150, 80, 220, 255)), right=veins((150, 80, 220, 255)))
+    void = P((6, 4, 11, 255), 4)
+    chest = P((6, 4, 11, 255), 4, front=veins(sparse=2))
+    smoke = P((16, 11, 24, 255), 7)
     bone = P((58, 48, 70, 255), 8)
     rib = P((70, 60, 84, 255), 6, up=stripes((40, 32, 50, 255), 2, True))
     def face_deco(px, x0, y0, w, h, rnd):
@@ -423,14 +424,14 @@ def primordial_shadow():
         px[x0 + w // 2, y0 + h // 2 - 2] = VIOLET
         for x in range(x0 + 2, x0 + w - 2):
             px[x, y0 + h - 2] = VIOLET if (x - x0) % 2 else BRIGHT
-    skull = P((10, 7, 16, 255), 4, front=face_deco, left=veins(), right=veins())
+    skull = P((10, 7, 16, 255), 4, front=face_deco)
     heart = P((230, 120, 255, 255), 10)
     shard = P((170, 100, 250, 255), 14, up=glow_rows(BRIGHT, 1, False))
     claw = P((40, 32, 50, 255), 6, front=glow_rows(VIOLET, 1), back=glow_rows(VIOLET, 1), left=glow_rows(VIOLET, 1), right=glow_rows(VIOLET, 1))
     horn = P((34, 26, 44, 255), 6, front=glow_rows(VIOLET, 1, False), back=glow_rows(VIOLET, 1, False))
-    membrane = P((10, 6, 18, 255), 4, front=veins(VIOLET, (110, 50, 170, 255)), back=veins(VIOLET, (110, 50, 170, 255)))
+    membrane = P((10, 6, 18, 255), 4, front=veins(VIOLET, (110, 50, 170, 255), sparse=2), back=veins(VIOLET, (110, 50, 170, 255), sparse=2))
 
-    body = m.part("body", "root", (0, 4, 0), (0.08, 0, 0), [C(-5, -10, -3, 10, 10, 6, void), C(-3.5, 0, -2.5, 7, 4, 5, smoke)])
+    body = m.part("body", "root", (0, 4, 0), (0.08, 0, 0), [C(-5, -10, -3, 10, 10, 6, chest), C(-3.5, 0, -2.5, 7, 4, 5, smoke)])
     for i, y in enumerate((-9, -6.5, -4)):
         m.part(f"rib_{i}", body, (0, y, -3.2), (0, 0, 0), [C(-5.5, 0, -0.5, 4, 1, 1, rib), C(1.5, 0, -0.5, 4, 1, 1, rib)])
     m.part("heart", body, (0, -5.5, -3.0), (0, 0, 0), [C(-1.5, -1.5, -1, 3, 3, 1, heart)])
@@ -460,12 +461,12 @@ def primordial_shadow():
     for side, sx in (("r", -1), ("l", 1)):
         def span(w):
             return 0 if sx > 0 else -w
-        w1 = m.part(f"wing_{side}", body, (sx * 2.5, -8.5, 3.5), (0, sx * -0.45, sx * -0.25),
-                    [C(span(10), -1, -0.5, 10, 2, 2, bone), C(span(10), 1, 0, 10, 13, 1, membrane)])
-        w2 = m.part(f"wing_{side}_b", w1, (sx * 10, 0, 0), (0, 0, sx * -0.35),
-                    [C(span(9), -0.5, -0.5, 9, 1, 2, bone), C(span(9), 0.5, 0, 9, 12, 1, membrane)])
-        m.part(f"wing_{side}_c", w2, (sx * 9, 0, 0), (0, 0, sx * -0.45),
-               [C(span(8), -0.5, -0.5, 8, 1, 1, bone), C(span(8), 0.5, 0, 8, 9, 1, membrane), C(span(2) + sx * 6, -2, -0.5, 2, 2, 1, claw)])
+        w1 = m.part(f"wing_{side}", body, (sx * 2.5, -8.5, 3.5), (0, sx * -0.25, sx * -0.3),
+                    [C(span(12), -1, -0.5, 12, 2, 2, bone), C(span(12), 1, 0, 12, 16, 1, membrane)])
+        w2 = m.part(f"wing_{side}_b", w1, (sx * 12, 0, 0), (0, 0, sx * -0.3),
+                    [C(span(11), -0.5, -0.5, 11, 1, 2, bone), C(span(11), 0.5, 0, 11, 14, 1, membrane)])
+        m.part(f"wing_{side}_c", w2, (sx * 11, 0, 0), (0, 0, sx * -0.35),
+               [C(span(10), -0.5, -0.5, 10, 1, 1, bone), C(span(10), 0.5, 0, 10, 10, 1, membrane), C(span(2) + sx * 8, -2, -0.5, 2, 2, 1, claw)])
     # the shards circling her
     orbit = m.part("orbit", "root", (0, 0, 0), (0, 0, 0), [])
     for i in range(6):
