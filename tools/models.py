@@ -334,23 +334,63 @@ def mimic_queen():
 
 
 def shepherd():
+    """2.7.5: the Shepherd of darkness as the reaper of the flock. He hangs a little above the ground, the hem of his robe
+    torn into strips that drift like smoke; a torn mantle on the shoulders, long strips behind; under the hood nothing but
+    darkness and two violet eyes; long thin dark hands out of wide sleeves; a crook that is also a scythe,
+    its edge burning violet; a shepherd's bell at his belt; his little flock of darkness circling low around him.
+    Glow layer: only the violet (eyes, edge, the flock's eyes)."""
     m = Model("shepherd")
+    m.glow = True
+    m.glow_test = lambda c: c[2] > 140 and c[2] > c[0] + 30 and c[2] > c[1] + 60
+    VIOLET, BRIGHT = (170, 110, 255, 255), (215, 170, 255, 255)
     robe = P((26, 18, 36, 255), 8)
-    hood = P((30, 22, 40, 255), 8, front=combine(lambda px, x0, y0, w, h, r: [px.__setitem__((x, y), (6, 4, 8, 255))
-                                                                              for x in range(x0 + 1, x0 + w - 1)
-                                                                              for y in range(y0 + 2, y0 + h)],
-                                                 eyes((170, 120, 255, 255), 0.55, 0.22, 1)))
-    wood = P((70, 52, 36, 255), 8)
-    m.part("skirt", "root", (0, 8, 0), (0, 0, 0), [C(-5, 0, -4, 10, 16, 8, robe)])
-    body = m.part("body", "root", (0, 8, 0), (0, 0, 0), [C(-4, -10, -2.5, 8, 10, 5, robe)])
-    m.part("head", body, (0, -10, 0), (0, 0, 0), [C(-4.5, -9, -4.5, 9, 9, 9, hood)])
-    m.part("arm_l", body, (5, -9, 0), (0, 0, -0.1), [C(-1.5, -1, -1.5, 3, 14, 3, robe)])
-    arm = m.part("arm_r", body, (-5, -9, 0), (-0.4, 0, 0.1), [C(-1.5, -1, -1.5, 3, 14, 3, robe)])
-    # the arm is raised by -0.4 rad; +0.4 on the staff keeps it upright in the hand
-    m.part("staff", arm, (0, 12, -1), (0.4, 0, 0), [C(-0.5, -22, -0.5, 1, 30, 1, wood),
-                                                    C(-0.5, -25, -0.5, 1, 3, 1, wood),
-                                                    C(-0.5, -26, 0.5, 1, 1, 3, wood),
-                                                    C(-0.5, -25, 3.5, 1, 3, 1, wood)])
+    robe_dark = P((18, 12, 26, 255), 6)
+    mantle = P((34, 26, 44, 255), 8, front=glow_rows((18, 12, 26, 255), 1), back=glow_rows((18, 12, 26, 255), 1),
+               left=glow_rows((18, 12, 26, 255), 1), right=glow_rows((18, 12, 26, 255), 1))
+    hood = P((30, 22, 40, 255), 8)
+    dark_face = P((6, 4, 8, 255), 2, front=eyes(BRIGHT, 0.42, 0.24, 1, glow=VIOLET))
+    bone = P((60, 52, 66, 255), 8)
+    wood = P((52, 40, 30, 255), 8)
+    blade = P((64, 60, 74, 255), 6, left=glow_rows(VIOLET, 1), right=glow_rows(VIOLET, 1), down=glow_rows(VIOLET, 1))
+    brass = P((140, 108, 52, 255), 8)
+    wisp = P((14, 10, 20, 255), 6, front=eyes(BRIGHT, 0.45, 0.25, 1))
+    # the robe, hanging above the ground, its hem torn
+    skirt = m.part("skirt", "root", (0, 6, 0), (0, 0, 0), [C(-5, 0, -4, 10, 10, 8, robe)])
+    hem = [(-3.5, -3.6, 5), (0, -3.6, 6), (3.5, -3.6, 4), (-3.5, 3.6, 6), (0, 3.6, 5), (3.5, 3.6, 6), (-4.6, 0, 5), (4.6, 0, 4)]
+    for i, (x, z, n) in enumerate(hem):
+        side = abs(x) > 4.5
+        m.part(f"tatter_{i}", skirt, (x, 10, z), (0, 0, 0),
+               [C(-0.5, 0, -1, 1, n, 2, robe_dark) if side else C(-1, 0, -0.5, 2, n, 1, robe_dark)])
+    body = m.part("body", "root", (0, 6, 0), (0.18, 0, 0), [C(-4, -10, -2.5, 8, 11, 5, robe), C(-4.2, -1, -2.7, 8.4, 1, 5.4, robe_dark)])
+    m.part("mantle", body, (0, -10, 0), (0, 0, 0), [C(-5.5, -0.5, -3.5, 11, 4, 7, mantle)])
+    for i, (x, n) in enumerate(((-3, 12), (0, 14), (3, 11))):
+        m.part(f"cape_{i}", body, (x, -7, 3.2), (0.12, 0, 0), [C(-1.5, 0, -0.5, 3, n, 1, robe_dark)])
+    head = m.part("head", body, (0, -10, -0.5), (-0.15, 0, 0),
+                  [C(-4.5, -9, -4.5, 9, 1.5, 9, hood), C(-4.5, -7.5, -4.5, 1.5, 7.5, 9, hood), C(3, -7.5, -4.5, 1.5, 7.5, 9, hood),
+                   C(-3, -7.5, 1, 6, 7.5, 3.5, hood), C(-3, -7.5, -2, 6, 7.5, 3, dark_face)])
+    # the left hand, empty, long fingers
+    arm = m.part("arm_l", body, (5.5, -9, 0), (-0.2, 0, -0.12), [C(-2, -1, -2, 4, 9, 4, robe)])
+    hand = m.part("hand_l", arm, (0, 8, 0), (0, 0, 0), [C(-1, 0, -1, 2, 2, 2, bone)])
+    for i, x in enumerate((-1, 0)):
+        m.part(f"finger_l_{i}", hand, (x + 0.5, 2, -0.5), (-0.3, 0, 0), [C(-0.5, 0, -0.5, 1, 4, 1, bone)])
+    # the right hand and the crook that is a scythe
+    arm = m.part("arm_r", body, (-5.5, -9, 0), (-0.5, 0, 0.1), [C(-2, -1, -2, 4, 9, 4, robe)])
+    hand = m.part("hand_r", arm, (0, 8, 0), (0, 0, 0), [C(-1, 0, -1, 2, 3, 2, bone)])
+    m.part("scythe", hand, (0, 1.5, -0.5), (0.32, 0, 0),
+           [C(-0.5, -22, -0.5, 1, 30, 1, wood),
+            C(-0.5, -25, -0.5, 1, 3, 1, wood), C(-0.5, -26, -0.5, 1, 1, 4, wood), C(-0.5, -25, 2.5, 1, 2, 1, wood),
+            C(-0.6, -22.5, -1.5, 1.2, 1.5, 1, brass),
+            C(-0.5, -23, -4, 1, 2, 3, blade), C(-0.5, -22.4, -7, 1, 2, 3, blade), C(-0.5, -21.3, -9.6, 1, 2, 2.6, blade),
+            C(-0.5, -19.8, -11.6, 1, 2, 2, blade), C(-0.5, -18, -12.8, 1, 2, 1.2, blade)])
+    # the shepherd's bell
+    bell = m.part("bell", body, (2.6, -0.5, -2.7), (0, 0, 0), [C(-0.25, 0, -0.25, 0.5, 2, 0.5, brass)])
+    m.part("bell_cup", bell, (0, 2, 0), (0, 0, 0), [C(-1, 0, -1, 2, 2, 2, brass), C(-1.5, 2, -1.5, 3, 1, 3, brass)])
+    # the flock
+    herd = m.part("herd", "root", (0, 19, 0), (0, 0, 0), [])
+    for i in range(4):
+        a = i * math.pi / 2 + 0.4
+        m.part(f"wisp_{i}", herd, (round(math.cos(a) * 9, 2), (i % 2) * 2 - 1, round(math.sin(a) * 9, 2)), (0, round(-a, 3), 0),
+               [C(-1.5, -1.5, -1.5, 3, 3, 3, wisp), C(-0.5, -0.5, 1.5, 1, 1, 2, robe_dark), C(-0.5, -1, 3.5, 1, 1, 1, robe_dark)])
     return m
 
 
@@ -980,7 +1020,7 @@ def main():
             for x in range(size[0]):
                 for y in range(size[1]):
                     c = ip[x, y]
-                    if c[3] and max(c[:3]) > 140:
+                    if c[3] and getattr(m, "glow_test", lambda c: max(c[:3]) > 140)(c):
                         gp[x, y] = c
             glow.save(os.path.join(TEX, m.name + "_glow.png"))
         blocks.append(java_for(m, size))

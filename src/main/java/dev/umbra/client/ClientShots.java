@@ -72,12 +72,14 @@ public final class ClientShots {
                     night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
                     "execute as @p at @p run summon umbra:primordial_shadow ^ ^1 ^9 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
         }
-        // 2.7.4: the Architect, the same in all his phases
-        for (String[] v : new String[][]{{"day", "150"}, {"day", "215"}, {"night", "180"}}) {
+        // 2.7.4: the Architect, the same in all his phases; 2.7.5: the Shepherd
+        for (String[] v : new String[][]{{"day", "150"}, {"day", "215"}, {"night", "180"}, {"day", "160", "shepherd"}, {"day", "220", "shepherd"},
+                {"night", "180", "shepherd"}}) {
+            String who = v.length > 2 ? v[2] : "architect";
             boolean night = v[0].equals("night");
-            POSES.add(new Pose(String.format("%02d_mob_architect_%s_%s", n++, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
+            POSES.add(new Pose(String.format("%02d_mob_%s_%s_%s", n++, who, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
                     night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
-                    "execute as @p at @p run summon umbra:architect ^ ^ ^7 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
+                    "execute as @p at @p run summon umbra:" + who + " ^ ^ ^7 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
         }
         POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away, "time set 6000",
                 "effect give @a minecraft:night_vision infinite 0 true"));
