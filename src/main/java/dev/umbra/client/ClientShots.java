@@ -65,7 +65,15 @@ public final class ClientShots {
                         "execute as @p at @p run summon umbra:" + mob[0] + " ^ ^ ^" + mob[1] + " {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + yaw + "f,0f]}"));
             }
         }
-        POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away));
+        // 2.7.3: the Primordial Shadow, by day and by night (her glow)
+        for (String[] v : new String[][]{{"day", "160"}, {"day", "200"}, {"night", "180"}}) {
+            boolean night = v[0].equals("night");
+            POSES.add(new Pose(String.format("%02d_mob_primordial_%s_%s", n++, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
+                    night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
+                    "execute as @p at @p run summon umbra:primordial_shadow ^ ^1 ^9 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
+        }
+        POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away, "time set 6000",
+                "effect give @a minecraft:night_vision infinite 0 true"));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
                 "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow"}) {
             POSES.add(new Pose(String.format("%02d_hand_%s", n++, w), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "item replace entity @a weapon.mainhand with umbra:" + w));

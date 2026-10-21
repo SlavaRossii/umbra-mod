@@ -375,33 +375,104 @@ def architect():
     return m
 
 
+def veins(color=(190, 110, 255, 255), dim=(90, 40, 140, 255), sparse=1):
+    """Glowing veins branching through a face (they go to the glow layer: they shine in the dark)."""
+    def f(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 31 + h * 7 + x0 * 3 + y0)
+        for _ in range(max(1, (w + h) // (6 * sparse))):
+            x, y = x0 + r.randint(0, w - 1), y0 + r.randint(0, h - 1)
+            for _ in range(r.randint(3, 3 + (w + h) // 3)):
+                if x0 <= x < x0 + w and y0 <= y < y0 + h:
+                    px[x, y] = color if r.random() < 0.7 else dim
+                x += r.choice((-1, 0, 1, 1))
+                y += r.choice((-1, 1, 1, 0))
+    return f
+
+
+def glow_rows(color, rows=1, bottom=True):
+    """The last rows of a face lit (claw and horn tips)."""
+    def f(px, x0, y0, w, h, rnd):
+        ys = range(y0 + h - rows, y0 + h) if bottom else range(y0, y0 + rows)
+        for x in range(x0, x0 + w):
+            for y in ys:
+                px[x, y] = color
+    return f
+
+
 def primordial_shadow():
+    """2.7.3: the Primordial Shadow, remade. She does not walk: she hangs in the air and her lower half is a torn tail of
+    smoke. Great wings of void on three-jointed bones, violet veins burning in them; a long skull under a crown of curved
+    horns, three eyes and a mouth of light; ribs of black bone over a split chest where her heart beats; long arms with
+    claws lit at the tips; six shards of dark crystal circling her. Everything that glows is also drawn into a glow layer
+    (primordial_shadow_glow.png), so it shines in the dark."""
     m = Model("primordial_shadow")
-    void = P((5, 3, 9, 255), 5)
-    smoke = P((14, 10, 22, 255), 8)
-    head = P((8, 5, 14, 255), 5, front=combine(eyes((200, 130, 255, 255), 0.4, 0.26, 1, glow=(90, 50, 140, 255)),
-                                               lambda px, x0, y0, w, h, r: px.__setitem__((x0 + w // 2, y0 + int(h * 0.25)), (230, 170, 255, 255))))
-    m.part("leg_r", "root", (-2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 8, 4, void), C(-1.5, 8, -1.5, 3, 4, 3, smoke)])
-    m.part("leg_l", "root", (2, 12, 0), (0, 0, 0), [C(-2, 0, -2, 4, 8, 4, void), C(-1.5, 8, -1.5, 3, 4, 3, smoke)])
-    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-5, -12, -3, 10, 12, 6, void)])
-    m.part("head", body, (0, -12, 0), (0, 0, 0), [C(-4, -8, -4, 8, 8, 8, head),
-                                                 C(-5, -10, -1, 2, 4, 2, void), C(3, -10, -1, 2, 4, 2, void)])
-    m.part("chest", body, (0, -12, 0), (0, 0, 0), [C(-6, 0, -3.5, 12, 6, 7, void)])
-    m.part("crown", "head", (0, -8, 0), (0, 0, 0), [C(-4, -3, -1, 1, 3, 1, smoke), C(3, -3, -1, 1, 3, 1, smoke),
-                                                   C(-2, -4, -2, 1, 4, 1, smoke), C(1, -4, -2, 1, 4, 1, smoke), C(-0.5, -5, -3, 1, 5, 1, smoke)])
-    for i, (x, y, yaw) in enumerate(((-3, -10, -0.6), (3, -10, 0.6), (-4, -6, -1.0), (4, -6, 1.0), (-2, -3, -0.3), (2, -3, 0.3))):
-        a = m.part(f"tendril{i}_a", body, (x, y, 3), (0.9, yaw, 0), [C(-1.5, -1.5, 0, 3, 3, 7, smoke)])
-        b = m.part(f"tendril{i}_b", a, (0, 0, 7), (0.3, 0, 0), [C(-1, -1, 0, 2, 2, 7, smoke)])
-        m.part(f"tendril{i}_c", b, (0, 0, 7), (0.3, 0, 0), [C(-0.5, -0.5, 0, 1, 1, 6, void)])
-    m.part("arm_r", body, (-6, -11, 0), (0, 0, 0.1), [C(-2, -1, -2, 3, 15, 4, void)])
-    m.part("arm_l", body, (6, -11, 0), (0, 0, -0.1), [C(-1, -1, -2, 3, 15, 4, void)])
-    for s, name in ((-1, "wing_r"), (1, "wing_l")):
-        w1 = m.part(name, body, (s * 2, -10, 3), (0, s * 0.5, s * -0.3),
-                    [C(0 if s > 0 else -14, -1, 0, 14, 2, 1, smoke)])
-        m.part(name + "_tip", w1, (s * 14, 0, 0), (0, 0, s * -0.4),
-               [C(0 if s > 0 else -12, -1, 0, 12, 1, 1, smoke),
-                C(0 if s > 0 else -12, 0, 0, 12, 14, 1, smoke)])
-        m.part(name + "_veil", w1, (0, 0, 0), (0, 0, 0), [C(0 if s > 0 else -14, 0, 0, 14, 16, 1, smoke)])
+    m.glow = True
+    VIOLET, BRIGHT = (190, 110, 255, 255), (245, 215, 255, 255)
+    void = P((6, 4, 11, 255), 4)
+    chest = P((6, 4, 11, 255), 4, front=veins(sparse=2))
+    smoke = P((16, 11, 24, 255), 7)
+    bone = P((58, 48, 70, 255), 8)
+    rib = P((70, 60, 84, 255), 6, up=stripes((40, 32, 50, 255), 2, True))
+    def face_deco(px, x0, y0, w, h, rnd):
+        # three eyes: two wide-set, one in the brow; and a mouth of light
+        for cx in (x0 + 1, x0 + w - 3):
+            for dx in range(2):
+                px[cx + dx, y0 + h // 2] = BRIGHT
+            px[cx, y0 + h // 2 - 1] = VIOLET
+            px[cx + 1, y0 + h // 2 + 1] = VIOLET
+        px[x0 + w // 2, y0 + h // 2 - 3] = BRIGHT
+        px[x0 + w // 2, y0 + h // 2 - 2] = VIOLET
+        for x in range(x0 + 2, x0 + w - 2):
+            px[x, y0 + h - 2] = VIOLET if (x - x0) % 2 else BRIGHT
+    skull = P((10, 7, 16, 255), 4, front=face_deco)
+    heart = P((230, 120, 255, 255), 10)
+    shard = P((170, 100, 250, 255), 14, up=glow_rows(BRIGHT, 1, False))
+    claw = P((40, 32, 50, 255), 6, front=glow_rows(VIOLET, 1), back=glow_rows(VIOLET, 1), left=glow_rows(VIOLET, 1), right=glow_rows(VIOLET, 1))
+    horn = P((34, 26, 44, 255), 6, front=glow_rows(VIOLET, 1, False), back=glow_rows(VIOLET, 1, False))
+    membrane = P((10, 6, 18, 255), 4, front=veins(VIOLET, (110, 50, 170, 255), sparse=2), back=veins(VIOLET, (110, 50, 170, 255), sparse=2))
+
+    body = m.part("body", "root", (0, 4, 0), (0.08, 0, 0), [C(-5, -10, -3, 10, 10, 6, chest), C(-3.5, 0, -2.5, 7, 4, 5, smoke)])
+    for i, y in enumerate((-9, -6.5, -4)):
+        m.part(f"rib_{i}", body, (0, y, -3.2), (0, 0, 0), [C(-5.5, 0, -0.5, 4, 1, 1, rib), C(1.5, 0, -0.5, 4, 1, 1, rib)])
+    m.part("heart", body, (0, -5.5, -3.0), (0, 0, 0), [C(-1.5, -1.5, -1, 3, 3, 1, heart)])
+    for i, y in enumerate((-9, -6, -3)):
+        m.part(f"spine_{i}", body, (0, y, 3), (-0.5, 0, 0), [C(-0.5, -2, 0, 1, 2, 2, bone)])
+    for side, sx in (("r", -1), ("l", 1)):
+        m.part(f"spaulder_{side}", body, (sx * 5.5, -9.5, 0), (0, 0, sx * 0.25),
+               [C(-2, -1.5, -2.5, 4, 3, 5, bone), C(-0.5 + sx * 1, -4, -0.5, 1, 3, 1, horn)])
+    # the tail she hangs on
+    ta = m.part("tail_a", body, (0, 4, 0), (0.1, 0, 0), [C(-3, 0, -2, 6, 5, 4, smoke)])
+    tb = m.part("tail_b", ta, (0, 5, 0), (0.15, 0, 0), [C(-2, 0, -1.5, 4, 5, 3, smoke)])
+    tc = m.part("tail_c", tb, (0, 5, 0), (0.2, 0, 0), [C(-1.5, 0, -1, 3, 4, 2, smoke)])
+    m.part("tail_d", tc, (0, 4, 0), (0.2, 0, 0), [C(-0.5, 0, -0.5, 1, 3, 1, void)])
+    # the head and its crown
+    head = m.part("head", body, (0, -10, -0.5), (0, 0, 0), [C(-3.5, -9, -4, 7, 9, 7, skull), C(-2.5, -1, -4.5, 5, 2, 2, skull)])
+    for side, sx in (("r", -1), ("l", 1)):
+        ha = m.part(f"horn_{side}_a", head, (sx * 3, -8, 0), (-0.2, 0, sx * 0.5), [C(-1, -5, -1, 2, 5, 2, horn)])
+        hb = m.part(f"horn_{side}_b", ha, (0, -5, 0), (-0.3, 0, sx * -0.6), [C(-0.5, -4, -0.5, 1, 4, 1, horn)])
+        m.part(f"horn_{side}_c", hb, (0, -4, 0), (-0.3, 0, sx * -0.5), [C(-0.5, -3, -0.5, 1, 3, 1, horn)])
+    m.part("crown_mid", head, (0, -9, -2), (-0.25, 0, 0), [C(-0.5, -5, -0.5, 1, 5, 1, horn)])
+    # arms that reach
+    for side, sx in (("r", -1), ("l", 1)):
+        up = m.part(f"arm_{side}", body, (sx * 6.5, -9, 0), (-0.15, 0, sx * -0.12), [C(-1.5, -1, -1.5, 3, 10, 3, void)])
+        fore = m.part(f"fore_{side}", up, (0, 9, 0), (-0.35, 0, 0), [C(-1, 0, -1, 2, 9, 2, void)])
+        m.part(f"claw_{side}", fore, (0, 9, 0), (0, 0, 0), [C(-1.5, 0, -0.5, 1, 4, 1, claw), C(-0.5, 0, -1.5, 1, 5, 1, claw), C(0.5, 0, -0.5, 1, 4, 1, claw)])
+    # the wings: three joints of bone, membranes hanging from each
+    for side, sx in (("r", -1), ("l", 1)):
+        def span(w):
+            return 0 if sx > 0 else -w
+        w1 = m.part(f"wing_{side}", body, (sx * 2.5, -8.5, 3.5), (0, sx * -0.25, sx * -0.3),
+                    [C(span(12), -1, -0.5, 12, 2, 2, bone), C(span(12), 1, 0, 12, 16, 1, membrane)])
+        w2 = m.part(f"wing_{side}_b", w1, (sx * 12, 0, 0), (0, 0, sx * -0.3),
+                    [C(span(11), -0.5, -0.5, 11, 1, 2, bone), C(span(11), 0.5, 0, 11, 14, 1, membrane)])
+        m.part(f"wing_{side}_c", w2, (sx * 11, 0, 0), (0, 0, sx * -0.35),
+               [C(span(10), -0.5, -0.5, 10, 1, 1, bone), C(span(10), 0.5, 0, 10, 10, 1, membrane), C(span(2) + sx * 8, -2, -0.5, 2, 2, 1, claw)])
+    # the shards circling her
+    orbit = m.part("orbit", "root", (0, 0, 0), (0, 0, 0), [])
+    for i in range(6):
+        a = i * math.pi / 3
+        m.part(f"shard_{i}", orbit, (math.cos(a) * 13, -4 + (i % 2) * 6, math.sin(a) * 13), (0.3 * (i % 2), a, 0.4),
+               [C(-1, -2.5, -1, 2, 5, 2, shard)])
     return m
 
 
@@ -823,6 +894,15 @@ def main():
         img = paint(m, size)
         os.makedirs(TEX, exist_ok=True)
         img.save(os.path.join(TEX, m.name + ".png"))
+        if getattr(m, "glow", False):
+            glow = Image.new("RGBA", size, (0, 0, 0, 0))
+            gp, ip = glow.load(), img.load()
+            for x in range(size[0]):
+                for y in range(size[1]):
+                    c = ip[x, y]
+                    if c[3] and max(c[:3]) > 140:
+                        gp[x, y] = c
+            glow.save(os.path.join(TEX, m.name + "_glow.png"))
         blocks.append(java_for(m, size))
         names.append(m.name)
     src = ["package dev.umbra.client.model;", "",

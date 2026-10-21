@@ -203,28 +203,60 @@ public final class Animations {
         slam(p, st, 2.0F);
     }
 
+    /**
+     * 2.7.3: the Primordial Shadow hangs in the air. Her wings beat slowly and open wider as she weakens; the tail
+     * sways under her; her heart beats, faster in each phase; the shards circle her, faster in each phase.
+     */
     public static void primordialShadow(Function<String, ModelPart> p, UmbraRenderState st) {
-        float t = st.ageInTicks;
-        walk(p, st, 0.7F, 0.4F);
-        look(p.apply("head"), st, 0.8F);
-        // the wings open wider as she weakens (three phases)
+        float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         int phase = st.health > 0.66F ? 1 : st.health > 0.33F ? 2 : 3;
-        float spread = (phase - 1) * 0.35F;
-        float beat = Mth.sin(t * (0.08F + phase * 0.03F)) * (0.15F + phase * 0.05F);
-        p.apply("wing_r").yRot -= spread + beat;
-        p.apply("wing_l").yRot += spread + beat;
-        p.apply("wing_r_tip").zRot += Mth.sin(t * 0.1F) * 0.15F;
-        p.apply("wing_l_tip").zRot -= Mth.sin(t * 0.1F) * 0.15F;
-        p.apply("body").y += Mth.sin(t * 0.1F) * 0.5F;
-        // the tendrils from her back never stop; they lash harder in each phase
-        for (int i = 0; i < 6; i++) {
-            float ph = i * 1.05F, a = 0.15F + phase * 0.08F;
-            p.apply("tendril" + i + "_a").xRot += Mth.sin(t * 0.09F + ph) * a;
-            p.apply("tendril" + i + "_a").yRot += Mth.cos(t * 0.07F + ph) * a;
-            p.apply("tendril" + i + "_b").xRot += Mth.sin(t * 0.09F + ph - 0.8F) * a * 1.3F;
-            p.apply("tendril" + i + "_c").xRot += Mth.sin(t * 0.09F + ph - 1.6F) * a * 1.6F;
+        look(p.apply("head"), st, 0.8F);
+        ModelPart body = p.apply("body");
+        body.y += Mth.sin(t * 0.08F) * 1.2F;
+        body.xRot += s * 0.25F;
+        // the wings: a slow, heavy beat; wider open in each phase
+        float open = (phase - 1) * 0.3F;
+        float beat = Mth.sin(t * (0.07F + phase * 0.025F)) * (0.25F + phase * 0.06F);
+        p.apply("wing_r").yRot -= open + beat * 0.5F;
+        p.apply("wing_l").yRot += open + beat * 0.5F;
+        p.apply("wing_r").zRot += beat;
+        p.apply("wing_l").zRot -= beat;
+        p.apply("wing_r_b").zRot += beat * 0.6F;
+        p.apply("wing_l_b").zRot -= beat * 0.6F;
+        p.apply("wing_r_c").zRot += Mth.sin(t * 0.1F - 0.8F) * 0.2F;
+        p.apply("wing_l_c").zRot -= Mth.sin(t * 0.1F - 0.8F) * 0.2F;
+        // the tail of smoke she hangs on
+        String[] tail = {"tail_a", "tail_b", "tail_c", "tail_d"};
+        for (int i = 0; i < tail.length; i++) {
+            p.apply(tail[i]).zRot += Mth.sin(t * 0.09F - i * 0.7F) * (0.08F + i * 0.05F);
+            p.apply(tail[i]).xRot += Mth.cos(t * 0.07F - i * 0.6F) * (0.05F + i * 0.03F) + s * 0.15F;
         }
-        slam(p, st, 1.8F);
+        // the heart
+        float beatRate = 0.15F + phase * 0.1F;
+        float pulse = 1.0F + Math.max(0.0F, Mth.sin(t * beatRate)) * (0.15F + phase * 0.08F);
+        ModelPart heart = p.apply("heart");
+        heart.xScale = heart.yScale = heart.zScale = pulse;
+        // arms reaching, claws flexing
+        p.apply("arm_r").xRot += Mth.sin(t * 0.06F) * 0.1F;
+        p.apply("arm_l").xRot -= Mth.sin(t * 0.06F) * 0.1F;
+        p.apply("claw_r").xRot -= Mth.sin(t * 0.13F) * 0.2F;
+        p.apply("claw_l").xRot -= Mth.cos(t * 0.13F) * 0.2F;
+        if (st.attack > 0) {
+            float a = Mth.sin(st.attack * Mth.PI);
+            p.apply("arm_r").xRot -= a * 1.8F;
+            p.apply("arm_l").xRot -= a * 1.8F;
+            p.apply("wing_r").yRot += a * 0.5F;
+            p.apply("wing_l").yRot -= a * 0.5F;
+        }
+        // the shards: an orbit that quickens, each shard turning on itself
+        p.apply("orbit").yRot += t * (0.02F + phase * 0.015F);
+        for (int i = 0; i < 6; i++) {
+            ModelPart sh = p.apply("shard_" + i);
+            sh.y += Mth.sin(t * 0.1F + i) * 1.0F;
+            sh.yRot += t * 0.05F;
+        }
+        p.apply("horn_r_c").zRot += Mth.sin(t * 0.05F) * 0.03F;
+        p.apply("horn_l_c").zRot -= Mth.sin(t * 0.05F) * 0.03F;
     }
 
     public static void shadowVillager(Function<String, ModelPart> p, UmbraRenderState st) {
