@@ -161,19 +161,41 @@ public final class Animations {
         eye.xScale = eye.yScale = eye.zScale = k;
     }
 
+    /**
+     * 2.7.6: the Queen walks like a spider, three legs at a time; her lid breathes and gapes when she bites; the tongue
+     * sways its golden key before her and whips out on a bite; the little chests on her back snap their lids each to
+     * its own rhythm; the eye in her lock follows you (it is in the lid, which turns with her look a little).
+     */
     public static void mimicQueen(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks;
-        // the lid breathes, and gapes wide when she bites
-        float open = 0.12F + Mth.sin(t * 0.08F) * 0.1F + (st.attack > 0 ? Mth.sin(st.attack * Mth.PI) * 0.9F : 0);
-        p.apply("lid").xRot -= open;
-        p.apply("tongue").xRot += Mth.sin(t * 0.3F) * 0.1F;
         float w = st.walkAnimationPos * 1.2F, s = Math.min(1.0F, st.walkAnimationSpeed);
-        for (int i = 0; i < 2; i++) {
-            float ph = i * Mth.PI;
-            p.apply("leg_r" + i + "_upper").yRot += Mth.cos(w + ph) * 0.4F * s;
-            p.apply("leg_l" + i + "_upper").yRot -= Mth.cos(w + ph + Mth.PI) * 0.4F * s;
+        float bite = st.attack > 0 ? Mth.sin(st.attack * Mth.PI) : 0;
+        p.apply("lid").xRot -= 0.1F + Mth.sin(t * 0.08F) * 0.08F + bite * 1.0F;
+        p.apply("lid").yRot += st.yRot * DEG * 0.1F;
+        ModelPart ta = p.apply("tongue_a"), tb = p.apply("tongue_b");
+        ta.yRot += Mth.sin(t * 0.07F) * 0.15F;
+        tb.yRot += Mth.sin(t * 0.07F - 0.7F) * 0.2F;
+        tb.xRot += Mth.sin(t * 0.11F) * 0.08F - bite * 0.3F;
+        ta.xRot -= bite * 0.4F;
+        p.apply("lure").xRot += Mth.sin(t * 0.13F) * 0.25F;
+        p.apply("lure").zRot += Mth.cos(t * 0.09F) * 0.15F;
+        for (int i = 0; i < 5; i++) {
+            float snap = Math.max(0.0F, Mth.sin(t * (0.12F + i * 0.03F) + i * 1.9F));
+            p.apply("brood_" + i + "_lid").xRot -= snap * snap * 0.7F;
         }
-        p.apply("body").y += Math.abs(Mth.sin(w)) * -1.0F * s;
+        p.apply("brood").y += Mth.sin(t * 0.1F) * 0.3F;
+        for (int i = 0; i < 3; i++) {
+            float ph = (i % 2) * Mth.PI;
+            float lift = Math.max(0.0F, Mth.sin(w + ph)) * 0.35F * s;
+            float swing = Mth.cos(w + ph) * 0.35F * s;
+            p.apply("leg_r" + i + "_upper").yRot += swing;
+            p.apply("leg_r" + i + "_upper").zRot += lift;
+            p.apply("leg_l" + i + "_upper").yRot += swing;
+            p.apply("leg_l" + i + "_upper").zRot -= Math.max(0.0F, Mth.sin(w + ph + Mth.PI)) * 0.35F * s;
+        }
+        ModelPart body = p.apply("body");
+        body.y += Math.abs(Mth.sin(w)) * -0.8F * s + Mth.sin(t * 0.08F) * 0.3F;
+        body.xRot += bite * 0.15F;
     }
 
     /**

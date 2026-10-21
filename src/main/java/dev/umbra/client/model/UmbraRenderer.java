@@ -31,6 +31,12 @@ public class UmbraRenderer<T extends Mob> extends MobRenderer<T, UmbraRenderStat
             public net.minecraft.client.renderer.rendertype.RenderType renderType() {
                 return net.minecraft.client.renderer.rendertype.RenderTypes.eyes(glow);
             }
+
+            @Override
+            public void submit(com.mojang.blaze3d.vertex.PoseStack pose, net.minecraft.client.renderer.SubmitNodeCollector out, int light,
+                               UmbraRenderState state, float yRot, float xRot) {
+                if (!state.hidden) super.submit(pose, out, light, state, yRot, xRot);
+            }
         });
         return this;
     }
@@ -44,6 +50,7 @@ public class UmbraRenderer<T extends Mob> extends MobRenderer<T, UmbraRenderStat
     public void extractRenderState(T entity, UmbraRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
         state.attack = entity.getSwingAnimation(partialTick);
+        state.hidden = entity.isInvisible();
         state.health = entity.getMaxHealth() <= 0 ? 1.0F : entity.getHealth() / entity.getMaxHealth();
         if (extract != null) extract.accept(entity, state);
     }
