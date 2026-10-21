@@ -30,17 +30,31 @@ public class SummonSealItem extends Item {
         this.boss = boss;
     }
 
+    /**
+     * 2.8: a seal no longer calls its master wherever it is held up: it must be laid on a sacrificial altar in the
+     * Underside (see {@link dev.umbra.altar.SummoningAltarBlock}). Held up in the air it only reminds you of that; in
+     * creative mode it still calls at once, for testing.
+     */
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
-        ItemStack stack = player.getItemInHand(hand);
+        if (!player.isCreative()) {
+            player.sendOverlayMessage(Component.translatable("message.umbra.seal.cold"));
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) dev.umbra.journal.Journal.unlock(sp, "altar");
+            return InteractionResult.FAIL;
+        }
         Mob mob = summon(server, player, boss.get());
         if (mob == null) {
             player.sendOverlayMessage(Component.translatable("message.umbra.no_room"));
             return InteractionResult.FAIL;
         }
-        if (!player.isCreative()) stack.shrink(1);
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, ServerLevel level, net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
+        // the first time a seal is carried, the journal works out what it is for
+        if (entity instanceof net.minecraft.server.level.ServerPlayer sp && level.getGameTime() % 40 == 7) dev.umbra.journal.Journal.unlock(sp, "altar");
     }
 
     /** Spawns {@code type} on solid ground about six blocks ahead of the player. */

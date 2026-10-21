@@ -139,6 +139,7 @@ final class SmokeTest {
                 case 679 -> testLighthouseKeeper(server);
                 case 673 -> testEndings22(level);
                 case 674 -> testCraft23(level);
+                case 675 -> testAltar28(server, level);
                 case 676 -> testDepths26(server);
                 case 677 -> testYan27(level);
                 case RAID_END -> finish(server);
@@ -589,7 +590,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 115 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 115, "journal has 115 distinct entries (" + dev.umbra.journal.Journal.ENTRIES.size() + ")");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 116 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 116, "journal has 116 distinct entries (" + dev.umbra.journal.Journal.ENTRIES.size() + ")");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1657,6 +1658,136 @@ final class SmokeTest {
     }
 
     /** 2.6: the drowned halls of the Keepers, built where nothing else is. */
+    /** 2.8: the sacrificial altar: a seal on it, offerings in its dish, the place round it, and the rite run through. */
+    private static void testAltar28(MinecraftServer server, ServerLevel overworld) {
+        // in the ordinary world the altar stays asleep
+        BlockPos o = new BlockPos(200, Y + 60, 60);
+        for (BlockPos p : BlockPos.betweenClosed(o.offset(-2, -1, -2), o.offset(2, 3, 2)))
+            overworld.setBlock(p, p.getY() == o.getY() - 1 ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        overworld.setBlock(o, ModBlocks.SUMMONING_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        FakePlayer up = FakePlayerFactory.getMinecraft(overworld);
+        up.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        up.snapTo(o.getX() + 0.5, o.getY(), o.getZ() - 1.5, 0, 0);
+        if (overworld.getBlockEntity(o) instanceof dev.umbra.altar.SummoningAltarBlockEntity top) {
+            top.placeSeal(new ItemStack(ModItems.SEAL_OF_REFLECTION.get()), up);
+            top.offer(new ItemStack(ModItems.MIRROR.get()), up);
+            top.offer(new ItemStack(Items.GLASS, 2), up);
+            check(top.missing() == null && !top.begin(overworld, up) && !top.riteRunning(), "2.8: in the ordinary world the altar does not wake, whatever lies on it");
+        } else {
+            check(false, "2.8: the altar is a block with a memory (overworld)");
+        }
+        overworld.setBlock(o, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+
+        ServerLevel under = server.getLevel(Underside.LEVEL);
+        if (under == null) return;
+        BlockPos c = new BlockPos(140000, 140, 140000);
+        for (BlockPos p : BlockPos.betweenClosed(c.offset(-10, -5, -10), c.offset(10, 7, 10)))
+            under.setBlock(p, p.getY() < c.getY() ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        under.setBlock(c, ModBlocks.SUMMONING_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        if (!(under.getBlockEntity(c) instanceof dev.umbra.altar.SummoningAltarBlockEntity altar)) {
+            check(false, "2.8: the altar is a block with a memory");
+            return;
+        }
+        FakePlayer fake = FakePlayerFactory.getMinecraft(under);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.setHealth(fake.getMaxHealth());
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 2.5, 0, 0);
+        Vec3 centre = dev.umbra.altar.Ritual.WATCHING.centre(c);
+        fake.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, centre);
+        net.minecraft.world.phys.AABB around = new net.minecraft.world.phys.AABB(c).inflate(10);
+
+        // the Watcher: spider eyes and echo quartz, the dark, and your eyes on it all the while
+        ItemStack seal = new ItemStack(ModItems.SEAL_OF_WATCHING.get());
+        check(altar.placeSeal(seal, fake) && seal.isEmpty() && altar.ritual() == dev.umbra.altar.Ritual.WATCHING, "2.8: a seal lies on the altar");
+        check(!altar.placeSeal(new ItemStack(ModItems.SEAL_OF_MIMICRY.get()), fake), "and only one at a time");
+        ItemStack eyes = new ItemStack(Items.SPIDER_EYE, 5);
+        check(altar.offer(eyes, fake) == 3 && eyes.getCount() == 2, "the dish takes only as many as the seal asks for (3 of 5 spider eyes)");
+        check(altar.offer(new ItemStack(Items.BONE), fake) == 0 && altar.missing() != null, "and nothing it does not ask for");
+        altar.offer(new ItemStack(ModItems.ECHO_QUARTZ.get(), 4), fake);
+        check(altar.missing() == null, "the offerings are all there");
+        under.setBlock(c.offset(4, 0, 0), Blocks.TORCH.defaultBlockState(), Block.UPDATE_ALL);
+        check(dev.umbra.altar.Ritual.WATCHING.placeProblem(under, c, fake) != null && !altar.begin(under, fake), "the Watcher's rite wants the dark: a torch near the altar spoils it");
+        under.setBlock(c.offset(4, 0, 0), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        check(altar.begin(under, fake) && altar.riteRunning() && under.getBlockState(c).getValue(dev.umbra.altar.SummoningAltarBlock.GLOW) == 2,
+                "in the dark it wakes: the rite begins and the runes blaze");
+        for (int i = 0; i < 30; i++) altar.tickForTest(under);
+        int before = altar.riteTicks();
+        fake.snapTo(fake.getX(), fake.getY(), fake.getZ(), 180, 0);
+        altar.tickForTest(under);
+        check(before >= 30 && altar.riteTicks() == 0 && altar.riteRunning(), "look away, and the Watcher's rite starts again (" + before + " -> " + altar.riteTicks() + ")");
+        fake.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, centre);
+        int watchers = under.getEntitiesOfClass(Watcher.class, around).size();
+        for (int i = 0; i < 260 && altar.riteRunning(); i++) altar.tickForTest(under);
+        var came = under.getEntitiesOfClass(Watcher.class, around);
+        check(!altar.riteRunning() && came.size() == watchers + 1 && altar.seal().isEmpty() && altar.offerings().isEmpty()
+                && under.getBlockState(c).getValue(dev.umbra.altar.SummoningAltarBlock.GLOW) == 0, "watched to the end, the rite calls the Watcher out of the altar; seal and offerings are spent");
+        came.forEach(net.minecraft.world.entity.Entity::discard);
+
+        // the Queen: gold and shards, and four chests that are not empty (she takes them)
+        altar.placeSeal(new ItemStack(ModItems.SEAL_OF_MIMICRY.get()), fake);
+        altar.offer(new ItemStack(Items.GOLD_INGOT, 2), fake);
+        altar.offer(new ItemStack(ModItems.SHADOW_SHARD.get(), 2), fake);
+        BlockPos[] chests = {c.offset(2, 0, 1), c.offset(-2, 0, 1), c.offset(2, 0, 3), c.offset(-2, 0, 3)};
+        for (int i = 0; i < chests.length; i++) {
+            under.setBlock(chests[i], Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+            if (i < 3 && under.getBlockEntity(chests[i]) instanceof net.minecraft.world.Container box) box.setItem(0, new ItemStack(Items.COAL));
+        }
+        check(dev.umbra.altar.Ritual.MIMICRY.placeProblem(under, c, fake) != null, "an empty chest is no bait");
+        if (under.getBlockEntity(chests[3]) instanceof net.minecraft.world.Container box) box.setItem(0, new ItemStack(Items.COAL));
+        check(dev.umbra.altar.Ritual.MIMICRY.placeProblem(under, c, fake) == null, "four full chests are");
+        altar.beginForTest(under, fake);
+        for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
+        int left = 0;
+        for (BlockPos p : chests) if (under.getBlockState(p).is(Blocks.CHEST)) left++;
+        var queens = under.getEntitiesOfClass(MimicQueen.class, around);
+        check(queens.size() == 1 && left == 0, "the Queen comes, and the chests go with her (" + left + " left)");
+        queens.forEach(net.minecraft.world.entity.Entity::discard);
+
+        // the Shepherd: wool, bones and shards, and three soul campfires that go out when he comes
+        altar.placeSeal(new ItemStack(ModItems.SEAL_OF_HERDING.get()), fake);
+        altar.offer(new ItemStack(Items.WHITE_WOOL, 3), fake);
+        altar.offer(new ItemStack(Items.BONE, 2), fake);
+        altar.offer(new ItemStack(ModItems.SHADOW_SHARD.get(), 2), fake);
+        check(dev.umbra.altar.Ritual.HERDING.placeProblem(under, c, fake) != null, "no fires, no flock");
+        BlockPos[] fires = {c.offset(3, 0, 0), c.offset(-3, 0, 0), c.offset(0, 0, 3)};
+        for (BlockPos p : fires) under.setBlock(p, Blocks.SOUL_CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
+        check(dev.umbra.altar.Ritual.HERDING.placeProblem(under, c, fake) == null, "three soul fires round the altar");
+        altar.beginForTest(under, fake);
+        for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
+        int lit = 0;
+        for (BlockPos p : fires) if (under.getBlockState(p).getValue(net.minecraft.world.level.block.CampfireBlock.LIT)) lit++;
+        var shepherds = under.getEntitiesOfClass(Shepherd.class, around);
+        check(shepherds.size() == 1 && lit == 0, "the Shepherd comes, and the fires go out (" + lit + " still lit)");
+        shepherds.forEach(net.minecraft.world.entity.Entity::discard);
+        for (BlockPos p : fires) under.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+
+        // the Doppelganger: the mirror and glass, water round the altar, and blood
+        altar.placeSeal(new ItemStack(ModItems.SEAL_OF_REFLECTION.get()), fake);
+        altar.offer(new ItemStack(ModItems.MIRROR.get()), fake);
+        altar.offer(new ItemStack(Items.GLASS, 2), fake);
+        check(dev.umbra.altar.Ritual.REFLECTION.placeProblem(under, c, fake) != null, "no water, no reflection");
+        for (BlockPos p : new BlockPos[]{c.offset(1, 0, 1), c.offset(-1, 0, 1), c.offset(1, 0, -1), c.offset(-1, 0, -1)})
+            under.setBlock(p, Blocks.WATER.defaultBlockState(), Block.UPDATE_CLIENTS);
+        check(dev.umbra.altar.Ritual.REFLECTION.placeProblem(under, c, fake) == null, "still water round the altar");
+        check(altar.begin(under, fake), "the altar takes its blood and the rite of reflection begins");
+        for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
+        var doubles = under.getEntitiesOfClass(Doppelganger.class, around);
+        check(doubles.size() == 1, "the Doppelganger climbs out");
+        doubles.forEach(net.minecraft.world.entity.Entity::discard);
+
+        // a rite that breaks burns the offerings and leaves the seal
+        altar.placeSeal(new ItemStack(ModItems.SEAL_OF_REFLECTION.get()), fake);
+        altar.offer(new ItemStack(ModItems.MIRROR.get()), fake);
+        altar.offer(new ItemStack(Items.GLASS, 2), fake);
+        altar.beginForTest(under, fake);
+        fake.snapTo(c.getX() + 30.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        altar.tickForTest(under);
+        check(!altar.riteRunning() && altar.offerings().isEmpty() && !altar.seal().isEmpty(), "walk away mid-rite and it breaks: the offerings burn, the seal stays");
+        under.setBlock(c, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        check(!under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(c).inflate(2),
+                e -> e.getItem().is(ModItems.SEAL_OF_REFLECTION.get())).isEmpty(), "break the altar and what lies on it drops");
+    }
+
     private static void testDepths26(MinecraftServer server) {
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under == null) return;

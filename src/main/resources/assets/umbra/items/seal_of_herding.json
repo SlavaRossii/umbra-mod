@@ -1,6 +1,21 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "umbra:item/seal_of_herding"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "umbra:item/seal_of_herding"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "umbra:item/seal_of_herding_3d"
+    }
   }
 }

@@ -141,6 +141,11 @@ public final class ModBlocks {
     public static final DeferredBlock<dev.umbra.craft.EchoAltarBlock> ECHO_ALTAR = BLOCKS.registerBlock("echo_altar",
             dev.umbra.craft.EchoAltarBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).mapColor(MapColor.COLOR_BLACK).lightLevel(s -> 7).noOcclusion());
+    // 2.8: the sacrificial altar, where seals are laid
+    public static final DeferredBlock<dev.umbra.altar.SummoningAltarBlock> SUMMONING_ALTAR = BLOCKS.registerBlock("summoning_altar",
+            dev.umbra.altar.SummoningAltarBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).mapColor(MapColor.COLOR_PURPLE).strength(4.0F, 1200.0F)
+                    .lightLevel(dev.umbra.altar.SummoningAltarBlock::light).noOcclusion());
     public static final DeferredBlock<dev.umbra.craft.GloomAnvilBlock> GLOOM_ANVIL = BLOCKS.registerBlock("gloom_anvil",
             dev.umbra.craft.GloomAnvilBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).mapColor(MapColor.COLOR_PURPLE).noOcclusion());

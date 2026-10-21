@@ -84,11 +84,12 @@ public final class ClientShots {
         POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away, "time set 6000",
                 "effect give @a minecraft:night_vision infinite 0 true"));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
-                "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow"}) {
+                "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow",
+                "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection"}) {
             POSES.add(new Pose(String.format("%02d_hand_%s", n++, w), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_hand_luminite_bow_drawn", n++), CameraType.FIRST_PERSON, true, false));
-        for (String w : new String[]{"luminite_spear", "shepherd_scythe", "keeper_staff", "gloom_axe", "luminite_bow"}) {
+        for (String w : new String[]{"luminite_spear", "shepherd_scythe", "keeper_staff", "gloom_axe", "luminite_bow", "seal_of_watching", "seal_of_herding"}) {
             POSES.add(new Pose(String.format("%02d_third_%s", n++, w), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_third_luminite_bow_drawn", n++), CameraType.THIRD_PERSON_FRONT, true, true));
