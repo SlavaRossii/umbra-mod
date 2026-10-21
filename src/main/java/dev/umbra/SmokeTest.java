@@ -1680,7 +1680,10 @@ final class SmokeTest {
 
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under == null) return;
-        BlockPos c = new BlockPos(140000, 140, 140000);
+        BlockPos c = new BlockPos(140008, 140, 140008);
+        // keep the chunks loaded for entities (no player stands here): what falls there must be seen
+        for (int cx = -1; cx <= 1; cx++)
+            for (int cz = -1; cz <= 1; cz++) under.setChunkForced((c.getX() >> 4) + cx, (c.getZ() >> 4) + cz, true);
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-10, -5, -10), c.offset(10, 7, 10)))
             under.setBlock(p, p.getY() < c.getY() ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         under.setBlock(c, ModBlocks.SUMMONING_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -1795,6 +1798,9 @@ final class SmokeTest {
         check(had && dropped.stream().anyMatch(e -> e.getItem().is(ModItems.SEAL_OF_REFLECTION.get())),
                 "break the altar and what lies on it drops (" + drops + " -> stick " + stick + " -> " + dropped.size() + " items around, seal there: " + had
                         + ", side effects " + (dev.umbra.altar.SummoningAltarBlockEntity.removals - removals) + ", block now " + under.getBlockState(c) + ")");
+        dropped.forEach(net.minecraft.world.entity.Entity::discard);
+        for (int cx = -1; cx <= 1; cx++)
+            for (int cz = -1; cz <= 1; cz++) under.setChunkForced((c.getX() >> 4) + cx, (c.getZ() >> 4) + cz, false);
     }
 
     private static void testDepths26(MinecraftServer server) {

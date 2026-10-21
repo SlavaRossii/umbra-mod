@@ -117,6 +117,14 @@ public final class UmbraClient {
 
         /** 2.4: music of its own in the Underside and in a boss fight; 2.8: each boss its own track (the nearest one). */
         private static String lastMusic = "";
+        private static boolean stopBossMusic;
+
+        @SubscribeEvent
+        static void afterMusic(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+            if (!stopBossMusic) return;
+            stopBossMusic = false;
+            net.minecraft.client.Minecraft.getInstance().getMusicManager().stopPlaying();
+        }
 
         @SubscribeEvent
         static void music(net.neoforged.neoforge.client.event.SelectMusicEvent event) {
@@ -144,6 +152,8 @@ public final class UmbraClient {
                 now = "";
             }
             if (!now.equals(lastMusic)) {
+                // the boss is gone: its track stops (the Underside's own music does not cut in by itself)
+                if (lastMusic.startsWith("music.boss") && !now.startsWith("music.boss")) stopBossMusic = true;
                 lastMusic = now;
                 if (Boolean.getBoolean("umbra.clientshots")) dev.umbra.Umbra.LOGGER.info("UMBRA CLIENTSHOTS: music {}", now.isEmpty() ? "(the game's own)" : now);
             }
