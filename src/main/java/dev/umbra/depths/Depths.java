@@ -208,7 +208,7 @@ public final class Depths {
         for (long n : skin) {
             BlockPos p = ORIGIN.offset(BlockPos.getX(n), BlockPos.getY(n), BlockPos.getZ(n));
             boolean underfoot = hollow.contains(BlockPos.asLong(BlockPos.getX(n), BlockPos.getY(n) + 1, BlockPos.getZ(n))) && BlockPos.getY(n) == 0;
-            level.setBlock(p, underfoot ? (random.nextInt(6) == 0 ? moss : floor) : (random.nextInt(5) == 0 ? moss : shell), FLAGS);
+            level.setBlock(p, underfoot ? (random.nextInt(6) == 0 ? moss : floor) : (random.nextInt(11) == 0 ? moss : shell), FLAGS);
         }
         for (long h : hollow) level.setBlock(ORIGIN.offset(BlockPos.getX(h), BlockPos.getY(h), BlockPos.getZ(h)), water, FLAGS);
         // 3. the halls' furniture

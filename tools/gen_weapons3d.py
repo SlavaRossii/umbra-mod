@@ -187,10 +187,12 @@ def scythe():
     w.box(8.6, 6.5, 11, 7.5, "wood_dark", t=1.0)                          # the second grip
     w.box(7.0, 17, 9.0, 19, "shadow", t=1.6)
     # the blade sweeps out to the left and down, pale as bone
+    # (2.7.2: the glowing line now runs along the inner, cutting edge of each piece instead of straight across)
     for x1, y1, x2, y2 in ((2.5, 17.2, 7.0, 19.2), (-0.5, 16.2, 2.5, 18.6), (-2.6, 14.4, -0.5, 17.4), (-3.6, 12.0, -1.8, 14.4),
                            (-3.8, 10.2, -2.6, 12.0)):
         w.box(x1, y1, x2, y2, "bone", t=0.6)
-    w.box(-0.5, 15.6, 7.0, 16.2, "violet", t=0.8, light=6)
+    for x1, y1, x2, y2 in ((2.5, 16.9, 7.0, 17.3), (-0.5, 15.9, 2.5, 16.3), (-0.9, 14.4, -0.5, 16.2), (-1.8, 12.0, -1.4, 14.4)):
+        w.box(x1, y1, x2, y2, "violet", t=0.7, light=5)
     return w
 
 
