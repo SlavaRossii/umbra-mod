@@ -144,21 +144,61 @@ public final class Animations {
         p.apply("body").xRot += st.attack > 0 ? Mth.sin(st.attack * Mth.PI) * 0.25F : 0;
     }
 
+    /**
+     * 2.7.7: the Watcher. Everything about it runs on its own clock, and that clock stops while nobody looks at it: the
+     * bob, the trailing nerve, the hanging vessels all freeze. Watched, its lids stand wide open (it never blinks while
+     * you look); left alone, they sink half shut. In the light it squints and its pupil shrinks to a point; in the dark
+     * the pupil is wide. Before it weeps the lower lid trembles, two tears swell on it, the lids squeeze, and then fly
+     * open as the tears are thrown. On a strike it lunges, lids wide.
+     */
     public static void watcher(Function<String, ModelPart> p, UmbraRenderState st) {
-        float t = st.ageInTicks;
+        float t = st.clock;
         ModelPart eye = p.apply("eye");
-        eye.y += Mth.sin(t * 0.1F) * 1.5F;
+        eye.y += Mth.sin(t * 0.08F) * 1.2F;
         look(eye, st, 1.0F);
-        for (int i = 0; i < 4; i++) {
-            float ph = i * 1.57F;
-            p.apply("tentacle" + i + "_a").xRot += Mth.sin(t * 0.12F + ph) * 0.25F;
-            p.apply("tentacle" + i + "_a").zRot += Mth.cos(t * 0.1F + ph) * 0.2F;
-            p.apply("tentacle" + i + "_b").xRot += Mth.sin(t * 0.12F + ph - 0.7F) * 0.3F;
-            p.apply("tentacle" + i + "_c").xRot += Mth.sin(t * 0.12F + ph - 1.4F) * 0.4F;
+        for (int i = 0; i < 6; i++) {
+            ModelPart n = p.apply("nerve_" + i);
+            n.yRot += Mth.sin(t * 0.06F - i * 0.55F) * (0.06F + i * 0.025F);
+            n.xRot += Mth.cos(t * 0.045F - i * 0.5F) * (0.04F + i * 0.015F);
         }
-        // the stare: the eye swells while it attacks
-        float k = 1.0F + (st.attack > 0 ? Mth.sin(st.attack * Mth.PI) * 0.15F : 0);
-        eye.xScale = eye.yScale = eye.zScale = k;
+        for (int i = 0; i < 6; i++) {
+            float ph = i * 1.05F;
+            ModelPart a = p.apply("vessel_" + i + "_a");
+            a.xRot += Mth.sin(t * 0.1F + ph) * 0.15F;
+            a.zRot += Mth.cos(t * 0.08F + ph) * 0.12F;
+            p.apply("vessel_" + i + "_b").xRot += Mth.sin(t * 0.1F + ph - 0.7F) * 0.25F;
+            p.apply("vessel_" + i + "_c").xRot += Mth.sin(t * 0.1F + ph - 1.4F) * 0.35F;
+        }
+        // the lids: 0 open, 1 shut
+        float close = st.flag ? 0.0F : 0.45F;
+        boolean lit = st.timer2 >= 0 && st.timer2 < 60;
+        if (lit) close = Math.max(close, 0.62F + Mth.sin(st.timer2 * 1.7F) * 0.04F);
+        float cry = st.timer, swell = 0.0F;
+        if (cry >= 0 && cry < 15) {
+            close = Math.max(close, cry < 10 ? 0.12F + Mth.sin(cry * 2.6F) * 0.06F : 0.12F + (cry - 10) / 5.0F * 0.6F);
+            swell = cry / 15.0F;
+        } else if (cry >= 15 && cry < 24) {
+            close = -0.18F;
+        }
+        float bite = st.attack > 0 ? Mth.sin(st.attack * Mth.PI) : 0;
+        if (bite > 0) close = Math.min(close, -0.22F * bite);
+        p.apply("lid_up").xRot += close * 1.2F;
+        p.apply("lid_down").xRot -= close * 1.25F;
+        // the pupil: wide in the dark, a point in the light
+        float pupil = (1.3F - st.bright * 0.045F) * (lit ? 0.45F : 1.0F) * (1.0F + bite * 0.25F);
+        ModelPart pu = p.apply("pupil");
+        pu.xScale = pu.yScale = Math.max(0.35F, pupil);
+        // the tears swell on the lower lid
+        for (String side : new String[]{"tear_r", "tear_l"}) {
+            ModelPart tear = p.apply(side);
+            tear.visible = swell > 0;
+            if (swell > 0) {
+                tear.xScale = tear.yScale = tear.zScale = 0.4F + swell * 0.8F;
+                tear.y += swell * 2.0F;
+            }
+        }
+        // the lunge
+        eye.z -= bite * 3.0F;
     }
 
     /**

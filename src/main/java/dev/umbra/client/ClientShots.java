@@ -74,7 +74,7 @@ public final class ClientShots {
         }
         // 2.7.4: the Architect, the same in all his phases; 2.7.5: the Shepherd
         for (String[] v : new String[][]{{"day", "150"}, {"day", "215"}, {"night", "180"}, {"day", "160", "shepherd"}, {"day", "220", "shepherd"},
-                {"night", "180", "shepherd"}, {"day", "150", "mimic_queen"}, {"day", "215", "mimic_queen"}, {"night", "180", "mimic_queen"}}) {
+                {"night", "180", "shepherd"}, {"day", "150", "mimic_queen"}, {"day", "215", "mimic_queen"}, {"night", "180", "mimic_queen"}, {"day", "150", "watcher"}, {"day", "220", "watcher"}, {"night", "180", "watcher"}}) {
             String who = v.length > 2 ? v[2] : "architect";
             boolean night = v[0].equals("night");
             POSES.add(new Pose(String.format("%02d_mob_%s_%s_%s", n++, who, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,

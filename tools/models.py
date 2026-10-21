@@ -298,16 +298,101 @@ def keeper():
     return m
 
 
+def eye_veins(color=(128, 28, 36, 255), dim=(150, 92, 90, 255), n=7, inward=True):
+    """Thin red veins over the white of an eye, running in from the edges of the face towards its middle."""
+    def f(px, x0, y0, w, h, rnd):
+        r = random.Random(w * 13 + h * 7 + x0 + y0 * 3)
+        cx, cy = x0 + w / 2, y0 + h / 2
+        for k in range(n):
+            side = k % 4
+            x = x0 + (r.randint(0, w - 1) if side in (0, 1) else (0 if side == 2 else w - 1))
+            y = y0 + (r.randint(0, h - 1) if side in (2, 3) else (0 if side == 0 else h - 1))
+            for step in range(r.randint(2, max(3, min(w, h) // 2))):
+                if x0 <= x < x0 + w and y0 <= y < y0 + h:
+                    px[x, y] = color if step < 3 or r.random() < 0.6 else dim
+                if inward:
+                    x += (1 if cx > x else -1) if r.random() < 0.6 else r.choice((-1, 0, 1))
+                    y += (1 if cy > y else -1) if r.random() < 0.6 else r.choice((-1, 0, 1))
+                else:
+                    x += r.choice((-1, 0, 1))
+                    y += r.choice((-1, 0, 1))
+    return f
+
+
+def iris_disc(rim=(90, 16, 24, 255), ring=(205, 45, 55, 255), fibre=(150, 30, 40, 255), white=(226, 220, 206, 255)):
+    """A round iris on a square face: the corners stay white, a dark rim, a burning red ring with darker fibres."""
+    def f(px, x0, y0, w, h, rnd):
+        cx, cy = x0 + (w - 1) / 2, y0 + (h - 1) / 2
+        for x in range(x0, x0 + w):
+            for y in range(y0, y0 + h):
+                d = math.hypot(x - cx, y - cy) / (min(w, h) / 2)
+                if d > 1.02:
+                    px[x, y] = white
+                elif d > 0.82:
+                    px[x, y] = rim
+                else:
+                    a = math.atan2(y - cy, x - cx)
+                    px[x, y] = fibre if math.sin(a * 5) > 0.55 else ring
+    return f
+
+
 def watcher():
+    """2.7.7: the Watcher. One great eye hanging in the air: a white veined with red, an iris that burns, a pupil that
+    opens wide in the dark and shrinks to a point in the light. Heavy lids of flesh with a few long black lashes; behind
+    it the torn nerve trails like a tail; under it thin vessels hang and stir. Two tears gather on the lower lid before
+    it weeps them at you. Glow layer: the iris ring and the tears."""
     m = Model("watcher")
-    flesh = P((150, 120, 120, 255), 12)
-    eye = P((220, 215, 205, 255), 8, front=big_eye((235, 232, 222, 255), (150, 40, 60, 255), (10, 6, 8, 255)))
-    m.part("eye", "root", (0, 0, 0), (0, 0, 0), [C(-6, -6, -6, 12, 12, 12, eye),
-                                                 C(-7, -7, 0, 14, 2, 7, flesh)])
-    for i, (x, z) in enumerate(((-3, -3), (3, -3), (-3, 3), (3, 3))):
-        a = m.part(f"tentacle{i}_a", "eye", (x, 5, z), (0, 0, 0), [C(-2, 0, -2, 4, 6, 4, flesh)])
-        b = m.part(f"tentacle{i}_b", a, (0, 6, 0), (0, 0, 0), [C(-1.5, 0, -1.5, 3, 6, 3, flesh)])
-        m.part(f"tentacle{i}_c", b, (0, 6, 0), (0, 0, 0), [C(-1, 0, -1, 2, 6, 2, flesh)])
+    m.glow = True
+    m.glow_test = lambda c: (c[0] > 150 and c[1] < 90 and c[2] < 100) or (c[2] > 220 and c[1] > 190 and c[0] < 200)
+    WHITE = (226, 220, 206, 255)
+    v = eye_veins(n=3)
+    white = P(WHITE, 6, front=v, back=v, left=v, right=v, up=v, down=v)
+    white_front = P(WHITE, 5, front=eye_veins(n=6))
+    nerve_end = P((176, 108, 104, 255), 8, back=lambda px, x0, y0, w, h, r: [px.__setitem__((x, y), (120, 50, 56, 255))
+                                                                          for x in range(x0, x0 + w) for y in range(y0, y0 + h)])
+    iris = P(WHITE, 2, front=iris_disc())
+    pupil = P((8, 4, 6, 255), 2)
+    lid = P((168, 112, 108, 255), 8, front=stripes((140, 86, 84, 255), 2), up=stripes((140, 86, 84, 255), 2, True),
+            down=stripes((140, 86, 84, 255), 2, True), back=stripes((140, 86, 84, 255), 2))
+    lash = P((22, 14, 16, 255), 4)
+    nerve = P((176, 108, 104, 255), 8, front=stripes((146, 78, 78, 255), 2, True), back=stripes((146, 78, 78, 255), 2, True),
+              left=stripes((146, 78, 78, 255), 2), right=stripes((146, 78, 78, 255), 2), up=stripes((146, 78, 78, 255), 2),
+              down=stripes((146, 78, 78, 255), 2))
+    vessel = P((120, 40, 48, 255), 6)
+    tear = P((170, 222, 255, 255), 4)
+    eye = m.part("eye", "root", (0, 0, 0), (0, 0, 0), [
+        C(-6, -6, -6, 12, 12, 12, white),
+        C(-5, -5, -7, 10, 10, 1, white_front), C(-5, -5, 6, 10, 10, 1, nerve_end),
+        C(-5, -7, -5, 10, 1, 10, white), C(-5, 6, -5, 10, 1, 10, white),
+        C(-7, -5, -5, 1, 10, 10, white), C(6, -5, -5, 1, 10, 10, white)])
+    m.part("iris", eye, (0, 0, -7), (0, 0, 0), [C(-3.5, -3.5, -1, 7, 7, 1, iris)])
+    m.part("pupil", eye, (0, 0, -8), (0, 0, 0), [C(-1.5, -1, -0.5, 3, 2, 0.5, pupil), C(-1, -1.5, -0.5, 2, 3, 0.5, pupil)])
+    # the lids slide over the ball around its centre: the upper one closes forwards and down, the lower one up
+    up = m.part("lid_up", eye, (0, 0, 0), (0.35, 0, 0), [C(-6.5, -10, -0.5, 13, 1.5, 5, lid)])
+    m.part("lid_up_b", up, (0, 0, 0), (-0.55, 0, 0), [C(-6, -10, -0.5, 12, 1.5, 5, lid)])
+    for i, x in enumerate((-4.5, -2.2, 0, 2.2, 4.5)):
+        m.part(f"lash_up{i}", up, (x, -9.6, -0.3), (0.8, 0, x * 0.06), [C(-0.25, -3, -0.25, 0.5, 3, 0.5, lash)])
+    down = m.part("lid_down", eye, (0, 0, 0), (-0.3, 0, 0), [C(-6.5, 8.5, -0.5, 13, 1.5, 5, lid)])
+    m.part("lid_down_b", down, (0, 0, 0), (0.55, 0, 0), [C(-6, 8.5, -0.5, 12, 1.5, 5, lid)])
+    for i, x in enumerate((-3.5, -1.2, 1.2, 3.5)):
+        m.part(f"lash_down{i}", down, (x, 9.6, -0.3), (-0.8, 0, -x * 0.06), [C(-0.25, 0, -0.25, 0.5, 2, 0.5, lash)])
+    for side, sx in (("r", -1), ("l", 1)):
+        m.part(f"tear_{side}", eye, (sx * 2.6, 4.2, -7.6), (0, 0, 0), [C(-0.6, 0, -0.6, 1.2, 1.6, 1.2, tear)])
+    # the torn nerve, trailing behind
+    parent, at = eye, (0, 0, 7)
+    for i, (t, n) in enumerate(((4, 4), (3.5, 4), (3, 4), (2.2, 4), (1.5, 3.5), (1, 3))):
+        part = m.part(f"nerve_{i}", parent, at, (-0.12, 0, 0), [C(-t / 2, -t / 2, 0, t, t, n, nerve)])
+        parent, at = part, (0, 0, n)
+    for i, (dx, rz) in enumerate(((-0.3, -0.5), (0.3, 0.6))):
+        m.part(f"nerve_fray{i}", parent, (dx, 0, 3), (0.25 * (i * 2 - 1), rz, 0), [C(-0.25, -0.25, 0, 0.5, 0.5, 3, nerve)])
+    # vessels hanging under it
+    for i in range(6):
+        a = i * math.pi / 3 + 0.5
+        x, z = round(math.cos(a) * 3.4, 2), round(math.sin(a) * 3.4, 2)
+        va = m.part(f"vessel_{i}_a", eye, (x, 6.6, z), (round(-math.sin(a) * 0.18, 3), 0, round(math.cos(a) * 0.18, 3)),
+                    [C(-0.75, 0, -0.75, 1.5, 5, 1.5, vessel)])
+        vb = m.part(f"vessel_{i}_b", va, (0, 5, 0), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 5, 1, vessel)])
+        m.part(f"vessel_{i}_c", vb, (0, 5, 0), (0, 0, 0), [C(-0.35, 0, -0.35, 0.7, 4.5, 0.7, vessel)])
     return m
 
 

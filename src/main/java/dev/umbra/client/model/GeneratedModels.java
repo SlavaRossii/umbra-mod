@@ -147,37 +147,99 @@ public final class GeneratedModels {
         return LayerDefinition.create(mesh, 64, 128);
     }
 
-    /** watcher: 14 cubes, texture 64x64. */
+    /** watcher: 51 cubes, texture 128x64. */
     public static LayerDefinition watcher() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition p_eye = root.addOrReplaceChild("eye", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -6.0F, -6.0F, 12.0F, 12.0F, 12.0F).texOffs(0, 34).addBox(-7.0F, -7.0F, 0.0F, 14.0F, 2.0F, 7.0F),
+        PartDefinition p_eye = root.addOrReplaceChild("eye", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -6.0F, -6.0F, 12.0F, 12.0F, 12.0F).texOffs(92, 0).addBox(-5.0F, -5.0F, -7.0F, 10.0F, 10.0F, 1.0F).texOffs(0, 24).addBox(-5.0F, -5.0F, 6.0F, 10.0F, 10.0F, 1.0F).texOffs(22, 24).addBox(-5.0F, -7.0F, -5.0F, 10.0F, 1.0F, 10.0F).texOffs(62, 24).addBox(-5.0F, 6.0F, -5.0F, 10.0F, 1.0F, 10.0F).texOffs(48, 0).addBox(-7.0F, -5.0F, -5.0F, 1.0F, 10.0F, 10.0F).texOffs(70, 0).addBox(6.0F, -5.0F, -5.0F, 1.0F, 10.0F, 10.0F),
                 PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle0_a = p_eye.addOrReplaceChild("tentacle0_a", CubeListBuilder.create().texOffs(48, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(-3.0F, 5.0F, -3.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle0_b = p_tentacle0_a.addOrReplaceChild("tentacle0_b", CubeListBuilder.create().texOffs(42, 34).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 6.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle0_c = p_tentacle0_b.addOrReplaceChild("tentacle0_c", CubeListBuilder.create().texOffs(36, 43).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle1_a = p_eye.addOrReplaceChild("tentacle1_a", CubeListBuilder.create().texOffs(0, 24).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(3.0F, 5.0F, -3.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle1_b = p_tentacle1_a.addOrReplaceChild("tentacle1_b", CubeListBuilder.create().texOffs(0, 43).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 6.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle1_c = p_tentacle1_b.addOrReplaceChild("tentacle1_c", CubeListBuilder.create().texOffs(44, 43).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle2_a = p_eye.addOrReplaceChild("tentacle2_a", CubeListBuilder.create().texOffs(16, 24).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(-3.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle2_b = p_tentacle2_a.addOrReplaceChild("tentacle2_b", CubeListBuilder.create().texOffs(12, 43).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 6.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle2_c = p_tentacle2_b.addOrReplaceChild("tentacle2_c", CubeListBuilder.create().texOffs(52, 43).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle3_a = p_eye.addOrReplaceChild("tentacle3_a", CubeListBuilder.create().texOffs(32, 24).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F),
-                PartPose.offsetAndRotation(3.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle3_b = p_tentacle3_a.addOrReplaceChild("tentacle3_b", CubeListBuilder.create().texOffs(24, 43).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 6.0F, 3.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition p_tentacle3_c = p_tentacle3_b.addOrReplaceChild("tentacle3_c", CubeListBuilder.create().texOffs(0, 52).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, 6.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 64, 64);
+        PartDefinition p_iris = p_eye.addOrReplaceChild("iris", CubeListBuilder.create().texOffs(102, 24).addBox(-3.5F, -3.5F, -1.0F, 7.0F, 7.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_pupil = p_eye.addOrReplaceChild("pupil", CubeListBuilder.create().texOffs(24, 57).addBox(-1.5F, -1.0F, -0.5F, 3.0F, 2.0F, 1.0F).texOffs(84, 50).addBox(-1.0F, -1.5F, -0.5F, 2.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -8.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_lid_up = p_eye.addOrReplaceChild("lid_up", CubeListBuilder.create().texOffs(32, 35).addBox(-6.5F, -10.0F, -0.5F, 13.0F, 2.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.35F, 0.0F, 0.0F));
+        PartDefinition p_lid_up_b = p_lid_up.addOrReplaceChild("lid_up_b", CubeListBuilder.create().texOffs(68, 35).addBox(-6.0F, -10.0F, -0.5F, 12.0F, 2.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.55F, 0.0F, 0.0F));
+        PartDefinition p_lash_up0 = p_lid_up.addOrReplaceChild("lash_up0", CubeListBuilder.create().texOffs(90, 50).addBox(-0.25F, -3.0F, -0.25F, 1.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(-4.5F, -9.6F, -0.3F, 0.8F, 0.0F, -0.27F));
+        PartDefinition p_lash_up1 = p_lid_up.addOrReplaceChild("lash_up1", CubeListBuilder.create().texOffs(94, 50).addBox(-0.25F, -3.0F, -0.25F, 1.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(-2.2F, -9.6F, -0.3F, 0.8F, 0.0F, -0.132F));
+        PartDefinition p_lash_up2 = p_lid_up.addOrReplaceChild("lash_up2", CubeListBuilder.create().texOffs(98, 50).addBox(-0.25F, -3.0F, -0.25F, 1.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, -9.6F, -0.3F, 0.8F, 0.0F, 0.0F));
+        PartDefinition p_lash_up3 = p_lid_up.addOrReplaceChild("lash_up3", CubeListBuilder.create().texOffs(102, 50).addBox(-0.25F, -3.0F, -0.25F, 1.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(2.2F, -9.6F, -0.3F, 0.8F, 0.0F, 0.132F));
+        PartDefinition p_lash_up4 = p_lid_up.addOrReplaceChild("lash_up4", CubeListBuilder.create().texOffs(106, 50).addBox(-0.25F, -3.0F, -0.25F, 1.0F, 3.0F, 1.0F),
+                PartPose.offsetAndRotation(4.5F, -9.6F, -0.3F, 0.8F, 0.0F, 0.27F));
+        PartDefinition p_lid_down = p_eye.addOrReplaceChild("lid_down", CubeListBuilder.create().texOffs(0, 43).addBox(-6.5F, 8.5F, -0.5F, 13.0F, 2.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.3F, 0.0F, 0.0F));
+        PartDefinition p_lid_down_b = p_lid_down.addOrReplaceChild("lid_down_b", CubeListBuilder.create().texOffs(36, 43).addBox(-6.0F, 8.5F, -0.5F, 12.0F, 2.0F, 5.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.55F, 0.0F, 0.0F));
+        PartDefinition p_lash_down0 = p_lid_down.addOrReplaceChild("lash_down0", CubeListBuilder.create().texOffs(32, 57).addBox(-0.25F, 0.0F, -0.25F, 1.0F, 2.0F, 1.0F),
+                PartPose.offsetAndRotation(-3.5F, 9.6F, -0.3F, -0.8F, 0.0F, 0.21F));
+        PartDefinition p_lash_down1 = p_lid_down.addOrReplaceChild("lash_down1", CubeListBuilder.create().texOffs(36, 57).addBox(-0.25F, 0.0F, -0.25F, 1.0F, 2.0F, 1.0F),
+                PartPose.offsetAndRotation(-1.2F, 9.6F, -0.3F, -0.8F, 0.0F, 0.072F));
+        PartDefinition p_lash_down2 = p_lid_down.addOrReplaceChild("lash_down2", CubeListBuilder.create().texOffs(40, 57).addBox(-0.25F, 0.0F, -0.25F, 1.0F, 2.0F, 1.0F),
+                PartPose.offsetAndRotation(1.2F, 9.6F, -0.3F, -0.8F, 0.0F, -0.072F));
+        PartDefinition p_lash_down3 = p_lid_down.addOrReplaceChild("lash_down3", CubeListBuilder.create().texOffs(44, 57).addBox(-0.25F, 0.0F, -0.25F, 1.0F, 2.0F, 1.0F),
+                PartPose.offsetAndRotation(3.5F, 9.6F, -0.3F, -0.8F, 0.0F, -0.21F));
+        PartDefinition p_tear_r = p_eye.addOrReplaceChild("tear_r", CubeListBuilder.create().texOffs(110, 50).addBox(-0.6F, 0.0F, -0.6F, 2.0F, 2.0F, 2.0F),
+                PartPose.offsetAndRotation(-2.6F, 4.2F, -7.6F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_tear_l = p_eye.addOrReplaceChild("tear_l", CubeListBuilder.create().texOffs(118, 50).addBox(-0.6F, 0.0F, -0.6F, 2.0F, 2.0F, 2.0F),
+                PartPose.offsetAndRotation(2.6F, 4.2F, -7.6F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_nerve_0 = p_eye.addOrReplaceChild("nerve_0", CubeListBuilder.create().texOffs(0, 35).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 7.0F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_1 = p_nerve_0.addOrReplaceChild("nerve_1", CubeListBuilder.create().texOffs(16, 35).addBox(-1.75F, -1.75F, 0.0F, 4.0F, 4.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_2 = p_nerve_1.addOrReplaceChild("nerve_2", CubeListBuilder.create().texOffs(70, 43).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_3 = p_nerve_2.addOrReplaceChild("nerve_3", CubeListBuilder.create().texOffs(84, 43).addBox(-1.1F, -1.1F, 0.0F, 3.0F, 3.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_4 = p_nerve_3.addOrReplaceChild("nerve_4", CubeListBuilder.create().texOffs(24, 50).addBox(-0.75F, -0.75F, 0.0F, 2.0F, 2.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_5 = p_nerve_4.addOrReplaceChild("nerve_5", CubeListBuilder.create().texOffs(0, 57).addBox(-0.5F, -0.5F, 0.0F, 1.0F, 1.0F, 3.0F),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 3.5F, -0.12F, 0.0F, 0.0F));
+        PartDefinition p_nerve_fray0 = p_nerve_5.addOrReplaceChild("nerve_fray0", CubeListBuilder.create().texOffs(8, 57).addBox(-0.25F, -0.25F, 0.0F, 1.0F, 1.0F, 3.0F),
+                PartPose.offsetAndRotation(-0.3F, 0.0F, 3.0F, -0.25F, -0.5F, 0.0F));
+        PartDefinition p_nerve_fray1 = p_nerve_5.addOrReplaceChild("nerve_fray1", CubeListBuilder.create().texOffs(16, 57).addBox(-0.25F, -0.25F, 0.0F, 1.0F, 1.0F, 3.0F),
+                PartPose.offsetAndRotation(0.3F, 0.0F, 3.0F, 0.25F, 0.6F, 0.0F));
+        PartDefinition p_vessel_0_a = p_eye.addOrReplaceChild("vessel_0_a", CubeListBuilder.create().texOffs(98, 43).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(2.98F, 6.6F, 1.63F, -0.086F, 0.0F, 0.158F));
+        PartDefinition p_vessel_0_b = p_vessel_0_a.addOrReplaceChild("vessel_0_b", CubeListBuilder.create().texOffs(36, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_0_c = p_vessel_0_b.addOrReplaceChild("vessel_0_c", CubeListBuilder.create().texOffs(40, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_1_a = p_eye.addOrReplaceChild("vessel_1_a", CubeListBuilder.create().texOffs(106, 43).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(0.08F, 6.6F, 3.4F, -0.18F, 0.0F, 0.004F));
+        PartDefinition p_vessel_1_b = p_vessel_1_a.addOrReplaceChild("vessel_1_b", CubeListBuilder.create().texOffs(44, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_1_c = p_vessel_1_b.addOrReplaceChild("vessel_1_c", CubeListBuilder.create().texOffs(48, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_2_a = p_eye.addOrReplaceChild("vessel_2_a", CubeListBuilder.create().texOffs(114, 43).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(-2.9F, 6.6F, 1.77F, -0.094F, 0.0F, -0.154F));
+        PartDefinition p_vessel_2_b = p_vessel_2_a.addOrReplaceChild("vessel_2_b", CubeListBuilder.create().texOffs(52, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_2_c = p_vessel_2_b.addOrReplaceChild("vessel_2_c", CubeListBuilder.create().texOffs(56, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_3_a = p_eye.addOrReplaceChild("vessel_3_a", CubeListBuilder.create().texOffs(0, 50).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(-2.98F, 6.6F, -1.63F, 0.086F, 0.0F, -0.158F));
+        PartDefinition p_vessel_3_b = p_vessel_3_a.addOrReplaceChild("vessel_3_b", CubeListBuilder.create().texOffs(60, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_3_c = p_vessel_3_b.addOrReplaceChild("vessel_3_c", CubeListBuilder.create().texOffs(64, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_4_a = p_eye.addOrReplaceChild("vessel_4_a", CubeListBuilder.create().texOffs(8, 50).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(-0.08F, 6.6F, -3.4F, 0.18F, 0.0F, -0.004F));
+        PartDefinition p_vessel_4_b = p_vessel_4_a.addOrReplaceChild("vessel_4_b", CubeListBuilder.create().texOffs(68, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_4_c = p_vessel_4_b.addOrReplaceChild("vessel_4_c", CubeListBuilder.create().texOffs(72, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_5_a = p_eye.addOrReplaceChild("vessel_5_a", CubeListBuilder.create().texOffs(16, 50).addBox(-0.75F, 0.0F, -0.75F, 2.0F, 5.0F, 2.0F),
+                PartPose.offsetAndRotation(2.9F, 6.6F, -1.77F, 0.094F, 0.0F, 0.154F));
+        PartDefinition p_vessel_5_b = p_vessel_5_a.addOrReplaceChild("vessel_5_b", CubeListBuilder.create().texOffs(76, 50).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition p_vessel_5_c = p_vessel_5_b.addOrReplaceChild("vessel_5_c", CubeListBuilder.create().texOffs(80, 50).addBox(-0.35F, 0.0F, -0.35F, 1.0F, 5.0F, 1.0F),
+                PartPose.offsetAndRotation(0.0F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        return LayerDefinition.create(mesh, 128, 64);
     }
 
     /** mimic_queen: 76 cubes, texture 64x128. */
