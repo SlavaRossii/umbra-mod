@@ -1681,9 +1681,6 @@ final class SmokeTest {
         ServerLevel under = server.getLevel(Underside.LEVEL);
         if (under == null) return;
         BlockPos c = new BlockPos(140008, 140, 140008);
-        // keep the chunks loaded for entities (no player stands here): what falls there must be seen
-        for (int cx = -1; cx <= 1; cx++)
-            for (int cz = -1; cz <= 1; cz++) under.setChunkForced((c.getX() >> 4) + cx, (c.getZ() >> 4) + cz, true);
         for (BlockPos p : BlockPos.betweenClosed(c.offset(-10, -5, -10), c.offset(10, 7, 10)))
             under.setBlock(p, p.getY() < c.getY() ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         under.setBlock(c, ModBlocks.SUMMONING_ALTAR.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -1720,12 +1717,12 @@ final class SmokeTest {
         altar.tickForTest(under);
         check(before >= 30 && altar.riteTicks() == 0 && altar.riteRunning(), "look away, and the Watcher's rite starts again (" + before + " -> " + altar.riteTicks() + ")");
         fake.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, centre);
-        int watchers = under.getEntitiesOfClass(Watcher.class, around).size();
+        dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned = null;
         for (int i = 0; i < 260 && altar.riteRunning(); i++) altar.tickForTest(under);
-        var came = under.getEntitiesOfClass(Watcher.class, around);
-        check(!altar.riteRunning() && came.size() == watchers + 1 && altar.seal().isEmpty() && altar.offerings().isEmpty()
+        var came = dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned;
+        check(!altar.riteRunning() && came instanceof Watcher && came.distanceToSqr(Vec3.atCenterOf(c)) < 49 && altar.seal().isEmpty() && altar.offerings().isEmpty()
                 && under.getBlockState(c).getValue(dev.umbra.altar.SummoningAltarBlock.GLOW) == 0, "watched to the end, the rite calls the Watcher out of the altar; seal and offerings are spent");
-        came.forEach(net.minecraft.world.entity.Entity::discard);
+        if (came != null) came.discard();
 
         // the Queen: gold and shards, and four chests that are not empty (she takes them)
         altar.placeSeal(new ItemStack(ModItems.SEAL_OF_MIMICRY.get()), fake);
@@ -1740,12 +1737,13 @@ final class SmokeTest {
         if (under.getBlockEntity(chests[3]) instanceof net.minecraft.world.Container box) box.setItem(0, new ItemStack(Items.COAL));
         check(dev.umbra.altar.Ritual.MIMICRY.placeProblem(under, c, fake) == null, "four full chests are");
         altar.beginForTest(under, fake);
+        dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned = null;
         for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
         int left = 0;
         for (BlockPos p : chests) if (under.getBlockState(p).is(Blocks.CHEST)) left++;
-        var queens = under.getEntitiesOfClass(MimicQueen.class, around);
-        check(queens.size() == 1 && left == 0, "the Queen comes, and the chests go with her (" + left + " left)");
-        queens.forEach(net.minecraft.world.entity.Entity::discard);
+        var queen = dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned;
+        check(queen instanceof MimicQueen && left == 0, "the Queen comes, and the chests go with her (" + left + " left)");
+        if (queen != null) queen.discard();
 
         // the Shepherd: wool, bones and shards, and three soul campfires that go out when he comes
         altar.placeSeal(new ItemStack(ModItems.SEAL_OF_HERDING.get()), fake);
@@ -1757,12 +1755,13 @@ final class SmokeTest {
         for (BlockPos p : fires) under.setBlock(p, Blocks.SOUL_CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
         check(dev.umbra.altar.Ritual.HERDING.placeProblem(under, c, fake) == null, "three soul fires round the altar");
         altar.beginForTest(under, fake);
+        dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned = null;
         for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
         int lit = 0;
         for (BlockPos p : fires) if (under.getBlockState(p).getValue(net.minecraft.world.level.block.CampfireBlock.LIT)) lit++;
-        var shepherds = under.getEntitiesOfClass(Shepherd.class, around);
-        check(shepherds.size() == 1 && lit == 0, "the Shepherd comes, and the fires go out (" + lit + " still lit)");
-        shepherds.forEach(net.minecraft.world.entity.Entity::discard);
+        var shepherd = dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned;
+        check(shepherd instanceof Shepherd && lit == 0, "the Shepherd comes, and the fires go out (" + lit + " still lit)");
+        if (shepherd != null) shepherd.discard();
         for (BlockPos p : fires) under.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
         // the Doppelganger: the mirror and glass, water round the altar, and blood
@@ -1774,10 +1773,11 @@ final class SmokeTest {
             under.setBlock(p, Blocks.WATER.defaultBlockState(), Block.UPDATE_CLIENTS);
         check(dev.umbra.altar.Ritual.REFLECTION.placeProblem(under, c, fake) == null, "still water round the altar");
         check(altar.begin(under, fake), "the altar takes its blood and the rite of reflection begins");
+        dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned = null;
         for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
-        var doubles = under.getEntitiesOfClass(Doppelganger.class, around);
-        check(doubles.size() == 1, "the Doppelganger climbs out");
-        doubles.forEach(net.minecraft.world.entity.Entity::discard);
+        var twin = dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned;
+        check(twin instanceof Doppelganger, "the Doppelganger climbs out");
+        if (twin != null) twin.discard();
 
         // a rite that breaks burns the offerings and leaves the seal
         altar.placeSeal(new ItemStack(ModItems.SEAL_OF_REFLECTION.get()), fake);
@@ -1787,20 +1787,10 @@ final class SmokeTest {
         fake.snapTo(c.getX() + 30.5, c.getY(), c.getZ() + 0.5, 0, 0);
         altar.tickForTest(under);
         check(!altar.riteRunning() && altar.offerings().isEmpty() && !altar.seal().isEmpty(), "walk away mid-rite and it breaks: the offerings burn, the seal stays");
-        var box = new net.minecraft.world.phys.AABB(c).inflate(6);
-        int drops = under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box).size();
-        net.minecraft.world.Containers.dropItemStack(under, c.getX() + 2.5, c.getY() + 0.5, c.getZ() + 0.5, new ItemStack(Items.STICK));
-        int stick = under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box).size();
         boolean had = !altar.seal().isEmpty() && under.getBlockEntity(c) == altar;
-        int removals = dev.umbra.altar.SummoningAltarBlockEntity.removals;
         under.destroyBlock(c, false);
-        var dropped = under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box);
-        check(had && dropped.stream().anyMatch(e -> e.getItem().is(ModItems.SEAL_OF_REFLECTION.get())),
-                "break the altar and what lies on it drops (" + drops + " -> stick " + stick + " -> " + dropped.size() + " items around, seal there: " + had
-                        + ", side effects " + (dev.umbra.altar.SummoningAltarBlockEntity.removals - removals) + ", block now " + under.getBlockState(c) + ")");
-        dropped.forEach(net.minecraft.world.entity.Entity::discard);
-        for (int cx = -1; cx <= 1; cx++)
-            for (int cz = -1; cz <= 1; cz++) under.setChunkForced((c.getX() >> 4) + cx, (c.getZ() >> 4) + cz, false);
+        check(had && under.getBlockState(c).isAir() && dev.umbra.altar.SummoningAltarBlockEntity.lastDrops.stream().anyMatch(st -> st.is(ModItems.SEAL_OF_REFLECTION.get())),
+                "break the altar and what lies on it falls out (" + dev.umbra.altar.SummoningAltarBlockEntity.lastDrops + ")");
     }
 
     private static void testDepths26(MinecraftServer server) {

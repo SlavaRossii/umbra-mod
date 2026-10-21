@@ -289,10 +289,12 @@ def reflection():
 SEALS = [watching, mimicry, herding, reflection]
 # held like a small thing in the fingers (the flat-item transforms, a little larger: they are thick)
 DISPLAY = {
-    "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.6, 0.6, 0.6]},
-    "thirdperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.6, 0.6, 0.6]},
-    "firstperson_righthand": {"rotation": [0, -70, 10], "translation": [1.13, 3.6, 1.13], "scale": [0.72, 0.72, 0.72]},
-    "firstperson_lefthand": {"rotation": [0, 70, -10], "translation": [1.13, 3.6, 1.13], "scale": [0.72, 0.72, 0.72]},
+    # upright in the fist (the arm hangs at about -18 degrees: turned 72 more, it stands up), its face forwards
+    "thirdperson_righthand": {"rotation": [72, 0, 0], "translation": [0, 2.5, 0.5], "scale": [0.42, 0.42, 0.42]},
+    "thirdperson_lefthand": {"rotation": [72, 0, 0], "translation": [0, 2.5, 0.5], "scale": [0.42, 0.42, 0.42]},
+    # held up before you, its face to you, a little to the right and below the middle of the view
+    "firstperson_righthand": {"rotation": [10, -15, 0], "translation": [-1.1, 4.3, -2.9], "scale": [0.5, 0.5, 0.5]},
+    "firstperson_lefthand": {"rotation": [10, -15, 0], "translation": [-1.1, 4.3, -2.9], "scale": [0.5, 0.5, 0.5]},
     "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
     "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},

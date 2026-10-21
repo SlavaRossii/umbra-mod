@@ -35,8 +35,10 @@ public class LanternItem extends Item {
     }
 
     public static boolean isLit(ItemStack stack) {
-        return stack.getItem() instanceof LanternItem && Boolean.TRUE.equals(stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE))
-                && stack.getDamageValue() < stack.getMaxDamage() - 1;
+        if (!(stack.getItem() instanceof LanternItem)) return false;
+        boolean on = Boolean.TRUE.equals(stack.get(dev.umbra.registry.ModComponents.LIT.get()))
+                || Boolean.TRUE.equals(stack.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE));   // a lantern lit before 2.8
+        return on && stack.getDamageValue() < stack.getMaxDamage() - 1;
     }
 
     public static boolean carriesLit(Player player) {
@@ -48,8 +50,9 @@ public class LanternItem extends Item {
     }
 
     private static void setLit(ItemStack stack, boolean lit) {
-        if (lit) stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-        else stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+        stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+        if (lit) stack.set(dev.umbra.registry.ModComponents.LIT.get(), true);
+        else stack.remove(dev.umbra.registry.ModComponents.LIT.get());
     }
 
     @Override

@@ -23,5 +23,9 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> INFUSION = COMPONENTS.registerComponentType("infusion",
             b -> b.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
+    /** 2.8: a luminite lantern that is burning (before 2.8 the enchantment glint said so; it shimmered over the hand). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LIT = COMPONENTS.registerComponentType("lit",
+            b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     private ModComponents() {}
 }

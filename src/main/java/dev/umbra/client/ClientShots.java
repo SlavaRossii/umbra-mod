@@ -86,12 +86,12 @@ public final class ClientShots {
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",
                 "luminite_spear", "shepherd_scythe", "echo_staff", "keeper_staff", "luminite_bow",
                 "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection",
-                "luminite_lantern[enchantment_glint_override=true]", "luminite_lantern", "marta_lantern", "dawn_lantern"}) {
+                "luminite_lantern[umbra:lit=true]", "luminite_lantern", "marta_lantern", "dawn_lantern"}) {
             POSES.add(new Pose(String.format("%02d_hand_%s", n++, w.replaceAll("\\[.*", "_lit")), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_hand_luminite_bow_drawn", n++), CameraType.FIRST_PERSON, true, false));
         for (String w : new String[]{"luminite_spear", "shepherd_scythe", "keeper_staff", "gloom_axe", "luminite_bow", "seal_of_watching", "seal_of_herding",
-                "luminite_lantern[enchantment_glint_override=true]", "marta_lantern"}) {
+                "luminite_lantern[umbra:lit=true]", "marta_lantern"}) {
             POSES.add(new Pose(String.format("%02d_third_%s", n++, w.replaceAll("\\[.*", "_lit")), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_third_luminite_bow_drawn", n++), CameraType.THIRD_PERSON_FRONT, true, true));

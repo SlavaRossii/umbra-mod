@@ -32,7 +32,7 @@ public final class Showcase {
             "camp", "broken_rift", "figures",
             "citadel_1", "citadel_2", "citadel_3", "citadel_4", "citadel_5",
             "depths_landing", "depths_gallery", "depths_pillars", "depths_gates", "depths_sanctum",
-            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2", "altar"));
+            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2", "altar", "altar_seal", "altar_rite"));
 
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
@@ -95,7 +95,7 @@ public final class Showcase {
                 BlockPos eye = o.offset(4 + k * 45, 2, 0);
                 look(player, over, eye, eye.offset(20, -1, 0));
             }
-            case "altar" -> {
+            case "altar", "altar_seal", "altar_rite" -> {
                 // 2.8: three altars: asleep, with a seal and its offerings, and in the middle of a rite
                 BlockPos a = base.above();
                 for (BlockPos p : BlockPos.betweenClosed(a.offset(-4, 0, -4), a.offset(8, 4, 4))) over.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
@@ -116,7 +116,11 @@ public final class Showcase {
                     for (BlockPos f : new BlockPos[]{a.offset(8, 0, 1), a.offset(8, 0, -1), a.offset(6, 0, 2)})
                         over.setBlock(f, Blocks.SOUL_CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
                 }
-                look(player, over, a.offset(3, 2, -4), a.offset(3, 0, 0));
+                switch (what) {
+                    case "altar_seal" -> look(player, over, a.offset(3, 1, -2), a.offset(3, 0, 0));
+                    case "altar_rite" -> look(player, over, a.offset(6, 1, -2), a.offset(6, 0, 0));
+                    default -> look(player, over, a.offset(3, 2, -4), a.offset(3, 0, 0));
+                }
             }
             default -> {
                 if (what.startsWith("depths_")) return depths(player, what);

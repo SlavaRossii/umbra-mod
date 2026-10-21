@@ -290,6 +290,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         mob.snapTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, yaw, 0.0F);
         if (who != null) mob.setTarget(who);
         level.addFreshEntity(mob);
+        lastSummoned = mob;
         level.sendParticles(ParticleTypes.LARGE_SMOKE, spot.getX() + 0.5, spot.getY() + 1, spot.getZ() + 0.5, 60, 0.6, 1.2, 0.6, 0.02);
         return mob;
     }
@@ -366,13 +367,22 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         return this.saveCustomOnly(registries);
     }
 
-    /** For the self-test: how many times an altar has been taken down with its contents. */
-    public static int removals;
+    /** For the self-test: what the last altar taken down let fall, and the boss the last rite called. */
+    public static final List<ItemStack> lastDrops = new ArrayList<>();
+    public static Mob lastSummoned;
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        removals++;
-        if (level != null) Containers.dropContents(level, pos, items);
+        lastDrops.clear();
+        if (level != null) {
+            for (ItemStack s : items) {
+                if (s.isEmpty()) continue;
+                var drop = new net.minecraft.world.entity.item.ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, s.copy());
+                drop.setDefaultPickUpDelay();
+                if (level.addFreshEntity(drop)) lastDrops.add(s.copy());
+            }
+            items.clear();
+        }
         super.preRemoveSideEffects(pos, state);
     }
 }

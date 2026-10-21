@@ -5,7 +5,7 @@ Each lantern (luminite, Marta's, the Dawn) is built of boxes: a base, a cage of 
 handle. In the inventory the flat picture stays. Everywhere else the 3D lantern; in first person the lantern hangs from
 a gloved fist at the end of an arm reaching out ahead of you (a sleeve and a glove: drawn as part of the model, since
 the game draws no arm while something is held). The luminite lantern has a lit and an unlit look (it is lit when it
-carries the glint component, as LanternItem sets it).
+carries the umbra:lit component, as LanternItem sets it).
 
 Writes textures/item/mat_*.png (new materials), models/item/<lantern>_3d.json and _fp.json (luminite: also _off_),
 items/<lantern>.json.
@@ -168,7 +168,7 @@ def write():
                 "cases": [{"when": ["gui"], "model": {"type": "minecraft:model", "model": "umbra:item/" + base.replace("_off", "")}},
                           {"when": ["firstperson_righthand", "firstperson_lefthand"], "model": {"type": "minecraft:model", "model": "umbra:item/" + base + "_fp"}}],
                 "fallback": {"type": "minecraft:model", "model": "umbra:item/" + base + "_3d"}}
-    json.dump({"model": {"type": "minecraft:condition", "property": "minecraft:has_component", "component": "minecraft:enchantment_glint_override",
+    json.dump({"model": {"type": "minecraft:condition", "property": "minecraft:has_component", "component": "umbra:lit",
                          "on_true": pick("luminite_lantern"), "on_false": pick("luminite_lantern_off")}},
               open(ITEMS + 'luminite_lantern.json', 'w'), indent=2)
     for base in ("marta_lantern", "dawn_lantern"):
