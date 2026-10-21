@@ -311,25 +311,106 @@ def watcher():
     return m
 
 
+def iron_bands(iron=(58, 58, 66, 255), every=None):
+    """Two iron bands down a face of a chest, near its edges."""
+    def f(px, x0, y0, w, h, rnd):
+        if w < 6:
+            return
+        for x in (x0 + 2, x0 + w - 3):
+            for y in range(y0, y0 + h):
+                px[x, y] = iron
+    return f
+
+
+def keyhole_eye(iris=(190, 255, 70, 255), ring=(140, 200, 40, 255), plate=(26, 18, 12, 255)):
+    """The keyhole of the lock, and in it an eye that looks back at you."""
+    def f(px, x0, y0, w, h, rnd):
+        cx, cy = x0 + w // 2, y0 + h // 2
+        for x in range(x0 + 1, x0 + w - 1):
+            for y in range(y0 + 1, y0 + h - 1):
+                px[x, y] = plate
+        for x in range(cx - 1, cx + 1):
+            for y in range(cy - 1, cy + 1):
+                px[x, y] = iris
+        px[cx - 1, cy] = (20, 14, 6, 255)
+        if cy + 1 < y0 + h:
+            px[cx - 1, cy + 1] = ring
+    return f
+
+
+P_MOUTH = lambda px, x0, y0, w, h, rnd: [px.__setitem__((x, y), (90, 16, 28, 255)) for x in range(x0, x0 + w) for y in range(y0, y0 + h)]
+
+
 def mimic_queen():
+    """2.7.6: the Queen of changelings. A great old chest of black wood, gold-shod at the corners, banded with iron; in
+    the keyhole of her lock an eye that watches you. Her lid opens on two rows of teeth with coins caught between them,
+    and in the dark of her throat small eyes; out of it hangs a long tongue with a golden key at its end, a lure. A crown
+    grown into the lid, made of keys and little padlocks. On her back, a clutch of small chests grown into her, her
+    brood, their lids snapping. Six long jointed legs with iron claws hold her high. Glow layer: the eyes and the key."""
     m = Model("mimic_queen")
-    wood = P((120, 84, 48, 255), 10, front=latch((180, 170, 120, 255)))
-    lidp = P((126, 88, 50, 255), 10, front=latch((180, 170, 120, 255)))
-    inside = P((120, 20, 34, 255), 10)
-    gold = P((220, 180, 60, 255), 12)
-    tooth = P((235, 230, 215, 255), 4)
-    leg = P((60, 40, 26, 255), 8)
-    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-7, -4, -6, 14, 9, 12, wood)])
-    m.part("tongue", body, (0, -4, 0), (0, 0, 0), [C(-2, -1, -7, 4, 1, 10, inside)])
+    m.glow = True
+    m.glow_test = lambda c: max(c[:3]) > 200 and c[1] > 190 and c[2] < 120
+    KEY = (255, 214, 90, 255)
+    EYE = (190, 255, 70, 255)
+    wood = P((66, 44, 30, 255), 8, front=combine(stripes((52, 34, 22, 255), 3), iron_bands()), back=combine(stripes((52, 34, 22, 255), 3), iron_bands()),
+             left=combine(stripes((52, 34, 22, 255), 3), iron_bands()), right=combine(stripes((52, 34, 22, 255), 3), iron_bands()),
+             up=combine(P_MOUTH, many_eyes((210, 255, 90, 255), 6, rows=(0.3, 0.5, 0.7))))
+    lidp = P((72, 48, 32, 255), 8, front=iron_bands(), back=iron_bands(), up=combine(stripes((56, 36, 24, 255), 3, True), iron_bands()),
+             left=iron_bands(), right=iron_bands(), down=P_MOUTH)
+    gold = P((190, 150, 50, 255), 10)
+    coin = P((220, 180, 60, 255), 8)
+    iron = P((58, 58, 66, 255), 6)
+    lock = P((150, 118, 40, 255), 8, front=keyhole_eye(EYE))
+    tooth = P((226, 220, 200, 255), 4)
+    flesh = P((96, 30, 40, 255), 10)
+    keyp = P(KEY, 4)
+    sac = P((70, 30, 34, 255), 10, front=stripes((54, 20, 26, 255), 2, True), up=stripes((54, 20, 26, 255), 2, True))
+    small = P((96, 66, 40, 255), 8, front=latch((170, 150, 90, 255)))
+    small_lid = P((104, 72, 44, 255), 8)
+    leg = P((44, 30, 22, 255), 6)
+    body = m.part("body", "root", (0, 8, 0), (0, 0, 0), [C(-7, -4, -6, 14, 8, 12, wood)])
+    for i, (x, z) in enumerate(((-7, -6), (5, -6), (-7, 4), (5, 4))):
+        body_c = C(x - 0.5, 2, z - 0.5, 3, 2.5, 3, gold)
+        m.part(f"corner_{i}", body, (0, 0, 0), (0, 0, 0), [body_c])
+    # teeth, a lower row and an inner one, and the coins caught between them
+    for i in range(7):
+        x = -6 + i * 2
+        m.part(f"tooth_lo{i}", body, (x, -4, -5.3), (0, 0, 0), [C(-0.5, -2, -0.5, 1, 2, 1, tooth)])
+    for i in range(4):
+        x = -4.5 + i * 3
+        m.part(f"tooth_in{i}", body, (x, -4, -3.2), (0, 0, 0), [C(-0.5, -1.5, -0.5, 1, 1.5, 1, tooth)])
+    for i, x in enumerate((-5, 1, 5)):
+        m.part(f"coin_{i}", body, (x, -4.3, -4.4), (0, 0.4 * i, 0.3), [C(-0.75, -0.25, -0.75, 1.5, 0.5, 1.5, coin)])
+    # the tongue and its lure
+    ta = m.part("tongue_a", body, (0, -4.5, 2), (0.15, 0, 0), [C(-1.5, -0.5, -6, 3, 1, 6, flesh)])
+    tb = m.part("tongue_b", ta, (0, 0, -6), (0.35, 0, 0), [C(-1, -0.5, -5, 2, 1, 5, flesh)])
+    lure = m.part("lure", tb, (0, 0, -5), (-0.5, 0, 0), [C(-0.25, 0, -0.25, 0.5, 2, 0.5, flesh)])
+    m.part("key", lure, (0, 2, 0), (0, 0, 0), [C(-1.5, 0, -0.5, 3, 2.5, 1, keyp), C(-0.5, 2.5, -0.5, 1, 4, 1, keyp),
+                                                C(0.5, 5, -0.5, 1.5, 1, 1, keyp), C(0.5, 3.5, -0.5, 1, 1, 1, keyp)])
+    # the lid, its upper teeth, the lock with the eye, the crown of keys
     lid = m.part("lid", body, (0, -4, 6), (0, 0, 0), [C(-7, -5, -12, 14, 5, 12, lidp)])
-    for i in range(5):
-        m.part(f"tooth{i}", lid, (-6 + i * 3, 0, -11), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 2, 1, tooth)])
-    m.part("crown", lid, (0, -5, -6), (0, 0, 0), [C(-4, -2, -3, 8, 2, 6, gold),
-                                                 C(-4, -4, -3, 1, 2, 1, gold), C(3, -4, -3, 1, 2, 1, gold),
-                                                 C(-4, -4, 2, 1, 2, 1, gold), C(3, -4, 2, 1, 2, 1, gold)])
-    for i, z in enumerate((-4, 4)):
-        leg_pair(m, f"leg_r{i}", body, (-7, 2, z), -1, 8, 2, leg, 0.3, 0.5, 0.0, 14)
-        leg_pair(m, f"leg_l{i}", body, (7, 2, z), 1, 8, 2, leg, 0.3, 0.5, 0.0, 14)
+    for i, (x, z) in enumerate(((-7, -12), (5, -12), (-7, -2), (5, -2))):
+        m.part(f"lid_corner_{i}", lid, (0, 0, 0), (0, 0, 0), [C(x - 0.5, -5.5, z - 0.5, 3, 2.5, 3, gold)])
+    for i in range(6):
+        x = -5 + i * 2
+        m.part(f"tooth_up{i}", lid, (x, 0, -11.3), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 2, 1, tooth)])
+    m.part("lock", lid, (0, -0.5, -12), (0, 0, 0), [C(-2, -1, -1.2, 4, 4, 1.2, lock)])
+    crown = m.part("crown", lid, (0, -5, -6), (0, 0, 0), [C(-4, -1.5, -3, 8, 1.5, 6, gold)])
+    for i, (x, z) in enumerate(((-3, -2.5), (0, -2.5), (3, -2.5), (-3, 2.5), (3, 2.5))):
+        m.part(f"crown_key{i}", crown, (x, -1.5, z), (0, 0, 0.0),
+               [C(-0.5, -3, -0.5, 1, 3, 1, gold), C(-1, -4.5, -0.5, 2, 1.5, 1, gold)])
+    for i, x in enumerate((-4.2, 4.2)):
+        m.part(f"padlock_{i}", crown, (x, -1, 0), (0, 0, 0), [C(-0.5, -1, -1, 1, 2, 2, iron), C(-0.3, -2, -0.6, 0.6, 1, 1.2, iron)])
+    # the brood on her back
+    brood = m.part("brood", body, (0, -1, 6), (0, 0, 0), [C(-5, -4, -0.5, 10, 7, 6, sac)])
+    spots = ((-3.5, 0.5, 3.2), (3.5, 0.5, 3.2), (0, -1, 5.2), (-2.5, -4.5, 3), (2.8, -4.8, 3.5))
+    for i, (x, y, z) in enumerate(spots):
+        sb = m.part(f"brood_{i}", brood, (x, y, z), (0.2 * (i % 2), 0.3 * (i - 2), 0), [C(-1.5, -1.5, -1.5, 3, 2.5, 3, small)])
+        m.part(f"brood_{i}_lid", sb, (0, -1.5, 1.5), (0, 0, 0), [C(-1.5, -1, -3, 3, 1, 3, small_lid)])
+    # six long legs
+    for i, (z, yaw) in enumerate(((-4.5, 0.45), (0, 0.0), (4.5, -0.45))):
+        leg_pair(m, f"leg_r{i}", body, (-7, 1, z), -1, 9, 2, leg, 0.9, 0.35, -yaw, 23.5)
+        leg_pair(m, f"leg_l{i}", body, (7, 1, z), 1, 9, 2, leg, 0.9, 0.35, yaw, 23.5)
     return m
 
 

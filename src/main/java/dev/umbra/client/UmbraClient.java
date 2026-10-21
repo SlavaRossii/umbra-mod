@@ -47,7 +47,7 @@ public final class UmbraClient {
         event.registerEntityRenderer(ModEntities.LURKER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.LURKER, "lurker", 0.0F, Animations::lurker, null));
         event.registerEntityRenderer(ModEntities.CRAWLER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.CRAWLER, "crawler", 0.8F, Animations::crawler, null));
         event.registerEntityRenderer(ModEntities.WATCHER.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.WATCHER, "watcher", 0.6F, Animations::watcher, null));
-        event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null));
+        event.registerEntityRenderer(ModEntities.MIMIC_QUEEN.get(), ctx -> new UmbraRenderer<dev.umbra.boss.MimicQueen>(ctx, ModLayers.MIMIC_QUEEN, "mimic_queen", 0.8F, Animations::mimicQueen, null).glowing("mimic_queen"));
         event.registerEntityRenderer(ModEntities.SHEPHERD.get(), ctx -> new UmbraRenderer<dev.umbra.boss.Shepherd>(ctx, ModLayers.SHEPHERD, "shepherd", 0.6F, Animations::shepherd, null).glowing("shepherd"));
         event.registerEntityRenderer(ModEntities.DOPPELGANGER.get(), ctx -> new MirrorRenderer<Doppelganger>(ctx, "doppelganger").withArmor(ctx));
         event.registerEntityRenderer(ModEntities.ARCHITECT.get(), ctx -> new UmbraRenderer<dev.umbra.boss.Architect>(ctx, ModLayers.ARCHITECT, "architect", 0.7F, Animations::architect, null).glowing("architect"));
