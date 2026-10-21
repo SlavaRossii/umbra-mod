@@ -1784,9 +1784,13 @@ final class SmokeTest {
         fake.snapTo(c.getX() + 30.5, c.getY(), c.getZ() + 0.5, 0, 0);
         altar.tickForTest(under);
         check(!altar.riteRunning() && altar.offerings().isEmpty() && !altar.seal().isEmpty(), "walk away mid-rite and it breaks: the offerings burn, the seal stays");
+        var box = new net.minecraft.world.phys.AABB(c).inflate(3);
+        int drops = under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box).size();
+        boolean had = !altar.seal().isEmpty() && under.getBlockEntity(c) == altar;
         under.setBlock(c, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        check(!under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(c).inflate(2),
-                e -> e.getItem().is(ModItems.SEAL_OF_REFLECTION.get())).isEmpty(), "break the altar and what lies on it drops");
+        var dropped = under.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box);
+        check(had && dropped.stream().anyMatch(e -> e.getItem().is(ModItems.SEAL_OF_REFLECTION.get())),
+                "break the altar and what lies on it drops (" + drops + " -> " + dropped.size() + " items around, seal there: " + had + ")");
     }
 
     private static void testDepths26(MinecraftServer server) {
