@@ -146,7 +146,7 @@ public final class Showcase {
             level.addFreshEntity(e);
             x += w;
         }
-        look(player, level, base.offset((int) (x / 2), 3, -(int) Math.max(7, x * 0.75)), base.offset((int) (x / 2), 2, 0));
+        look(player, level, base.offset((int) (x / 2), 2, -(int) Math.max(6, x * 0.5)), base.offset((int) (x / 2), 1, 0));
         return true;
     }
 
