@@ -20,6 +20,20 @@ public final class UmbraClient {
     private UmbraClient() {}
 
     @SubscribeEvent
+    /** 2.8: lanterns are held out ahead on the arm (see LanternHold). */
+    @SubscribeEvent
+    static void registerClientExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+            @Override
+            public net.minecraft.client.model.HumanoidModel.ArmPose getArmPose(net.minecraft.world.entity.LivingEntity entity,
+                                                                              net.minecraft.world.InteractionHand hand,
+                                                                              net.minecraft.world.item.ItemStack stack) {
+                if (stack.isEmpty() || entity.isUsingItem() && entity.getUsedItemHand() == hand) return null;
+                return LanternHold.POSE.getValue();
+            }
+        }, dev.umbra.registry.ModItems.LUMINITE_LANTERN.get(), dev.umbra.registry.ModItems.MARTA_LANTERN.get(), dev.umbra.registry.ModItems.DAWN_LANTERN.get());
+    }
+
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(dev.umbra.registry.ModBlockEntities.SUMMONING_ALTAR.get(), SummoningAltarRenderer::new);
         event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new MirrorRenderer<>(ctx, "shadow"));
@@ -101,16 +115,37 @@ public final class UmbraClient {
     public static final class Game {
         private Game() {}
 
-        /** 2.4: music of its own in the Underside and in a boss fight. */
+        /** 2.4: music of its own in the Underside and in a boss fight; 2.8: each boss its own track (the nearest one). */
+        private static String lastMusic = "";
+
         @SubscribeEvent
         static void music(net.neoforged.neoforge.client.event.SelectMusicEvent event) {
             var mc = net.minecraft.client.Minecraft.getInstance();
             if (mc.player == null || mc.level == null) return;
-            boolean boss = !mc.level.getEntitiesOfClass(dev.umbra.boss.UmbraBoss.class, mc.player.getBoundingBox().inflate(40)).isEmpty();
-            if (boss) {
-                event.setMusic(new net.minecraft.sounds.Music(dev.umbra.registry.ModSounds.MUSIC_BOSS, 0, 0, true));
+            dev.umbra.boss.UmbraBoss nearest = null;
+            double best = Double.MAX_VALUE;
+            for (var b : mc.level.getEntitiesOfClass(dev.umbra.boss.UmbraBoss.class, mc.player.getBoundingBox().inflate(40))) {
+                double d = b.distanceToSqr(mc.player);
+                if (b.isAlive() && d < best) {
+                    best = d;
+                    nearest = b;
+                }
+            }
+            String now;
+            if (nearest != null) {
+                String id = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(nearest.getType()).getPath();
+                var track = dev.umbra.registry.ModSounds.BOSS_MUSIC.getOrDefault(id, dev.umbra.registry.ModSounds.MUSIC_BOSS);
+                event.setMusic(new net.minecraft.sounds.Music(track, 0, 0, true));
+                now = track.getId().getPath();
             } else if (dev.umbra.underside.Underside.is(mc.level)) {
                 event.setMusic(new net.minecraft.sounds.Music(dev.umbra.registry.ModSounds.MUSIC_UNDERSIDE, 1200, 3600, false));
+                now = "music.underside";
+            } else {
+                now = "";
+            }
+            if (!now.equals(lastMusic)) {
+                lastMusic = now;
+                if (Boolean.getBoolean("umbra.clientshots")) dev.umbra.Umbra.LOGGER.info("UMBRA CLIENTSHOTS: music {}", now.isEmpty() ? "(the game's own)" : now);
             }
         }
 

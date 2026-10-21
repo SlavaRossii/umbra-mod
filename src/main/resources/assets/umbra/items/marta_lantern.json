@@ -1,6 +1,31 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "umbra:item/marta_lantern"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "umbra:item/marta_lantern"
+        }
+      },
+      {
+        "when": [
+          "firstperson_righthand",
+          "firstperson_lefthand"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "umbra:item/marta_lantern_fp"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "umbra:item/marta_lantern_3d"
+    }
   }
 }

@@ -56,6 +56,17 @@ public final class ClientCheck {
                 ((net.minecraft.client.model.geom.builders.LayerDefinition) f.get()).bakeRoot();
             }
         }, "the new creature models bake");
+        check(() -> {
+            var rm = Minecraft.getInstance().getResourceManager();
+            for (String id : dev.umbra.registry.ModSounds.BOSS_MUSIC.keySet()) {
+                var loc = net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "sounds/music/boss_" + id + ".ogg");
+                if (rm.getResource(loc).isEmpty()) throw new IllegalStateException("no track for " + id);
+            }
+            if (dev.umbra.registry.ModSounds.BOSS_MUSIC.size() != 8) throw new IllegalStateException("not eight boss tracks");
+        }, "2.8: every boss has its own track");
+        check(() -> {
+            if (LanternHold.POSE.getValue() == null || LanternHold.POSE.getValue().isTwoHanded()) throw new IllegalStateException("the lantern pose is missing");
+        }, "2.8: the arm pose for lanterns held out exists");
         lines.add("ok   the title screen was reached");
     }
 
