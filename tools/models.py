@@ -348,7 +348,12 @@ def shepherd():
     mantle = P((34, 26, 44, 255), 8, front=glow_rows((18, 12, 26, 255), 1), back=glow_rows((18, 12, 26, 255), 1),
                left=glow_rows((18, 12, 26, 255), 1), right=glow_rows((18, 12, 26, 255), 1))
     hood = P((30, 22, 40, 255), 8)
-    dark_face = P((6, 4, 8, 255), 2, front=eyes(BRIGHT, 0.42, 0.24, 1, glow=VIOLET))
+    def two_eyes(px, x0, y0, w, h, rnd):
+        y = y0 + int(h * 0.42)
+        for x in (x0 + 1, x0 + w - 2):
+            px[x, y] = BRIGHT
+            px[x, y + 1] = (110, 60, 180, 255)
+    dark_face = P((6, 4, 8, 255), 2, front=two_eyes)
     bone = P((60, 52, 66, 255), 8)
     wood = P((52, 40, 30, 255), 8)
     blade = P((64, 60, 74, 255), 6, left=glow_rows(VIOLET, 1), right=glow_rows(VIOLET, 1), down=glow_rows(VIOLET, 1))
