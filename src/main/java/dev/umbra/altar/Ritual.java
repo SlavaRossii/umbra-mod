@@ -59,7 +59,7 @@ public final class Ritual {
     public static final Ritual MIMICRY = new Ritual("mimicry", ModItems.SEAL_OF_MIMICRY, ModEntities.MIMIC_QUEEN, 160,
             new Offering(() -> Items.GOLD_INGOT, 2), new Offering(ModItems.SHADOW_SHARD, 2));
     public static final Ritual HERDING = new Ritual("herding", ModItems.SEAL_OF_HERDING, ModEntities.SHEPHERD, 160,
-            new Offering(() -> Items.WHITE_WOOL, 3), new Offering(() -> Items.BONE, 2), new Offering(ModItems.SHADOW_SHARD, 2));
+            new Offering(() -> Items.WOOL.white(), 3), new Offering(() -> Items.BONE, 2), new Offering(ModItems.SHADOW_SHARD, 2));
     public static final Ritual REFLECTION = new Ritual("reflection", ModItems.SEAL_OF_REFLECTION, ModEntities.DOPPELGANGER, 160,
             new Offering(ModItems.MIRROR, 1), new Offering(() -> Items.GLASS, 2));
     public static final List<Ritual> ALL = List.of(WATCHING, MIMICRY, HERDING, REFLECTION);

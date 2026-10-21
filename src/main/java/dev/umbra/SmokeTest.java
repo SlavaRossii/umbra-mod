@@ -1745,7 +1745,7 @@ final class SmokeTest {
 
         // the Shepherd: wool, bones and shards, and three soul campfires that go out when he comes
         altar.placeSeal(new ItemStack(ModItems.SEAL_OF_HERDING.get()), fake);
-        altar.offer(new ItemStack(Items.WHITE_WOOL, 3), fake);
+        altar.offer(new ItemStack(Items.WOOL.white(), 3), fake);
         altar.offer(new ItemStack(Items.BONE, 2), fake);
         altar.offer(new ItemStack(ModItems.SHADOW_SHARD.get(), 2), fake);
         check(dev.umbra.altar.Ritual.HERDING.placeProblem(under, c, fake) != null, "no fires, no flock");

@@ -145,7 +145,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         for (int i = SLOTS - 1; i >= 0; i--) {
             ItemStack s = items.get(i);
             if (s.isEmpty()) continue;
-            if (!player.getInventory().add(s.copy())) player.drop(s.copy(), false);
+            if (!player.getInventory().add(s.copy())) Containers.dropItemStack(player.level(), player.getX(), player.getY(), player.getZ(), s.copy());
             items.set(i, ItemStack.EMPTY);
         }
         changed();

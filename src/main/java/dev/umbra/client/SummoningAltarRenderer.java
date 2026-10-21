@@ -78,8 +78,8 @@ public class SummoningAltarRenderer implements BlockEntityRenderer<SummoningAlta
             if (burn <= 0.02F) continue;
             pose.pushPose();
             pose.translate(0.5F + Mth.cos(a) * 0.3F, 0.83F + rite * 0.25F, 0.5F + Mth.sin(a) * 0.3F);
-            pose.mulPose(Axis.YP.rotation(-a));
-            pose.mulPose(Axis.XP.rotationDegrees(90.0F));
+            pose.rotate(Axis.YP, -a);
+            pose.rotateDegrees(Axis.XP, 90.0F);
             pose.scale(0.24F * burn, 0.24F * burn, 0.24F * burn);
             s.offerings[i].submit(pose, out, s.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             pose.popPose();
@@ -90,7 +90,7 @@ public class SummoningAltarRenderer implements BlockEntityRenderer<SummoningAlta
             float y = 1.12F + Mth.sin(s.time * 0.08F) * 0.04F + rite * 0.45F;
             pose.pushPose();
             pose.translate(0.5F, y, 0.5F);
-            pose.mulPose(Axis.YP.rotationDegrees(spin));
+            pose.rotateDegrees(Axis.YP, spin);
             float k = 0.5F + rite * 0.15F;
             pose.scale(k, k, k);
             int light = s.rite >= 0 ? 0xF000F0 : s.lightCoords;

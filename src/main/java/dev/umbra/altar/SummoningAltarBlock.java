@@ -1,6 +1,5 @@
 package dev.umbra.altar;
 
-import com.mojang.serialization.MapCodec;
 import dev.umbra.boss.SummonSealItem;
 import dev.umbra.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -38,7 +37,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * glow: 0 asleep, 1 a seal lies on it, 2 the rite is under way.
  */
 public class SummoningAltarBlock extends BaseEntityBlock {
-    public static final MapCodec<SummoningAltarBlock> CODEC = simpleCodec(SummoningAltarBlock::new);
     public static final IntegerProperty GLOW = IntegerProperty.create("glow", 0, 2);
     private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(1.5, 4, 1.5, 14.5, 11, 14.5),
             Block.box(0.5, 11, 0.5, 15.5, 14, 15.5));
@@ -46,11 +44,6 @@ public class SummoningAltarBlock extends BaseEntityBlock {
     public SummoningAltarBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(GLOW, 0));
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     public static int light(BlockState state) {

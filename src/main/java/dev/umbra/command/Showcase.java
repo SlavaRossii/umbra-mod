@@ -100,7 +100,7 @@ public final class Showcase {
                 BlockPos a = base.above();
                 for (BlockPos p : BlockPos.betweenClosed(a.offset(-4, 0, -4), a.offset(8, 4, 4))) over.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
                 var block = dev.umbra.registry.ModBlocks.SUMMONING_ALTAR.get().defaultBlockState();
-                for (int i = 0; i < 3; i++) over.setBlock(a.offset(i * 3, 0, 0), block, Block.UPDATE_ALL);
+                for (int k = 0; k < 3; k++) over.setBlock(a.offset(k * 3, 0, 0), block, Block.UPDATE_ALL);
                 if (over.getBlockEntity(a.offset(3, 0, 0)) instanceof dev.umbra.altar.SummoningAltarBlockEntity laid) {
                     laid.placeSeal(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SEAL_OF_WATCHING.get()), player);
                     laid.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SPIDER_EYE, 3), player);
@@ -109,7 +109,7 @@ public final class Showcase {
                 }
                 if (over.getBlockEntity(a.offset(6, 0, 0)) instanceof dev.umbra.altar.SummoningAltarBlockEntity rite) {
                     rite.placeSeal(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SEAL_OF_HERDING.get()), player);
-                    rite.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WHITE_WOOL, 3), player);
+                    rite.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WOOL.white(), 3), player);
                     rite.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BONE, 2), player);
                     rite.offer(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SHADOW_SHARD.get(), 2), player);
                     rite.exhibitRite(over, 0.5F, 220);
