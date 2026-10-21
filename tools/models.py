@@ -354,24 +354,104 @@ def shepherd():
     return m
 
 
+def masonry(seam=(236, 176, 72, 255), mortar=(50, 46, 60, 255), course=4, stretch=6):
+    """Courses of fitted stone, dark mortar between them; here and there a seam burns gold (those go to the glow layer)."""
+    def f(px, x0, y0, w, h, rnd):
+        for y in range(y0, y0 + h):
+            row = (y - y0) // course
+            if (y - y0) % course == course - 1:
+                for x in range(x0, x0 + w):
+                    px[x, y] = seam if (x * 7 + row * 3) % 9 < 4 else mortar
+                continue
+            off = (row % 2) * (stretch // 2)
+            for x in range(x0, x0 + w):
+                if (x - x0 + off) % stretch == stretch - 1:
+                    px[x, y] = mortar
+    return f
+
+
+def compass_glyph(color=(255, 226, 140, 255)):
+    """A pair of dividers over a square: the mark of the builder."""
+    def f(px, x0, y0, w, h, rnd):
+        cx, top = x0 + w // 2, y0 + 1
+        px[cx, top] = color
+        for i in range(1, h - 2):
+            for x in (cx - i // 2 - 1, cx + i // 2):
+                if x0 <= x < x0 + w:
+                    px[x, top + i] = color
+        yb = y0 + h - 2
+        for x in range(x0 + 1, x0 + w - 1):
+            px[x, yb] = color
+    return f
+
+
+def slit_eye(color=(255, 236, 170, 255), dim=(230, 160, 60, 255)):
+    def f(px, x0, y0, w, h, rnd):
+        cx = x0 + w // 2
+        for y in range(y0 + 1, y0 + h - 2):
+            px[cx, y] = color
+            px[cx - 1, y] = dim if y in (y0 + 1, y0 + h - 3) else color
+    return f
+
+
 def architect():
+    """2.7.4: the Architect as a building that walks. Legs that are columns with base and capital; a body of fitted
+    stone with seams of gold; buttresses for shoulders, crenellated; a mask sunk between them with one upright slit of
+    light, and an arch hanging behind his head like a halo; a mason's mallet in the right hand, a great pair of dividers
+    in the left; plumb bobs swinging on chains at his back; pieces of the maze's walls circling him. Glow layer: seams,
+    eye, marks, the dividers' points."""
     m = Model("architect")
-    stone = P((70, 66, 80, 255), 10)
-    trim = P((95, 90, 110, 255), 10)
-    face = P((84, 80, 96, 255), 8, front=glyph((255, 220, 120, 255)))
-    block = P((60, 58, 72, 255), 10, front=stripes((255, 220, 120, 255), 4, True))
-    m.part("leg_r", "root", (-2.5, 10, 0), (0, 0, 0), [C(-1.5, 0, -1.5, 3, 14, 3, stone)])
-    m.part("leg_l", "root", (2.5, 10, 0), (0, 0, 0), [C(-1.5, 0, -1.5, 3, 14, 3, stone)])
-    body = m.part("body", "root", (0, 10, 0), (0, 0, 0), [C(-4.5, -12, -2.5, 9, 12, 5, trim)])
-    m.part("head", body, (0, -12, 0), (0, 0, 0), [C(-4, -8, -4, 8, 8, 8, face)])
-    for s, name in ((-1, "arm_r"), (1, "arm_l")):
-        a = m.part(name, body, (s * 6, -11, 0), (0, 0, 0), [C(-1.5, -1, -1.5, 3, 7, 3, stone)])
-        m.part(name + "_block", a, (0, 9, 0), (0, 0, 0), [C(-3, -3, -3, 6, 6, 6, block)])
-    m.part("orbit", body, (0, -6, 0), (0, 0, 0), [])
-    for i in range(4):
-        a = i * math.pi / 2
-        m.part(f"cube{i}", "orbit", (round(math.cos(a) * 12, 2), 0, round(math.sin(a) * 12, 2)), (0.4, 0.3, 0),
-               [C(-1.5, -1.5, -1.5, 3, 3, 3, block)])
+    m.glow = True
+    GOLD = (240, 186, 80, 255)
+    stone = P((80, 76, 92, 255), 7, front=masonry(), back=masonry(), left=masonry(), right=masonry())
+    stone_plain = P((80, 76, 92, 255), 7)
+    dark = P((56, 52, 68, 255), 6, front=stripes((44, 40, 54, 255), 2, True), back=stripes((44, 40, 54, 255), 2, True),
+             left=stripes((44, 40, 54, 255), 2, True), right=stripes((44, 40, 54, 255), 2, True))
+    light = P((108, 102, 120, 255), 6)
+    chest = P((80, 76, 92, 255), 7, front=combine(masonry(), compass_glyph()), back=masonry(), left=masonry(), right=masonry())
+    mask = P((96, 90, 108, 255), 5, front=slit_eye())
+    keystone = P((150, 120, 70, 255), 8, front=compass_glyph((255, 240, 190, 255)))
+    gold = P(GOLD, 8)
+    brass = P((170, 130, 60, 255), 8)
+    wood = P((80, 58, 40, 255), 8)
+    wall = P((40, 36, 50, 255), 6, front=glyph((255, 214, 120, 255)), back=glyph((255, 214, 120, 255)), up=stripes((70, 64, 84, 255), 2))
+    chain = P((90, 90, 100, 255), 6)
+    # legs: columns
+    for side, sx in (("r", -1), ("l", 1)):
+        m.part(f"leg_{side}", "root", (sx * 3, 12, 0), (0, 0, 0),
+               [C(-2.5, 0, -2.5, 5, 2, 5, light), C(-2, 2, -2, 4, 8, 4, dark), C(-2.5, 10, -2.5, 5, 2, 5, light)])
+    body = m.part("body", "root", (0, 12, 0), (0, 0, 0), [C(-5, -3, -3, 10, 3, 6, stone_plain), C(-6, -13, -3.5, 12, 10, 7, chest)])
+    m.part("keystone", body, (0, -8, -4.2), (0, 0, 0), [C(-1.5, -2, -0.5, 3, 4, 1, keystone)])
+    for side, sx in (("r", -1), ("l", 1)):
+        m.part(f"buttress_{side}", body, (sx * 7.5, -12, 0), (0, 0, 0),
+               [C(-2.5, -3, -3.5, 5, 5, 7, stone), C(-2.5, -5, -3.5, 2, 2, 2, light), C(-2.5, -5, 1.5, 2, 2, 2, light),
+                C(0.5, -5, -1, 2, 2, 2, light)])
+    head = m.part("head", body, (0, -13, -0.5), (0, 0, 0), [C(-3, -6, -3.5, 6, 6, 6, mask), C(-3.5, -7, -4, 7, 1, 7, light)])
+    arch = m.part("arch", head, (0, -3, 4.5), (0, 0, 0), [])
+    for i in range(9):
+        a = math.pi * i / 8
+        m.part(f"voussoir_{i}", arch, (round(-math.cos(a) * 7, 2), round(-math.sin(a) * 7, 2), 0), (0, 0, round(-a + math.pi / 2, 3)),
+               [C(-1, -1.5, -0.5, 2, 3, 1, gold if i == 4 else light)])
+    # the right arm and its mallet
+    up = m.part("arm_r", body, (-8.5, -10, 0), (0, 0, 0.05), [C(-2, -1, -2, 4, 7, 4, stone)])
+    fore = m.part("fore_r", up, (0, 6, 0), (-0.55, 0, 0), [C(-2, 0, -2, 4, 5, 4, dark)])
+    m.part("mallet", fore, (0, 5, 0), (0, 0, 0), [C(-0.5, 0, -0.5, 1, 3, 1, wood), C(-3, 3, -2.5, 6, 4, 5, light), C(-3.2, 4.5, -2.7, 6.4, 1, 5.4, gold)])
+    # the left arm and its dividers
+    up = m.part("arm_l", body, (8.5, -10, 0), (0, 0, -0.05), [C(-2, -1, -2, 4, 7, 4, stone)])
+    fore = m.part("fore_l", up, (0, 6, 0), (-0.3, 0, 0), [C(-2, 0, -2, 4, 5, 4, dark)])
+    div = m.part("dividers", fore, (0, 5, -1), (0.3, 0, 0), [C(-1, -7, -1, 2, 2, 2, gold)])
+    m.part("divider_a", div, (0, -6, 0), (0, 0, 0.12), [C(-0.5, 0, -0.5, 1, 13, 1, brass), C(-0.5, 13, -0.5, 1, 1, 1, gold)])
+    m.part("divider_b", div, (0, -6, 0), (0, 0, -0.12), [C(-0.5, 0, -0.5, 1, 13, 1, brass), C(-0.5, 13, -0.5, 1, 1, 1, gold)])
+    # plumb bobs at his back
+    for i, x in enumerate((-4, 0, 4)):
+        pl = m.part(f"plumb_{i}", body, (x, -12, 3.6), (0.15, 0, 0), [C(-0.5, 0, -0.5, 1, 7 + (i % 2) * 3, 1, chain)])
+        m.part(f"bob_{i}", pl, (0, 7 + (i % 2) * 3, 0), (0, 0, 0), [C(-1, 0, -1, 2, 3, 2, brass), C(-0.5, 3, -0.5, 1, 1, 1, gold)])
+    # pieces of the maze's walls circling him
+    orbit = m.part("orbit", "root", (0, 2, 0), (0, 0, 0), [])
+    for i in range(5):
+        a = i * 2 * math.pi / 5
+        m.part(f"fragment_{i}", orbit, (round(math.cos(a) * 14, 2), (i % 3) * 3 - 3, round(math.sin(a) * 14, 2)), (0.3, a, 0.2),
+               [C(-2, -2, -1.5, 4, 4, 3, wall)])
     return m
 
 
