@@ -201,8 +201,8 @@ def sidechain(song, depth):
 
 
 # how loud each bus sits in the mix (RMS while it plays); a bus's 'gain' in the spec is a trim on this
-TARGET = {'drums': 0.19, 'perc': 0.075, 'bass': 0.13, 'ost': 0.10, 'arp': 0.085, 'keys': 0.09, 'pad': 0.07,
-          'lead': 0.125, 'choir': 0.085, 'fx': 0.11}
+TARGET = {'drums': 0.16, 'perc': 0.07, 'bass': 0.11, 'ost': 0.11, 'arp': 0.095, 'keys': 0.10, 'pad': 0.075,
+          'lead': 0.14, 'choir': 0.095, 'fx': 0.085}
 
 
 def active_rms(x):
@@ -235,7 +235,10 @@ def mixdown(song, overrides=None, ir_seconds=2.6, master_lp=11000.0, underwater=
     master = dry + wet * 0.9
     master = s.hp(master, 30)
     master = s.lp(master, master_lp, order=1)
-    master = s.peak(master, 3200, 1.0, -1.5)
+    # less boom below the bass, less mud in the low middle, a little more of the tunes (nothing shrill up top)
+    master = s.peak(master, 50, 0.7, -3.0)
+    master = s.peak(master, 280, 1.0, -2.0)
+    master = s.peak(master, 1800, 0.8, 2.5)
     if underwater is not None:
         master = underwater(song, master)
     master = s.compress(master, 0.55, 2.5, 0.01, 0.2)

@@ -1713,6 +1713,7 @@ final class SmokeTest {
         for (int i = 0; i < 30; i++) altar.tickForTest(under);
         int before = altar.riteTicks();
         fake.snapTo(fake.getX(), fake.getY(), fake.getZ(), 180, 0);
+        fake.setYHeadRot(180);
         altar.tickForTest(under);
         check(before >= 30 && altar.riteTicks() == 0 && altar.riteRunning(), "look away, and the Watcher's rite starts again (" + before + " -> " + altar.riteTicks() + ")");
         fake.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, centre);

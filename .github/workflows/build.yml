@@ -75,7 +75,12 @@ jobs:
             for f in $FILES; do echo "=================== file $f"; unzip -p "$JAR" "$f" 2>&1 | head -6000; done
             for c in $CLASSES; do
               echo "=================== $c"
-              javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -3000
+              # "code:<class>#<method>" dumps the bytecode of one method (to see what calls what)
+              case "$c" in
+                code:*) cls="${c#code:}"; m="${cls#*#}"; cls="${cls%%#*}"
+                        javap -cp "$JAR" -p -c "$cls" 2>&1 | awk -v m="$m" 'index($0, " " m "(") && /\(/ {on=1} on {print} on && /^$/ {on=0}' | head -1500 ;;
+                *) javap -cp "$JAR" -p "$c" 2>&1 | grep -v 'lambda\$' | head -3000 ;;
+              esac
             done
           } > probe.txt
 

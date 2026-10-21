@@ -19,7 +19,6 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 public final class UmbraClient {
     private UmbraClient() {}
 
-    @SubscribeEvent
     /** 2.8: lanterns are held out ahead on the arm (see LanternHold). */
     @SubscribeEvent
     static void registerClientExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
@@ -34,6 +33,7 @@ public final class UmbraClient {
         }, dev.umbra.registry.ModItems.LUMINITE_LANTERN.get(), dev.umbra.registry.ModItems.MARTA_LANTERN.get(), dev.umbra.registry.ModItems.DAWN_LANTERN.get());
     }
 
+    @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(dev.umbra.registry.ModBlockEntities.SUMMONING_ALTAR.get(), SummoningAltarRenderer::new);
         event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new MirrorRenderer<>(ctx, "shadow"));
