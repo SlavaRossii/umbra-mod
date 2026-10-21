@@ -28,6 +28,7 @@ public final class ModTabs {
                 out.accept(ModItems.TROPHY_SHELF.get());
                 ModItems.TROPHIES.values().forEach(t -> out.accept(t.get()));
                 out.accept(ModItems.ECHO_ALTAR.get());
+                out.accept(ModItems.SUMMONING_ALTAR.get());
                 out.accept(ModItems.GLOOM_ANVIL.get());
                 out.accept(ModItems.LUMINITE_CANDLE.get());
                 out.accept(ModItems.THICK_LUMINITE_CANDLE.get());

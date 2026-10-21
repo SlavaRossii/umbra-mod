@@ -32,7 +32,7 @@ public final class Showcase {
             "camp", "broken_rift", "figures",
             "citadel_1", "citadel_2", "citadel_3", "citadel_4", "citadel_5",
             "depths_landing", "depths_gallery", "depths_pillars", "depths_gates", "depths_sanctum",
-            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2"));
+            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2", "altar", "altar_seal", "altar_rite"));
 
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
@@ -94,6 +94,33 @@ public final class Showcase {
                 int k = what.charAt(8) - '1';
                 BlockPos eye = o.offset(4 + k * 45, 2, 0);
                 look(player, over, eye, eye.offset(20, -1, 0));
+            }
+            case "altar", "altar_seal", "altar_rite" -> {
+                // 2.8: three altars: asleep, with a seal and its offerings, and in the middle of a rite
+                BlockPos a = base.above();
+                for (BlockPos p : BlockPos.betweenClosed(a.offset(-4, 0, -4), a.offset(8, 4, 4))) over.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
+                var block = dev.umbra.registry.ModBlocks.SUMMONING_ALTAR.get().defaultBlockState();
+                for (int k = 0; k < 3; k++) over.setBlock(a.offset(k * 3, 0, 0), block, Block.UPDATE_ALL);
+                if (over.getBlockEntity(a.offset(3, 0, 0)) instanceof dev.umbra.altar.SummoningAltarBlockEntity laid) {
+                    laid.placeSeal(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SEAL_OF_WATCHING.get()), player);
+                    laid.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SPIDER_EYE, 3), player);
+                    laid.offer(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.ECHO_QUARTZ.get()), player);
+                    over.setBlock(a.offset(3, 0, 0), block.setValue(dev.umbra.altar.SummoningAltarBlock.GLOW, 1), Block.UPDATE_ALL);
+                }
+                if (over.getBlockEntity(a.offset(6, 0, 0)) instanceof dev.umbra.altar.SummoningAltarBlockEntity rite) {
+                    rite.placeSeal(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SEAL_OF_HERDING.get()), player);
+                    rite.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WOOL.white(), 3), player);
+                    rite.offer(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BONE, 2), player);
+                    rite.offer(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.SHADOW_SHARD.get(), 2), player);
+                    rite.exhibitRite(over, 0.5F, 220);
+                    for (BlockPos f : new BlockPos[]{a.offset(8, 0, 1), a.offset(8, 0, -1), a.offset(6, 0, 2)})
+                        over.setBlock(f, Blocks.SOUL_CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
+                }
+                switch (what) {
+                    case "altar_seal" -> look(player, over, a.offset(3, 1, -2), a.offset(3, 0, 0));
+                    case "altar_rite" -> look(player, over, a.offset(6, 1, -2), a.offset(6, 0, 0));
+                    default -> look(player, over, a.offset(3, 2, -4), a.offset(3, 0, 0));
+                }
             }
             default -> {
                 if (what.startsWith("depths_")) return depths(player, what);

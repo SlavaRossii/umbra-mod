@@ -21,7 +21,7 @@ public final class Journal {
             "mimic_furnace", "mimic_hay", "mimic_log", "mimic_ore", "mimic_chest", "mimic_villager",
             "darkness", "maze", "underside", "shadow_village", "crystal_grottos", "black_lakes", "sunken_temple", "whispering_forest", "ash_storm",
             "insight_2", "crawler", "blind", "light_eater", "mimicker", "shade", "lurker",
-            "insight_3", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
+            "insight_3", "altar", "watcher", "mimic_queen", "shepherd", "doppelganger", "citadel", "statue", "keeper", "architect", "primordial_shadow", "freed",
             "note_1", "note_2", "note_3", "note_4", "note_5", "note_6", "note_7", "note_8",
             "keeper_1", "keeper_2", "keeper_3", "keeper_4", "keeper_5", "keeper_6", "keeper_7",
             // 1.9: the lighthouse, Marta's map, Yan; errands follow
@@ -84,7 +84,7 @@ public final class Journal {
             Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
                     "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass",
-                    "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection")),
+                    "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection", "summoning_altar")),
             Map.entry("watcher", List.of("underside_key")),
             Map.entry("mimic_queen", List.of("underside_key")),
             Map.entry("shepherd", List.of("underside_key", "shepherd_scythe")),

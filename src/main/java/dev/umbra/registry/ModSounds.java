@@ -30,6 +30,12 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_CLINK = reg("voice.lantern_clink");
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_UNDERSIDE = reg("music.underside");
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_BOSS = reg("music.boss");
+    /** 2.8: a track for each boss (tools/gen_music28.py), by the boss's entity id. */
+    public static final java.util.Map<String, DeferredHolder<SoundEvent, SoundEvent>> BOSS_MUSIC = new java.util.LinkedHashMap<>();
+    static {
+        for (String id : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "drowned_keeper", "fallen_keeper"})
+            BOSS_MUSIC.put(id, reg("music.boss_" + id));
+    }
     public static final DeferredHolder<SoundEvent, SoundEvent> ONSLAUGHT_HORN = reg("event.onslaught_horn");
     public static final DeferredHolder<SoundEvent, SoundEvent> BLOOD_MOON = reg("event.blood_moon");
     public static final DeferredHolder<SoundEvent, SoundEvent> SILENCE = reg("event.silence");

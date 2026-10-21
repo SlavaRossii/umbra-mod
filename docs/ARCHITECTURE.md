@@ -21,6 +21,7 @@ Minecraft 26.3, NeoForge 26.3.0.76, Java 25. Mojang names (the game is no longer
 | `mob` | The five creatures (Crawler, Blind, Light Eater, Mimicker, Shade). |
 | `boss` | `UmbraBoss` base (boss bar), four minibosses, Architect, Primordial Shadow, summon items. |
 | `journal` | Self-writing journal: entries, item, first-encounter hooks. |
+| `altar` | 2.8: the sacrificial altar (`SummoningAltarBlock` + its block entity, the mod's first) and `Ritual`: what each seal asks for, the checks of the place, what the rite takes and gives. |
 | `client` | Client-only: renderers, HUD. Never reference it from common code. |
 | `command` | `/umbra …` debug commands. |
 | `SmokeTest` | CI self-test, runs only with `-Dumbra.smoketest=true`. |
@@ -42,7 +43,14 @@ Resources: `assets/umbra` (models, textures, lang en_us + ru_ru), `data/umbra` (
 - **Gear tiers**: materials live in `registry/ModMaterials`; armour textures in `textures/entity/equipment/`.
 - **Light source the darkness must not eat**: implement `light.DarknessProof`.
 - **New boss**: extend `boss.UmbraBoss`, put the mechanic in `bossTick`, register entity + attributes + renderer,
-  add a loot table and a summon item (`SummonSealItem`), and a journal entry id in `Journal.ENTRIES`.
+  add a loot table and a summon item (`SummonSealItem`), and a journal entry id in `Journal.ENTRIES`. To call it
+  from the altar, add a `Ritual` (offerings, `placeProblem`, `onBegin`/`onComplete`). Its music: a track in
+  `tools/gen_music28.py` and its id in `ModSounds.BOSS_MUSIC` (the client plays the nearest boss's track).
+- **Lanterns held out (2.8)**: `client.LanternHold` adds an arm pose (META-INF/enumextensions.json) with the arm at
+  -1.25 rad. A held item turns with the arm; with only an X rotation the item's up axis ends at
+  (0, sin(a - d), -cos(a - d)) in model space (a = arm angle, d = display X rotation), so it hangs upright when
+  d = a + 90 degrees: 18 for -72. First person draws no arm while an item is held, so the lantern's first-person
+  model carries its own sleeve and glove (`tools/gen_lanterns28.py` has a preview of the first-person view).
 - **New journal entry**: add the id to `Journal.ENTRIES`, call `Journal.unlock(player, id)` where it happens,
   add `journal.umbra.<id>.title/.text` to both lang files.
 - **Feature switch**: add a `BooleanValue` to `UmbraConfig` and check it with `UmbraConfig.on(...)`.

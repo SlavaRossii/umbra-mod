@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "umbra:shadow_shard",
+    "E": "umbra:echo_quartz",
+    "G": "umbra:gloom_ingot",
+    "C": "minecraft:candle",
+    "D": "umbra:dusk_stone"
+  },
+  "pattern": [
+    "SES",
+    "GCG",
+    "DDD"
+  ],
+  "result": {
+    "id": "umbra:summoning_altar"
+  }
+}

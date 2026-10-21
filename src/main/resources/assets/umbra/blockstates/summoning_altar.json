@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "glow=0": {
+      "model": "umbra:block/summoning_altar_0"
+    },
+    "glow=1": {
+      "model": "umbra:block/summoning_altar_1"
+    },
+    "glow=2": {
+      "model": "umbra:block/summoning_altar_2"
+    }
+  }
+}

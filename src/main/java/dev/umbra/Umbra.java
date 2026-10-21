@@ -58,6 +58,7 @@ public class Umbra {
     public Umbra(IEventBus modBus, ModContainer container) {
         ModBlocks.BLOCKS.register(modBus);
         ModItems.ITEMS.register(modBus);
+        dev.umbra.registry.ModBlockEntities.BLOCK_ENTITIES.register(modBus);
         ModEntities.ENTITIES.register(modBus);
         ModFeatures.FEATURES.register(modBus);
         ModAttachments.ATTACHMENTS.register(modBus);

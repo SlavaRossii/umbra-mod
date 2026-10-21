@@ -232,5 +232,77 @@
         "volume": 0.5
       }
     ]
+  },
+  "music.boss_watcher": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_watcher",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_mimic_queen": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_mimic_queen",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_shepherd": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_shepherd",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_doppelganger": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_doppelganger",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_architect": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_architect",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_primordial_shadow": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_primordial_shadow",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_drowned_keeper": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_drowned_keeper",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.boss_fallen_keeper": {
+    "sounds": [
+      {
+        "name": "umbra:music/boss_fallen_keeper",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
   }
 }

@@ -157,6 +157,7 @@ public final class ModItems {
     }
 
     public static final DeferredItem<BlockItem> ECHO_ALTAR = ITEMS.registerSimpleBlockItem("echo_altar", ModBlocks.ECHO_ALTAR, p -> p.rarity(Rarity.RARE));
+    public static final DeferredItem<BlockItem> SUMMONING_ALTAR = ITEMS.registerSimpleBlockItem("summoning_altar", ModBlocks.SUMMONING_ALTAR, p -> p.rarity(Rarity.RARE));
     public static final DeferredItem<BlockItem> GLOOM_ANVIL = ITEMS.registerSimpleBlockItem("gloom_anvil", ModBlocks.GLOOM_ANVIL, p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<BlockItem> LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("luminite_candle", ModBlocks.LUMINITE_CANDLE);
     public static final DeferredItem<BlockItem> THICK_LUMINITE_CANDLE = ITEMS.registerSimpleBlockItem("thick_luminite_candle", ModBlocks.THICK_LUMINITE_CANDLE);
