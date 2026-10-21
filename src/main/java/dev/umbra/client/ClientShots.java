@@ -95,6 +95,15 @@ public final class ClientShots {
             POSES.add(new Pose(String.format("%02d_third_%s", n++, w.replaceAll("\\[.*", "_lit")), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_third_luminite_bow_drawn", n++), CameraType.THIRD_PERSON_FRONT, true, true));
+        // 2.8.0: the lantern held out on the arm, seen from the side: a mannequin renders like a player, arm poses and all
+        for (String[] v : new String[][]{{"luminite_lantern", "{\"umbra:lit\":true}", "90"}, {"luminite_lantern", "{\"umbra:lit\":true}", "140"},
+                {"marta_lantern", "{}", "130"}, {"dawn_lantern", "{}", "60"}}) {
+            POSES.add(new Pose(String.format("%02d_side_%s_%s", n++, v[0], v[2]), CameraType.FIRST_PERSON, false, true, CLEAR, away, noSlimes,
+                    "kill @e[type=minecraft:mannequin]", "tp @a ~ ~ ~ 0 18",
+                    "execute as @p at @p run summon minecraft:mannequin ~ ~ ~2.7 {Tags:[\"shot\"],immovable:1b,hide_description:1b,Rotation:[" + v[2]
+                            + "f,0f],equipment:{mainhand:{id:\"umbra:" + v[0] + "\",count:1,components:" + v[1] + "}}}"));
+        }
+        POSES.add(new Pose(String.format("%02d_side_clear", n++), CameraType.FIRST_PERSON, false, false, "kill @e[type=minecraft:mannequin]", "tp @a ~ ~ ~ 0 0"));
         // 2.7.2: every building and every creature and block of the mod, built far off and looked at from a good place
         for (String what : dev.umbra.command.Showcase.ALL)
             POSES.add(new Pose(String.format("%02d_tour_%s", n++, what), CameraType.FIRST_PERSON, false, true, CLEAR, "execute as @p run umbra showcase " + what));
