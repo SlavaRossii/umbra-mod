@@ -142,7 +142,6 @@ public final class Showcase {
                 m.setNoAi(true);
                 m.setPersistenceRequired();
             }
-            e.setInvulnerable(true);
             e.addTag("shot");
             level.addFreshEntity(e);
             x += w;
