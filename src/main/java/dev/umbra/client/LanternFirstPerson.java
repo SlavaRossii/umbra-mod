@@ -27,14 +27,19 @@ import org.joml.Vector3f;
  */
 @EventBusSubscriber(modid = Umbra.MODID, value = Dist.CLIENT)
 public final class LanternFirstPerson {
-    /** How the arm is held: raised (blocks up), set out to the side (blocks), brought nearer (blocks), tilted up (degrees). */
-    public record Hold(float raise, float out, float near, float lift) {}
+    /**
+     * How the arm is held: raised (blocks up), set out to the side (blocks), brought nearer (blocks), tilted up (degrees),
+     * and leant over (degrees round the line of sight, about the fist): the game's empty hand stands almost upright on
+     * the screen, so a lantern hanging from it would hide behind the forearm; leant over, the arm comes in from the side
+     * and the lantern hangs free.
+     */
+    public record Hold(float raise, float out, float near, float lift, float lean) {}
 
     public static final Hold[] HOLDS = {
-            new Hold(0.16F, 0.06F, 0.06F, 6.0F),
-            new Hold(0.10F, 0.03F, 0.02F, 3.0F),
-            new Hold(0.24F, 0.10F, 0.10F, 10.0F),
-            new Hold(0.20F, 0.14F, 0.04F, 0.0F),
+            new Hold(0.10F, 0.04F, 0.10F, 0.0F, 35.0F),
+            new Hold(0.16F, 0.06F, 0.12F, 4.0F, 45.0F),
+            new Hold(0.06F, 0.02F, 0.06F, 0.0F, 25.0F),
+            new Hold(0.20F, 0.10F, 0.15F, 6.0F, 55.0F),
     };
     /** Which hold is drawn (the screenshots of the client check compare them). */
     public static int hold = 0;
@@ -55,6 +60,22 @@ public final class LanternFirstPerson {
         return stack.is(ModItems.LUMINITE_LANTERN.get()) || stack.is(ModItems.MARTA_LANTERN.get()) || stack.is(ModItems.DAWN_LANTERN.get());
     }
 
+    /** The game's own transforms for an empty hand (with its swing and its rise when you take something up), and ours. */
+    private static void armTransform(PoseStack pose, Hold h, float f, float attack, float sq, float equip) {
+        pose.translate(f * h.out(), h.raise(), h.near());
+        pose.rotateDegrees(Axis.XP, h.lift());
+        pose.translate(f * (-0.3F * Mth.sin(sq * Mth.PI) + 0.64000005F), 0.4F * Mth.sin(sq * (Mth.PI * 2.0F)) - 0.6F + equip * -0.6F,
+                -0.4F * Mth.sin(attack * Mth.PI) - 0.71999997F);
+        pose.rotateDegrees(Axis.YP, f * 45.0F);
+        pose.rotateDegrees(Axis.YP, f * Mth.sin(sq * Mth.PI) * 70.0F);
+        pose.rotateDegrees(Axis.ZP, f * Mth.sin(attack * attack * Mth.PI) * -20.0F);
+        pose.translate(f * -1.0F, 3.6F, 3.5F);
+        pose.rotateDegrees(Axis.ZP, f * 120.0F);
+        pose.rotateDegrees(Axis.XP, 200.0F);
+        pose.rotateDegrees(Axis.YP, f * -135.0F);
+        pose.translate(f * 5.6F, 0.0F, 0.0F);
+    }
+
     @SubscribeEvent
     static void onRenderHand(RenderHandEvent event) {
         ItemStack stack = event.getItemStack();
@@ -73,23 +94,17 @@ public final class LanternFirstPerson {
         AvatarRenderState avatar = event.getPlayerState().avatarRenderState;
         int light = event.getPackedLight();
 
-        // the arm, as the game draws an empty hand, raised a little and set out to the side
-        pose.pushPose();
-        pose.translate(f * h.out(), h.raise(), h.near());
-        pose.rotateDegrees(Axis.XP, h.lift());
+        // the arm, as the game draws an empty hand, raised a little, set out to the side and leant over about the fist
         float sq = Mth.sqrt(attack);
-        pose.translate(f * (-0.3F * Mth.sin(sq * Mth.PI) + 0.64000005F), 0.4F * Mth.sin(sq * (Mth.PI * 2.0F)) - 0.6F + equip * -0.6F,
-                -0.4F * Mth.sin(attack * Mth.PI) - 0.71999997F);
-        pose.rotateDegrees(Axis.YP, f * 45.0F);
-        pose.rotateDegrees(Axis.YP, f * Mth.sin(sq * Mth.PI) * 70.0F);
-        pose.rotateDegrees(Axis.ZP, f * Mth.sin(attack * attack * Mth.PI) * -20.0F);
-        pose.translate(f * -1.0F, 3.6F, 3.5F);
-        pose.rotateDegrees(Axis.ZP, f * 120.0F);
-        pose.rotateDegrees(Axis.XP, 200.0F);
-        pose.rotateDegrees(Axis.YP, f * -135.0F);
-        pose.translate(f * 5.6F, 0.0F, 0.0F);
-        // the fist: the bottom of the arm (the arm hangs from (-5, 2, 0) and is 12 long)
-        Vector3f fist = pose.last().pose().transformPosition(new Vector3f(f * -5.5F / 16.0F, 11.8F / 16.0F, 0.0F));
+        pose.pushPose();
+        armTransform(pose, h, f, attack, sq, equip);
+        Vector3f fist = pose.last().pose().transformPosition(new Vector3f(f * -5.5F / 16.0F, 11.6F / 16.0F, 0.0F));
+        pose.popPose();
+        pose.pushPose();
+        pose.translate(fist.x(), fist.y(), fist.z());
+        pose.rotateDegrees(Axis.ZP, f * h.lean());
+        pose.translate(-fist.x(), -fist.y(), -fist.z());
+        armTransform(pose, h, f, attack, sq, equip);
         if (!avatar.isInvisible) {
             var renderer = mc.getEntityRenderDispatcher().getRenderer(avatar);
             if (renderer instanceof AvatarRenderer<?> ar) {
@@ -102,7 +117,7 @@ public final class LanternFirstPerson {
 
         // the lantern, hanging from the fist: upright whatever the pitch, swaying when the arm swings
         pose.pushPose();
-        pose.translate(fist.x(), fist.y(), fist.z());
+        pose.translate(fist.x(), fist.y(), fist.z() + 0.04F);
         pose.rotateDegrees(Axis.XP, event.getInterpolatedPitch());
         float sway = Mth.sin(sq * Mth.PI) * 25.0F + Mth.sin((mc.player.tickCount + event.getPartialTick()) * 0.08F) * 1.5F;
         pose.rotateDegrees(Axis.ZP, f * sway);
@@ -112,8 +127,8 @@ public final class LanternFirstPerson {
         pose.translate(0.0F, 0.5F - grip(stack) / 16.0F, 0.0F);
         mc.getItemModelResolver().updateForTopItem(ITEM, stack, ItemDisplayContext.NONE, mc.level, null, 0);
         ITEM.submit(pose, event.getSubmitNodeCollector(), light, OverlayTexture.NO_OVERLAY, 0);
-        if (DEBUG && mc.player.tickCount % 40 == 0)
-            Umbra.LOGGER.info("UMBRA LANTERN FP: hand {} fist {} empty {} matrix {}", event.getHand(), fist, ITEM.isEmpty(), pose.last().pose());
+        if (DEBUG && mc.player.tickCount % 100 == 0)
+            Umbra.LOGGER.info("UMBRA CLIENTSHOTS: lantern in the {} hand, hold {}, fist at {}, drawn {}", event.getHand(), hold, fist, !ITEM.isEmpty());
         pose.popPose();
     }
 }
