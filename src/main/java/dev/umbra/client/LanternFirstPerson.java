@@ -40,6 +40,7 @@ public final class LanternFirstPerson {
     public static int hold = 0;
 
     private static final ItemStackRenderState ITEM = new ItemStackRenderState();
+    private static final boolean DEBUG = Boolean.getBoolean("umbra.clientshots");
 
     private LanternFirstPerson() {}
 
@@ -111,6 +112,8 @@ public final class LanternFirstPerson {
         pose.translate(0.0F, 0.5F - grip(stack) / 16.0F, 0.0F);
         mc.getItemModelResolver().updateForTopItem(ITEM, stack, ItemDisplayContext.NONE, mc.level, null, 0);
         ITEM.submit(pose, event.getSubmitNodeCollector(), light, OverlayTexture.NO_OVERLAY, 0);
+        if (DEBUG && mc.player.tickCount % 40 == 0)
+            Umbra.LOGGER.info("UMBRA LANTERN FP: hand {} fist {} empty {} matrix {}", event.getHand(), fist, ITEM.isEmpty(), pose.last().pose());
         pose.popPose();
     }
 }
