@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 /**
  * 2.9: while the Queen's rite is under way the chests round the altar are hers: they do not open and do not break
@@ -44,7 +44,7 @@ public final class AltarEvents {
     }
 
     @SubscribeEvent
-    static void onBreak(BlockEvent.BreakEvent event) {
+    static void onBreak(BreakBlockEvent event) {
         if (event.getLevel().isClientSide() || !sealedByRite(event.getLevel(), event.getPos())) return;
         event.setCanceled(true);
         if (event.getPlayer() != null)
