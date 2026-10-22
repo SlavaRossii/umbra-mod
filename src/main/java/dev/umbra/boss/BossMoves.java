@@ -66,13 +66,43 @@ public final class BossMoves {
             if (p.isCreative() || p.isSpectator()) continue;
             Vec3 away = p.position().subtract(boss.position()).multiply(1, 0, 1);
             if (away.lengthSqr() > radius * radius) continue;
+            boolean shield = !raisedShield(p, null).isEmpty();
             p.hurtServer(level, level.damageSources().mobAttack(boss), damage);
+            if (shield) breakGuard(level, p, HEAVY_GUARD_BREAK);       // 2.9: a shield does not hold against the ground itself
             Vec3 v = away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize();
             p.push(v.x * knock, 0.45, v.z * knock);
             p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
             hit++;
         }
         return hit;
+    }
+
+    // --- 2.9: a boss cannot be blocked for ever ---------------------------------------------------------------
+    /** Seconds a heavy blow (a shockwave, a landing, a rush) knocks a shield out for; seconds the third blocked blow does. */
+    public static final float HEAVY_GUARD_BREAK = 5.0F, GUARD_BREAK = 3.0F;
+    /** Blocked blows in a row after which a boss beats the shield aside. */
+    public static final int GUARD_HITS = 3;
+
+    /** The shield a player holds raised (towards {@code from}, if given), or EMPTY. */
+    public static net.minecraft.world.item.ItemStack raisedShield(net.minecraft.world.entity.player.Player p, net.minecraft.world.entity.Entity from) {
+        if (!p.isUsingItem()) return net.minecraft.world.item.ItemStack.EMPTY;
+        net.minecraft.world.item.ItemStack use = p.getUseItem();
+        if (use.get(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS) == null) return net.minecraft.world.item.ItemStack.EMPTY;
+        if (from != null) {
+            Vec3 to = from.position().subtract(p.position()).multiply(1, 0, 1);
+            Vec3 look = p.getViewVector(1.0F).multiply(1, 0, 1);
+            if (to.lengthSqr() > 1.0E-4 && look.lengthSqr() > 1.0E-4 && to.normalize().dot(look.normalize()) < 0.0) return net.minecraft.world.item.ItemStack.EMPTY;
+        }
+        return use;
+    }
+
+    /** Knocks the raised shield out of the guard for {@code seconds}, as an axe does. Returns true if there was one. */
+    public static boolean breakGuard(ServerLevel level, net.minecraft.world.entity.player.Player p, float seconds) {
+        net.minecraft.world.item.ItemStack use = raisedShield(p, null);
+        if (use.isEmpty()) return false;
+        net.minecraft.world.item.component.BlocksAttacks b = use.get(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS);
+        b.disable(level, p, seconds, use);
+        return true;
     }
 
     /** Leaps at the target. */

@@ -41,6 +41,10 @@ for set_ in ("gloom", "luminite", "shadow"):
             items.add(f"{set_}_{piece}{t}")
 for b in ("watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow"):
     items.add("trophy_" + b)
+# 2.9: the discs, one per name in ModItems.DISC_TRACKS
+m = re.search(r'DISC_TRACKS = java\.util\.List\.of\(([^)]*)\)', items_src, re.S)
+for t in re.findall(r'"([a-z_]+)"', m.group(1) if m else ""):
+    items.add("music_disc_" + t)
 blocks = set(i for i in re.findall(r'BLOCKS\.register\w*\("([a-z0-9_]+)"', blocks_src) if not i.endswith('_'))
 # blocks registered in loops (the mimic blocks): take their names from the blockstates the generator wrote
 for p in glob.glob(A + 'blockstates/mimic_*.json'):

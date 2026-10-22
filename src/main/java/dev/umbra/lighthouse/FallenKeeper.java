@@ -76,7 +76,7 @@ public class FallenKeeper extends UmbraBoss {
     }
 
     @Override
-    public int phase() {
+    protected int rawPhase() {
         float h = this.getHealth() / this.getMaxHealth();
         return h > 0.66F ? 1 : h > 0.33F ? 2 : 3;
     }

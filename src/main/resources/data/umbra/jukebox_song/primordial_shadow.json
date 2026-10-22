@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_primordial_shadow",
+  "description": {
+    "translate": "jukebox_song.umbra.primordial_shadow"
+  },
+  "length_in_seconds": 76.7,
+  "comparator_output": 6
+}

@@ -110,15 +110,19 @@ public final class Depths {
     /** Where the sluice gates stand across the last passage, nearest first. */
     public static final int[] GATES_Z = {-120, -127, -134};
 
-    /** Currents: box (min x, min z, max x, max z, in local coords) and the push (dx, dz). */
+    /** Currents: box (min x, min z, max x, max z, in local coords), the push (dx, dz) and the cache it runs into. */
     public static final int[][] CURRENTS = {
-            {-46, -31, -36, -29, -1, 0}, {-47, -45, -45, -31, 0, -1},     // into the west cache
-            {36, -23, 46, -21, 1, 0}, {45, -39, 47, -23, 0, -1},          // into the east cache
+            {-46, -31, -36, -29, -1, 0, 0}, {-47, -45, -45, -31, 0, -1, 0},     // into the west cache
+            {36, -23, 46, -21, 1, 0, 1}, {45, -39, 47, -23, 0, -1, 1},          // into the east cache
     };
 
     public static final BlockPos[] VALVE_AT = {local(VALVE_W.x - VALVE_W.hx, 2, VALVE_W.z), local(VALVE_E.x + VALVE_E.hx, 2, VALVE_E.z), local(VALVE_N.x - VALVE_N.hx, 2, VALVE_N.z)};
     public static final BlockPos[] BELL_AT = {local(BELL_W.x, 2, BELL_W.z), local(BELL_E.x, 2, BELL_E.z), local(BELL_N.x, 2, BELL_N.z), local(CRYPT.x, 2, CRYPT.z)};
     public static final BlockPos CHEST_AT = local(SANCTUM.x, 2, SANCTUM.z - SANCTUM.hz + 2);
+    /** The caches' chests, where the currents run (west, east). */
+    public static final BlockPos[] CACHE_CHEST = {local(CACHE_W.x, 1, CACHE_W.z - 1), local(CACHE_E.x, 1, CACHE_E.z - 1)};
+    /** 2.9: a mark in the floor under the landing: the halls have had their 2.9 furnishing (more cages, the Keepers' chest). */
+    public static final BlockPos MARK_29 = local(0, -1, 0);
     public static final BlockPos BOSS_AT = local(SANCTUM.x, 2, SANCTUM.z);
     public static final BlockPos ARRIVAL = local(0, 2, 0);
 
@@ -150,9 +154,11 @@ public final class Depths {
     /** Into the Depths (built on the first visit); the way back is remembered. The key gives one long breath. */
     public static void enter(ServerLevel underside, ServerPlayer player) {
         if (!isBuilt(underside)) build(underside, underside.getRandom());
+        else upgrade(underside, underside.getRandom());
         player.setData(ModAttachments.DEPTHS_RETURN, player.blockPosition().asLong());
         Journal.unlock(player, "depths");
         player.sendSystemMessage(Component.translatable("message.umbra.depths.enter").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.ITALIC));
+        player.sendSystemMessage(Component.translatable("message.umbra.depths.enter_hint").withStyle(ChatFormatting.GRAY));
         player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WATER_BREATHING, BREATH, 0, false, true, true));
         player.teleport(new TeleportTransition(underside, Vec3.atBottomCenterOf(ARRIVAL), Vec3.ZERO, 180.0F, 0.0F, TeleportTransition.PLAY_PORTAL_SOUND));
     }
@@ -233,9 +239,7 @@ public final class Depths {
         for (int x = -3; x <= 3; x++)
             for (int z = -2; z <= 2; z++) level.setBlock(local(SANCTUM.x + x, 1, SANCTUM.z - SANCTUM.hz + 2 + z), Blocks.POLISHED_DEEPSLATE.defaultBlockState(), FLAGS);
         level.setBlock(BOSS_AT.below(), Blocks.POLISHED_DEEPSLATE.defaultBlockState(), FLAGS);
-        chest(level, random, CHEST_AT, LOOT, net.minecraft.core.Direction.SOUTH);
-        chest(level, random, local(CACHE_W.x, 1, CACHE_W.z - 1), CACHE, net.minecraft.core.Direction.SOUTH);
-        chest(level, random, local(CACHE_E.x, 1, CACHE_E.z - 1), CACHE, net.minecraft.core.Direction.SOUTH);
+        for (BlockPos c : CACHE_CHEST) chest(level, random, c, CACHE, net.minecraft.core.Direction.SOUTH);
         // 4. the dark that lives here
         cage(level, ModEntities.ACOLYTE.get(), local(GALLERY.x + 6, 1, GALLERY.z + 4));
         cage(level, ModEntities.ACOLYTE.get(), local(PILLARS.x - 9, 1, PILLARS.z));
@@ -243,6 +247,65 @@ public final class Depths {
         for (Room r : new Room[]{GALLERY, BELL_W, BELL_E, PILLARS, VALVE_W, VALVE_E, BELL_N, VALVE_N, CRYPT})
             spawn(level, ModEntities.ACOLYTE.get(), local(r.x + random.nextInt(3) - 1, 2, r.z + random.nextInt(3) - 1));
         for (int i = 0; i < 2; i++) spawn(level, ModEntities.LURKER.get(), local(GALLERY.x - 4 + i * 8, 3, GALLERY.z));
+        level.setBlock(CHEST_AT, Blocks.WATER.defaultBlockState(), FLAGS);
+        furnish29(level, random);
+    }
+
+    // ------------------------------------------------------------------ 2.9: more of the dark, and the Keepers' treasure
+
+    /** The 2.9 cages: twice as many as before (the old three and these three), and as many again of the dark at once. */
+    public static final BlockPos[] CAGES_29 = {local(BELL_N.x + 3, 1, BELL_N.z + 2), local(CRYPT.x + 2, 1, CRYPT.z - 2), local(VALVE_W.x + 2, 1, VALVE_W.z + 2)};
+
+    public static boolean furnished29(ServerLevel level) {
+        return level.getBlockState(MARK_29).is(Blocks.CHISELED_DEEPSLATE);
+    }
+
+    /** Halls built before 2.9 get their new furnishing the next time someone comes down. */
+    public static void upgrade(ServerLevel level, RandomSource random) {
+        if (furnished29(level)) return;
+        // the old sanctum chest gives what is in it to the Keepers' chest
+        java.util.List<net.minecraft.world.item.ItemStack> kept = new java.util.ArrayList<>();
+        if (level.getBlockEntity(CHEST_AT) instanceof net.minecraft.world.Container old) {
+            for (int i = 0; i < old.getContainerSize(); i++) if (!old.getItem(i).isEmpty()) kept.add(old.getItem(i).copy());
+            old.clearContent();
+        }
+        level.setBlock(CHEST_AT, Blocks.WATER.defaultBlockState(), FLAGS);
+        furnish29(level, random);
+        if (!kept.isEmpty() && level.getBlockEntity(CHEST_AT) instanceof KeepersChest.Entity chest) {
+            chest.unpackLootTable(null);
+            for (net.minecraft.world.item.ItemStack st : kept)
+                for (int i = 0; i < chest.getContainerSize(); i++)
+                    if (chest.getItem(i).isEmpty()) {
+                        chest.setItem(i, st);
+                        break;
+                    }
+        }
+    }
+
+    private static void furnish29(ServerLevel level, RandomSource random) {
+        for (int i = 0; i < CAGES_29.length; i++) cage(level, i == 2 ? ModEntities.LURKER.get() : ModEntities.ACOLYTE.get(), CAGES_29[i]);
+        for (Room r : new Room[]{GALLERY, BELL_W, BELL_E, PILLARS, VALVE_W, VALVE_E, BELL_N, VALVE_N, CRYPT})
+            spawn(level, ModEntities.ACOLYTE.get(), local(r.x + random.nextInt(5) - 2, 3, r.z + random.nextInt(5) - 2));
+        for (int i = 0; i < 2; i++) spawn(level, ModEntities.LURKER.get(), local(PILLARS.x - 5 + i * 10, 4, PILLARS.z));
+        // the Keepers' chest on the dais: shut, and only his key opens it
+        level.setBlock(CHEST_AT, ModBlocks.KEEPERS_CHEST.get().defaultBlockState()
+                .setValue(KeepersChest.FACING, net.minecraft.core.Direction.SOUTH).setValue(KeepersChest.WATERLOGGED, true), Block.UPDATE_ALL);
+        RandomizableContainer.setBlockEntityLootTable(level, random, CHEST_AT, LOOT);
+        level.setBlock(MARK_29, Blocks.CHISELED_DEEPSLATE.defaultBlockState(), FLAGS);
+    }
+
+    /** He is beaten: his chest fills again and locks, waiting for the key he let fall. */
+    public static void lockTreasure(ServerLevel level) {
+        BlockState s = level.getBlockState(CHEST_AT);
+        if (!(s.getBlock() instanceof KeepersChest)) return;
+        level.setBlock(CHEST_AT, s.setValue(KeepersChest.OPEN, false), Block.UPDATE_ALL);
+        if (level.getBlockEntity(CHEST_AT) instanceof KeepersChest.Entity chest) {
+            // filled at once, round anything left in it (a pending table would not save what is already inside)
+            chest.unpackLootTable(null);
+            chest.setLootTable(LOOT, level.getRandom().nextLong());
+            chest.unpackLootTable(null);
+            chest.setChanged();
+        }
     }
 
     private static void chest(ServerLevel level, RandomSource random, BlockPos at, ResourceKey<LootTable> loot, net.minecraft.core.Direction facing) {
@@ -336,6 +399,7 @@ public final class Depths {
 
     /** He is beaten: the bells go quiet and can be rung again. */
     public static void keeperDown(ServerLevel level) {
+        lockTreasure(level);
         for (BlockPos b : BELL_AT) {
             BlockState s = level.getBlockState(b);
             if (s.getBlock() instanceof DepthsBlocks.Bell) level.setBlock(b, s.setValue(DepthsBlocks.ON, false), Block.UPDATE_ALL);
@@ -362,10 +426,13 @@ public final class Depths {
         if (player.isInWater() && !player.isSpectator()) {
             for (int[] c : CURRENTS) {
                 if (l.getX() < c[0] || l.getX() > c[2] || l.getZ() < c[1] || l.getZ() > c[3]) continue;
+                if (!currentRuns(level, c[6])) break;
                 player.push(c[4] * CURRENT, 0, c[5] * CURRENT);
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
                 if (player.tickCount % 5 == 0)
                     level.sendParticles(net.minecraft.core.particles.ParticleTypes.BUBBLE, player.getX(), player.getY() + 1, player.getZ(), 4, 0.5, 0.5, 0.5, 0.1);
+                if (level.getGameTime() % CURRENT_CYCLE == 0)
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, SoundSource.AMBIENT, 0.8F, 0.7F);
                 break;
             }
         }
@@ -377,7 +444,27 @@ public final class Depths {
         if (dev.umbra.sanity.Sanity.enabled() && DepthsBlocks.nearLitLamp(level, player.blockPosition(), 6)) dev.umbra.sanity.Sanity.add(player, 0.5F);
     }
 
-    public static final double CURRENT = 0.035;
+    /**
+     * 2.9: the currents are no trap any more. They pull in waves ({@link #CURRENT_ON} ticks of every {@link #CURRENT_CYCLE},
+     * then calm water), a swimmer makes headway even against the pull, and once a cache has been emptied its current
+     * dies away for good.
+     */
+    public static final double CURRENT = 0.024;
+    public static final int CURRENT_CYCLE = 160, CURRENT_ON = 100;
+
+    /** Is the current into cache {@code cache} pulling right now? */
+    public static boolean currentRuns(ServerLevel level, int cache) {
+        return currentRunsAt(level, cache, level.getGameTime());
+    }
+
+    /** Would it pull at game time {@code time} (in a wave, and its cache not yet emptied)? */
+    public static boolean currentRunsAt(ServerLevel level, int cache, long time) {
+        if (time % CURRENT_CYCLE >= CURRENT_ON) return false;
+        return !(level.getBlockEntity(CACHE_CHEST[cache]) instanceof net.minecraft.world.Container c) || !c.isEmpty();
+    }
+
+    /** The old cages, before 2.9 (with {@link #CAGES_29}, the six of them). */
+    public static final BlockPos[] CAGES_OLD = {local(GALLERY.x + 6, 1, GALLERY.z + 4), local(PILLARS.x - 9, 1, PILLARS.z), local(PILLARS.x + 9, 1, PILLARS.z + 6)};
 
     // ------------------------------------------------------------------ the key
 

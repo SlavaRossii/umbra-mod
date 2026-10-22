@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_mimic_queen",
+  "description": {
+    "translate": "jukebox_song.umbra.mimic_queen"
+  },
+  "length_in_seconds": 72.9,
+  "comparator_output": 2
+}

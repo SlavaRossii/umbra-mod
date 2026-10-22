@@ -40,6 +40,8 @@ public final class Journal {
             // 2.7: the drowned halls, what is to be done there and who lives there
             "acolyte", "drowned_keeper", "weak_drowned_keeper", "depths_sluice", "depths_bells", "depths_lamps",
             "depths_note_1", "depths_note_2", "depths_note_3",
+            // 2.9: the Keeper's chest
+            "depths_treasure",
             // 2.6: the drowned halls
             "depths"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
@@ -76,7 +78,7 @@ public final class Journal {
             Map.entry("yan_1", List.of("trophy_shelf")),
             Map.entry("ash_storm", List.of("ash_clasp")),
             Map.entry("yan_gift_lantern", List.of("marta_lantern")),
-            Map.entry("primordial_shadow", List.of("depths_key")),
+            Map.entry("lurker", List.of("depths_key")),     // 2.9: the Depths in the middle of the game (the lurker's scales)
             Map.entry("yan_gift_spyglass", List.of("yan_spyglass")),
             Map.entry("yan_gift_bell", List.of("keeper_bell")),
             Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow", "luminite_shield")),

@@ -53,6 +53,15 @@
           ]
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_fallen_keeper"
+        }
+      ]
     }
   ],
   "random_sequence": "umbra:entities/fallen_keeper"

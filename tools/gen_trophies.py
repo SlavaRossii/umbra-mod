@@ -96,7 +96,7 @@ def main():
     json.dump({"multipart": parts}, open(A + 'blockstates/trophy_shelf.json', 'w'), indent=2)
     json.dump({"model": {"type": "minecraft:model", "model": "umbra:block/trophy_shelf"}}, open(A + 'items/trophy_shelf.json', 'w'), indent=2)
     json.dump({"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "umbra:trophy_shelf"}],
-                                                     "conditions": [{"condition": "minecraft:survives_explosion"}]}], "random_sequence": "umbra:blocks/trophy_shelf"},
+                                                     "condition": {"type": "minecraft:survives_explosion"}}], "random_sequence": "umbra:blocks/trophy_shelf"},
               open(R + 'data/umbra/loot_table/blocks/trophy_shelf.json', 'w'), indent=2)
     json.dump({"type": "minecraft:crafting_shaped", "category": "misc", "key": {"P": "minecraft:spruce_planks", "S": "minecraft:spruce_slab"},
                "pattern": ["SSS", "P P", "SSS"], "result": {"id": "umbra:trophy_shelf"}}, open(R + 'data/umbra/recipe/trophy_shelf.json', 'w'), indent=2)

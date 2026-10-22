@@ -65,6 +65,15 @@
           "name": "umbra:trophy_architect"
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_architect"
+        }
+      ]
     }
   ],
   "random_sequence": "umbra:entities/architect"

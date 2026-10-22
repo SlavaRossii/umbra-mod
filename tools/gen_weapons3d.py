@@ -167,16 +167,22 @@ def shovel():
 
 
 def spear():
+    """2.9: a war spear, not a stick with a crystal: a long ash shaft held in the middle, a steel collar with lugs
+    (a boar spear's wings), a broad leaf blade of luminite with a steel spine, a red tassel and a spiked butt."""
     w = W("luminite_spear")
-    w.box(7.4, -5, 8.6, 15, "wood", t=1.2)
-    w.box(7.2, -5.6, 8.8, -4.4, "brass", t=1.4)
-    for y in (2.0, 8.0):
-        w.box(7.2, y, 8.8, y + 1, "leather", t=1.4)
-    w.box(7.0, 14.2, 9.0, 16, "brass", t=1.6)
-    w.box(6.4, 16, 9.6, 18, "luminite", t=1.2, light=12)   # a leaf of crystal
-    w.box(6.9, 18, 9.1, 20.5, "luminite", t=1.0, light=12)
-    w.box(7.5, 20.5, 8.5, 22, "luminite", t=0.8, light=12)
-    w.box(5.4, 16.2, 6.4, 17.2, "luminite", t=0.8, light=12).box(9.6, 16.2, 10.6, 17.2, "luminite", t=0.8, light=12)
+    w.box(7.3, -13, 8.7, 19, "wood_dark", t=1.4)                            # the shaft, under the hand and far above it
+    w.box(7.15, -15, 8.85, -13, "brass", t=1.7).box(7.6, -16, 8.4, -15, "gloom_dark", t=0.8)   # ferrule and butt spike
+    w.box(7.1, -1.5, 8.9, 5.5, "leather", t=1.7)                            # the grip
+    for y in (-2.2, 5.5, 11.0):
+        w.box(7.0, y, 9.0, y + 0.7, "gloom", t=1.9)                         # steel rings
+    w.box(6.8, 19, 9.2, 21.2, "gloom", t=2.1)                               # the collar
+    w.box(4.2, 21.2, 11.8, 22.2, "gloom_dark", t=1.3)                       # the lugs
+    w.box(3.6, 20.8, 4.6, 22.6, "gloom", t=1.5).box(11.4, 20.8, 12.4, 22.6, "gloom", t=1.5)
+    for y1, y2, x1, x2 in ((22.2, 24.0, 6.0, 10.0), (24.0, 27.0, 5.5, 10.5), (27.0, 29.0, 6.2, 9.8), (29.0, 30.6, 6.9, 9.1),
+                           (30.6, 31.6, 7.4, 8.6), (31.6, 32.0, 7.75, 8.25)):
+        w.box(x1, y1, x2, y2, "luminite", t=0.8, light=12)                 # the leaf
+    w.box(7.6, 22.2, 8.4, 30.6, "gloom_dark", t=1.2)                         # its steel spine
+    w.box(9.0, 14.2, 9.8, 19.0, "crimson", t=0.6).box(9.4, 13.0, 10.0, 14.2, "crimson", t=0.5)   # the tassel
     return w
 
 

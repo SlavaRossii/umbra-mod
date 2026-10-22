@@ -30,7 +30,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * <ul>
  *   <li>Luminite bow: a bow (vanilla's own logic), its arrows hit the things of the Underside half as hard again
  *       and make them glow for a while.</li>
- *   <li>Shadow knives: thrown on use (a thrown item that looks like the knife), 5 damage, twice from behind,
+ *   <li>Shadow knives: thrown on use (2.9: a {@link ThrownKnife}, point first), 5 damage, twice from behind,
  *       half of them can be picked up again where they fell.</li>
  *   <li>Echo staff: a sonic cry along the look, 16 blocks, through every creature in the line, through armour;
  *       one echo quartz a cry, three seconds to breathe.</li>
@@ -53,8 +53,8 @@ public final class RangedWeapons {
         public InteractionResult use(Level level, Player player, InteractionHand hand) {
             ItemStack stack = player.getItemInHand(hand);
             if (level instanceof ServerLevel server) {
-                Snowball knife = new Snowball(server, player, stack.copyWithCount(1));
-                knife.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.9F, 0.4F);
+                ThrownKnife knife = new ThrownKnife(server, player, stack.copyWithCount(1));
+                knife.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.3F);
                 server.addFreshEntity(knife);
                 server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 0.6F, 1.6F);
                 player.getCooldowns().addCooldown(stack, KNIFE_COOLDOWN);
@@ -64,6 +64,7 @@ public final class RangedWeapons {
         }
     }
 
+    /** A knife thrown before 2.9 (a snowball carrying the knife), still flying in an old world. */
     public static boolean isKnife(net.minecraft.world.entity.Entity e) {
         return e instanceof Snowball s && s.getItem().is(ModItems.SHADOW_KNIFE.get());
     }

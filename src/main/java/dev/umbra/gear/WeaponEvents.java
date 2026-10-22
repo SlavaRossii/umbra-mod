@@ -96,6 +96,7 @@ public final class WeaponEvents {
         echoing = true;
         try {
             dev.umbra.craft.Infusions.afterHit(level, player, target, dealt);
+            hitFx(level, player, target, hand);
             // the scythe: a full swing cuts all round the target
             if (hand.is(ModItems.SHEPHERD_SCYTHE.get()) && player.getAttackStrengthScale(0.5F) > 0.9F) {
                 for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(3.0),
@@ -116,6 +117,35 @@ public final class WeaponEvents {
         } finally {
             echoing = false;
         }
+    }
+
+    /**
+     * 2.9: a touch of each weapon's own character where it lands, small and quiet (a few motes, no sound of its own):
+     * the spear's crystal sparks, gloom steel smokes, the despair blade bleeds dark, the dagger leaves a smudge of
+     * shadow, the scythe pulls a soul or two out of what it cuts.
+     */
+    static void hitFx(ServerLevel level, ServerPlayer player, LivingEntity target, net.minecraft.world.item.ItemStack hand) {
+        double x = target.getX(), y = target.getY() + target.getBbHeight() * 0.6, z = target.getZ();
+        if (hand.is(ModItems.LUMINITE_SPEAR.get())) {
+            level.sendParticles(ParticleTypes.END_ROD, x, y, z, 4, 0.15, 0.15, 0.15, 0.04);
+        } else if (hand.is(ModItems.DESPAIR_BLADE.get())) {
+            level.sendParticles(ParticleTypes.CRIMSON_SPORE, x, y, z, 6, 0.25, 0.3, 0.25, 0.0);
+        } else if (hand.is(ModItems.SHADOW_DAGGER.get())) {
+            level.sendParticles(ParticleTypes.SQUID_INK, x, y, z, 2, 0.1, 0.1, 0.1, 0.01);
+        } else if (hand.is(ModItems.SHEPHERD_SCYTHE.get())) {
+            level.sendParticles(ParticleTypes.SOUL, x, y, z, 2, 0.3, 0.3, 0.3, 0.02);
+        } else if (hand.is(ModItems.GLOOM_SWORD.get()) || hand.is(ModItems.GLOOM_AXE.get())) {
+            level.sendParticles(ParticleTypes.SMOKE, x, y, z, 3, 0.15, 0.2, 0.15, 0.01);
+        }
+    }
+
+    /** 2.9: an arrow from the luminite bow leaves a faint thread of light behind it while it flies. */
+    public static void arrowTrail(net.neoforged.neoforge.event.tick.EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow) || arrow.tickCount % 2 != 0) return;
+        if (!(arrow.level() instanceof ServerLevel level) || arrow.getDeltaMovement().lengthSqr() < 0.04) return;
+        var weapon = arrow.getWeaponItem();
+        if (weapon == null || !weapon.is(ModItems.LUMINITE_BOW.get())) return;
+        level.sendParticles(ParticleTypes.END_ROD, arrow.getX(), arrow.getY(), arrow.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
     }
 
     public static void onDeath(LivingDeathEvent event) {

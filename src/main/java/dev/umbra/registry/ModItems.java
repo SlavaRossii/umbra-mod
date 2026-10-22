@@ -170,7 +170,7 @@ public final class ModItems {
             dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
     // --- 2.5: weapons ---
     public static final DeferredItem<Item> LUMINITE_SPEAR = ITEMS.registerSimpleItem("luminite_spear", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.8F)
-            .attributes(weapon("spear", 7.0, -2.8, 1.5)).rarity(Rarity.UNCOMMON));
+            .attributes(weapon("spear", 7.0, -2.8, 2.0)).rarity(Rarity.UNCOMMON));   // 2.9: half a block further
     public static final DeferredItem<Item> SHEPHERD_SCYTHE = ITEMS.registerSimpleItem("shepherd_scythe", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -3.0F)
             .attributes(weapon("scythe", 8.0, -3.0, 0.5)).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> SHADOW_DAGGER = ITEMS.registerSimpleItem("shadow_dagger", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -1.4F)
@@ -196,6 +196,26 @@ public final class ModItems {
     public static final DeferredItem<dev.umbra.depths.Depths.KeyItem> DEPTHS_KEY = ITEMS.registerItem("depths_key",
             dev.umbra.depths.Depths.KeyItem::new, p -> p.stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> KEEPERS_PEARL = ITEMS.registerSimpleItem("keepers_pearl", p -> p.stacksTo(1).rarity(Rarity.EPIC));
+    // --- 2.9: the way into the Depths in the middle of the game, and the Keepers' treasure ---
+    /** A scale of the lurker of the black lakes: four of them, a seal's shard and echo quartz make the Key of the Depths. */
+    public static final DeferredItem<Item> LURKER_SCALE = ITEMS.registerSimpleItem("lurker_scale", p -> p.rarity(Rarity.UNCOMMON));
+    /** The Drowned Keeper's key: opens his chest in the sanctum (and is spent). */
+    public static final DeferredItem<Item> KEEPERS_KEY = ITEMS.registerSimpleItem("keepers_key", p -> p.stacksTo(16).rarity(Rarity.RARE));
+
+    // --- 2.9: the boss tracks on discs, to play in a jukebox ---
+    public static final java.util.List<String> DISC_TRACKS = java.util.List.of("watcher", "mimic_queen", "shepherd", "doppelganger", "architect",
+            "primordial_shadow", "drowned_keeper", "fallen_keeper");
+    public static final java.util.Map<String, DeferredItem<Item>> MUSIC_DISCS = discs();
+
+    private static java.util.Map<String, DeferredItem<Item>> discs() {
+        java.util.Map<String, DeferredItem<Item>> map = new java.util.LinkedHashMap<>();
+        for (String t : DISC_TRACKS) {
+            var song = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.JUKEBOX_SONG,
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, t));
+            map.put(t, ITEMS.registerSimpleItem("music_disc_" + t, p -> p.stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(song)));
+        }
+        return java.util.Collections.unmodifiableMap(map);
+    }
 
     /** Damage and speed as vanilla counts them (on top of the hand's 1 and 4), and extra reach. */
     private static net.minecraft.world.item.component.ItemAttributeModifiers weapon(String name, double damage, double speed, double reach) {

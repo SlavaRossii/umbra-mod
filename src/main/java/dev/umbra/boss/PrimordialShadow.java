@@ -66,7 +66,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
     }
 
     /** 1, 2 or 3. */
-    public int phase() {
+    protected int rawPhase() {
         float f = this.getHealth() / this.getMaxHealth();
         return f > 0.66F ? 1 : f > 0.33F ? 2 : 3;
     }

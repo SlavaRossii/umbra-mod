@@ -32,7 +32,7 @@ public final class Showcase {
             "camp", "broken_rift", "figures",
             "citadel_1", "citadel_2", "citadel_3", "citadel_4", "citadel_5",
             "depths_landing", "depths_gallery", "depths_pillars", "depths_gates", "depths_sanctum",
-            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2", "altar", "altar_seal", "altar_rite"));
+            "mobs_1", "mobs_2", "mobs_3", "mobs_4", "blocks_1", "blocks_2", "altar", "altar_seal", "altar_rite", "treasure", "knives"));
 
     private static final int FLAGS = Block.UPDATE_CLIENTS;
 
@@ -121,6 +121,31 @@ public final class Showcase {
                     case "altar_rite" -> look(player, over, a.offset(6, 1, -2), a.offset(6, 0, 0));
                     default -> look(player, over, a.offset(3, 2, -4), a.offset(3, 0, 0));
                 }
+            }
+            case "treasure" -> {
+                // 2.9: the Keepers' sea-chest, shut and opened, and a disc playing in a jukebox
+                BlockPos a = base.above();
+                for (BlockPos p : BlockPos.betweenClosed(a.offset(-4, 0, -5), a.offset(8, 4, 4))) over.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
+                var chest = dev.umbra.registry.ModBlocks.KEEPERS_CHEST.get().defaultBlockState().setValue(dev.umbra.depths.KeepersChest.FACING, net.minecraft.core.Direction.NORTH);
+                over.setBlock(a, chest, Block.UPDATE_ALL);
+                over.setBlock(a.offset(3, 0, 0), chest.setValue(dev.umbra.depths.KeepersChest.OPEN, true), Block.UPDATE_ALL);
+                over.setBlock(a.offset(6, 0, 0), Blocks.JUKEBOX.defaultBlockState(), Block.UPDATE_ALL);
+                if (over.getBlockEntity(a.offset(6, 0, 0)) instanceof net.minecraft.world.level.block.entity.JukeboxBlockEntity jb)
+                    jb.setTheItem(new net.minecraft.world.item.ItemStack(dev.umbra.registry.ModItems.MUSIC_DISCS.get("drowned_keeper").get()));
+                look(player, over, a.offset(3, 2, -4), a.offset(3, 0, 0));
+            }
+            case "knives" -> {
+                // 2.9: thrown knives in the air, point first, and one stuck in a wall
+                BlockPos a = base.above();
+                for (BlockPos p : BlockPos.betweenClosed(a.offset(-5, 0, -5), a.offset(5, 4, 4))) over.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
+                for (int y = 0; y < 3; y++)
+                    for (int x = -2; x <= 2; x++) over.setBlock(a.offset(x, y, 3), Blocks.STONE_BRICKS.defaultBlockState(), FLAGS);
+                double cx = a.getX() + 0.5, cy = a.getY() + 1.4, cz = a.getZ() + 0.5;
+                float[][] flights = {{90, 0, -1.2F, 0}, {-90, 15, 1.2F, 0.4F}, {0, -10, 0, 0.9F}, {150, 30, 0.6F, -0.8F}};
+                for (float[] k : flights)
+                    over.addFreshEntity(dev.umbra.gear.ThrownKnife.display(over, cx + k[2], cy + k[3] * 0.5, cz + k[3], k[0], k[1]));
+                over.addFreshEntity(dev.umbra.gear.ThrownKnife.display(over, cx - 1.0, cy - 0.2, a.getZ() + 2.9, 0, -8));
+                look(player, over, a.offset(0, 1, -3), a.offset(0, 1, 2));
             }
             default -> {
                 if (what.startsWith("depths_")) return depths(player, what);
