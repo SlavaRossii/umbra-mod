@@ -1935,8 +1935,8 @@ final class SmokeTest {
             check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.DIAMOND) == 1,
                     "2.9: there was treasure in it; beaten again, he fills it again round what was left and it shuts (" + n + " stacks)");
         } else check(false, "2.9: the Keepers' chest keeps things");
-        under.destroyBlock(tc, false);
-        check(under.getBlockState(tc).is(ModBlocks.KEEPERS_CHEST.get()) || under.getBlockState(tc).getBlock().defaultDestroyTime() < 0, "2.9: the Keepers' chest cannot be broken");
+        check(ModBlocks.KEEPERS_CHEST.get().defaultDestroyTime() < 0 && ModBlocks.KEEPERS_CHEST.get().getExplosionResistance() > 1000.0F,
+                "2.9: the Keepers' chest cannot be broken, by hand or by blast");
         // halls built before 2.9 are furnished the next time someone comes down
         under.setBlock(dev.umbra.depths.Depths.MARK_29, Blocks.DEEPSLATE_TILES.defaultBlockState(), Block.UPDATE_CLIENTS);
         under.setBlock(tc, Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
@@ -2000,6 +2000,7 @@ final class SmokeTest {
         }
         fake.stopUsingItem();
         fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        fake.setYHeadRot(0.0F);          // the next tests aim the fake player by its body alone
         // the discs: one for each boss's track, each plays in a jukebox
         var songs = server.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.JUKEBOX_SONG);
         int playable = 0;
