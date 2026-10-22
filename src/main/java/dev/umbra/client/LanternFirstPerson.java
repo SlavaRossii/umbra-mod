@@ -18,6 +18,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
@@ -36,10 +37,10 @@ public final class LanternFirstPerson {
     public record Hold(float raise, float out, float near, float lift, float lean) {}
 
     public static final Hold[] HOLDS = {
-            new Hold(0.10F, 0.04F, 0.10F, 0.0F, 35.0F),
-            new Hold(0.16F, 0.06F, 0.12F, 4.0F, 45.0F),
-            new Hold(0.06F, 0.02F, 0.06F, 0.0F, 25.0F),
-            new Hold(0.20F, 0.10F, 0.15F, 6.0F, 55.0F),
+            new Hold(0.42F, -0.20F, 0.26F, 0.0F, 40.0F),
+            new Hold(0.38F, -0.12F, 0.22F, 0.0F, 30.0F),
+            new Hold(0.48F, -0.25F, 0.30F, 0.0F, 50.0F),
+            new Hold(0.34F, -0.15F, 0.18F, 0.0F, 40.0F),
     };
     /** Which hold is drawn (the screenshots of the client check compare them). */
     public static int hold = 0;
@@ -96,9 +97,11 @@ public final class LanternFirstPerson {
 
         // the arm, as the game draws an empty hand, raised a little, set out to the side and leant over about the fist
         float sq = Mth.sqrt(attack);
+        // the hand's frame is not the screen's (the stack carries the camera's own transform): the fist is found in it
+        Matrix4f toHand = new Matrix4f(pose.last().pose()).invert();
         pose.pushPose();
         armTransform(pose, h, f, attack, sq, equip);
-        Vector3f fist = pose.last().pose().transformPosition(new Vector3f(f * -5.5F / 16.0F, 11.6F / 16.0F, 0.0F));
+        Vector3f fist = toHand.transformPosition(pose.last().pose().transformPosition(new Vector3f(f * -5.5F / 16.0F, 11.6F / 16.0F, 0.0F)));
         pose.popPose();
         pose.pushPose();
         pose.translate(fist.x(), fist.y(), fist.z());
@@ -122,7 +125,7 @@ public final class LanternFirstPerson {
         float sway = Mth.sin(sq * Mth.PI) * 25.0F + Mth.sin((mc.player.tickCount + event.getPartialTick()) * 0.08F) * 1.5F;
         pose.rotateDegrees(Axis.ZP, f * sway);
         pose.rotateDegrees(Axis.YP, f * -20.0F);
-        float s = 0.42F;
+        float s = 0.36F;
         pose.scale(s, s, s);
         pose.translate(0.0F, 0.5F - grip(stack) / 16.0F, 0.0F);
         mc.getItemModelResolver().updateForTopItem(ITEM, stack, ItemDisplayContext.NONE, mc.level, null, 0);
