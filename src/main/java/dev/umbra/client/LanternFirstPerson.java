@@ -42,7 +42,7 @@ public final class LanternFirstPerson {
             new Hold(0.45F, -0.22F, -0.12F, 0.0F, 70.0F),
             new Hold(0.38F, -0.10F, -0.08F, 0.0F, 65.0F),
     };
-    /** Which hold is drawn (the screenshots of the client check compare them). */
+    /** Which hold is drawn: the first (the others were tried side by side in the client check's screenshots). */
     public static int hold = 0;
 
     private static final ItemStackRenderState ITEM = new ItemStackRenderState();

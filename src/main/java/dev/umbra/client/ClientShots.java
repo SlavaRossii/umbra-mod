@@ -91,9 +91,8 @@ public final class ClientShots {
         }
         POSES.add(new Pose(String.format("%02d_hand_luminite_bow_drawn", n++), CameraType.FIRST_PERSON, true, false));
         // 2.8.1: the lantern in your own hand, in the holds there are to choose from, and looking down (it hangs upright)
-        for (int k = 0; k < LanternFirstPerson.HOLDS.length; k++)
-            POSES.add(new Pose(String.format("%02d_hold%d_luminite_lantern", n++, k), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes,
-                    "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
+        POSES.add(new Pose(String.format("%02d_hold0_luminite_lantern", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes,
+                "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
         POSES.add(new Pose(String.format("%02d_hold0_lantern_down", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "tp @a ~ ~ ~ 0 40",
                 "item replace entity @a weapon.mainhand with umbra:marta_lantern"));
         POSES.add(new Pose(String.format("%02d_hold0_lantern_offhand", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "tp @a ~ ~ ~ 0 0",
