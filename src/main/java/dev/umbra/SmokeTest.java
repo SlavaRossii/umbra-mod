@@ -1922,11 +1922,11 @@ final class SmokeTest {
             chest.unpackLootTable(null);
             boolean full = !chest.isEmpty();
             chest.clearContent();
-            chest.setItem(0, new ItemStack(Items.DIAMOND));
+            chest.setItem(0, new ItemStack(Items.NAUTILUS_SHELL, 3));
             dev.umbra.depths.Depths.lockTreasure(under);
             int n = 0;
             for (int i = 0; i < chest.getContainerSize(); i++) if (!chest.getItem(i).isEmpty()) n++;
-            check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.DIAMOND) == 1,
+            check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.NAUTILUS_SHELL) == 3,
                     "2.9: there was treasure in it; beaten again, he fills it again round what was left and it shuts (" + n + " stacks)");
         } else check(false, "2.9: the Keepers' chest keeps things");
         check(ModBlocks.KEEPERS_CHEST.get().defaultDestroyTime() < 0 && ModBlocks.KEEPERS_CHEST.get().getExplosionResistance() > 1000.0F,
