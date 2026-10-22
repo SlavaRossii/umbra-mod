@@ -37,10 +37,10 @@ public final class LanternFirstPerson {
     public record Hold(float raise, float out, float near, float lift, float lean) {}
 
     public static final Hold[] HOLDS = {
-            new Hold(0.42F, -0.20F, 0.26F, 0.0F, 40.0F),
-            new Hold(0.38F, -0.12F, 0.22F, 0.0F, 30.0F),
-            new Hold(0.48F, -0.25F, 0.30F, 0.0F, 50.0F),
-            new Hold(0.34F, -0.15F, 0.18F, 0.0F, 40.0F),
+            new Hold(0.35F, -0.15F, -0.10F, 0.0F, 65.0F),
+            new Hold(0.30F, -0.10F, -0.05F, 0.0F, 55.0F),
+            new Hold(0.40F, -0.20F, -0.15F, 0.0F, 70.0F),
+            new Hold(0.30F, -0.08F, 0.0F, 0.0F, 60.0F),
     };
     /** Which hold is drawn (the screenshots of the client check compare them). */
     public static int hold = 0;
@@ -120,7 +120,7 @@ public final class LanternFirstPerson {
 
         // the lantern, hanging from the fist: upright whatever the pitch, swaying when the arm swings
         pose.pushPose();
-        pose.translate(fist.x(), fist.y(), fist.z() + 0.04F);
+        pose.translate(fist.x(), fist.y(), fist.z() + 0.06F);
         pose.rotateDegrees(Axis.XP, event.getInterpolatedPitch());
         float sway = Mth.sin(sq * Mth.PI) * 25.0F + Mth.sin((mc.player.tickCount + event.getPartialTick()) * 0.08F) * 1.5F;
         pose.rotateDegrees(Axis.ZP, f * sway);
