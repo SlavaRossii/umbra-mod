@@ -90,6 +90,13 @@ public final class ClientShots {
             POSES.add(new Pose(String.format("%02d_hand_%s", n++, w.replaceAll("\\[.*", "_lit")), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "item replace entity @a weapon.mainhand with umbra:" + w));
         }
         POSES.add(new Pose(String.format("%02d_hand_luminite_bow_drawn", n++), CameraType.FIRST_PERSON, true, false));
+        // 2.8.1: the lantern in your own hand, in the holds there are to choose from, and looking down (it hangs upright)
+        POSES.add(new Pose(String.format("%02d_hold0_luminite_lantern", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes,
+                "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
+        POSES.add(new Pose(String.format("%02d_hold0_lantern_down", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "tp @a ~ ~ ~ 0 40",
+                "item replace entity @a weapon.mainhand with umbra:marta_lantern"));
+        POSES.add(new Pose(String.format("%02d_hold0_lantern_offhand", n++), CameraType.FIRST_PERSON, false, false, CLEAR, noSlimes, "tp @a ~ ~ ~ 0 0",
+                "item replace entity @a weapon.offhand with umbra:dawn_lantern", "item replace entity @a weapon.mainhand with umbra:gloom_sword"));
         for (String w : new String[]{"luminite_spear", "shepherd_scythe", "keeper_staff", "gloom_axe", "luminite_bow", "seal_of_watching", "seal_of_herding",
                 "luminite_lantern[umbra:lit=true]", "marta_lantern"}) {
             POSES.add(new Pose(String.format("%02d_third_%s", n++, w.replaceAll("\\[.*", "_lit")), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "item replace entity @a weapon.mainhand with umbra:" + w));
@@ -174,6 +181,8 @@ public final class ClientShots {
             return;
         }
         Pose p = POSES.get(pose);
+        java.util.regex.Matcher hold = java.util.regex.Pattern.compile("_hold(\\d)_").matcher(p.name);
+        LanternFirstPerson.hold = hold.find() ? Integer.parseInt(hold.group(1)) : 0;
         mc.options.setCameraType(p.camera);
         mc.options.fov().set(p.camera == CameraType.FIRST_PERSON ? 70 : 52);   // third person: zoomed in on the armour
         run(mc, p.commands);

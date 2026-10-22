@@ -49,8 +49,10 @@ Resources: `assets/umbra` (models, textures, lang en_us + ru_ru), `data/umbra` (
 - **Lanterns held out (2.8)**: `client.LanternHold` adds an arm pose (META-INF/enumextensions.json) with the arm at
   -1.25 rad. A held item turns with the arm; with only an X rotation the item's up axis ends at
   (0, sin(a - d), -cos(a - d)) in model space (a = arm angle, d = display X rotation), so it hangs upright when
-  d = a + 90 degrees: 18 for -72. First person draws no arm while an item is held, so the lantern's first-person
-  model carries its own sleeve and glove (`tools/gen_lanterns28.py` has a preview of the first-person view).
+  d = a + 90 degrees: 18 for -72. First person (2.8.1): `client.LanternFirstPerson` takes over
+  `RenderHandEvent` for a lantern: it draws the player's own arm (the game's empty-hand transforms, raised and set out
+  by a `Hold`), finds the fist by transforming the arm's end point, and hangs the 3D lantern there upright (turned by
+  the view pitch). The boss track restarts as soon as it ends (`UmbraClient.Game.afterMusic`).
 - **New journal entry**: add the id to `Journal.ENTRIES`, call `Journal.unlock(player, id)` where it happens,
   add `journal.umbra.<id>.title/.text` to both lang files.
 - **Feature switch**: add a `BooleanValue` to `UmbraConfig` and check it with `UmbraConfig.on(...)`.

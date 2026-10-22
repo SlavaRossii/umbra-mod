@@ -22,7 +22,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'music'))
 import synth as s  # noqa: E402
-from arrange import Song, mel, mixdown, write  # noqa: E402
+from arrange import Song, drive, mel, mixdown, write  # noqa: E402
 
 OUT = 'src/main/resources/assets/umbra/sounds/music/'
 
@@ -647,6 +647,7 @@ TRACKS = {'watcher': watcher, 'mimic_queen': mimic_queen, 'shepherd': shepherd, 
 
 def render(name, preview_dir=None):
     song, over = TRACKS[name]()
+    drive(song)
     under = over.pop('underwater', None)
     out = mixdown(song, over, underwater=under)
     os.makedirs(OUT, exist_ok=True)
