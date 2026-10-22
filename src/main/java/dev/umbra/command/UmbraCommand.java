@@ -61,7 +61,21 @@ public final class UmbraCommand {
                         .executes(ctx -> Showcase.show(ctx.getSource().getPlayerOrException(),
                                 com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "what")) ? 1 : 0)))
                 .then(journal())
-                .then(village()));
+                .then(village())
+                // 2.10: hold the bosses tagged "shot" in one moment of an action (the client check photographs them)
+                .then(Commands.literal("bosspose").then(Commands.argument("action", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 9))
+                        .then(Commands.argument("age", com.mojang.brigadier.arguments.IntegerArgumentType.integer(-1, 200))
+                                .executes(ctx -> {
+                                    int action = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(ctx, "action");
+                                    int age = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(ctx, "age");
+                                    int n = 0;
+                                    for (var e : ctx.getSource().getLevel().getAllEntities())
+                                        if (e instanceof dev.umbra.boss.UmbraBoss b && b.entityTags().contains("shot")) {
+                                            b.holdAction(action, age);
+                                            n++;
+                                        }
+                                    return n;
+                                })))));
     }
 
     /** /umbra journal all | reset — for testers. */

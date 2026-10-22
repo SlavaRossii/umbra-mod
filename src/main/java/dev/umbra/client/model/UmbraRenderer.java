@@ -52,7 +52,38 @@ public class UmbraRenderer<T extends Mob> extends MobRenderer<T, UmbraRenderStat
         state.attack = entity.getSwingAnimation(partialTick);
         state.hidden = entity.isInvisible();
         state.health = entity.getMaxHealth() <= 0 ? 1.0F : entity.getHealth() / entity.getMaxHealth();
+        state.hurt = entity.hurtTime > 0 ? Math.max(0.0F, (entity.hurtTime - partialTick) / 10.0F) : 0.0F;
+        state.boss = entity instanceof dev.umbra.boss.UmbraBoss;
+        if (entity instanceof dev.umbra.boss.UmbraBoss b) {
+            state.action = b.action();
+            state.actionAge = b.actionAge(partialTick);
+        } else {
+            state.action = 0;
+            state.actionAge = 1000.0F;
+        }
         if (extract != null) extract.accept(entity, state);
+    }
+
+    /**
+     * 2.10: a boss does not tip over when it dies: it sags, sinks into the ground and shrinks away into its smoke
+     * (the smoke is the server's, see UmbraBoss.tickDeath).
+     */
+    @Override
+    protected void setupRotations(UmbraRenderState state, com.mojang.blaze3d.vertex.PoseStack pose, float bodyRot, float scale) {
+        if (!state.boss || state.deathTime <= 0) {
+            super.setupRotations(state, pose, bodyRot, scale);
+            return;
+        }
+        float dying = state.deathTime;
+        state.deathTime = 0.0F;
+        super.setupRotations(state, pose, bodyRot, scale);
+        state.deathTime = dying;
+        float t = Math.min(1.0F, dying / dev.umbra.boss.UmbraBoss.DEATH_TICKS);
+        float shake = net.minecraft.util.Mth.sin(dying * 2.1F) * 0.04F * (1.0F - t);
+        pose.translate(shake, -t * t * 0.9F, 0.0F);
+        pose.rotateDegrees(com.mojang.math.Axis.XP, t * 18.0F);
+        float k = 1.0F - 0.55F * t * t;
+        pose.scale(k, k, k);
     }
 
     @Override

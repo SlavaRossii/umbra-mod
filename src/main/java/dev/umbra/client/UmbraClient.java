@@ -31,6 +31,10 @@ public final class UmbraClient {
                 return LanternHold.POSE.getValue();
             }
         }, dev.umbra.registry.ModItems.LUMINITE_LANTERN.get(), dev.umbra.registry.ModItems.MARTA_LANTERN.get(), dev.umbra.registry.ModItems.DAWN_LANTERN.get());
+        // 2.10: the weapons strike each their own way in first person
+        event.registerItem(WeaponSwings.of(WeaponSwings.Kind.SPEAR), dev.umbra.registry.ModItems.LUMINITE_SPEAR.get());
+        event.registerItem(WeaponSwings.of(WeaponSwings.Kind.SCYTHE), dev.umbra.registry.ModItems.SHEPHERD_SCYTHE.get());
+        event.registerItem(WeaponSwings.of(WeaponSwings.Kind.DAGGER), dev.umbra.registry.ModItems.SHADOW_DAGGER.get());
     }
 
     @SubscribeEvent

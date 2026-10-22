@@ -46,6 +46,29 @@ public class DrownedKeeper extends UmbraBoss {
     private final BossMoves.Bursts bursts = new BossMoves.Bursts();
     private int whirl, murk, call, rush, burst;
 
+    /** 2.10: what he throws from afar: a harpoon of bone on a chain of bubbles; who is struck is hauled in to him. */
+    private final BossMoves.Style harpoon = new BossMoves.Style(ParticleTypes.BUBBLE, ParticleTypes.NAUTILUS, 0.0, ParticleTypes.BUBBLE_POP, SoundEvents.TRIDENT_HIT)
+            .onHit((l, p) -> {
+                Vec3 d = this.position().subtract(p.position());
+                if (d.lengthSqr() > 1.0E-4) {
+                    Vec3 v = d.normalize().scale(1.3);
+                    p.push(v.x, 0.25, v.z);
+                    p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
+                }
+            });
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.4, 0), phase() == 3 ? 2 : 1, 14.0F, 1.0, 6.0F, harpoon);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.TRIDENT_THROW.value(), SoundSource.HOSTILE, 1.5F, 0.6F);
+        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+    }
+
+    @Override
+    protected double rangedFrom() {
+        return 8.0;
+    }
+
     public DrownedKeeper(EntityType<? extends DrownedKeeper> type, Level level) {
         super(type, level, BossEvent.BossBarColor.BLUE);
         this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.06F, 0.1F, false);
@@ -109,8 +132,10 @@ public class DrownedKeeper extends UmbraBoss {
         bursts.tick(level, this, 7.0F);
         LivingEntity target = this.getTarget();
         if (target == null) return;
+        if (rangedTick(level, target)) return;
         if (++whirl >= 170) {
             whirl = 0;
+            startAction(ACT_SUMMON);
             BossMoves.pull(level, this, 14, 1.0);
             level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, this.getX(), this.getY() + 1, this.getZ(), 80, 4.0, 2.0, 4.0, 0.3);
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CONDUIT_ATTACK_TARGET, SoundSource.HOSTILE, 2.0F, 0.5F);
@@ -130,11 +155,13 @@ public class DrownedKeeper extends UmbraBoss {
         }
         if (phase >= 2 && ++call >= 300) {
             call = 0;
+            startAction(ACT_SUMMON);
             if (level.getEntitiesOfClass(Acolyte.class, this.getBoundingBox().inflate(20)).size() < 4)
                 BossMoves.summon(level, this, ModEntities.ACOLYTE.get(), 2, target);
         }
         if (phase == 3 && ++rush >= 80 && this.distanceTo(target) > 4) {
             rush = 0;
+            startAction(ACT_SLAM);
             Vec3 d = target.position().subtract(this.position()).normalize().scale(1.4);
             this.setDeltaMovement(d);
             level.sendParticles(ParticleTypes.BUBBLE, this.getX(), this.getY() + 1, this.getZ(), 30, 0.5, 0.5, 0.5, 0.2);

@@ -81,6 +81,16 @@ public final class ClientShots {
                     night ? "time set 18000" : "time set 6000", night ? "effect clear @a minecraft:night_vision" : "say day",
                     "execute as @p at @p run summon umbra:" + who + " ^ ^ ^7 {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[1] + "f,0f]}"));
         }
+        // 2.10: the bosses caught in the middle of what they do: winding up a throw, gathering a gaze, a roar
+        for (String[] v : new String[][]{{"watcher", "6", "22", "180"}, {"mimic_queen", "2", "15", "150"}, {"shepherd", "2", "15", "160"},
+                {"architect", "2", "16", "150"}, {"architect", "3", "20", "200"}, {"primordial_shadow", "2", "15", "160"},
+                {"primordial_shadow", "4", "16", "200"}, {"drowned_keeper", "2", "15", "150"}, {"fallen_keeper", "2", "15", "160"}}) {
+            String at = v[0].equals("primordial_shadow") ? "^ ^1 ^9" : "^ ^ ^7";
+            POSES.add(new Pose(String.format("%02d_act_%s_%s", n++, v[0], v[1]), CameraType.FIRST_PERSON, false, true, CLEAR, away, fp,
+                    "time set 6000", "say day",
+                    "execute as @p at @p run summon umbra:" + v[0] + " " + at + " {NoAI:1b,PersistenceRequired:1b,Tags:[\"shot\"],Rotation:[" + v[3] + "f,0f]}",
+                    "umbra bosspose " + v[1] + " " + v[2]));
+        }
         POSES.add(new Pose(String.format("%02d_clear", n++), CameraType.FIRST_PERSON, false, false, CLEAR, away, "time set 6000",
                 "effect give @a minecraft:night_vision infinite 0 true"));
         for (String w : new String[]{"gloom_sword", "despair_blade", "shadow_dagger", "shadow_knife", "gloom_axe", "gloom_pickaxe", "gloom_shovel",

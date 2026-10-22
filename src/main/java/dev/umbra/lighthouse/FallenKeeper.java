@@ -52,6 +52,22 @@ public class FallenKeeper extends UmbraBoss {
     private int beamTimer, flareTimer, rollTimer, pullTimer;
     private boolean echoes;
 
+    /** 2.10: what he sends from afar: sparks of the lamp he keeps, which blind for a moment. */
+    private static final dev.umbra.boss.BossMoves.Style SPARKS = new dev.umbra.boss.BossMoves.Style(ParticleTypes.END_ROD, ParticleTypes.GLOW, 0.0, ParticleTypes.END_ROD, SoundEvents.AMETHYST_BLOCK_BREAK)
+            .homing(0.02, 70)
+            .onHit((l, p) -> p.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0)));
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        bolts.shoot(level, this.getEyePosition().add(0, 0.4, 0), target.getEyePosition(), 2 + phase(), 36.0F, 0.8, 6.0F, SPARKS);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 1.2F, 1.6F);
+    }
+
+    @Override
+    protected double rangedFrom() {
+        return 9.0;
+    }
+
     public FallenKeeper(EntityType<? extends FallenKeeper> type, Level level) {
         super(type, level, BossEvent.BossBarColor.YELLOW);
         this.xpReward = 200;
@@ -113,6 +129,7 @@ public class FallenKeeper extends UmbraBoss {
         beams.tick(level, this, BEAM);
         LivingEntity target = this.getTarget();
         if (target == null) return;
+        if (rangedTick(level, target)) return;
         // the lamp above marks where you stand, and strikes
         if (++beamTimer >= (phase == 1 ? 90 : 70)) {
             beamTimer = 0;
@@ -126,6 +143,7 @@ public class FallenKeeper extends UmbraBoss {
         // the lantern flares: it burns those who took the dark; then he cannot see for a moment
         if (++flareTimer >= 200) {
             flareTimer = 0;
+            startAction(ACT_BEAM);
             flare(level);
         }
         // phase 2 on: a beam rolls along the ground from him to you
@@ -141,6 +159,7 @@ public class FallenKeeper extends UmbraBoss {
         // phase 3: pulled in, the ground bursts round him
         if (phase == 3 && ++pullTimer >= 160) {
             pullTimer = 0;
+            startAction(ACT_SUMMON);
             BossMoves.pull(level, this, 14, 1.2);
             BlockPos c = this.blockPosition();
             for (int a = 0; a < 10; a++) {
