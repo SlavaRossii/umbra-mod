@@ -153,20 +153,21 @@ def build(name, with_arm):
 
 
 def write():
+    """2.8.1: no first-person model with an arm any more: in first person the player's own arm is drawn (with their
+    skin) and the 3D lantern hangs from the fist (dev.umbra.client.LanternFirstPerson)."""
     materials()
     for name in LANTERNS:
-        for fp in (False, True):
-            m = build(name, fp)
-            tex = {k: "umbra:item/mat_" + k for k in sorted(m.used)}
-            base = name.replace("_off", "")
-            tex["particle"] = "umbra:item/" + base
-            g.model(MI + name + ('_fp' if fp else '_3d') + '.json', "minecraft:block/block", tex, m.els,
-                    {"display": DISPLAY_FP if fp else DISPLAY_3D, "gui_light": "front"})
+        m = build(name, False)
+        tex = {k: "umbra:item/mat_" + k for k in sorted(m.used)}
+        base = name.replace("_off", "")
+        tex["particle"] = "umbra:item/" + base
+        g.model(MI + name + '_3d.json', "minecraft:block/block", tex, m.els, {"display": DISPLAY_3D, "gui_light": "front"})
+        if os.path.exists(MI + name + '_fp.json'):
+            os.remove(MI + name + '_fp.json')
 
     def pick(base):
         return {"type": "minecraft:select", "property": "minecraft:display_context",
-                "cases": [{"when": ["gui"], "model": {"type": "minecraft:model", "model": "umbra:item/" + base.replace("_off", "")}},
-                          {"when": ["firstperson_righthand", "firstperson_lefthand"], "model": {"type": "minecraft:model", "model": "umbra:item/" + base + "_fp"}}],
+                "cases": [{"when": ["gui"], "model": {"type": "minecraft:model", "model": "umbra:item/" + base.replace("_off", "")}}],
                 "fallback": {"type": "minecraft:model", "model": "umbra:item/" + base + "_3d"}}
     json.dump({"model": {"type": "minecraft:condition", "property": "minecraft:has_component", "component": "umbra:lit",
                          "on_true": pick("luminite_lantern"), "on_false": pick("luminite_lantern_off")}},
@@ -175,85 +176,6 @@ def write():
         json.dump({"model": pick(base)}, open(ITEMS + base + '.json', 'w'), indent=2)
 
 
-# ------------------------------------------------------------------ preview: the first-person view, as the game builds it
-def first_person(model, W=854, H=480, right=True, bg=(96, 120, 150)):
-    """The vanilla first-person transform: (+-0.56, -0.52, -0.72), then the display transform (translate, rotate XYZ,
-    scale), then -0.5; a 70 degree vertical field of view."""
-    disp = model["display"]["firstperson_righthand" if right else "firstperson_lefthand"]
-    rx, ry, rz = (math.radians(a) for a in disp["rotation"])
-    if not right:
-        ry, rz = -ry, -rz
-    tx, ty, tz = (v / 16 for v in disp["translation"])
-    if not right:
-        tx = -tx
-    sc = disp["scale"]
-    f = (H / 2) / math.tan(math.radians(35))
-
-    def R(p):
-        x, y, z = p
-        x, y = x * math.cos(rz) - y * math.sin(rz), x * math.sin(rz) + y * math.cos(rz)
-        x, z = x * math.cos(ry) + z * math.sin(ry), -x * math.sin(ry) + z * math.cos(ry)
-        y, z = y * math.cos(rx) - z * math.sin(rx), y * math.sin(rx) + z * math.cos(rx)
-        return x, y, z
-
-    def to_view(p):
-        x, y, z = p[0] / 16 - 0.5, p[1] / 16 - 0.5, p[2] / 16 - 0.5
-        x, y, z = x * sc[0], y * sc[1], z * sc[2]
-        x, y, z = R((x, y, z))
-        return ((0.56 if right else -0.56) + tx + x, -0.52 + ty + y, -0.72 + tz + z)
-
-    def elrot(p, r):
-        if not r:
-            return p
-        o, a = r["origin"], math.radians(r["angle"])
-        x, y, z = p[0] - o[0], p[1] - o[1], p[2] - o[2]
-        if r["axis"] == "y":
-            x, z = x * math.cos(a) + z * math.sin(a), -x * math.sin(a) + z * math.cos(a)
-        elif r["axis"] == "x":
-            y, z = y * math.cos(a) - z * math.sin(a), y * math.sin(a) + z * math.cos(a)
-        else:
-            x, y = x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a)
-        return (x + o[0], y + o[1], z + o[2])
-    img = Image.new('RGB', (W, H), bg)
-    d = ImageDraw.Draw(img)
-    pieces = []
-    for e in model["elements"]:
-        (x0, y0, z0), (x1, y1, z1) = e["from"], e["to"]
-        mat = next(iter(e["faces"].values()))["texture"][1:]
-        col = MATS.get(mat, ((150, 150, 150), 0))[0]
-        faces = {"up": ([(x0, y1, z0), (x1, y1, z0), (x1, y1, z1), (x0, y1, z1)], 1.0),
-                 "down": ([(x0, y0, z0), (x1, y0, z0), (x1, y0, z1), (x0, y0, z1)], 0.5),
-                 "north": ([(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0)], 0.8),
-                 "south": ([(x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)], 0.8),
-                 "west": ([(x0, y0, z0), (x0, y0, z1), (x0, y1, z1), (x0, y1, z0)], 0.65),
-                 "east": ([(x1, y0, z0), (x1, y0, z1), (x1, y1, z1), (x1, y1, z0)], 0.65)}
-        for side, (cs, k) in faces.items():
-            vs = [to_view(elrot(c, e.get("rotation"))) for c in cs]
-            if any(v[2] > -0.05 for v in vs):
-                continue
-            pts = [(W / 2 + v[0] / -v[2] * f, H / 2 - v[1] / -v[2] * f) for v in vs]
-            depth = sum(v[2] for v in vs) / 4
-            kk = 1.0 if e.get("light_emission") else k
-            pieces.append((depth, pts, tuple(int(c * kk) for c in col)))
-    pieces.sort(key=lambda q: q[0])
-    for _, pts, col in pieces:
-        d.polygon(pts, fill=col)
-    d.line([(W / 2 - 6, H / 2), (W / 2 + 6, H / 2)], fill=(255, 255, 255))
-    d.line([(W / 2, H / 2 - 6), (W / 2, H / 2 + 6)], fill=(255, 255, 255))
-    return img
-
-
-def preview(out):
-    tiles = [first_person(json.load(open(MI + n + '_fp.json'))) for n in ("luminite_lantern", "marta_lantern", "dawn_lantern")]
-    tiles.append(first_person(json.load(open(MI + 'luminite_lantern_fp.json')), right=False))
-    sheet = Image.new('RGB', (854 * 2, 480 * 2))
-    for i, t in enumerate(tiles):
-        sheet.paste(t, ((i % 2) * 854, (i // 2) * 480))
-    sheet.save(out)
-
-
 if __name__ == '__main__':
     write()
-    if len(sys.argv) > 2 and sys.argv[1] == '--preview':
-        preview(sys.argv[2])
     print('ok')

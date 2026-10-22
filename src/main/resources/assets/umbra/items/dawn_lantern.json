@@ -11,16 +11,6 @@
           "type": "minecraft:model",
           "model": "umbra:item/dawn_lantern"
         }
-      },
-      {
-        "when": [
-          "firstperson_righthand",
-          "firstperson_lefthand"
-        ],
-        "model": {
-          "type": "minecraft:model",
-          "model": "umbra:item/dawn_lantern_fp"
-        }
       }
     ],
     "fallback": {
