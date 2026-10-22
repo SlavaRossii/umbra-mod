@@ -187,7 +187,7 @@ DEFAULT_BUS = {
     'choir': dict(gain=0.8, verb=0.55, duck=0.25, hp=180),
     'fx': dict(gain=0.9, verb=0.35, duck=0.0, hp=20),
     'keys': dict(gain=0.9, verb=0.35, duck=0.2, hp=90),
-    'drive': dict(gain=1.0, verb=0.10, duck=0.0, hp=320),
+    'drive': dict(gain=1.0, verb=0.10, duck=0.0, hp=320, lp=6500),
     'fill': dict(gain=1.0, verb=0.22, duck=0.0, hp=55),
 }
 
@@ -209,7 +209,7 @@ def sidechain(song, depth):
 
 # how loud each bus sits in the mix (RMS while it plays); a bus's 'gain' in the spec is a trim on this
 TARGET = {'drums': 0.19, 'perc': 0.08, 'bass': 0.12, 'ost': 0.11, 'arp': 0.095, 'keys': 0.10, 'pad': 0.07,
-          'lead': 0.14, 'choir': 0.09, 'fx': 0.085, 'drive': 0.05, 'fill': 0.08}
+          'lead': 0.14, 'choir': 0.09, 'fx': 0.085, 'drive': 0.042, 'fill': 0.08}
 
 
 def drive(song):
