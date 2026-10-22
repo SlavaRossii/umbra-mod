@@ -61,7 +61,6 @@ public class DrownedKeeper extends UmbraBoss {
     protected void rangedAttack(ServerLevel level, LivingEntity target) {
         bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.4, 0), phase() == 3 ? 2 : 1, 14.0F, 1.0, 6.0F, harpoon);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.TRIDENT_THROW.value(), SoundSource.HOSTILE, 1.5F, 0.6F);
-        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
     }
 
     @Override

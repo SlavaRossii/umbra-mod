@@ -47,7 +47,6 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         net.minecraft.world.phys.Vec3 from = this.position().add(this.getLookAngle().scale(1.2)).add(0, 0.8, 0);
         bolts.shoot(level, from, at, phase() == 1 ? 3 : 5, phase() == 1 ? 24.0F : 40.0F, 0.75, 6.0F, SICKLES);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 1.5F, 0.5F);
-        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
     }
 
     @Override

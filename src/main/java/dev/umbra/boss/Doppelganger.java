@@ -45,7 +45,6 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
             bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.4, 0), phase() == 1 ? 3 : 4, 20.0F, 1.1, 5.0F, KNIVES);
             level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.TRIDENT_THROW.value(), net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 1.5F);
         }
-        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
     }
 
     @Override

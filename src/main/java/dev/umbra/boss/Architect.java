@@ -59,7 +59,6 @@ public class Architect extends UmbraBoss implements LightSensitive {
         int n = phase() == 1 ? 3 : 5;
         bolts.shoot(level, this.getEyePosition().add(0, 0.6, 0), target.position(), n, phase() == 1 ? 26.0F : 40.0F, 0.7, 7.0F, stones);
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.HOSTILE, 1.0F, 0.5F);
-        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
     }
 
     @Override
