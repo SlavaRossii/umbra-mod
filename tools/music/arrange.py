@@ -59,9 +59,14 @@ def mel(text):
     return out
 
 
+# 2.8.1: more drive: every track a touch faster, and a driving layer over every bar that has drums (see drive())
+TEMPO = 1.07
+
+
 class Song:
     def __init__(self, name, bpm, beats=4, bars=44, tail=6.0):
         """bpm counts `beats` per bar (quarters in 4/4; eighths in 6/8 and 7/8)."""
+        bpm = bpm * TEMPO      # 2.8.1: everything a little faster, for more drive
         self.name, self.bpm, self.beats, self.bars = name, bpm, beats, bars
         self.beat = 60.0 / bpm
         self.length = bars * beats * self.beat
@@ -182,6 +187,8 @@ DEFAULT_BUS = {
     'choir': dict(gain=0.8, verb=0.55, duck=0.25, hp=180),
     'fx': dict(gain=0.9, verb=0.35, duck=0.0, hp=20),
     'keys': dict(gain=0.9, verb=0.35, duck=0.2, hp=90),
+    'drive': dict(gain=1.0, verb=0.10, duck=0.0, hp=320),
+    'fill': dict(gain=1.0, verb=0.22, duck=0.0, hp=55),
 }
 
 
@@ -201,8 +208,44 @@ def sidechain(song, depth):
 
 
 # how loud each bus sits in the mix (RMS while it plays); a bus's 'gain' in the spec is a trim on this
-TARGET = {'drums': 0.16, 'perc': 0.07, 'bass': 0.11, 'ost': 0.11, 'arp': 0.095, 'keys': 0.10, 'pad': 0.075,
-          'lead': 0.14, 'choir': 0.095, 'fx': 0.085}
+TARGET = {'drums': 0.19, 'perc': 0.08, 'bass': 0.12, 'ost': 0.11, 'arp': 0.095, 'keys': 0.10, 'pad': 0.07,
+          'lead': 0.14, 'choir': 0.09, 'fx': 0.085, 'drive': 0.05, 'fill': 0.08}
+
+
+def drive(song):
+    """2.8.1: action. Over every bar where the drums play: a running shaker and hat in sixteenths (eighths in 6/8 and
+    7/8), a tom fill into every fourth bar and into every break, and a crash where the drums come back in."""
+    if 'drums' not in song.buses:
+        return
+    d = song.buses['drums']
+    energy = []
+    for b in range(song.bars):
+        i, j = int(song.at(b) * s.SR), int(song.at(b + 1) * s.SR)
+        energy.append(float(np.sqrt(np.mean(d[:, i:j] ** 2))) if j > i else 0.0)
+    ref = float(np.median([e for e in energy if e > 1e-4] or [0.0]))
+    on = [e > 0.45 * ref for e in energy]
+    sub = 4 if song.beats <= 4 else 2
+    steps = song.beats * sub
+    run = 0
+    for b in range(song.bars):
+        if not on[b]:
+            run = 0
+            continue
+        if run == 0 or run % 8 == 0:
+            song.hit('fill', s.cymbal(0.9, 2.0), b, 0, 0.25)
+        run += 1
+        for k in range(steps):
+            accent = 1.0 if k % sub == 0 else (0.75 if k % sub == sub // 2 else 0.5)
+            song.hit('drive', s.shaker(accent), b, k / sub, -0.25 if k % 2 else 0.25)
+            if k % sub == sub // 2:
+                song.hit('drive', s.hat(0.7 * accent), b, k / sub, 0.35)
+        last = b + 1 >= song.bars or not on[b + 1]
+        if run % 4 == 0 or last:
+            fill = [190.0, 160.0, 130.0, 105.0, 90.0, 78.0]
+            n = 4 if sub == 4 else 4
+            for k in range(n):
+                beat = song.beats - 1 + k / n
+                song.hit('fill', s.tom(0.55 + 0.45 * k / (n - 1), fill[k]), b, beat, (k / (n - 1) - 0.5) * 0.6)
 
 
 def active_rms(x):
@@ -241,7 +284,7 @@ def mixdown(song, overrides=None, ir_seconds=2.6, master_lp=11000.0, underwater=
     master = s.peak(master, 1800, 0.8, 2.5)
     if underwater is not None:
         master = underwater(song, master)
-    master = s.compress(master, 0.55, 2.5, 0.01, 0.2)
+    master = s.compress(master, 0.5, 3.0, 0.008, 0.15)
     # fold the tail back onto the start: the loop has no seam
     L = s.n_of(song.length)
     out = master[:, :L].copy()

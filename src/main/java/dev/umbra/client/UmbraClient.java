@@ -118,12 +118,20 @@ public final class UmbraClient {
         /** 2.4: music of its own in the Underside and in a boss fight; 2.8: each boss its own track (the nearest one). */
         private static String lastMusic = "";
         private static boolean stopBossMusic;
+        /** 2.8.1: the boss's track, while a boss is near: it starts again the moment it ends, for as long as the fight lasts. */
+        private static net.minecraft.sounds.Music bossMusic;
 
         @SubscribeEvent
         static void afterMusic(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
-            if (!stopBossMusic) return;
-            stopBossMusic = false;
-            net.minecraft.client.Minecraft.getInstance().getMusicManager().stopPlaying();
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            var music = mc.getMusicManager();
+            if (stopBossMusic) {
+                stopBossMusic = false;
+                music.stopPlaying();
+                return;
+            }
+            if (bossMusic != null && mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.MUSIC) > 0.0F && !music.isPlayingMusic(bossMusic))
+                music.startPlaying(bossMusic);
         }
 
         @SubscribeEvent
@@ -140,10 +148,12 @@ public final class UmbraClient {
                 }
             }
             String now;
+            if (nearest == null) bossMusic = null;
             if (nearest != null) {
                 String id = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(nearest.getType()).getPath();
                 var track = dev.umbra.registry.ModSounds.BOSS_MUSIC.getOrDefault(id, dev.umbra.registry.ModSounds.MUSIC_BOSS);
-                event.setMusic(new net.minecraft.sounds.Music(track, 0, 0, true));
+                if (bossMusic == null || !bossMusic.sound().equals(track)) bossMusic = new net.minecraft.sounds.Music(track, 0, 0, true);
+                event.setMusic(bossMusic);
                 now = track.getId().getPath();
             } else if (dev.umbra.underside.Underside.is(mc.level)) {
                 event.setMusic(new net.minecraft.sounds.Music(dev.umbra.registry.ModSounds.MUSIC_UNDERSIDE, 1200, 3600, false));
