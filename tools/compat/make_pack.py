@@ -36,6 +36,9 @@ def main():
             print(f"skipped {slug}, asked for by {why}: no NeoForge build (a Fabric-only dependency in its listing)")
             continue
         v = vs[0]
+        if v["project_id"] in done:       # asked for by its name and needed by another under its id: once is enough
+            continue
+        done.add(v["project_id"])
         f = next((x for x in v["files"] if x["primary"]), v["files"][0])
         proj = fm.get(f"/project/{v['project_id']}")
         fm.download(f["url"], f"{stage}/mods/{f['filename']}")
