@@ -175,7 +175,6 @@ public abstract class UmbraBoss extends Monster {
         bossTick(level);
     }
 
-<<<<<<< HEAD
     // --- server: a boss meant for one survivor stands up to a party -------------------------------------
     public static final net.minecraft.resources.Identifier PARTY = net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "party");
     /** Extra health per fighter beyond the first, and the most it can grow to (×3). */
@@ -199,14 +198,14 @@ public abstract class UmbraBoss extends Monster {
         attr.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(PARTY, want,
                 net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         this.setHealth(ratio * this.getMaxHealth());
-=======
+    }
+
     /** For the smoke test: a target its own eyes would not pick (a fake player), kept through its target goals. */
     private net.minecraft.world.entity.LivingEntity pinned;
 
     public void pinTarget(net.minecraft.world.entity.LivingEntity target) {
         pinned = target;
         this.setTarget(target);
->>>>>>> origin/main
     }
 
     // --- 1.8.2: the window after a big move ---------------------------------------------------------------
