@@ -56,11 +56,13 @@ jobs:
       - name: Virtual display
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers x11-apps imagemagick pulseaudio > /dev/null
+          sudo apt-get install -y -qq xvfb mesa-utils mesa-utils-extra libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers x11-apps imagemagick pulseaudio > /dev/null
           Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -noreset > /dev/null 2>&1 &
           pulseaudio --start --exit-idle-time=-1 || true
           pactl load-module module-null-sink sink_name=null || true
           sleep 3
+          DISPLAY=:99 glxinfo -B 2>&1 | head -12 || true
+          DISPLAY=:99 eglinfo -B 2>&1 | head -20 || true
 
       - name: Run the client to the title screen
         env:
@@ -70,6 +72,8 @@ jobs:
           MESA_GLSL_VERSION_OVERRIDE: '460'
           __GLX_VENDOR_LIBRARY_NAME: 'mesa'
           SDL_VIDEO_X11_FORCE_EGL: '1'
+          SDL_VIDEO_FORCE_EGL: '1'
+          EGL_PLATFORM: 'x11'
         run: |
           printf "onboardAccessibility:false\nnarrator:0\njoinedFirstServer:true\n" > run-client/options.txt
           ( timeout 20m ./gradlew runClientCheck --stacktrace > client-gradle.log 2>&1; echo "client exited with $?" >> client-gradle.log ) &
@@ -100,6 +104,8 @@ jobs:
           MESA_GLSL_VERSION_OVERRIDE: '460'
           __GLX_VENDOR_LIBRARY_NAME: 'mesa'
           SDL_VIDEO_X11_FORCE_EGL: '1'
+          SDL_VIDEO_FORCE_EGL: '1'
+          EGL_PLATFORM: 'x11'
         run: |
           mkdir -p run-client/shots
           rm -f run-client/shots/*
