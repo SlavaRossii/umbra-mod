@@ -1451,6 +1451,7 @@ final class SmokeTest {
             // 2.10: but not while its eye is open wide (spent after its gaze, say): then the whole blow lands, and more
             w.setHealth(w.getMaxHealth());
             w.stun(40);
+            w.invulnerableTime = 0;          // the last blow's grace would swallow this one
             float open = w.getHealth();
             w.hurtServer(level, level.damageSources().magic(), 20.0F);
             check(w.eyeOpen() && open - w.getHealth() >= 20.0F, "2.10: while its eye is open wide every blow lands whole (" + (open - w.getHealth()) + " of 20)");
@@ -2418,13 +2419,20 @@ final class SmokeTest {
         check(struck >= 1 && bolts.size() == 0, "2.10: a boss's bolts fly at their mark, strike it and burst on the floor (" + struck + " hit)");
         var homing = new dev.umbra.boss.BossMoves.Bolts();
         homing.shoot(level, new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5), new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() - 8.5), 1, 0.0F, 0.4, 1.0F,
-                style.homing(0.12, 120));
+                new dev.umbra.boss.BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SMOKE, net.minecraft.core.particles.ParticleTypes.CRIT, 0.0,
+                        net.minecraft.core.particles.ParticleTypes.CRIT, net.minecraft.sounds.SoundEvents.ARROW_HIT).homing(0.12, 120));
         int turned = 0;
         for (int i = 0; i < 120 && homing.size() > 0; i++) turned += homing.tick(level, watcher, java.util.List.of(fake));
-        check(turned == 1, "2.10: a homing bolt turns after you even when thrown wide");
+        check(turned == 1, "2.10: a homing bolt turns after you even when thrown wide (" + homing.size() + " still flying)");
         // far off, a boss winds up and strikes from where it stands
         var queen = ModEntities.MIMIC_QUEEN.get().create(level, EntitySpawnReason.MOB_SUMMONED);
         if (queen != null) {
+            for (int z = -9; z <= 9; z++)
+                for (int y = 0; y <= 4; y++)
+                    for (int x = -2; x <= 2; x++) level.setBlock(c.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            for (int z = -9; z <= 9; z++)
+                for (int x = -2; x <= 2; x++) level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            fake.setHealth(fake.getMaxHealth());
             queen.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 7.5, 0, 0);
             level.addFreshEntity(queen);
             queen.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 600, 9));   // she stays where she is
@@ -2442,7 +2450,9 @@ final class SmokeTest {
                 flew = Math.max(flew, queen.bolts().size());
             }
             check(wound && action == dev.umbra.boss.UmbraBoss.ACT_CAST && flew >= 3,
-                    "2.10: from afar the Queen winds up (seen) and spits her coins instead of crossing the room (" + flew + " coins)");
+                    "2.10: from afar the Queen winds up (seen) and spits her coins instead of crossing the room (" + flew + " coins; wound " + wound
+                            + ", action " + action + ", target " + (queen.getTarget() == fake) + ", sight " + queen.hasLineOfSight(fake) + ", "
+                            + String.format("%.1f", queen.distanceTo(fake)) + " off, hidden " + queen.isDisguised() + ", fake alive " + fake.isAlive() + ")");
             // and a boss dies slowly: it sinks into its smoke and is gone after a couple of seconds
             queen.setHealth(0.0F);
             queen.die(level.damageSources().magic());
