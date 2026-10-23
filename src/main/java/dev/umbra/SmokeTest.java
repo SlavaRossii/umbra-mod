@@ -2440,7 +2440,6 @@ final class SmokeTest {
             var mark = ModEntities.ACOLYTE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             mark.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
             mark.setNoAi(true);
-            mark.setInvulnerable(true);
             level.addFreshEntity(mark);
             queen.pinTarget(mark);
             boolean wound = false;
