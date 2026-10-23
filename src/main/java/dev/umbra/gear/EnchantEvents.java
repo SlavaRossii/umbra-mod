@@ -123,6 +123,12 @@ public final class EnchantEvents {
 
     public static void onIncoming(LivingIncomingDamageEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || !hasAegis(player)) return;
+        // 2.12: raised in the last moment, it turns the blow back whole
+        if (event.getSource().getEntity() instanceof LivingEntity src && event.getSource().getDirectEntity() == src
+                && WeaponArts.parry((ServerLevel) player.level(), player, src, event.getAmount())) {
+            event.setCanceled(true);
+            return;
+        }
         if (!(event.getSource().getEntity() instanceof net.minecraft.world.entity.Mob mob)) return;
         event.setAmount(event.getAmount() * 0.5F);
         boolean main = player.getMainHandItem().is(ModItems.LUMINITE_SHIELD.get());
