@@ -9,7 +9,7 @@ on:
       sets:
         description: "Sets to try (JSON list of names from tools/compat/sets.json)"
         required: false
-        default: '["sound", "visual", "shaders"]'
+        default: '["light", "sodium_light", "shaders", "spooky", "pack"]'
 
 permissions:
   contents: write
@@ -56,8 +56,8 @@ jobs:
       - name: Virtual display
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers x11-apps imagemagick pulseaudio > /dev/null
-          Xvfb :99 -screen 0 1280x720x24 +extension GLX +render -noreset > /dev/null 2>&1 &
+          sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers x11-apps imagemagick pulseaudio > /dev/null
+          Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -noreset > /dev/null 2>&1 &
           pulseaudio --start --exit-idle-time=-1 || true
           pactl load-module module-null-sink sink_name=null || true
           sleep 3
@@ -69,6 +69,7 @@ jobs:
           MESA_GL_VERSION_OVERRIDE: '4.6'
           MESA_GLSL_VERSION_OVERRIDE: '460'
           __GLX_VENDOR_LIBRARY_NAME: 'mesa'
+          SDL_VIDEO_X11_FORCE_EGL: '1'
         run: |
           printf "onboardAccessibility:false\nnarrator:0\njoinedFirstServer:true\n" > run-client/options.txt
           ( timeout 20m ./gradlew runClientCheck --stacktrace > client-gradle.log 2>&1; echo "client exited with $?" >> client-gradle.log ) &
@@ -76,6 +77,7 @@ jobs:
             sleep 5
             if [ -f run-client/umbra-clientcheck.txt ]; then break; fi
             if grep -q "client exited" client-gradle.log 2>/dev/null; then break; fi
+            if [ "$i" = 30 ] || [ "$i" = 60 ]; then import -window root -display :99 "loading-$i.png" || true; fi
           done
           import -window root -display :99 title.png || true
           sleep 15
@@ -97,6 +99,7 @@ jobs:
           MESA_GL_VERSION_OVERRIDE: '4.6'
           MESA_GLSL_VERSION_OVERRIDE: '460'
           __GLX_VENDOR_LIBRARY_NAME: 'mesa'
+          SDL_VIDEO_X11_FORCE_EGL: '1'
         run: |
           mkdir -p run-client/shots
           rm -f run-client/shots/*
@@ -110,6 +113,7 @@ jobs:
             done
             if [ -f run-client/umbra-clientshots.txt ]; then break; fi
             if grep -q "client exited" shots-gradle.log 2>/dev/null; then break; fi
+            if [ "$i" = 150 ]; then import -window root -display :99 "world-150.png" || true; fi
             sleep 1
           done
           cp run-client/logs/latest.log client-shots.log 2>/dev/null || true
@@ -124,12 +128,13 @@ jobs:
             echo; echo "## Result"
             if [ -f run-client/umbra-clientcheck.txt ]; then echo "- title screen: reached"; else echo "- title screen: NOT reached"; fi
             if [ -f run-client/umbra-clientshots.txt ]; then echo "- world tour: done ($(ls run-client/shots/*.jpg 2>/dev/null | wc -l) pictures)"; else echo "- world tour: NOT finished ($(ls run-client/shots/*.jpg 2>/dev/null | wc -l) pictures)"; fi
+            echo; echo "## Graphics"; grep -hE "Using graphics backend|Failed to create backend|GraphicsAdapterProbe|Iris|shader pack|shaderpack" client-title.log client-shots.log 2>/dev/null | grep -v DEBUG | cut -c1-250 | head -20
             echo; echo "## Errors and warnings in the logs (Umbra, mixins, crashes)"
             cat client-title.log client-shots.log 2>/dev/null | grep -nE "Exception|ERROR|FATAL|Mixin apply failed|Crash|crash-reports|umbra" | grep -v "UMBRA CLIENTSHOTS\|UMBRA CLIENTCHECK\|Narrator\|flite\|OpenAL\|GLX visual\|BackendCreation" | head -150
             echo; echo "## Shots report"; cat run-client/umbra-clientshots.txt 2>/dev/null | head -80
             echo; echo "## Gradle tail"; tail -30 shots-gradle.log 2>/dev/null; tail -30 client-gradle.log 2>/dev/null
           } > report.md
           ls run-client/crash-reports/* 2>/dev/null && cp run-client/crash-reports/*.txt . 2>/dev/null
-          .github/scripts/publish.sh "ci-compat-${{ matrix.set }}" report.md run-client/manifest.json title.png client-title.log client-shots.log crash-*.txt run-client/shots/*.jpg
+          .github/scripts/publish.sh "ci-compat-${{ matrix.set }}" report.md run-client/manifest.json title.png loading-*.png world-150.png client-title.log client-shots.log crash-*.txt run-client/shots/*.jpg
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
