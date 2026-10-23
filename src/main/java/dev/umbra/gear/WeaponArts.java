@@ -214,7 +214,6 @@ public final class WeaponArts {
         attacker.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, PARRY_BLIND, 0));
         Vec3 push = attacker.position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(0.6);
         attacker.push(push.x, 0.2, push.z);
-        attacker.hurtMarked = true;
         Vec3 at = player.position().add(player.getLookAngle().scale(0.8)).add(0, 1.2, 0);
         level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 10, 0.3, 0.3, 0.3, 0.3);
         level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.15);
