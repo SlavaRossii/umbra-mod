@@ -1,0 +1,9 @@
+{
+	"match": {
+		"items": [
+			"umbra:marta_lantern",
+			"umbra:dawn_lantern"
+		]
+	},
+	"luminance": 14
+}

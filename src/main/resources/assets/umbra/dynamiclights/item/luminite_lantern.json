@@ -1,0 +1,9 @@
+{
+	"match": {
+		"items": "umbra:luminite_lantern",
+		"components": {
+			"umbra:lit": true
+		}
+	},
+	"luminance": 15
+}
