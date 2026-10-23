@@ -136,6 +136,7 @@ final class SmokeTest {
                 case 668 -> testLighthouse19(server, level);
                 case 669 -> testLighthouseWorldgen(server);
                 case 670 -> testItems29(server, level);
+                case 666 -> testWeapons212(level);
                 case 671 -> testGear20(server, level);
                 case 672 -> startEchoTest(level);
                 case 678 -> finishEchoTest();
@@ -1955,6 +1956,85 @@ final class SmokeTest {
     }
 
     /** 2.9: armour that lasts by its tier, shields that a boss beats aside, the discs, the knife that flies point first. */
+    /** 2.12: each weapon its own hand. */
+    private static void testWeapons212(ServerLevel level) {
+        BlockPos c = new BlockPos(300, Y + 60, 60);
+        for (BlockPos p : BlockPos.betweenClosed(c.offset(-6, -1, -6), c.offset(6, 4, 6)))
+            level.setBlock(p, p.getY() == c.getY() - 1 ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.setHealth(fake.getMaxHealth());
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 180, 0);   // looking north (-z)
+        fake.setYHeadRot(180);
+        java.util.List<net.minecraft.world.entity.Mob> made = new java.util.ArrayList<>();
+        java.util.function.BiFunction<Double, Double, net.minecraft.world.entity.Mob> put = (dx, dz) -> {
+            var m = ModEntities.ACOLYTE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+            m.snapTo(c.getX() + 0.5 + dx, c.getY(), c.getZ() + 0.5 + dz, 0, 0);
+            m.setNoAi(true);
+            level.addFreshEntity(m);
+            made.add(m);
+            return m;
+        };
+        // the sword's third blow cuts wide in front
+        var first = put.apply(0.0, -1.5);
+        var side = put.apply(1.4, -1.8);
+        float before = side.getHealth();
+        int cut = dev.umbra.gear.WeaponArts.swordCut(level, fake, first, 8.0F);
+        check(cut >= 1 && side.getHealth() < before, "2.12: the gloom sword's third blow cuts wide in front (" + cut + ")");
+        made.forEach(net.minecraft.world.entity.Entity::discard);
+        made.clear();
+        // the spear on the run goes through the first one into the one behind
+        var front = put.apply(0.0, -1.5);
+        var back = put.apply(0.0, -3.2);
+        before = back.getHealth();
+        int pierced = dev.umbra.gear.WeaponArts.spearLunge(level, fake, front, 8.0F);
+        check(pierced == 1 && back.getHealth() < before, "2.12: a spear blow on the run goes through into the one behind");
+        made.forEach(net.minecraft.world.entity.Entity::discard);
+        made.clear();
+        // the scythe's kill gives half a heart back
+        fake.setHealth(10.0F);
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SHEPHERD_SCYTHE.get()));
+        var dead = put.apply(0.0, -1.5);
+        dev.umbra.gear.WeaponArts.afterKill(level, fake, dead, fake.getMainHandItem());
+        check(fake.getHealth() > 10.5F, "2.12: what the scythe kills gives you half a heart (" + fake.getHealth() + ")");
+        // the dagger: a kill from behind and you are gone
+        fake.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.SHADOW_DAGGER.get()));
+        dead.setYBodyRot(180);   // it looks away from you (north)
+        dead.yBodyRot = 180;
+        dev.umbra.gear.WeaponArts.afterKill(level, fake, dead, fake.getMainHandItem());
+        check(fake.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "2.12: a dagger kill from behind gives a burst of speed");
+        made.forEach(net.minecraft.world.entity.Entity::discard);
+        made.clear();
+        // the aegis raised in the last moment turns the blow back
+        var foe = put.apply(0.0, -1.5);
+        fake.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(ModItems.LUMINITE_SHIELD.get()));
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        boolean idle = !dev.umbra.gear.WeaponArts.parry(level, fake, foe, 6.0F);
+        fake.startUsingItem(InteractionHand.OFF_HAND);
+        before = foe.getHealth();
+        boolean turned = dev.umbra.gear.WeaponArts.parry(level, fake, foe, 6.0F);
+        check(idle && turned && foe.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS) && foe.getHealth() < before,
+                "2.12: the aegis raised in the last moment throws the blow back and blinds the one who struck");
+        fake.stopUsingItem();
+        fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        made.forEach(net.minecraft.world.entity.Entity::discard);
+        // a fully drawn luminite arrow leaves its light
+        int lights = dev.umbra.gear.WeaponArts.lightsLeft();
+        boolean lit = dev.umbra.gear.WeaponArts.leaveLight(level, Vec3.atCenterOf(c.offset(3, 1, 3)));
+        check(lit && level.getBlockState(c.offset(3, 1, 3)).is(Blocks.LIGHT) && dev.umbra.gear.WeaponArts.lightsLeft() == lights + 1,
+                "2.12: a fully drawn luminite arrow leaves its light where it lands");
+        // and each strikes its own way: the spear and the dagger stab, the scythe sweeps slow
+        var stab = net.minecraft.world.item.SwingAnimationType.STAB;
+        var anim = net.minecraft.core.component.DataComponents.ATTACK_ANIMATION;
+        check(new ItemStack(ModItems.LUMINITE_SPEAR.get()).get(anim).type() == stab && new ItemStack(ModItems.SHADOW_DAGGER.get()).get(anim).type() == stab
+                && new ItemStack(ModItems.SHEPHERD_SCYTHE.get()).get(anim).duration() > new ItemStack(ModItems.SHADOW_DAGGER.get()).get(anim).duration(),
+                "2.12: the spear and the dagger stab, the scythe sweeps slower");
+        fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        fake.setHealth(fake.getMaxHealth());
+        fake.removeAllEffects();
+        fake.setYHeadRot(0.0F);
+    }
+
     private static void testItems29(MinecraftServer server, ServerLevel level) {
         // durability: tier II twice tier I, tier III three times
         boolean lasts = true;
@@ -2349,10 +2429,20 @@ final class SmokeTest {
     }
 
     private static void testBossMoves(ServerLevel level) {
-        check(dev.umbra.journal.Journal.section("watcher") == 4 && dev.umbra.journal.Journal.section("mimic_queen") == 4
-                && dev.umbra.journal.Journal.section("mimic_chest") == 2 && dev.umbra.journal.Journal.section("mimicker") == 3
-                && dev.umbra.journal.Journal.section("insight_2") == 1 && dev.umbra.journal.Journal.section("note_3") == 5
+        check(dev.umbra.journal.Journal.section("watcher") == 3 && dev.umbra.journal.Journal.section("mimic_queen") == 3
+                && dev.umbra.journal.Journal.section("mimics") == 2 && dev.umbra.journal.Journal.section("mimicker") == 2
+                && dev.umbra.journal.Journal.section("insight_2") == 1 && dev.umbra.journal.Journal.section("note_3") == 4
                 && dev.umbra.journal.Journal.section("start") == 0, "journal entries sort into sections");
+        // 2.11: the journal reads in pages, fewer than its entries
+        int pages = dev.umbra.journal.Journal.PAGE_ORDER.size();
+        boolean everyEntryHasAPage = true;
+        for (String id : dev.umbra.journal.Journal.ENTRIES) everyEntryHasAPage &= dev.umbra.journal.Journal.PAGE_ORDER.contains(dev.umbra.journal.Journal.pageOf(id));
+        java.util.List<String> got = java.util.List.of("note_2", "mimic_ore", "weak_watcher");
+        boolean merged = dev.umbra.journal.Journal.known(got, "note_1") && dev.umbra.journal.Journal.known(got, "mimics") && dev.umbra.journal.Journal.known(got, "watcher")
+                && !dev.umbra.journal.Journal.known(got, "note_3") && "mimics".equals(dev.umbra.journal.Journal.pageOf("mimic_villager"))
+                && dev.umbra.journal.Journal.pageText(null, got, "mimics").getString().length() > 20;
+        check(pages <= 75 && everyEntryHasAPage && merged, "2.11: the journal reads in " + pages + " pages instead of "
+                + dev.umbra.journal.Journal.ENTRIES.size() + " entries; a page shows as soon as anything on it is written");
         int[] per = new int[dev.umbra.journal.Journal.SECTIONS.length];
         for (String id : dev.umbra.journal.Journal.ENTRIES) per[dev.umbra.journal.Journal.section(id)]++;
         boolean none = false;
@@ -2534,7 +2624,7 @@ final class SmokeTest {
             }
             check(found == 3, "the Underside has crystal grottos, black lakes and a whispering forest (" + found + "/3)");
         }
-        check(dev.umbra.journal.Journal.section("lurker") == 3 && dev.umbra.journal.Journal.section("black_lakes") == 0, "new journal entries are sorted");
+        check(dev.umbra.journal.Journal.section("lurker") == 2 && dev.umbra.journal.Journal.section("black_lakes") == 0, "new journal entries are sorted");
 
         // a temple in a lake, built on a block of stone
         BlockPos c = new BlockPos(270, Y + 6, 30);

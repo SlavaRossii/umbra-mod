@@ -310,7 +310,6 @@
   "message.umbra.ally.follow": "Your shadow follows you again.",
   "journal.umbra.tab.chronicle": "Chronicle",
   "journal.umbra.tab.insights": "Insights",
-  "journal.umbra.tab.mimics": "Mimics",
   "journal.umbra.tab.creatures": "Creatures",
   "journal.umbra.tab.bosses": "Bosses",
   "journal.umbra.tab.notes": "Notes",
@@ -941,5 +940,12 @@
   "jukebox_song.umbra.drowned_keeper": "Umbra — The Drowned Bell",
   "item.umbra.music_disc_fallen_keeper": "Music Disc",
   "jukebox_song.umbra.fallen_keeper": "Umbra — The Light That Went Out",
-  "entity.umbra.thrown_knife": "Thrown Knife"
+  "entity.umbra.thrown_knife": "Thrown Knife",
+  "message.umbra.journal_more": "Journal entry extended: %s",
+  "journal.umbra.mimics.title": "Mimics",
+  "journal.umbra.mimics.text": "Things pretending to be things. I write down every new tell here.",
+  "journal.umbra.nights.title": "Strange Nights",
+  "journal.umbra.nights.text": "Some nights the Underside comes very close. Each such night is strange in its own way.",
+  "journal.umbra.yan_gifts.title": "Yan's Gifts",
+  "journal.umbra.yan_gifts.text": "Yan pays for help with the Keepers' things — what he has kept from those days."
 }

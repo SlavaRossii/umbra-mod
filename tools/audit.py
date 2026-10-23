@@ -224,6 +224,12 @@ for e in entries:
     for part in ('title', 'text'):
         if f'journal.umbra.{e}.{part}' not in ru:
             bad(f"journal entry {e}: no .{part}")
+# 2.11: pages with a name of their own (not their first entry's) have a title and a line too
+for pg in re.findall(r'm\.put\("([a-z0-9_]+)"', jsrc):
+    if pg not in entries:
+        for part in ('title', 'text'):
+            if f'journal.umbra.{pg}.{part}' not in ru:
+                bad(f"journal page {pg}: no .{part}")
 for q in re.findall(r'new Quest\("([a-z0-9_]+)"', read(J + 'quest/Quests.java')):
     for part in ('title', 'text'):
         if f'journal.umbra.quest_{q}.{part}' not in ru:

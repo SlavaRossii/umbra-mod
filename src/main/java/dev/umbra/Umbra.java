@@ -107,6 +107,10 @@ public class Umbra {
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDamage);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::arrowTrail);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponEvents::onDeath);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponArts::onAttack);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponArts::onDeath);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponArts::onImpact);
+        NeoForge.EVENT_BUS.addListener(dev.umbra.gear.WeaponArts::levelTick);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onImpact);
         NeoForge.EVENT_BUS.addListener(dev.umbra.mob.Weeper::onShard);
         NeoForge.EVENT_BUS.addListener(dev.umbra.gear.RangedWeapons::onIncoming);

@@ -97,8 +97,10 @@ public final class WeaponEvents {
         try {
             dev.umbra.craft.Infusions.afterHit(level, player, target, dealt);
             hitFx(level, player, target, hand);
+            boolean full = WeaponArts.full(player);
+            WeaponArts.afterHit(level, player, target, hand, dealt, full, WeaponArts.sprinting(player));
             // the scythe: a full swing cuts all round the target
-            if (hand.is(ModItems.SHEPHERD_SCYTHE.get()) && player.getAttackStrengthScale(0.5F) > 0.9F) {
+            if (hand.is(ModItems.SHEPHERD_SCYTHE.get()) && full) {
                 for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(3.0),
                         x -> x != target && x != player && x.isAlive() && x instanceof Mob && !(x instanceof net.minecraft.world.entity.TamableAnimal t && t.isTame()))) {
                     e.hurtServer(level, level.damageSources().playerAttack(player), dealt * SCYTHE_SWEEP);

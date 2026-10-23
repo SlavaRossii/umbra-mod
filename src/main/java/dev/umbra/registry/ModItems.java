@@ -170,11 +170,14 @@ public final class ModItems {
             dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
     // --- 2.5: weapons ---
     public static final DeferredItem<Item> LUMINITE_SPEAR = ITEMS.registerSimpleItem("luminite_spear", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.8F)
-            .attributes(weapon("spear", 7.0, -2.8, 2.0)).rarity(Rarity.UNCOMMON));   // 2.9: half a block further
+            .attributes(weapon("spear", 7.0, -2.8, 2.0)).rarity(Rarity.UNCOMMON)
+            .component(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.STAB, 12)));   // 2.9: half a block further
     public static final DeferredItem<Item> SHEPHERD_SCYTHE = ITEMS.registerSimpleItem("shepherd_scythe", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -3.0F)
-            .attributes(weapon("scythe", 8.0, -3.0, 0.5)).rarity(Rarity.EPIC));
+            .attributes(weapon("scythe", 8.0, -3.0, 0.5)).rarity(Rarity.EPIC)
+            .component(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.WHACK, 12)));
     public static final DeferredItem<Item> SHADOW_DAGGER = ITEMS.registerSimpleItem("shadow_dagger", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -1.4F)
-            .attributes(weapon("dagger", 4.0, -1.4, -0.5)).rarity(Rarity.UNCOMMON));
+            .attributes(weapon("dagger", 4.0, -1.4, -0.5)).rarity(Rarity.UNCOMMON)
+            .component(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, new net.minecraft.world.item.component.SwingAnimation(net.minecraft.world.item.SwingAnimationType.STAB, 6)));
 
     // --- 2.5: weapons for a distance ---
     public static final DeferredItem<net.minecraft.world.item.BowItem> LUMINITE_BOW = ITEMS.registerItem("luminite_bow",

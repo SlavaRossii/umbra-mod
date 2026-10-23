@@ -81,6 +81,9 @@ public class ThrownKnife extends ThrowableItemProjectile {
         super.tick();
         if (this.level().isClientSide() && this.tickCount % 2 == 0)
             this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+        // 2.12: it whistles as it turns over in the air
+        if (this.level() instanceof ServerLevel level && this.tickCount % 4 == 1 && this.isAlive())
+            WeaponArts.sound(level, this.position(), "entity.player.attack.sweep", 0.18F, 1.9F + this.random.nextFloat() * 0.1F);
     }
 
     @Override
