@@ -1,0 +1,38 @@
+[
+ {
+  "slug": "sound-physics-remastered",
+  "title": "Sound Physics Remastered",
+  "version": "neoforge-1.5.2+26.3",
+  "file": "sound-physics-remastered-neoforge-1.5.2+26.3.jar",
+  "url": "https://cdn.modrinth.com/data/qyVF9oeo/versions/fsyAOst7/sound-physics-remastered-neoforge-1.5.2%2B26.3.jar",
+  "sha1": "56298c65465ee938668b0b1f5156c8e9c5026d9b",
+  "sha512": "4d2a7e73982c74e53d5e680d36fda118ace42807e739385d8dde78749ddeb8b46d6d43395cb574df79c5afb60f2b99b11a6f5977de9317c45e6d5f3b1a1a9581",
+  "size": 202021,
+  "client": "required",
+  "server": "optional"
+ },
+ {
+  "slug": "ambientsounds",
+  "title": "AmbientSounds",
+  "version": "6.3.11",
+  "file": "AmbientSounds_NEOFORGE_v6.3.11_mc26.3.jar",
+  "url": "https://cdn.modrinth.com/data/fM515JnW/versions/dCMudV9Z/AmbientSounds_NEOFORGE_v6.3.11_mc26.3.jar",
+  "sha1": "ac81dcfd77459844f4528b73dc09bbfe0e59ccd5",
+  "sha512": "abf968e98044e9b03bc58720909641e5c6ff303e95f3b7eb18ca46dfda8e7028a3fa4a65a93288a93d0dde2145c5bae6d660fade9461f438b371b54b644544d3",
+  "size": 84817294,
+  "client": "required",
+  "server": "unsupported"
+ },
+ {
+  "slug": "creativecore",
+  "title": "CreativeCore",
+  "version": "2.14.22",
+  "file": "CreativeCore_NEOFORGE_v2.14.22_mc26.3.jar",
+  "url": "https://cdn.modrinth.com/data/OsZiaDHq/versions/CuGhBotX/CreativeCore_NEOFORGE_v2.14.22_mc26.3.jar",
+  "sha1": "540884355192dcb0868b3e9184105d2a8da35f15",
+  "sha512": "043fac3f6ea880c12a39b464833d970fde4ab1e00a5c6fc29be15763a0960e87e5c1bcf4935f61cd374accd3de50fb55e20a58076138540e35f5f2fda3de801e",
+  "size": 1370008,
+  "client": "required",
+  "server": "optional"
+ }
+]
