@@ -135,6 +135,7 @@ final class SmokeTest {
                 case 667 -> profileUnderside(server);
                 case 668 -> testLighthouse19(server, level);
                 case 669 -> testLighthouseWorldgen(server);
+                case 670 -> testItems29(server, level);
                 case 671 -> testGear20(server, level);
                 case 672 -> startEchoTest(level);
                 case 678 -> finishEchoTest();
@@ -593,7 +594,7 @@ final class SmokeTest {
                     Umbra.LOGGER.info("UMBRA SMOKETEST: missing recipe {}", r);
                 }
         check(missing == 0, "all journal recipes exist (" + missing + " missing)");
-        check(dev.umbra.journal.Journal.ENTRIES.size() == 116 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 116, "journal has 116 distinct entries (" + dev.umbra.journal.Journal.ENTRIES.size() + ")");
+        check(dev.umbra.journal.Journal.ENTRIES.size() == 117 && new java.util.HashSet<>(dev.umbra.journal.Journal.ENTRIES).size() == 117, "journal has 117 distinct entries (" + dev.umbra.journal.Journal.ENTRIES.size() + ")");
 
         FakePlayer fake = FakePlayerFactory.getMinecraft(level);
         fake.getInventory().clearContent();
@@ -1434,16 +1435,18 @@ final class SmokeTest {
             w.setNoAi(true);
             level.addFreshEntity(w);
             check(w.getMaxHealth() >= 150 && w.getMaxHealth() < 160, "bosses are a quarter stronger (the Watcher has " + w.getMaxHealth() + ")");
-            // the second wind comes once per phase and never lifts it back over the line
+            // 2.9: the second wind comes once per phase, mends a fixed share of the health (even past the line), and the
+            // phase it has reached stays reached
             w.setHealth(w.getMaxHealth() * 0.45F);
             w.trackPhase(level);
             boolean guarded = w.isGuarded();
             for (int i = 0; i < 100; i++) w.aiStep();
             int ph = w.trackPhase(level);
-            boolean under = w.getHealth() <= w.getMaxHealth() * 0.5F + 0.01F && w.getHealth() > w.getMaxHealth() * 0.45F;
+            float healed = w.getHealth() / w.getMaxHealth() - 0.45F;
             w.setHealth(w.getMaxHealth() * 0.4F);
             w.trackPhase(level);
-            check(guarded && under && ph == 2 && !w.isGuarded(), "a boss gets its second wind once and does not climb back a phase (" + w.getHealth() + ")");
+            check(guarded && Math.abs(healed - dev.umbra.boss.UmbraBoss.GUARD_HEAL) < 0.01F && ph == 2 && w.phase() == 2 && !w.isGuarded(),
+                    "a boss's second wind mends " + Math.round(healed * 100) + "% of its health once, and it stays in its new phase");
             w.setHealth(w.getMaxHealth());
             float before = w.getHealth();
             w.hurtServer(level, level.damageSources().magic(), 100.0F);
@@ -1747,7 +1750,9 @@ final class SmokeTest {
         check(dev.umbra.altar.Ritual.MIMICRY.placeProblem(under, c, fake) != null, "an empty chest is no bait");
         if (under.getBlockEntity(chests[3]) instanceof net.minecraft.world.Container box) box.setItem(0, new ItemStack(Items.COAL));
         check(dev.umbra.altar.Ritual.MIMICRY.placeProblem(under, c, fake) == null, "four full chests are");
+        boolean freeBefore = !dev.umbra.altar.AltarEvents.sealedByRite(under, chests[0]);
         altar.beginForTest(under, fake);
+        check(freeBefore && dev.umbra.altar.AltarEvents.sealedByRite(under, chests[0]), "2.9: while the Queen's rite runs, the chests round the altar are hers (sealed)");
         dev.umbra.altar.SummoningAltarBlockEntity.lastSummoned = null;
         for (int i = 0; i < 200 && altar.riteRunning(); i++) altar.tickForTest(under);
         int left = 0;
@@ -1816,7 +1821,7 @@ final class SmokeTest {
         if (under == null) return;
         dev.umbra.depths.Depths.build(under, under.getRandom());
         check(dev.umbra.depths.Depths.isBuilt(under), "the Depths are built");
-        check(under.getBlockState(dev.umbra.depths.Depths.CHEST_AT).is(Blocks.CHEST), "the Keepers' chest waits in the sanctum");
+        check(under.getBlockState(dev.umbra.depths.Depths.CHEST_AT).is(ModBlocks.KEEPERS_CHEST.get()), "the Keepers' chest waits in the sanctum");
         // 2.7: drowned to the vault, everywhere
         int dry = 0;
         for (var r : dev.umbra.depths.Depths.ROOMS)
@@ -1884,6 +1889,175 @@ final class SmokeTest {
         }
         check(dev.umbra.depths.Depths.CURRENTS.length >= 4 && under.getBlockState(dev.umbra.depths.Depths.ORIGIN.offset(-46, 1, -48)).is(Blocks.CHEST),
                 "2.7: currents drag into side passages, and a cache waits at the end");
+        testDepths29(under);
+    }
+
+    /** 2.9: the currents are no trap, twice the cages, the Keepers' chest and his key, and old halls brought up to date. */
+    private static void testDepths29(ServerLevel under) {
+        // the currents pull in waves, a swimmer can make headway, and an emptied cache lets its current die
+        boolean waves = dev.umbra.depths.Depths.currentRunsAt(under, 0, 0) && !dev.umbra.depths.Depths.currentRunsAt(under, 0, dev.umbra.depths.Depths.CURRENT_ON + 5);
+        check(waves && dev.umbra.depths.Depths.CURRENT < 0.03, "2.9: the currents pull in waves, with calm water between, and not harder than one can swim");
+        if (under.getBlockEntity(dev.umbra.depths.Depths.CACHE_CHEST[0]) instanceof net.minecraft.world.Container cache) {
+            cache.clearContent();
+            check(!dev.umbra.depths.Depths.currentRunsAt(under, 0, 0) && dev.umbra.depths.Depths.currentRunsAt(under, 1, 0),
+                    "2.9: once its cache is emptied a current dies away (the other still pulls)");
+        } else check(false, "2.9: the west cache has its chest");
+        // twice the cages
+        int cages = 0;
+        for (BlockPos p : dev.umbra.depths.Depths.CAGES_OLD) if (under.getBlockState(p).is(Blocks.SPAWNER)) cages++;
+        for (BlockPos p : dev.umbra.depths.Depths.CAGES_29) if (under.getBlockState(p).is(Blocks.SPAWNER)) cages++;
+        check(cages == 6, "2.9: six cages in the halls, twice what there were (" + cages + ")");
+        // the Keepers' chest: shut; a hand does not open it, his key does (and stays in the lock)
+        BlockPos tc = dev.umbra.depths.Depths.CHEST_AT;
+        FakePlayer fk = FakePlayerFactory.getMinecraft(under);
+        fk.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fk.snapTo(tc.getX() + 0.5, tc.getY(), tc.getZ() + 2.5, 180, 0);
+        var hit = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(tc), net.minecraft.core.Direction.SOUTH, tc, false);
+        fk.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        under.getBlockState(tc).useWithoutItem(under, fk, hit);
+        boolean shut = !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN);
+        fk.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.KEEPERS_KEY.get()));
+        under.getBlockState(tc).useItemOn(fk.getMainHandItem(), under, fk, InteractionHand.MAIN_HAND, hit);
+        boolean opened = under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && fk.getMainHandItem().isEmpty();
+        check(shut && opened, "2.9: the Keepers' chest does not open by hand; his key opens it and stays in the lock");
+        fk.closeContainer();
+        if (under.getBlockEntity(tc) instanceof dev.umbra.depths.KeepersChest.Entity chest) {
+            chest.unpackLootTable(null);
+            boolean full = !chest.isEmpty();
+            chest.clearContent();
+            chest.setItem(0, new ItemStack(Items.NAUTILUS_SHELL, 3));
+            dev.umbra.depths.Depths.lockTreasure(under);
+            int n = 0;
+            for (int i = 0; i < chest.getContainerSize(); i++) if (!chest.getItem(i).isEmpty()) n++;
+            check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.NAUTILUS_SHELL) == 3,
+                    "2.9: there was treasure in it; beaten again, he fills it again round what was left and it shuts (" + n + " stacks)");
+        } else check(false, "2.9: the Keepers' chest keeps things");
+        check(ModBlocks.KEEPERS_CHEST.get().defaultDestroyTime() < 0 && ModBlocks.KEEPERS_CHEST.get().getExplosionResistance() > 1000.0F,
+                "2.9: the Keepers' chest cannot be broken, by hand or by blast");
+        // halls built before 2.9 are furnished the next time someone comes down
+        under.setBlock(dev.umbra.depths.Depths.MARK_29, Blocks.DEEPSLATE_TILES.defaultBlockState(), Block.UPDATE_CLIENTS);
+        under.setBlock(tc, Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+        if (under.getBlockEntity(tc) instanceof net.minecraft.world.Container old) old.setItem(3, new ItemStack(Items.EMERALD, 5));
+        for (BlockPos p : dev.umbra.depths.Depths.CAGES_29) under.setBlock(p, Blocks.WATER.defaultBlockState(), Block.UPDATE_CLIENTS);
+        dev.umbra.depths.Depths.upgrade(under, under.getRandom());
+        int newCages = 0;
+        for (BlockPos p : dev.umbra.depths.Depths.CAGES_29) if (under.getBlockState(p).is(Blocks.SPAWNER)) newCages++;
+        boolean kept = under.getBlockEntity(tc) instanceof dev.umbra.depths.KeepersChest.Entity ch2 && ch2.countItem(Items.EMERALD) == 5;
+        check(dev.umbra.depths.Depths.furnished29(under) && newCages == 3 && kept,
+                "2.9: old halls get the new cages and the Keepers' chest, and keep what lay in the old one");
+    }
+
+    /** 2.9: armour that lasts by its tier, shields that a boss beats aside, the discs, the knife that flies point first. */
+    private static void testItems29(MinecraftServer server, ServerLevel level) {
+        // durability: tier II twice tier I, tier III three times
+        boolean lasts = true;
+        String seen = "";
+        for (String set : new String[]{"gloom", "luminite", "shadow"}) {
+            int[] d = new int[4];
+            for (int t = 1; t <= 3; t++) {
+                var id = net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, set + "_chestplate" + (t == 1 ? "" : "_" + t));
+                d[t] = new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(id)).getMaxDamage();
+            }
+            lasts &= d[2] == 2 * d[1] && d[3] == 3 * d[1];
+            seen += set + " " + d[1] + "/" + d[2] + "/" + d[3] + " ";
+        }
+        check(lasts, "2.9: armour lasts by its tier: II twice as long as I, III three times (" + seen.trim() + ")");
+        // shields: a boss's heavy blow knocks one aside, and so does the third blow it stops in a row
+        BlockPos c = new BlockPos(260, Y + 60, 60);
+        for (BlockPos p : BlockPos.betweenClosed(c.offset(-4, -1, -4), c.offset(4, 3, 4)))
+            level.setBlock(p, p.getY() == c.getY() - 1 ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        FakePlayer fake = FakePlayerFactory.getMinecraft(level);
+        fake.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        fake.setHealth(fake.getMaxHealth());
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 180, 0);
+        fake.setYHeadRot(180);
+        ItemStack shield = new ItemStack(ModItems.LUMINITE_SHIELD.get());
+        fake.setItemInHand(InteractionHand.OFF_HAND, shield);
+        fake.startUsingItem(InteractionHand.OFF_HAND);
+        boolean raised = !dev.umbra.boss.BossMoves.raisedShield(fake, null).isEmpty();
+        dev.umbra.boss.BossMoves.breakGuard(level, fake, dev.umbra.boss.BossMoves.HEAVY_GUARD_BREAK);
+        check(raised && fake.getCooldowns().isOnCooldown(fake.getOffhandItem()) && !fake.isUsingItem(), "2.9: a boss's heavy blow knocks a raised shield aside for a while");
+        var w = ModEntities.WATCHER.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (w != null) {
+            w.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 1.5, 0, 0);
+            w.setNoAi(true);
+            level.addFreshEntity(w);
+            fake.stopUsingItem();
+            fake.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.SHIELD));     // a plain shield, not on the cooldown just given
+            int blocked = 0;
+            for (int i = 0; i < dev.umbra.boss.BossMoves.GUARD_HITS; i++) {
+                fake.setHealth(fake.getMaxHealth());
+                if (!fake.isUsingItem()) fake.startUsingItem(InteractionHand.OFF_HAND);
+                if (!dev.umbra.boss.BossMoves.raisedShield(fake, w).isEmpty()) blocked++;
+                w.doHurtTarget(level, fake);
+            }
+            check(blocked == dev.umbra.boss.BossMoves.GUARD_HITS && fake.getCooldowns().isOnCooldown(fake.getOffhandItem()),
+                    "2.9: a boss cannot be blocked for ever: the third blow in a row beats the shield aside (" + blocked + ")");
+            w.discard();
+        }
+        fake.stopUsingItem();
+        fake.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        fake.setYHeadRot(0.0F);          // the next tests aim the fake player by its body alone
+        // the discs: one for each boss's track, each plays in a jukebox
+        var songs = server.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.JUKEBOX_SONG);
+        int playable = 0;
+        for (var e : ModItems.MUSIC_DISCS.entrySet()) {
+            var song = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.JUKEBOX_SONG,
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, e.getKey()));
+            if (new ItemStack(e.getValue().get()).has(net.minecraft.core.component.DataComponents.JUKEBOX_PLAYABLE) && songs.get(song).isPresent()) playable++;
+        }
+        check(playable == 8, "2.9: eight discs, one for each boss's track, and each plays in a jukebox (" + playable + ")");
+        BlockPos box = c.offset(2, 0, 2);
+        level.setBlock(box, Blocks.JUKEBOX.defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(box) instanceof net.minecraft.world.level.block.entity.JukeboxBlockEntity jb) {
+            jb.setTheItem(new ItemStack(ModItems.MUSIC_DISCS.get("watcher").get()));
+            check(jb.getSongPlayer().isPlaying(), "2.9: the Watcher's disc plays in a jukebox");
+        } else check(false, "2.9: a jukebox to try the discs in");
+        // and they are found in the mod's chests, so the music can be had without the fights
+        BlockPos dc = box.offset(2, 0, 0);
+        level.setBlock(dc, Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+        int found = 0;
+        java.util.Set<net.minecraft.world.item.Item> kinds = new java.util.HashSet<>();
+        if (level.getBlockEntity(dc) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity dch) {
+            var prize = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "chests/maze_prize"));
+            for (int i = 0; i < 80; i++) {
+                dch.clearContent();
+                dch.setLootTable(i % 2 == 0 ? dev.umbra.depths.Depths.LOOT : prize, level.getRandom().nextLong());
+                dch.unpackLootTable(null);
+                for (var disc : ModItems.MUSIC_DISCS.values()) {
+                    int k = dch.countItem(disc.get());
+                    if (k > 0) { found += k; kinds.add(disc.get()); }
+                }
+            }
+            dch.clearContent();
+        }
+        level.removeBlock(dc, false);
+        check(found >= 5 && kinds.size() >= 3, "2.9: the discs lie in the mod's chests too (" + found + " discs of " + kinds.size() + " kinds in 80 chests)");
+        level.setBlock(box, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        // the knife: a thing of its own, flying point first; in a wall it sticks for a while
+        var knife = new dev.umbra.gear.ThrownKnife(level, fake, new ItemStack(ModItems.SHADOW_KNIFE.get()));
+        knife.setPos(c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5);
+        knife.shoot(1, 0, 0, 1.5F, 0.0F);
+        level.setBlock(c.offset(3, 1, 0), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.addFreshEntity(knife);
+        float yaw = 0;
+        for (int i = 0; i < 6 && !knife.isStuck(); i++) {
+            knife.tick();
+            if (!knife.isStuck()) yaw = knife.getYRot();
+        }
+        boolean stuck = knife.isStuck() && knife.isAlive();
+        for (int i = 0; i < 5; i++) knife.tick();
+        boolean holds = knife.isAlive() && knife.getDeltaMovement().lengthSqr() < 1.0E-6;
+        check(stuck && holds && Math.abs(net.minecraft.util.Mth.wrapDegrees(yaw - 90.0F)) < 5.0F,
+                "2.9: a thrown knife flies point first (yaw " + yaw + ") and sticks in the wall it hits");
+        knife.discard();
+        level.setBlock(c.offset(3, 1, 0), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        // the Key of the Depths in the middle of the game: the lurker's scales, a seal's shard, echo quartz
+        var recipe = server.getRecipeManager().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "depths_key")));
+        check(recipe.isPresent() && dev.umbra.journal.Journal.RECIPES.get("lurker").contains("depths_key"),
+                "2.9: the Key of the Depths is made of lurker scales, a seal's shard and echo quartz, and the lurker's page teaches it");
     }
 
     /** 2.7: how Yan's story ends, both ways, and his staff. */

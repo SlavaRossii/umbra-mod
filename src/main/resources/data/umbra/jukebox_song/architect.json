@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_architect",
+  "description": {
+    "translate": "jukebox_song.umbra.architect"
+  },
+  "length_in_seconds": 68.0,
+  "comparator_output": 5
+}

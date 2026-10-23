@@ -7,57 +7,49 @@
         {
           "type": "minecraft:item",
           "name": "umbra:luminite_candelabrum",
-          "functions": [
+          "modifier": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "umbra:luminite_candelabrum",
+                "state": {
+                  "candles": "2"
+                }
+              },
               "count": 2,
-              "add": false,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "umbra:luminite_candelabrum",
-                  "properties": {
-                    "candles": "2"
-                  }
-                }
-              ]
+              "add": false
             },
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "umbra:luminite_candelabrum",
+                "state": {
+                  "candles": "3"
+                }
+              },
               "count": 3,
-              "add": false,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "umbra:luminite_candelabrum",
-                  "properties": {
-                    "candles": "3"
-                  }
-                }
-              ]
+              "add": false
             },
             {
-              "function": "minecraft:set_count",
-              "count": 4,
-              "add": false,
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "umbra:luminite_candelabrum",
-                  "properties": {
-                    "candles": "4"
-                  }
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "umbra:luminite_candelabrum",
+                "state": {
+                  "candles": "4"
                 }
-              ]
+              },
+              "count": 4,
+              "add": false
             }
           ]
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "umbra:blocks/luminite_candelabrum"

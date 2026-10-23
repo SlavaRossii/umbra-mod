@@ -9,11 +9,9 @@
           "name": "umbra:gloom_anvil"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "umbra:blocks/gloom_anvil"

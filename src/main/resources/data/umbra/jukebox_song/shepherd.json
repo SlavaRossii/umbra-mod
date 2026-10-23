@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_shepherd",
+  "description": {
+    "translate": "jukebox_song.umbra.shepherd"
+  },
+  "length_in_seconds": 93.5,
+  "comparator_output": 3
+}

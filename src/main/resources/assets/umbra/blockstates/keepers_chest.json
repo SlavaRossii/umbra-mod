@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=south,open=false,waterlogged=false": {
+      "model": "umbra:block/keepers_chest"
+    },
+    "facing=south,open=false,waterlogged=true": {
+      "model": "umbra:block/keepers_chest"
+    },
+    "facing=south,open=true,waterlogged=false": {
+      "model": "umbra:block/keepers_chest_open"
+    },
+    "facing=south,open=true,waterlogged=true": {
+      "model": "umbra:block/keepers_chest_open"
+    },
+    "facing=west,open=false,waterlogged=false": {
+      "model": "umbra:block/keepers_chest",
+      "y": 90
+    },
+    "facing=west,open=false,waterlogged=true": {
+      "model": "umbra:block/keepers_chest",
+      "y": 90
+    },
+    "facing=west,open=true,waterlogged=false": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 90
+    },
+    "facing=west,open=true,waterlogged=true": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 90
+    },
+    "facing=north,open=false,waterlogged=false": {
+      "model": "umbra:block/keepers_chest",
+      "y": 180
+    },
+    "facing=north,open=false,waterlogged=true": {
+      "model": "umbra:block/keepers_chest",
+      "y": 180
+    },
+    "facing=north,open=true,waterlogged=false": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 180
+    },
+    "facing=north,open=true,waterlogged=true": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 180
+    },
+    "facing=east,open=false,waterlogged=false": {
+      "model": "umbra:block/keepers_chest",
+      "y": 270
+    },
+    "facing=east,open=false,waterlogged=true": {
+      "model": "umbra:block/keepers_chest",
+      "y": 270
+    },
+    "facing=east,open=true,waterlogged=false": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 270
+    },
+    "facing=east,open=true,waterlogged=true": {
+      "model": "umbra:block/keepers_chest_open",
+      "y": 270
+    }
+  }
+}

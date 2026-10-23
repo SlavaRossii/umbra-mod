@@ -101,6 +101,12 @@ public final class ModBlocks {
             () -> BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().sound(net.minecraft.world.level.block.SoundType.GLASS)
                     .lightLevel(s -> s.getValue(dev.umbra.depths.DepthsBlocks.ON) ? 15 : 2));
 
+    /** 2.9: the Keepers' sea-chest in the sanctum (unbreakable; the Drowned Keeper's key opens it). */
+    public static final DeferredBlock<dev.umbra.depths.KeepersChest> KEEPERS_CHEST = BLOCKS.registerBlock("keepers_chest",
+            dev.umbra.depths.KeepersChest::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().mapColor(MapColor.COLOR_CYAN)
+                    .sound(net.minecraft.world.level.block.SoundType.WOOD).lightLevel(s -> s.getValue(dev.umbra.depths.KeepersChest.OPEN) ? 7 : 2));
+
     /** Invisible light that follows a lit luminite lantern and removes itself when the lantern is gone. */
     public static final DeferredBlock<HeldLightBlock> HELD_LIGHT = BLOCKS.registerBlock("held_light",
             HeldLightBlock::new,

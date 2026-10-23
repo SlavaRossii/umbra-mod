@@ -87,11 +87,11 @@ public abstract class UmbraBoss extends Monster {
     public void aiStep() {
         if (guard > 0 && this.level() instanceof ServerLevel g) {
             guard--;
-            // the second wind mends, but never back over the line it has just crossed (or it would cross it again, and again)
-            float before = this.getHealth();
+            // 2.9: the second wind mends a fixed share of its health, and it shows (the phase it has reached stays reached)
             this.heal(this.getMaxHealth() * GUARD_HEAL / GUARD_TICKS);
-            if (phase() < lastPhase) this.setHealth(before);
             if (guard % 5 == 0) g.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, this.getX(), this.getY() + this.getBbHeight() * 0.5, this.getZ(), 6, 0.8, 1.0, 0.8, 0.02);
+            if (guard % 10 == 0) g.sendParticles(net.minecraft.core.particles.ParticleTypes.HEART, this.getX(), this.getY() + this.getBbHeight() + 0.3, this.getZ(), 2, 0.6, 0.3, 0.6, 0.0);
+            if (guard % 20 == 0) g.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.BEACON_AMBIENT, net.minecraft.sounds.SoundSource.HOSTILE, 1.5F, 0.6F);
             bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
         }
         if (stun > 0 && this.level() instanceof ServerLevel level) {
@@ -122,15 +122,31 @@ public abstract class UmbraBoss extends Monster {
         return super.hurtServer(level, source, stun > 0 ? amount * STUN_DAMAGE : amount);
     }
 
+    /** 2.9: blows of this boss's that a shield has stopped in a row; the {@link BossMoves#GUARD_HITS}th beats it aside. */
+    private int blockedHits;
+
+    @Override
+    public boolean doHurtTarget(ServerLevel level, net.minecraft.world.entity.Entity target) {
+        boolean shielded = target instanceof net.minecraft.world.entity.player.Player p && !BossMoves.raisedShield(p, this).isEmpty();
+        boolean hit = super.doHurtTarget(level, target);
+        if (shielded && target instanceof net.minecraft.world.entity.player.Player p && ++blockedHits >= BossMoves.GUARD_HITS) {
+            blockedHits = 0;
+            BossMoves.breakGuard(level, p, BossMoves.GUARD_BREAK);
+        } else if (!shielded) {
+            blockedHits = 0;
+        }
+        return hit;
+    }
+
     /** How much of a blow lands, from this boss's own rules (its weak point). 1 = all of it. */
     protected float weakness(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
         return 1.0F;
     }
 
     // --- 2.4: a new phase is a second wind; light helps, it does not kill ---------------------------------
-    /** Ticks of the shield after a phase change, and how much health comes back during it. */
+    /** Ticks of the shield after a phase change, and how much health comes back during it (2.9: all of it, past the line). */
     public static final int GUARD_TICKS = 80;
-    public static final float GUARD_HEAL = 0.25F;
+    public static final float GUARD_HEAL = 0.15F;
     /** A flash of light never takes more than this share of a boss's health, and stuns it at most this often. */
     public static final float LIGHT_CAP = 0.02F;
     public static final int LIGHT_STUN_COOLDOWN = 200;
@@ -182,16 +198,21 @@ public abstract class UmbraBoss extends Monster {
 
     protected abstract void bossTick(ServerLevel level);
 
-    /** Fight phase from health: 1 above half, 2 below. Bosses with more phases override this. */
-    public int phase() {
+    /** Fight phase from health alone: 1 above half, 2 below. Bosses with more phases override this. */
+    protected int rawPhase() {
         return this.getHealth() > this.getMaxHealth() * 0.5F ? 1 : 2;
+    }
+
+    /** The phase the fight is in: once reached, a phase stays (a second wind that heals past the line does not undo it). */
+    public final int phase() {
+        return Math.max(rawPhase(), lastPhase);
     }
 
     private int lastPhase = 1;
 
     /** Call from bossTick: announces when the phase changes. */
     public int trackPhase(ServerLevel level) {
-        int p = Math.max(phase(), lastPhase);   // a boss never goes back a phase, and gets each second wind once
+        int p = Math.max(rawPhase(), lastPhase);   // a boss never goes back a phase, and gets each second wind once
         if (p != lastPhase) {
             // a second wind: shielded for a moment while a quarter of its health comes back
             if (p > lastPhase) {

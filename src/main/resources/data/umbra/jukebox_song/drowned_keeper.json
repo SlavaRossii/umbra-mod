@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_drowned_keeper",
+  "description": {
+    "translate": "jukebox_song.umbra.drowned_keeper"
+  },
+  "length_in_seconds": 68.5,
+  "comparator_output": 7
+}

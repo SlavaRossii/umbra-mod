@@ -99,9 +99,13 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Doppelganger>> DOPPELGANGER = ENTITIES.registerEntityType("doppelganger",
             Doppelganger::new, MobCategory.MONSTER, b -> b.sized(0.6F, 1.8F).clientTrackingRange(10));
 
+    /** 2.9: a thrown shadow knife (flies point first, sticks in walls). */
+    public static final DeferredHolder<EntityType<?>, EntityType<dev.umbra.gear.ThrownKnife>> THROWN_KNIFE = ENTITIES.registerEntityType("thrown_knife",
+            dev.umbra.gear.ThrownKnife::new, MobCategory.MISC, b -> b.sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10));
+
     // --- Bosses ---
     public static final DeferredHolder<EntityType<?>, EntityType<Architect>> ARCHITECT = ENTITIES.registerEntityType("architect",
-            Architect::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(12).fireImmune());
+            Architect::new, MobCategory.MONSTER, b -> b.sized(0.78F, 2.0F).clientTrackingRange(12).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<PrimordialShadow>> PRIMORDIAL_SHADOW = ENTITIES.registerEntityType("primordial_shadow",
             PrimordialShadow::new, MobCategory.MONSTER, b -> b.sized(0.7F, 2.0F).clientTrackingRange(12).fireImmune());
 

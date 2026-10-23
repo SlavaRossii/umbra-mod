@@ -9,11 +9,9 @@
           "name": "umbra:trophy_shelf"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
     }
   ],
   "random_sequence": "umbra:blocks/trophy_shelf"

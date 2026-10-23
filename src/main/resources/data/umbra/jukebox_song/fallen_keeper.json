@@ -1,0 +1,8 @@
+{
+  "sound_event": "umbra:music.boss_fallen_keeper",
+  "description": {
+    "translate": "jukebox_song.umbra.fallen_keeper"
+  },
+  "length_in_seconds": 79.6,
+  "comparator_output": 8
+}

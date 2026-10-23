@@ -55,6 +55,7 @@ public final class ModMaterials {
      *   <li>Luminite, the light: toughness, a light that burns the dark.</li>
      *   <li>Shadow, the ghost: the lightest, the quickest, the quietest.</li>
      * </ul>
+     * 2.9: durability climbs with the tier: tier II lasts twice as long as tier I, tier III three times.
      * @param set 0 gloom, 1 luminite, 2 shadow; @param tier 1..3
      */
     public static ArmorMaterial armor(int set, int tier) {
@@ -62,17 +63,17 @@ public final class ModMaterials {
             case 0 -> switch (tier) {
                 case 1 -> GLOOM_ARMOR;
                 case 2 -> mat(30, 3, 8, 6, 3, 16, 2.5F, 0.05F, GLOOM_REPAIR, GLOOM_ASSET);
-                default -> mat(42, 4, 9, 7, 4, 16, 4.0F, 0.20F, GLOOM_REPAIR, GLOOM_ASSET);
+                default -> mat(45, 4, 9, 7, 4, 16, 4.0F, 0.20F, GLOOM_REPAIR, GLOOM_ASSET);
             };
             case 1 -> switch (tier) {
                 case 1 -> mat(20, 2, 6, 5, 2, 22, 1.0F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
-                case 2 -> mat(32, 3, 7, 6, 3, 22, 2.5F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
-                default -> mat(40, 3, 8, 7, 3, 22, 3.5F, 0.10F, LUMINITE_REPAIR, LUMINITE_ASSET);
+                case 2 -> mat(40, 3, 7, 6, 3, 22, 2.5F, 0.0F, LUMINITE_REPAIR, LUMINITE_ASSET);
+                default -> mat(60, 3, 8, 7, 3, 22, 3.5F, 0.10F, LUMINITE_REPAIR, LUMINITE_ASSET);
             };
             default -> switch (tier) {
                 case 1 -> mat(16, 2, 5, 4, 1, 24, 0.5F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
-                case 2 -> mat(28, 3, 7, 5, 2, 24, 2.0F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
-                default -> mat(38, 3, 8, 6, 3, 24, 3.5F, 0.10F, SHADOW_REPAIR, SHADOW_ASSET);
+                case 2 -> mat(32, 3, 7, 5, 2, 24, 2.0F, 0.0F, SHADOW_REPAIR, SHADOW_ASSET);
+                default -> mat(48, 3, 8, 6, 3, 24, 3.5F, 0.10F, SHADOW_REPAIR, SHADOW_ASSET);
             };
         };
     }

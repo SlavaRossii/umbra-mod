@@ -36,6 +36,7 @@ public final class UmbraClient {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(dev.umbra.registry.ModBlockEntities.SUMMONING_ALTAR.get(), SummoningAltarRenderer::new);
+        event.registerEntityRenderer(ModEntities.THROWN_KNIFE.get(), ThrownKnifeRenderer::new);
         event.registerEntityRenderer(ModEntities.SHADOW.get(), ctx -> new MirrorRenderer<>(ctx, "shadow"));
         event.registerEntityRenderer(ModEntities.HALLUCINATION.get(), ctx -> new SilhouetteRenderer<>(ctx, "hallucination"));
         event.registerEntityRenderer(ModEntities.BLIND.get(), ctx -> new UmbraRenderer<>(ctx, ModLayers.BLIND, "blind", 0.5F, Animations::blind, null));

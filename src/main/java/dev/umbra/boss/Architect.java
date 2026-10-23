@@ -51,7 +51,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
                 .add(Attributes.FOLLOW_RANGE, 48.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
                 .add(Attributes.ARMOR, 8.0)
-                .add(Attributes.SCALE, 1.3);
+                .add(Attributes.SCALE, 1.8);    // 2.9: a block taller and half a block wider than before (3.6 x 1.4)
     }
 
     @Override

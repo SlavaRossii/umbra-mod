@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "T": "umbra:trophy_primordial_shadow",
+    "S": "umbra:lurker_scale",
     "Q": "umbra:echo_quartz",
-    "L": "umbra:luminite_crystal"
+    "H": "umbra:seal_shard"
   },
   "pattern": [
-    "QLQ",
-    "LTL",
-    "QLQ"
+    "QSQ",
+    "SHS",
+    "QSQ"
   ],
   "result": {
     "id": "umbra:depths_key",
