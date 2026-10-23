@@ -2436,12 +2436,13 @@ final class SmokeTest {
             queen.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 7.5, 0, 0);
             level.addFreshEntity(queen);
             queen.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 600, 9));   // she stays where she is
-            fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
-            queen.pinTarget(fake);           // a fake player is no one her own eyes would pick
-            String probe = "set " + (queen.getTarget() == fake) + ", added " + (level.getEntity(queen.getUUID()) == queen) + ", removed " + queen.isRemoved();
-            queen.tick();
-            probe += ", after a tick " + (queen.getTarget() == fake) + " removed " + queen.isRemoved() + " ticks " + queen.tickCount + " noAi " + queen.isNoAi()
-                    + " stun " + queen.isStunned() + " alive " + queen.isAlive() + " hp " + queen.getHealth();
+            // the one she aims at: a villager standing still (a fake player is no one a mob would take for a target)
+            var mark = net.minecraft.world.entity.EntityType.VILLAGER.create(level, EntitySpawnReason.MOB_SUMMONED);
+            mark.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
+            mark.setNoAi(true);
+            mark.setInvulnerable(true);
+            level.addFreshEntity(mark);
+            queen.pinTarget(mark);
             boolean wound = false;
             for (int i = 0; i < 200 && !wound; i++) {
                 queen.tick();
@@ -2455,8 +2456,10 @@ final class SmokeTest {
             }
             check(wound && action == dev.umbra.boss.UmbraBoss.ACT_CAST && flew >= 3,
                     "2.10: from afar the Queen winds up (seen) and spits her coins instead of crossing the room (" + flew + " coins; wound " + wound
-                            + ", action " + action + ", target " + (queen.getTarget() == fake) + ", sight " + queen.hasLineOfSight(fake) + ", "
-                            + String.format("%.1f", queen.distanceTo(fake)) + " off, hidden " + queen.isDisguised() + ", fake alive " + fake.isAlive() + "; " + probe + ")");
+                            + ", action " + action + ", target " + (queen.getTarget() == mark) + ", sight " + queen.hasLineOfSight(mark) + ", "
+                            + String.format("%.1f", queen.distanceTo(mark)) + " off, hidden " + queen.isDisguised() + ")");
+            queen.pinTarget(null);
+            mark.discard();
             // and a boss dies slowly: it sinks into its smoke and is gone after a couple of seconds
             queen.setHealth(0.0F);
             queen.die(level.damageSources().magic());
