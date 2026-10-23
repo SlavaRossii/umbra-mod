@@ -127,6 +127,15 @@ public final class ClientShots {
         POSES.add(new Pose(String.format("%02d_tour_end", n++), CameraType.FIRST_PERSON, false, true, "tp @e[tag=shot] ~ ~-300 ~"));
     }
 
+    // the compatibility check takes only some of them (a regex over the names; the whole set when empty)
+    static {
+        String only = System.getProperty("umbra.clientshots.only", "");
+        if (!only.isBlank()) {
+            var re = java.util.regex.Pattern.compile(only);
+            POSES.removeIf(p -> !re.matcher(p.name()).find());
+        }
+    }
+
     /** Ticks to let the world settle before the picture: a far trip needs its chunks drawn. */
     private static int settle(Pose p) {
         return p.name.contains("_tour_") ? 220 : 50;

@@ -1,0 +1,9 @@
+{
+  "sound": {"mods": ["sound-physics-remastered", "ambientsounds", "presence-footsteps", "auditory", "sounds", "dynamic-surroundings-resurrected"],
+            "shots": "hand_luminite_lantern_lit|mob_watcher_night|tour_depths_landing|tour_maze|tour_rift"},
+  "visual": {"mods": ["sodium", "lambdynamiclights", "sodium-dynamic-lights", "entityculling", "3dskinlayers", "entity-model-features", "entitytexturefeatures",
+                      "subtle-effects", "visuality", "particle-rain", "falling-leaves", "not-enough-animations", "better-clouds", "eating-animation"],
+             "shots": "hand_luminite_spear|hand_luminite_lantern_lit|third_|mob_|side_luminite|tour_"},
+  "shaders": {"mods": ["sodium", "iris"], "shader": "complementary-reimagined",
+              "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_rift|tour_village_street|tour_citadel_1"}
+}
