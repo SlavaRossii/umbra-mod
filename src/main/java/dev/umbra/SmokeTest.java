@@ -1450,8 +1450,8 @@ final class SmokeTest {
             check(before - w.getHealth() <= 100.0F * dev.umbra.boss.Watcher.ARMOURED_EYE + 0.01F, "the Watcher's eye shrugs off part of a blow (" + (before - w.getHealth()) + " of 100)");
             // 2.10: but not while its eye is open wide (spent after its gaze, say): then the whole blow lands, and more
             w.setHealth(w.getMaxHealth());
+            for (int i = 0; i < 21; i++) w.baseTick();   // the last blow's grace would swallow this one
             w.stun(40);
-            w.invulnerableTime = 0;          // the last blow's grace would swallow this one
             float open = w.getHealth();
             w.hurtServer(level, level.damageSources().magic(), 20.0F);
             check(w.eyeOpen() && open - w.getHealth() >= 20.0F, "2.10: while its eye is open wide every blow lands whole (" + (open - w.getHealth()) + " of 20)");
