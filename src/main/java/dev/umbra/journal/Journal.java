@@ -46,22 +46,140 @@ public final class Journal {
             "depths"), dev.umbra.quest.Quests.ENTRY_IDS.stream()).toList();
 
     /** Sections of the journal window, in tab order. */
-    public static final String[] SECTIONS = {"chronicle", "insights", "mimics", "creatures", "bosses", "notes", "quests", "atlas"};
+    public static final String[] SECTIONS = {"chronicle", "insights", "creatures", "bosses", "notes", "quests", "atlas"};
     /** The atlas tab: a map, not a list of entries. */
-    public static final int ATLAS = 7;
+    public static final int ATLAS = 6;
 
-    /** Index into {@link #SECTIONS} for an entry. */
+    /** Index into {@link #SECTIONS} for an entry (or a page: a page goes where its first entry goes). */
     public static int section(String id) {
         if (id.startsWith("insight")) return 1;
-        if (id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
-        if (id.startsWith("note_") || id.startsWith("depths_note_") || (id.startsWith("keeper_") && !id.equals("keeper_staff"))) return 5;
-        if (id.startsWith("quest_")) return 6;
-        if (id.startsWith("weak_")) return 4;
+        if (id.equals("mimics") || id.startsWith("mimic") && !id.equals("mimicker") && !id.equals("mimic_queen")) return 2;
+        if (id.startsWith("note_") || id.startsWith("depths_note_") || (id.startsWith("keeper_") && !id.equals("keeper_staff"))) return 4;
+        if (id.startsWith("quest_")) return 5;
+        if (id.startsWith("weak_")) return 3;
         return switch (id) {
-            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer", "acolyte" -> 3;
-            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper", "drowned_keeper" -> 4;
+            case "crawler", "blind", "light_eater", "mimicker", "shade", "lurker", "statue", "keeper", "weeper", "bellringer", "acolyte" -> 2;
+            case "watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "primordial_shadow", "fallen_keeper", "drowned_keeper" -> 3;
             default -> 0;
         };
+    }
+
+    // --- 2.11: pages ----------------------------------------------------------------------------------------
+    /**
+     * The journal reads in pages, fewer than its entries: what you know of the mimics is one page, a boss and how to
+     * beat it are one page, notes found together are read together. The entries keep their own ids (and what they
+     * open: recipes, errands, the next page of the Keepers), only the reading is merged. A page with an id of its own
+     * ("mimics", "nights", "yan_gifts") has a title and a short line of its own; otherwise it is named after its first
+     * entry. Old saves lose nothing: whatever was written shows in its page.
+     */
+    public static final Map<String, List<String>> PAGES = pages();
+
+    private static Map<String, List<String>> pages() {
+        Map<String, List<String>> m = new java.util.LinkedHashMap<>();
+        m.put("mimics", List.of("mimic", "mimic_crafting_table", "mimic_bookshelf", "mimic_planks", "mimic_stone", "mimic_barrel", "mimic_furnace",
+                "mimic_hay", "mimic_log", "mimic_ore", "mimic_chest", "mimic_villager"));
+        m.put("shadow", List.of("shadow", "shadow_dispelled"));
+        for (String b : new String[]{"watcher", "mimic_queen", "shepherd", "doppelganger", "architect", "fallen_keeper", "drowned_keeper"})
+            m.put(b, List.of(b, "weak_" + b));
+        m.put("primordial_shadow", List.of("primordial_shadow", "weak_primordial_shadow", "freed"));
+        m.put("note_1", List.of("note_1", "note_2"));
+        m.put("note_3", List.of("note_3", "note_4"));
+        m.put("note_5", List.of("note_5", "note_6"));
+        m.put("note_7", List.of("note_7", "note_8"));
+        m.put("keeper_1", List.of("keeper_1", "keeper_2", "keeper_3"));
+        m.put("keeper_4", List.of("keeper_4", "keeper_5"));
+        m.put("keeper_6", List.of("keeper_6", "keeper_7"));
+        m.put("depths_note_1", List.of("depths_note_1", "depths_note_2", "depths_note_3"));
+        m.put("yan_1", List.of("yan_1", "yan_2"));
+        m.put("yan_3", List.of("yan_3", "yan_4"));
+        m.put("onslaught", List.of("onslaught", "onslaught_won"));
+        m.put("nights", List.of("night_blood_moon", "night_fog", "night_silence"));
+        m.put("yan_gifts", List.of("yan_gift_lantern", "yan_gift_spyglass", "yan_gift_bell"));
+        m.put("yan_dawn", List.of("yan_dawn", "keeper_staff", "yan_farewell"));
+        m.put("depths", List.of("depths", "depths_sluice", "depths_bells", "depths_lamps", "depths_treasure"));
+        return java.util.Collections.unmodifiableMap(m);
+    }
+
+    private static final Map<String, String> PAGE_OF = pageIndex();
+
+    private static Map<String, String> pageIndex() {
+        Map<String, String> m = new java.util.HashMap<>();
+        for (var e : PAGES.entrySet()) for (String id : e.getValue()) m.put(id, e.getKey());
+        return m;
+    }
+
+    /** The page entry {@code id} is read in (its own id when it stands alone). */
+    public static String pageOf(String id) {
+        return PAGE_OF.getOrDefault(id, id);
+    }
+
+    /** The entries of a page, in reading order. */
+    public static List<String> members(String page) {
+        return PAGES.getOrDefault(page, List.of(page));
+    }
+
+    /** Every page, in reading order (where its first entry stands among {@link #ENTRIES}). */
+    public static final List<String> PAGE_ORDER = ENTRIES.stream().map(Journal::pageOf).distinct().toList();
+
+    /** Whether anything on the page has been written. */
+    public static boolean known(List<String> got, String page) {
+        for (String id : members(page)) if (got.contains(id)) return true;
+        return false;
+    }
+
+    /** Whether the page has a title of its own (not its first entry's). */
+    public static boolean ownTitle(String page) {
+        return PAGES.containsKey(page) && !PAGES.get(page).contains(page);
+    }
+
+    public static Component pageTitle(String page) {
+        return Component.translatable("journal.umbra." + page + ".title");
+    }
+
+    /**
+     * The page as it reads to {@code me}: creatures open up with what you know of them, errands show how far along
+     * you are, and every further entry of the page follows under its own heading.
+     */
+    public static net.minecraft.network.chat.MutableComponent pageText(net.minecraft.world.entity.player.Player me, List<String> got, String page) {
+        net.minecraft.network.chat.MutableComponent t = Component.empty();
+        boolean first = true;
+        if (ownTitle(page)) {
+            t.append(Component.translatable("journal.umbra." + page + ".text").withStyle(ChatFormatting.ITALIC));
+            first = false;
+        }
+        for (String id : members(page)) {
+            if (!got.contains(id)) continue;
+            if (!first) t.append("\n\n");
+            if (!id.equals(page)) t.append(Component.translatable("journal.umbra." + id + ".title").withStyle(ChatFormatting.BOLD)).append("\n");
+            t.append(entryText(me, id));
+            first = false;
+        }
+        return t;
+    }
+
+    private static net.minecraft.network.chat.MutableComponent entryText(net.minecraft.world.entity.player.Player me, String id) {
+        if (me != null && Bestiary.isCreature(id)) {
+            int kills = Bestiary.kills(me, id);
+            int st = Bestiary.stage(id, kills);
+            net.minecraft.network.chat.MutableComponent t = Component.translatable("journal.umbra." + id + ".look");
+            if (st >= 1) t.append("\n\n").append(Component.translatable("journal.umbra." + id + ".text"));
+            if (st >= 2) t.append("\n\n").append(Component.translatable("journal.umbra." + id + ".weak"));
+            else t.append("\n\n").append(Component.translatable("journal.umbra.bestiary.hint" + st, Bestiary.toNext(id, kills)).withStyle(ChatFormatting.ITALIC));
+            return t;
+        }
+        net.minecraft.network.chat.MutableComponent t = Component.translatable("journal.umbra." + id + ".text");
+        if (me != null && id.startsWith("quest_")) {
+            var q = dev.umbra.quest.Quests.byId(id.substring("quest_".length()));
+            if (q != null) {
+                t.append("\n\n");
+                if (dev.umbra.quest.Quests.isDone(me, q)) t.append(Component.translatable("journal.umbra.quest.done").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD));
+                else {
+                    int base = Math.max(0, dev.umbra.quest.Quests.activeBaseline(me, q));
+                    t.append(Component.translatable("journal.umbra.quest.progress", dev.umbra.quest.Quests.progress(me, q, base), q.count()).withStyle(ChatFormatting.DARK_AQUA));
+                }
+            }
+        }
+        return t;
     }
 
     /** Set on the client: opens the journal window. */
@@ -117,6 +235,7 @@ public final class Journal {
     /** Adds the entry if new and tells the player. */
     public static void unlock(ServerPlayer player, String id) {
         if (!ENTRIES.contains(id) || has(player, id)) return;
+        boolean pageKnown = known(player.getData(ModAttachments.JOURNAL), pageOf(id));
         List<String> list = new ArrayList<>(player.getData(ModAttachments.JOURNAL));
         list.add(id);
         player.setData(ModAttachments.JOURNAL, List.copyOf(list));
@@ -129,8 +248,9 @@ public final class Journal {
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 0.6F);
             return;
         }
-        player.sendOverlayMessage(Component.translatable("message.umbra.journal_new",
-                Component.translatable("journal.umbra." + id + ".title")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        // a page that is already there grows by a line: say so, under the page's name
+        player.sendOverlayMessage(Component.translatable(pageKnown ? "message.umbra.journal_more" : "message.umbra.journal_new",
+                pageTitle(pageOf(id))).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 0.9F);
     }
 
@@ -178,26 +298,34 @@ public final class Journal {
     /** Prints the journal to chat. */
     public static void read(ServerPlayer player) {
         List<String> got = player.getData(ModAttachments.JOURNAL);
-        player.sendSystemMessage(Component.translatable("journal.umbra.header", got.size(), ENTRIES.size()).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
+        int known = knownPages(got);
+        player.sendSystemMessage(Component.translatable("journal.umbra.header", known, PAGE_ORDER.size()).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
         // a slipping mind reads its own words badly, and finds lines it did not write
         float sanity = dev.umbra.sanity.Sanity.enabled() ? dev.umbra.sanity.Sanity.get(player) : 100.0F;
         boolean slipping = sanity < CORRUPT_BELOW;
         var random = player.getRandom();
-        for (String id : ENTRIES) {
-            if (!got.contains(id)) continue;
-            boolean insight = id.startsWith("insight");
-            player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".title").withStyle(insight ? ChatFormatting.DARK_PURPLE : ChatFormatting.LIGHT_PURPLE));
+        for (String page : PAGE_ORDER) {
+            if (!known(got, page)) continue;
+            boolean insight = page.startsWith("insight");
+            player.sendSystemMessage(pageTitle(page).copy().withStyle(insight ? ChatFormatting.DARK_PURPLE : ChatFormatting.LIGHT_PURPLE));
             if (slipping && !insight && random.nextFloat() < 0.35F) {
-                player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".text").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.OBFUSCATED));
+                player.sendSystemMessage(pageText(player, got, page).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.OBFUSCATED));
             } else {
-                player.sendSystemMessage(Component.translatable("journal.umbra." + id + ".text").withStyle(ChatFormatting.GRAY));
+                player.sendSystemMessage(pageText(player, got, page).withStyle(ChatFormatting.GRAY));
             }
             if (slipping && random.nextFloat() < 0.25F) {
                 player.sendSystemMessage(Component.translatable("journal.umbra.whisper." + random.nextInt(WHISPERS)).withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
             }
         }
-        if (got.size() < ENTRIES.size()) {
+        if (known < PAGE_ORDER.size()) {
             player.sendSystemMessage(Component.translatable("journal.umbra.more").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
         }
+    }
+
+    /** How many pages have anything written on them. */
+    public static int knownPages(List<String> got) {
+        int n = 0;
+        for (String page : PAGE_ORDER) if (known(got, page)) n++;
+        return n;
     }
 }

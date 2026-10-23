@@ -310,7 +310,6 @@
   "message.umbra.ally.follow": "Тень снова следует за тобой.",
   "journal.umbra.tab.chronicle": "Хроника",
   "journal.umbra.tab.insights": "Озарения",
-  "journal.umbra.tab.mimics": "Подмены",
   "journal.umbra.tab.creatures": "Существа",
   "journal.umbra.tab.bosses": "Боссы",
   "journal.umbra.tab.notes": "Записки",
@@ -941,5 +940,12 @@
   "jukebox_song.umbra.drowned_keeper": "Umbra — Утопленный колокол",
   "item.umbra.music_disc_fallen_keeper": "Пластинка",
   "jukebox_song.umbra.fallen_keeper": "Umbra — Свет, который погас",
-  "entity.umbra.thrown_knife": "Брошенный нож"
+  "entity.umbra.thrown_knife": "Брошенный нож",
+  "message.umbra.journal_more": "Дневник дополнен: %s",
+  "journal.umbra.mimics.title": "Подмены",
+  "journal.umbra.mimics.text": "Вещи, которые притворяются вещами. Каждую новую примету записываю сюда.",
+  "journal.umbra.nights.title": "Странные ночи",
+  "journal.umbra.nights.text": "Бывают ночи, когда Изнанка подходит совсем близко. Каждая такая ночь — по-своему.",
+  "journal.umbra.yan_gifts.title": "Подарки Яна",
+  "journal.umbra.yan_gifts.text": "Ян платит за помощь вещами Хранителей — тем, что сберёг с тех времён."
 }

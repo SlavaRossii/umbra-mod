@@ -2346,10 +2346,20 @@ final class SmokeTest {
     }
 
     private static void testBossMoves(ServerLevel level) {
-        check(dev.umbra.journal.Journal.section("watcher") == 4 && dev.umbra.journal.Journal.section("mimic_queen") == 4
-                && dev.umbra.journal.Journal.section("mimic_chest") == 2 && dev.umbra.journal.Journal.section("mimicker") == 3
-                && dev.umbra.journal.Journal.section("insight_2") == 1 && dev.umbra.journal.Journal.section("note_3") == 5
+        check(dev.umbra.journal.Journal.section("watcher") == 3 && dev.umbra.journal.Journal.section("mimic_queen") == 3
+                && dev.umbra.journal.Journal.section("mimics") == 2 && dev.umbra.journal.Journal.section("mimicker") == 2
+                && dev.umbra.journal.Journal.section("insight_2") == 1 && dev.umbra.journal.Journal.section("note_3") == 4
                 && dev.umbra.journal.Journal.section("start") == 0, "journal entries sort into sections");
+        // 2.11: the journal reads in pages, fewer than its entries
+        int pages = dev.umbra.journal.Journal.PAGE_ORDER.size();
+        boolean everyEntryHasAPage = true;
+        for (String id : dev.umbra.journal.Journal.ENTRIES) everyEntryHasAPage &= dev.umbra.journal.Journal.PAGE_ORDER.contains(dev.umbra.journal.Journal.pageOf(id));
+        java.util.List<String> got = java.util.List.of("note_2", "mimic_ore", "weak_watcher");
+        boolean merged = dev.umbra.journal.Journal.known(got, "note_1") && dev.umbra.journal.Journal.known(got, "mimics") && dev.umbra.journal.Journal.known(got, "watcher")
+                && !dev.umbra.journal.Journal.known(got, "note_3") && "mimics".equals(dev.umbra.journal.Journal.pageOf("mimic_villager"))
+                && dev.umbra.journal.Journal.pageText(null, got, "mimics").getString().length() > 20;
+        check(pages <= 75 && everyEntryHasAPage && merged, "2.11: the journal reads in " + pages + " pages instead of "
+                + dev.umbra.journal.Journal.ENTRIES.size() + " entries; a page shows as soon as anything on it is written");
         int[] per = new int[dev.umbra.journal.Journal.SECTIONS.length];
         for (String id : dev.umbra.journal.Journal.ENTRIES) per[dev.umbra.journal.Journal.section(id)]++;
         boolean none = false;
@@ -2531,7 +2541,7 @@ final class SmokeTest {
             }
             check(found == 3, "the Underside has crystal grottos, black lakes and a whispering forest (" + found + "/3)");
         }
-        check(dev.umbra.journal.Journal.section("lurker") == 3 && dev.umbra.journal.Journal.section("black_lakes") == 0, "new journal entries are sorted");
+        check(dev.umbra.journal.Journal.section("lurker") == 2 && dev.umbra.journal.Journal.section("black_lakes") == 0, "new journal entries are sorted");
 
         // a temple in a lake, built on a block of stone
         BlockPos c = new BlockPos(270, Y + 6, 30);

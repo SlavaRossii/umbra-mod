@@ -42,15 +42,15 @@ public class JournalScreen extends Screen {
         this.slipping = sanity < Journal.CORRUPT_BELOW;
         RandomSource r = RandomSource.create();
         if (slipping) {
-            for (String id : got) if (!id.startsWith("insight") && r.nextFloat() < 0.35F) scrambled.add(id);
+            for (String page : Journal.PAGE_ORDER) if (Journal.known(got, page) && !page.startsWith("insight") && r.nextFloat() < 0.35F) scrambled.add(page);
         }
         this.whisper = slipping ? "journal.umbra.whisper." + r.nextInt(Journal.WHISPERS) : null;
-        if (open != null && !got.contains(open)) open = null;
+        if (open != null && (!Journal.PAGE_ORDER.contains(open) || !Journal.known(got, open))) open = null;
     }
 
     private List<String> entries() {
         List<String> out = new ArrayList<>();
-        for (String id : Journal.ENTRIES) if (Journal.section(id) == tab) out.add(id);
+        for (String page : Journal.PAGE_ORDER) if (Journal.section(page) == tab) out.add(page);
         return out;
     }
 
@@ -82,8 +82,8 @@ public class JournalScreen extends Screen {
             int idx = listPage * ROWS + i;
             if (idx >= list.size()) break;
             String id = list.get(idx);
-            boolean known = got.contains(id);
-            MutableComponent label = known ? Component.translatable("journal.umbra." + id + ".title")
+            boolean known = Journal.known(got, id);
+            MutableComponent label = known ? Journal.pageTitle(id).copy()
                     : Component.translatable("journal.umbra.locked").withStyle(ChatFormatting.DARK_GRAY);
             if (id.equals(open)) label = label.withStyle(ChatFormatting.LIGHT_PURPLE);
             Button b = Button.builder(label, btn -> {
@@ -117,31 +117,9 @@ public class JournalScreen extends Screen {
         }
     }
 
-    /** The page of the open entry: creatures open up with what you know, errands show how far along you are. */
+    /** The open page: creatures open up with what you know, errands show how far along you are (see {@link Journal#pageText}). */
     private MutableComponent fullText() {
-        if (me != null && dev.umbra.journal.Bestiary.isCreature(open)) {
-            int kills = dev.umbra.journal.Bestiary.kills(me, open);
-            int st = dev.umbra.journal.Bestiary.stage(open, kills);
-            MutableComponent t = Component.translatable("journal.umbra." + open + ".look");
-            if (st >= 1) t.append("\n\n").append(Component.translatable("journal.umbra." + open + ".text"));
-            if (st >= 2) t.append("\n\n").append(Component.translatable("journal.umbra." + open + ".weak"));
-            else t.append("\n\n").append(Component.translatable("journal.umbra.bestiary.hint" + st, dev.umbra.journal.Bestiary.toNext(open, kills))
-                    .withStyle(ChatFormatting.ITALIC));
-            return t;
-        }
-        MutableComponent t = Component.translatable("journal.umbra." + open + ".text");
-        if (me != null && open.startsWith("quest_")) {
-            var q = dev.umbra.quest.Quests.byId(open.substring("quest_".length()));
-            if (q != null) {
-                t.append("\n\n");
-                if (dev.umbra.quest.Quests.isDone(me, q)) t.append(Component.translatable("journal.umbra.quest.done").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD));
-                else {
-                    int base = Math.max(0, dev.umbra.quest.Quests.activeBaseline(me, q));
-                    t.append(Component.translatable("journal.umbra.quest.progress", dev.umbra.quest.Quests.progress(me, q, base), q.count()).withStyle(ChatFormatting.DARK_AQUA));
-                }
-            }
-        }
-        return t;
+        return Journal.pageText(me, got, open);
     }
 
     private int textWidth() {
@@ -190,18 +168,17 @@ public class JournalScreen extends Screen {
         }
         g.centeredText(this.font, Component.translatable("journal.umbra.tab." + Journal.SECTIONS[tab]).withStyle(ChatFormatting.BOLD),
                 left + (LIST_W + 12) / 2, top + 7, 0xFF3A2614);
-        int count = 0;
-        for (String id : Journal.ENTRIES) if (got.contains(id)) count++;
+        int count = Journal.knownPages(got), all = Journal.PAGE_ORDER.size();
         int rx = left + LIST_W + 18;
         if (open == null) {
-            g.text(this.font, Component.translatable("journal.umbra.header", count, Journal.ENTRIES.size()), rx, top + 8, 0xFF3A2614, false);
+            g.text(this.font, Component.translatable("journal.umbra.header", count, all), rx, top + 8, 0xFF3A2614, false);
             g.textWithWordWrap(this.font, Component.translatable("journal.umbra.pick"), rx, top + 26, textWidth(), 0xFF5A4630, false);
-            if (count < Journal.ENTRIES.size()) {
+            if (count < all) {
                 g.textWithWordWrap(this.font, Component.translatable("journal.umbra.more").withStyle(ChatFormatting.ITALIC), rx, top + H - 40, textWidth(), 0xFF6E5A40, false);
             }
         } else {
             boolean insight = open.startsWith("insight");
-            g.textWithWordWrap(this.font, Component.translatable("journal.umbra." + open + ".title").withStyle(ChatFormatting.BOLD), rx, top + 8, textWidth(),
+            g.textWithWordWrap(this.font, Journal.pageTitle(open).copy().withStyle(ChatFormatting.BOLD), rx, top + 8, textWidth(),
                     insight ? 0xFF5A1E78 : 0xFF3A2614, false);
             List<FormattedCharSequence> lines = pageLines();
             int per = linesPerPage(), from = textPage * per;
