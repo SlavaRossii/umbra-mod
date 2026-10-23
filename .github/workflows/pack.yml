@@ -24,9 +24,13 @@ jobs:
       - name: Build Umbra
         run: ./gradlew build -x test --stacktrace > build.log 2>&1 || (tail -60 build.log; exit 1)
       - name: Put the pack together
-        run: python3 tools/compat/make_pack.py "$(ls build/libs/umbra-*.jar | grep -v sources | head -1)" pack
+        run: |
+          mkdir -p pack
+          ls -la build/libs
+          python3 tools/compat/make_pack.py "$(ls build/libs/umbra-*.jar | grep -v sources | head -1)" pack > pack/pack.log 2>&1; rc=$?
+          cat pack/pack.log; exit $rc
       - name: Publish
         if: always()
-        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/pack.md
+        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/pack.md pack/pack.log
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
