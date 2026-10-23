@@ -167,6 +167,47 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.06
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_watcher"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_mimic_queen"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_shepherd"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_doppelganger"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_architect"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_primordial_shadow"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_drowned_keeper"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "umbra:music_disc_fallen_keeper"
+        }
+      ]
     }
   ],
   "random_sequence": "umbra:chests/maze_common_underside"

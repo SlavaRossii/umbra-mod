@@ -1928,11 +1928,11 @@ final class SmokeTest {
             chest.unpackLootTable(null);
             boolean full = !chest.isEmpty();
             chest.clearContent();
-            chest.setItem(0, new ItemStack(Items.DIAMOND));
+            chest.setItem(0, new ItemStack(Items.NAUTILUS_SHELL, 3));
             dev.umbra.depths.Depths.lockTreasure(under);
             int n = 0;
             for (int i = 0; i < chest.getContainerSize(); i++) if (!chest.getItem(i).isEmpty()) n++;
-            check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.DIAMOND) == 1,
+            check(full && !under.getBlockState(tc).getValue(dev.umbra.depths.KeepersChest.OPEN) && n > 1 && chest.countItem(Items.NAUTILUS_SHELL) == 3,
                     "2.9: there was treasure in it; beaten again, he fills it again round what was left and it shuts (" + n + " stacks)");
         } else check(false, "2.9: the Keepers' chest keeps things");
         check(ModBlocks.KEEPERS_CHEST.get().defaultDestroyTime() < 0 && ModBlocks.KEEPERS_CHEST.get().getExplosionResistance() > 1000.0F,
@@ -2016,6 +2016,27 @@ final class SmokeTest {
             jb.setTheItem(new ItemStack(ModItems.MUSIC_DISCS.get("watcher").get()));
             check(jb.getSongPlayer().isPlaying(), "2.9: the Watcher's disc plays in a jukebox");
         } else check(false, "2.9: a jukebox to try the discs in");
+        // and they are found in the mod's chests, so the music can be had without the fights
+        BlockPos dc = box.offset(2, 0, 0);
+        level.setBlock(dc, Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+        int found = 0;
+        java.util.Set<net.minecraft.world.item.Item> kinds = new java.util.HashSet<>();
+        if (level.getBlockEntity(dc) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity dch) {
+            var prize = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(Umbra.MODID, "chests/maze_prize"));
+            for (int i = 0; i < 80; i++) {
+                dch.clearContent();
+                dch.setLootTable(i % 2 == 0 ? dev.umbra.depths.Depths.LOOT : prize, level.getRandom().nextLong());
+                dch.unpackLootTable(null);
+                for (var disc : ModItems.MUSIC_DISCS.values()) {
+                    int k = dch.countItem(disc.get());
+                    if (k > 0) { found += k; kinds.add(disc.get()); }
+                }
+            }
+            dch.clearContent();
+        }
+        level.removeBlock(dc, false);
+        check(found >= 5 && kinds.size() >= 3, "2.9: the discs lie in the mod's chests too (" + found + " discs of " + kinds.size() + " kinds in 80 chests)");
         level.setBlock(box, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         // the knife: a thing of its own, flying point first; in a wall it sticks for a while
         var knife = new dev.umbra.gear.ThrownKnife(level, fake, new ItemStack(ModItems.SHADOW_KNIFE.get()));
