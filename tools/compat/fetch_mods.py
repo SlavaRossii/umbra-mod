@@ -81,6 +81,23 @@ def main():
                              "sha512": f["hashes"]["sha512"], "size": f["size"], "shader": True})
         else:
             report.append(f"- shader pack {s['shader']}: not found")
+    if s.get("inspect"):
+        import re
+        import zipfile
+        report.append("")
+        report.append(f"## Inside the jars: {s['inspect']}")
+        for jar in sorted(os.listdir(out + "/mods")):
+            def walk(z, label, depth=0):
+                for n in z.namelist():
+                    if re.search(s["inspect"], n) and not n.endswith("/"):
+                        report.append(f"### {label}: {n}")
+                        report.append("```")
+                        report.append(z.read(n).decode("utf-8", "replace")[:1500])
+                        report.append("```")
+                    elif n.endswith(".jar") and depth < 2:
+                        import io
+                        walk(zipfile.ZipFile(io.BytesIO(z.read(n))), label + " > " + n, depth + 1)
+            walk(zipfile.ZipFile(out + "/mods/" + jar), jar)
     open(out + "/fetch.md", "w").write("\n".join(report) + "\n")
     json.dump(manifest, open(out + "/manifest.json", "w"), indent=1)
     print("\n".join(report))

@@ -133,6 +133,15 @@ public final class ClientShots {
         if (!only.isBlank()) {
             var re = java.util.regex.Pattern.compile(only);
             POSES.removeIf(p -> !re.matcher(p.name()).find());
+            // what the whole tour does on the way (day comes back after the night shots) is done here for each
+            for (int i = 0; i < POSES.size(); i++) {
+                Pose p = POSES.get(i);
+                if (p.name().contains("_night")) continue;
+                String[] c = new String[p.commands().length + 1];
+                c[0] = "time set noon";
+                System.arraycopy(p.commands(), 0, c, 1, p.commands().length);
+                POSES.set(i, new Pose(p.name(), p.camera(), p.use(), p.hideGui(), c));
+            }
         }
     }
 
