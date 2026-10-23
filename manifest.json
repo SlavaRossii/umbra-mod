@@ -1,0 +1,48 @@
+[
+ {
+  "slug": "sodium",
+  "title": "Sodium",
+  "version": "mc26.3-0.9.3-beta.1-neoforge",
+  "file": "sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+  "url": "https://cdn.modrinth.com/data/AANobbMI/versions/SS023RVV/sodium-neoforge-0.9.3-beta.1%2Bmc26.3.jar",
+  "sha1": "c9412897122afb33007f6c0d6ee1b2248a9ebcf7",
+  "sha512": "92cdb344cb8049993685e3d81498411d4e6965a8f054c912a297bfe550937ed4792b7c1cb4efea5b5ac9c0e6c32aea777389207e481f008ce6f176b5ae6aab93",
+  "size": 1209577,
+  "client": "required",
+  "server": "unsupported"
+ },
+ {
+  "slug": "iris",
+  "title": "Iris Shaders",
+  "version": "1.11.7+26.3-neoforge",
+  "file": "iris-neoforge-1.11.7+mc26.3.jar",
+  "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/Ag5S66CF/iris-neoforge-1.11.7%2Bmc26.3.jar",
+  "sha1": "57cbbd1f58b6226c633520541c1a3ae57c019373",
+  "sha512": "302659f09e50d02a6cd96075be93aade2a2f9d709afe21d56465228fb7d7f4717566e3702a7872479df2fff9b7a5ff5b1b6047cc95e09ee6120fad5ea5857eec",
+  "size": 2804761,
+  "client": "required",
+  "server": "unsupported"
+ },
+ {
+  "slug": "sodium",
+  "title": "Sodium",
+  "version": "mc26.3-0.9.3-beta.1-neoforge",
+  "file": "sodium-neoforge-0.9.3-beta.1+mc26.3.jar",
+  "url": "https://cdn.modrinth.com/data/AANobbMI/versions/SS023RVV/sodium-neoforge-0.9.3-beta.1%2Bmc26.3.jar",
+  "sha1": "c9412897122afb33007f6c0d6ee1b2248a9ebcf7",
+  "sha512": "92cdb344cb8049993685e3d81498411d4e6965a8f054c912a297bfe550937ed4792b7c1cb4efea5b5ac9c0e6c32aea777389207e481f008ce6f176b5ae6aab93",
+  "size": 1209577,
+  "client": "required",
+  "server": "unsupported"
+ },
+ {
+  "slug": "i-like-vanilla",
+  "version": "v1.5.0b",
+  "file": "I Like Vanilla v1.5.0b.zip",
+  "url": "https://cdn.modrinth.com/data/DoODk4HD/versions/lrndU3YJ/I%20Like%20Vanilla%20v1.5.0b.zip",
+  "sha1": "d681b1555f28b521f1967a8e8ed84f8c281a7aba",
+  "sha512": "8a6594acb04e15f068fe73f023f1a37ef35a3d7f4247d9eed48a56ee07b0796726d745a908cbf89ffa34e99003bec119b2a259b2f235cb578923838c60595105",
+  "size": 334513,
+  "shader": true
+ }
+]
