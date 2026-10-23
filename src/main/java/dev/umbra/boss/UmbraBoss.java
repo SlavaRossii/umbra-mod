@@ -170,7 +170,16 @@ public abstract class UmbraBoss extends Monster {
             String id = dev.umbra.journal.Bestiary.ids().get(this.getType());
             if (id != null) for (ServerPlayer p : opponents(level)) dev.umbra.journal.Journal.unlock(p, "weak_" + id);
         }
+        if (pinned != null && pinned.isAlive()) this.setTarget(pinned);
         bossTick(level);
+    }
+
+    /** For the smoke test: a target its own eyes would not pick (a fake player), kept through its target goals. */
+    private net.minecraft.world.entity.LivingEntity pinned;
+
+    public void pinTarget(net.minecraft.world.entity.LivingEntity target) {
+        pinned = target;
+        this.setTarget(target);
     }
 
     // --- 1.8.2: the window after a big move ---------------------------------------------------------------

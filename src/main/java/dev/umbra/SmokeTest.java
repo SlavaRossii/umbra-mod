@@ -2437,10 +2437,9 @@ final class SmokeTest {
             level.addFreshEntity(queen);
             queen.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 600, 9));   // she stays where she is
             fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
-            queen.setTarget(fake);
+            queen.pinTarget(fake);           // a fake player is no one her own eyes would pick
             boolean wound = false;
             for (int i = 0; i < 200 && !wound; i++) {
-                queen.setTarget(fake);           // a fake player is no one her own eyes would pick
                 queen.tick();
                 wound = queen.windingUp();
             }
