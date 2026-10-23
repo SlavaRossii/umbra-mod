@@ -2440,6 +2440,7 @@ final class SmokeTest {
             queen.setTarget(fake);
             boolean wound = false;
             for (int i = 0; i < 200 && !wound; i++) {
+                queen.setTarget(fake);           // a fake player is no one her own eyes would pick
                 queen.tick();
                 wound = queen.windingUp();
             }

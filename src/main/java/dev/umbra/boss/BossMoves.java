@@ -376,7 +376,8 @@ public final class BossMoves {
                     if (near != null) {
                         double speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy + b.vz * b.vz);
                         Vec3 want = near.getBoundingBox().getCenter().subtract(prev).normalize().scale(speed);
-                        double k = b.style.homing();
+                        // it turns harder the closer it gets, so it strikes instead of circling round its mark
+                        double k = Math.min(1.0, b.style.homing() * Math.max(1.0, 6.0 / Math.max(0.5, Math.sqrt(best))));
                         Vec3 v = new Vec3(b.vx + (want.x - b.vx) * k, b.vy + (want.y - b.vy) * k, b.vz + (want.z - b.vz) * k).normalize().scale(speed);
                         b.vx = v.x;
                         b.vy = v.y;
