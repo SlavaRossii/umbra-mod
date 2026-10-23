@@ -8,7 +8,7 @@
       "sounds",
       "dynamic-surroundings-resurrected"
     ],
-    "shots": "hand_luminite_lantern_lit|mob_watcher_night|tour_depths_landing|tour_maze|tour_rift"
+    "shots": "hand_luminite_lantern_lit|mob_watcher_night|tour_depths_landing|tour_maze|tour_rift|lantern_night"
   },
   "visual": {
     "mods": [
@@ -27,7 +27,7 @@
       "better-clouds",
       "eating-animation"
     ],
-    "shots": "hand_luminite_spear|hand_luminite_lantern_lit|third_|mob_|side_luminite|tour_"
+    "shots": "hand_luminite_spear|hand_luminite_lantern_lit|third_|mob_|side_luminite|tour_|lantern_night"
   },
   "shaders": {
     "mods": [
@@ -35,13 +35,13 @@
       "iris"
     ],
     "shader": "complementary-reimagined",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "light": {
     "mods": [
       "lambdynamiclights"
     ],
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse",
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night",
     "inspect": "dynamiclights"
   },
   "sodium_light": {
@@ -49,7 +49,7 @@
       "sodium",
       "lambdynamiclights"
     ],
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "spooky": {
     "mods": [
@@ -57,7 +57,7 @@
       "iris"
     ],
     "shader": "spooklementary",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "pack": {
     "mods": [
@@ -68,7 +68,7 @@
       "lambdynamiclights"
     ],
     "shader": "spooklementary",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "sh_makeup": {
     "mods": [
@@ -76,7 +76,7 @@
       "iris"
     ],
     "shader": "makeup-ultra-fast-shaders",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "sh_cursed": {
     "mods": [
@@ -84,7 +84,7 @@
       "iris"
     ],
     "shader": "cursed-fog",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "sh_vanilla": {
     "mods": [
@@ -92,7 +92,7 @@
       "iris"
     ],
     "shader": "i-like-vanilla",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   },
   "sh_sildur": {
     "mods": [
@@ -100,6 +100,6 @@
       "iris"
     ],
     "shader": "sildurs-enhanced-default-shaders",
-    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse"
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night"
   }
 }

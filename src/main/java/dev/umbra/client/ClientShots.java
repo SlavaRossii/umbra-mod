@@ -125,6 +125,10 @@ public final class ClientShots {
         for (String what : dev.umbra.command.Showcase.ALL)
             POSES.add(new Pose(String.format("%02d_tour_%s", n++, what), CameraType.FIRST_PERSON, false, true, CLEAR, "execute as @p run umbra showcase " + what));
         POSES.add(new Pose(String.format("%02d_tour_end", n++), CameraType.FIRST_PERSON, false, true, "tp @e[tag=shot] ~ ~-300 ~"));
+        // the lit lantern at midnight, looking down at the ground round you: what it lights (with a dynamic light mod, more)
+        POSES.add(new Pose(String.format("%02d_lantern_night", n++), CameraType.FIRST_PERSON, false, false, CLEAR, "time set midnight", "tp @a ~ ~ ~ 0 50",
+                "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
+        POSES.add(new Pose(String.format("%02d_lantern_night_third", n++), CameraType.THIRD_PERSON_BACK, false, true));
     }
 
     // the compatibility check takes only some of them (a regex over the names; the whole set when empty)
