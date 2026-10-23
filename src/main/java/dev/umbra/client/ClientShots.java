@@ -125,6 +125,28 @@ public final class ClientShots {
         for (String what : dev.umbra.command.Showcase.ALL)
             POSES.add(new Pose(String.format("%02d_tour_%s", n++, what), CameraType.FIRST_PERSON, false, true, CLEAR, "execute as @p run umbra showcase " + what));
         POSES.add(new Pose(String.format("%02d_tour_end", n++), CameraType.FIRST_PERSON, false, true, "tp @e[tag=shot] ~ ~-300 ~"));
+        // the lit lantern at midnight, looking down at the ground round you: what it lights (with a dynamic light mod, more)
+        POSES.add(new Pose(String.format("%02d_lantern_night", n++), CameraType.FIRST_PERSON, false, false, CLEAR, "time set midnight", "tp @a ~ ~ ~ 0 50",
+                "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
+        POSES.add(new Pose(String.format("%02d_lantern_night_third", n++), CameraType.THIRD_PERSON_BACK, false, true));
+    }
+
+    // the compatibility check takes only some of them (a regex over the names; the whole set when empty)
+    static {
+        String only = System.getProperty("umbra.clientshots.only", "");
+        if (!only.isBlank()) {
+            var re = java.util.regex.Pattern.compile(only);
+            POSES.removeIf(p -> !re.matcher(p.name()).find());
+            // what the whole tour does on the way (day comes back after the night shots) is done here for each
+            for (int i = 0; i < POSES.size(); i++) {
+                Pose p = POSES.get(i);
+                if (p.name().contains("_night")) continue;
+                String[] c = new String[p.commands().length + 1];
+                c[0] = "time set noon";
+                System.arraycopy(p.commands(), 0, c, 1, p.commands().length);
+                POSES.set(i, new Pose(p.name(), p.camera(), p.use(), p.hideGui(), c));
+            }
+        }
     }
 
     /** Ticks to let the world settle before the picture: a far trip needs its chunks drawn. */

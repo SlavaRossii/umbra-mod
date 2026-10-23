@@ -1,0 +1,146 @@
+name: Compatibility with other mods
+
+# Run by hand: fetches sets of sound and visual mods (tools/compat/sets.json) from Modrinth for 26.3 / NeoForge,
+# starts the real client with Umbra and them, plays the screenshot tour, and publishes the report, the logs and the
+# pictures to branch ci-compat-<set>. The scout job lists what is out for 26.3 at all (branch ci-compat-scout).
+on:
+  workflow_dispatch:
+    inputs:
+      sets:
+        description: "Sets to try (JSON list of names from tools/compat/sets.json)"
+        required: false
+        default: '["light", "sodium_light", "shaders", "spooky", "pack"]'
+
+permissions:
+  contents: write
+
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: What is out for 26.3
+        run: python3 tools/compat/scout.py scout.md
+      - name: Publish
+        if: always()
+        run: .github/scripts/publish.sh ci-compat-scout scout.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  try:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        set: ${{ fromJSON(inputs.sets) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Fetch the mods
+        run: |
+          mkdir -p run-client
+          python3 tools/compat/fetch_mods.py "${{ matrix.set }}" run-client
+          ls -la run-client/mods run-client/shaderpacks 2>/dev/null || true
+          echo "UMBRA_SHOTS=$(python3 -c "import json;print(json.load(open('tools/compat/sets.json'))['${{ matrix.set }}'].get('shots',''))")" >> "$GITHUB_ENV"
+
+      - name: Virtual display
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb mesa-utils mesa-utils-extra libgl1-mesa-dri libglx-mesa0 libegl1 libegl-mesa0 mesa-vulkan-drivers x11-apps imagemagick pulseaudio > /dev/null
+          Xvfb :99 -screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -noreset > /dev/null 2>&1 &
+          pulseaudio --start --exit-idle-time=-1 || true
+          pactl load-module module-null-sink sink_name=null || true
+          sleep 3
+          DISPLAY=:99 glxinfo -B 2>&1 | head -12 || true
+          DISPLAY=:99 eglinfo -B 2>&1 | head -20 || true
+
+      - name: Run the client to the title screen
+        env:
+          DISPLAY: ':99'
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          MESA_GL_VERSION_OVERRIDE: '4.6'
+          MESA_GLSL_VERSION_OVERRIDE: '460'
+          __GLX_VENDOR_LIBRARY_NAME: 'mesa'
+          SDL_VIDEO_X11_FORCE_EGL: '1'
+          SDL_VIDEO_FORCE_EGL: '1'
+          EGL_PLATFORM: 'x11'
+        run: |
+          printf "onboardAccessibility:false\nnarrator:0\njoinedFirstServer:true\n" > run-client/options.txt
+          ( timeout 20m ./gradlew runClientCheck --stacktrace > client-gradle.log 2>&1; echo "client exited with $?" >> client-gradle.log ) &
+          for i in $(seq 1 230); do
+            sleep 5
+            if [ -f run-client/umbra-clientcheck.txt ]; then break; fi
+            if grep -q "client exited" client-gradle.log 2>/dev/null; then break; fi
+            if [ "$i" = 30 ] || [ "$i" = 60 ]; then import -window root -display :99 "loading-$i.png" || true; fi
+          done
+          import -window root -display :99 title.png || true
+          sleep 15
+          cp run-client/logs/latest.log client-title.log 2>/dev/null || true
+          tail -5 client-gradle.log || true
+
+      - name: Make a flat world
+        run: |
+          mkdir -p run-world
+          echo "eula=true" > run-world/eula.txt
+          printf 'online-mode=false\nlevel-name=shots\nlevel-type=minecraft\\:flat\ngenerate-structures=false\nspawn-protection=0\n' > run-world/server.properties
+          timeout 8m ./gradlew runMakeWorld > makeworld.log 2>&1 || echo "world maker exited with $?"
+          mkdir -p run-client/saves && rm -rf run-client/saves/shots && cp -r run-world/shots run-client/saves/shots
+
+      - name: Screenshots in the world
+        env:
+          DISPLAY: ':99'
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          MESA_GL_VERSION_OVERRIDE: '4.6'
+          MESA_GLSL_VERSION_OVERRIDE: '460'
+          __GLX_VENDOR_LIBRARY_NAME: 'mesa'
+          SDL_VIDEO_X11_FORCE_EGL: '1'
+          SDL_VIDEO_FORCE_EGL: '1'
+          EGL_PLATFORM: 'x11'
+        run: |
+          mkdir -p run-client/shots
+          rm -f run-client/shots/*
+          ( timeout 40m ./gradlew runClientShots --stacktrace > shots-gradle.log 2>&1; echo "client exited with $?" >> shots-gradle.log ) &
+          for i in $(seq 1 2500); do
+            for r in run-client/shots/*.req; do
+              [ -e "$r" ] || continue
+              n=$(basename "$r" .req)
+              import -window root -display :99 "run-client/shots/$n.png" || true
+              rm -f "$r"; touch "run-client/shots/$n.done"
+            done
+            if [ -f run-client/umbra-clientshots.txt ]; then break; fi
+            if grep -q "client exited" shots-gradle.log 2>/dev/null; then break; fi
+            if [ "$i" = 150 ]; then import -window root -display :99 "world-150.png" || true; fi
+            sleep 1
+          done
+          cp run-client/logs/latest.log client-shots.log 2>/dev/null || true
+          cd run-client/shots && for f in *.png; do [ -e "$f" ] && convert "$f" -resize 50% -quality 85 "${f%.png}.jpg" && rm "$f"; done; true
+
+      - name: Report
+        if: always()
+        run: |
+          set +e
+          {
+            cat run-client/fetch.md
+            echo; echo "## Result"
+            if [ -f run-client/umbra-clientcheck.txt ]; then echo "- title screen: reached"; else echo "- title screen: NOT reached"; fi
+            if [ -f run-client/umbra-clientshots.txt ]; then echo "- world tour: done ($(ls run-client/shots/*.jpg 2>/dev/null | wc -l) pictures)"; else echo "- world tour: NOT finished ($(ls run-client/shots/*.jpg 2>/dev/null | wc -l) pictures)"; fi
+            echo; echo "## Graphics"; grep -hE "Using graphics backend|Failed to create backend|GraphicsAdapterProbe|Iris|shader pack|shaderpack" client-title.log client-shots.log 2>/dev/null | grep -v DEBUG | cut -c1-250 | head -20
+            echo; echo "## Errors and warnings in the logs (Umbra, mixins, crashes)"
+            cat client-title.log client-shots.log 2>/dev/null | grep -nE "Exception|ERROR|FATAL|Mixin apply failed|Crash|crash-reports|umbra" | grep -v "UMBRA CLIENTSHOTS\|UMBRA CLIENTCHECK\|Narrator\|flite\|OpenAL\|GLX visual\|BackendCreation" | head -150
+            echo; echo "## Shots report"; cat run-client/umbra-clientshots.txt 2>/dev/null | head -80
+            echo; echo "## Gradle tail"; tail -30 shots-gradle.log 2>/dev/null; tail -30 client-gradle.log 2>/dev/null
+          } > report.md
+          ls run-client/crash-reports/* 2>/dev/null && cp run-client/crash-reports/*.txt . 2>/dev/null
+          .github/scripts/publish.sh "ci-compat-${{ matrix.set }}" report.md run-client/manifest.json title.png loading-*.png world-150.png client-title.log client-shots.log crash-*.txt run-client/shots/*.jpg
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
