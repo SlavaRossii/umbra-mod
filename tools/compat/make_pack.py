@@ -31,7 +31,10 @@ def main():
         done.add(slug)
         vs = fm.versions(slug, ["neoforge"])
         if not vs:
-            raise SystemExit(f"no 26.3 NeoForge build of {slug}")
+            if why is None:
+                raise SystemExit(f"no 26.3 NeoForge build of {slug}")
+            print(f"skipped {slug}, asked for by {why}: no NeoForge build (a Fabric-only dependency in its listing)")
+            continue
         v = vs[0]
         f = next((x for x in v["files"] if x["primary"]), v["files"][0])
         proj = fm.get(f"/project/{v['project_id']}")
