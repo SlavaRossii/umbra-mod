@@ -2436,8 +2436,8 @@ final class SmokeTest {
             queen.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 7.5, 0, 0);
             level.addFreshEntity(queen);
             queen.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 600, 9));   // she stays where she is
-            // the one she aims at: a villager standing still (a fake player is no one a mob would take for a target)
-            var mark = net.minecraft.world.entity.EntityType.VILLAGER.create(level, EntitySpawnReason.MOB_SUMMONED);
+            // the one she aims at: an acolyte standing still (a fake player is no one a mob would take for a target)
+            var mark = ModEntities.ACOLYTE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             mark.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
             mark.setNoAi(true);
             mark.setInvulnerable(true);
