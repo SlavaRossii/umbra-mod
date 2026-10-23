@@ -39,6 +39,38 @@ public class Architect extends UmbraBoss implements LightSensitive {
     private final BossMoves.Bursts quake = new BossMoves.Bursts();
     private final BossMoves.TempBlocks cage = new BossMoves.TempBlocks();
 
+    /** 2.10: what he throws from afar: blocks of his maze, lobbed high; where one lands, a piece of wall stands. */
+    private final BossMoves.TempBlocks rubble = new BossMoves.TempBlocks();
+    private final BossMoves.Style stones = new BossMoves.Style(
+            new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, dev.umbra.registry.ModBlocks.MAZE_WALL.get().defaultBlockState()),
+            ParticleTypes.CRIT, 0.05,
+            new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, dev.umbra.registry.ModBlocks.MAZE_WALL.get().defaultBlockState()),
+            SoundEvents.STONE_BREAK)
+            .onHit((l, p) -> p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 30, 1)))
+            .onLand((l, at) -> {
+                BlockPos b = BlockPos.containing(at);
+                if (!l.getBlockState(b).isAir()) b = b.above();
+                for (int y = 0; y < 2; y++)
+                    if (l.getBlockState(b.above(y)).isAir()) rubble.place(l, b.above(y), dev.umbra.registry.ModBlocks.MAZE_WALL.get().defaultBlockState(), 20 * 6);
+            });
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        int n = phase() == 1 ? 3 : 5;
+        bolts.shoot(level, this.getEyePosition().add(0, 0.6, 0), target.position(), n, phase() == 1 ? 26.0F : 40.0F, 0.7, 7.0F, stones);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.HOSTILE, 1.0F, 0.5F);
+    }
+
+    @Override
+    protected int rangedWindupTicks() {
+        return 18;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent rangedWindupSound() {
+        return SoundEvents.GRINDSTONE_USE;
+    }
+
     public Architect(EntityType<? extends Architect> type, Level level) {
         super(type, level, BossEvent.BossBarColor.YELLOW);
     }
@@ -66,6 +98,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
         int phase = trackPhase(level);
         quake.tick(level, this, 8.0F);
         cage.tick(level);
+        rubble.tick(level);
         if (cageStunAt > 0 && this.tickCount >= cageStunAt) {
             // the cage has crumbled: he is spent
             cageStunAt = 0;
@@ -74,10 +107,12 @@ public class Architect extends UmbraBoss implements LightSensitive {
         }
         LivingEntity target = this.getTarget();
         if (target == null) return;
+        if (rangedTick(level, target)) return;
 
         // the floor gives way: a cross of cracks around you
         if (++quakeTimer >= (phase == 1 ? 140 : 90)) {
             quakeTimer = 0;
+            startAction(ACT_SLAM);
             BlockPos t = target.blockPosition();
             quake.mark(level, t, 30);
             for (int i = 2; i <= (phase == 1 ? 4 : 6); i += 2) {
@@ -91,6 +126,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
         // phase 2: walls him into a cell for a few seconds, then walks in
         if (phase == 2 && ++cageTimer >= 320) {
             cageTimer = 0;
+            startAction(ACT_SUMMON);
             BlockPos t = target.blockPosition();
             var wall = dev.umbra.registry.ModBlocks.MAZE_WALL.get().defaultBlockState();
             for (int x = -2; x <= 2; x++)
@@ -117,6 +153,7 @@ public class Architect extends UmbraBoss implements LightSensitive {
         }
         if (++shadeTimer >= 240) {
             shadeTimer = 0;
+            startAction(ACT_SUMMON);
             BossMoves.shades(level, this, target, 2);
         }
     }
@@ -125,11 +162,15 @@ public class Architect extends UmbraBoss implements LightSensitive {
     protected void stunnedTick(ServerLevel level) {
         quake.tick(level, this, 8.0F);
         cage.tick(level);
+        rubble.tick(level);
     }
 
     @Override
     public void remove(RemovalReason reason) {
-        if (this.level() instanceof ServerLevel level) cage.clear(level);
+        if (this.level() instanceof ServerLevel level) {
+            cage.clear(level);
+            rubble.clear(level);
+        }
         super.remove(reason);
     }
 

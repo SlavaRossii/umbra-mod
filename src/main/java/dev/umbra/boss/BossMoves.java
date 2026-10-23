@@ -294,6 +294,137 @@ public final class BossMoves {
         }
     }
 
+    // --- 2.10: bolts, the bosses' attacks from afar ------------------------------------------------------------
+    /**
+     * How a kind of bolt looks and what it does: its trail (and a glint every other tick, so it is seen coming), how
+     * hard it falls, how it bursts, how strongly it turns after its mark (0: not at all), how long it lives, what else
+     * it does to the one it strikes and where it lands.
+     */
+    public record Style(net.minecraft.core.particles.ParticleOptions trail, net.minecraft.core.particles.ParticleOptions glint, double gravity,
+                        net.minecraft.core.particles.ParticleOptions burst, net.minecraft.sounds.SoundEvent hitSound, double homing, int life,
+                        java.util.function.BiConsumer<ServerLevel, ServerPlayer> onHit, java.util.function.BiConsumer<ServerLevel, Vec3> onLand) {
+        public Style(net.minecraft.core.particles.ParticleOptions trail, net.minecraft.core.particles.ParticleOptions glint, double gravity,
+                     net.minecraft.core.particles.ParticleOptions burst, net.minecraft.sounds.SoundEvent hitSound) {
+            this(trail, glint, gravity, burst, hitSound, 0.0, 80, (l, p) -> {}, (l, v) -> {});
+        }
+
+        public Style homing(double strength, int life) {
+            return new Style(trail, glint, gravity, burst, hitSound, strength, life, onHit, onLand);
+        }
+
+        public Style onHit(java.util.function.BiConsumer<ServerLevel, ServerPlayer> what) {
+            return new Style(trail, glint, gravity, burst, hitSound, homing, life, what, onLand);
+        }
+
+        public Style onLand(java.util.function.BiConsumer<ServerLevel, Vec3> what) {
+            return new Style(trail, glint, gravity, burst, hitSound, homing, life, onHit, what);
+        }
+    }
+
+    /**
+     * 2.10: what a boss throws, spits or sends at you: bolts that fly (in an arc, or turning after you), seen by their
+     * trails, bursting on the first wall or player they meet. A shield in front stops them (they hurt as thrown things).
+     */
+    public static final class Bolts {
+        private static final class Bolt {
+            double x, y, z, vx, vy, vz;
+            int age;
+            Style style;
+            float damage;
+        }
+
+        private final List<Bolt> flying = new ArrayList<>();
+
+        /** {@code n} bolts from {@code from} at {@code at}, fanned over {@code spreadDeg} degrees, aimed to land on it. */
+        public void shoot(ServerLevel level, Vec3 from, Vec3 at, int n, float spreadDeg, double speed, float damage, Style style) {
+            Vec3 d = at.subtract(from);
+            double t = Math.max(3.0, d.length() / speed);
+            Vec3 v = new Vec3(d.x / t, d.y / t + 0.5 * style.gravity() * t, d.z / t);
+            for (int i = 0; i < n; i++) {
+                float off = n == 1 ? 0 : (i / (float) (n - 1) - 0.5F) * spreadDeg * Mth.DEG_TO_RAD;
+                double c = Math.cos(off), s = Math.sin(off);
+                Bolt b = new Bolt();
+                b.x = from.x;
+                b.y = from.y;
+                b.z = from.z;
+                b.vx = v.x * c - v.z * s;
+                b.vy = v.y;
+                b.vz = v.x * s + v.z * c;
+                b.style = style;
+                b.damage = damage;
+                flying.add(b);
+            }
+        }
+
+        /** Moves them on; returns how many struck one of {@code targets} this tick. */
+        public int tick(ServerLevel level, LivingEntity owner, List<? extends ServerPlayer> targets) {
+            int hits = 0;
+            for (var it = flying.iterator(); it.hasNext(); ) {
+                Bolt b = it.next();
+                Vec3 prev = new Vec3(b.x, b.y, b.z);
+                if (b.style.homing() > 0 && !targets.isEmpty()) {
+                    // it turns after the nearest of them, keeping its speed
+                    ServerPlayer near = null;
+                    double best = Double.MAX_VALUE;
+                    for (ServerPlayer p : targets) {
+                        double dd = p.distanceToSqr(prev);
+                        if (p.isAlive() && dd < best) {
+                            best = dd;
+                            near = p;
+                        }
+                    }
+                    if (near != null) {
+                        double speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy + b.vz * b.vz);
+                        Vec3 want = near.getBoundingBox().getCenter().subtract(prev).normalize().scale(speed);
+                        // it turns harder the closer it gets, so it strikes instead of circling round its mark
+                        double k = Math.min(1.0, b.style.homing() * Math.max(1.0, 6.0 / Math.max(0.5, Math.sqrt(best))));
+                        Vec3 v = new Vec3(b.vx + (want.x - b.vx) * k, b.vy + (want.y - b.vy) * k, b.vz + (want.z - b.vz) * k).normalize().scale(speed);
+                        b.vx = v.x;
+                        b.vy = v.y;
+                        b.vz = v.z;
+                    }
+                }
+                b.vy -= b.style.gravity();
+                b.x += b.vx;
+                b.y += b.vy;
+                b.z += b.vz;
+                b.age++;
+                Vec3 pos = new Vec3(b.x, b.y, b.z);
+                level.sendParticles(b.style.trail(), pos.x, pos.y, pos.z, 2, 0.04, 0.04, 0.04, 0.0);
+                if (b.age % 2 == 0) level.sendParticles(b.style.glint(), pos.x, pos.y, pos.z, 1, 0.0, 0.0, 0.0, 0.0);
+                boolean done = false;
+                for (ServerPlayer p : targets) {
+                    AABB box = p.getBoundingBox().inflate(0.25);
+                    if (p.isAlive() && (box.contains(pos) || box.clip(prev, pos).isPresent())) {
+                        hits++;
+                        if (p.hurtServer(level, level.damageSources().thrown(owner, owner), b.damage)) b.style.onHit().accept(level, p);
+                        done = true;
+                        break;
+                    }
+                }
+                BlockPos at = BlockPos.containing(pos);
+                if (!done && (!level.getBlockState(at).getCollisionShape(level, at).isEmpty() || b.age > b.style.life())) {
+                    if (b.age <= b.style.life()) b.style.onLand().accept(level, prev);
+                    done = true;
+                }
+                if (done) {
+                    level.sendParticles(b.style.burst(), pos.x, pos.y, pos.z, 12, 0.2, 0.15, 0.2, 0.08);
+                    level.playSound(null, pos.x, pos.y, pos.z, b.style.hitSound(), SoundSource.HOSTILE, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.3F);
+                    it.remove();
+                }
+            }
+            return hits;
+        }
+
+        public int size() {
+            return flying.size();
+        }
+
+        public void clear() {
+            flying.clear();
+        }
+    }
+
     /** Announces a new phase to everyone fighting. */
     public static void phase(ServerLevel level, UmbraBoss boss, int phase) {
         level.playSound(null, boss.getX(), boss.getY(), boss.getZ(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.7F, 1.4F);

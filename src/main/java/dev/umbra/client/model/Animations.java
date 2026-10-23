@@ -152,6 +152,11 @@ public final class Animations {
      * open as the tears are thrown. On a strike it lunges, lids wide.
      */
     public static void watcher(Function<String, ModelPart> p, UmbraRenderState st) {
+        watcherBase(p, st);
+        BossActions.watcher(p, st);
+    }
+
+    private static void watcherBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.clock;
         ModelPart eye = p.apply("eye");
         eye.y += Mth.sin(t * 0.08F) * 1.2F;
@@ -207,6 +212,11 @@ public final class Animations {
      * its own rhythm; the eye in her lock follows you (it is in the lid, which turns with her look a little).
      */
     public static void mimicQueen(Function<String, ModelPart> p, UmbraRenderState st) {
+        mimicQueenBase(p, st);
+        BossActions.mimicQueen(p, st);
+    }
+
+    private static void mimicQueenBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks;
         float w = st.walkAnimationPos * 1.2F, s = Math.min(1.0F, st.walkAnimationSpeed);
         float bite = st.attack > 0 ? Mth.sin(st.attack * Mth.PI) : 0;
@@ -243,6 +253,11 @@ public final class Animations {
      * swings; his flock circles low around him. On a strike the scythe goes round in a wide flat sweep.
      */
     public static void shepherd(Function<String, ModelPart> p, UmbraRenderState st) {
+        shepherdBase(p, st);
+        BossActions.shepherd(p, st);
+    }
+
+    private static void shepherdBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         look(p.apply("head"), st, 0.8F);
         float hover = Mth.sin(t * 0.07F) * 0.8F;
@@ -286,6 +301,11 @@ public final class Animations {
      * swing on their chains; pieces of the maze's walls go round him, turning over, faster as he weakens.
      */
     public static void architect(Function<String, ModelPart> p, UmbraRenderState st) {
+        architectBase(p, st);
+        BossActions.architect(p, st);
+    }
+
+    private static void architectBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         int phase = st.health > 0.66F ? 1 : st.health > 0.33F ? 2 : 3;
         walk(p, st, 0.7F, 0.35F);
@@ -325,6 +345,11 @@ public final class Animations {
      * sways under her; her heart beats, faster in each phase; the shards circle her, faster in each phase.
      */
     public static void primordialShadow(Function<String, ModelPart> p, UmbraRenderState st) {
+        primordialShadowBase(p, st);
+        BossActions.primordialShadow(p, st);
+    }
+
+    private static void primordialShadowBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         int phase = st.health > 0.66F ? 1 : st.health > 0.33F ? 2 : 3;
         look(p.apply("head"), st, 0.8F);
@@ -448,6 +473,11 @@ public final class Animations {
 
     /** Yan, fallen: a slow, heavy walk, the cloak in rags swaying, the halo turning, the lantern swinging on its hook. */
     public static void fallenKeeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        fallenKeeperBase(p, st);
+        BossActions.fallenKeeper(p, st);
+    }
+
+    private static void fallenKeeperBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         walk(p, st, 0.7F, 0.0F);
         look(p.apply("head"), st, 0.9F);
@@ -470,6 +500,11 @@ public final class Animations {
 
     /** The Drowned Keeper: a heavy tread, kelp drifting as in water, the anchor swinging on its chain, a two-fisted slam. */
     public static void drownedKeeper(Function<String, ModelPart> p, UmbraRenderState st) {
+        drownedKeeperBase(p, st);
+        BossActions.drownedKeeper(p, st);
+    }
+
+    private static void drownedKeeperBase(Function<String, ModelPart> p, UmbraRenderState st) {
         float t = st.ageInTicks, s = Math.min(1.0F, st.walkAnimationSpeed);
         walk(p, st, 0.6F, 0.35F);
         look(p.apply("head"), st, 0.7F);

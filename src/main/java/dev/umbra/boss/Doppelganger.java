@@ -30,6 +30,28 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
     private int swapTimer;
     private int decoyTimer;
 
+    /** 2.10: what it throws from afar: shadow knives; and arrows of light, if you shoot at it with a bow. */
+    private static final BossMoves.Style KNIVES = new BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SMOKE, net.minecraft.core.particles.ParticleTypes.CRIT, 0.012, net.minecraft.core.particles.ParticleTypes.CRIT, net.minecraft.sounds.SoundEvents.TRIDENT_HIT);
+    private static final BossMoves.Style ARROWS = new BossMoves.Style(net.minecraft.core.particles.ParticleTypes.END_ROD, net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, 0.02, net.minecraft.core.particles.ParticleTypes.CRIT, net.minecraft.sounds.SoundEvents.ARROW_HIT);
+
+    @Override
+    protected void rangedAttack(ServerLevel level, net.minecraft.world.entity.LivingEntity target) {
+        boolean archer = target.getMainHandItem().getItem() instanceof net.minecraft.world.item.ProjectileWeaponItem
+                || target.getOffhandItem().getItem() instanceof net.minecraft.world.item.ProjectileWeaponItem;
+        if (archer) {
+            bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.3, 0), 2, 6.0F, 1.4, 6.0F, ARROWS);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.ARROW_SHOOT, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.9F);
+        } else {
+            bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.4, 0), phase() == 1 ? 3 : 4, 20.0F, 1.1, 5.0F, KNIVES);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.TRIDENT_THROW.value(), net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 1.5F);
+        }
+    }
+
+    @Override
+    protected int rangedWindupTicks() {
+        return 12;
+    }
+
     public Doppelganger(EntityType<? extends Doppelganger> type, Level level) {
         super(type, level, BossEvent.BossBarColor.BLUE);
     }
@@ -77,6 +99,7 @@ public class Doppelganger extends UmbraBoss implements LightSensitive, dev.umbra
     protected void bossTick(ServerLevel level) {
         if (!(this.getTarget() instanceof Player target)) return;
         int phase = trackPhase(level);
+        if (rangedTick(level, target)) return;
         // swaps places with you — suddenly you stand where it stood
         if (++swapTimer >= (phase == 1 ? 180 : 120) && this.distanceTo(target) < 20) {
             swapTimer = 0;

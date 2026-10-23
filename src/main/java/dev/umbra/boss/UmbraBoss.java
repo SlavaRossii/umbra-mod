@@ -22,6 +22,145 @@ public abstract class UmbraBoss extends Monster {
         this.xpReward = 50;
     }
 
+    // --- 2.10: what the boss is doing, for its model: an action and the tick it began --------------------------
+    /** Nothing in particular. */
+    public static final int ACT_NONE = 0;
+    /** A blow in reach. */
+    public static final int ACT_SWING = 1;
+    /** Winding up a throw, a spit, a volley from afar. */
+    public static final int ACT_CAST = 2;
+    /** Winding up something heavy: a slam, a leap, a shockwave. */
+    public static final int ACT_SLAM = 3;
+    /** The roar of a new phase. */
+    public static final int ACT_ROAR = 4;
+    /** Calling its own (shades, acolytes, brood). */
+    public static final int ACT_SUMMON = 5;
+    /** Gathering a beam. */
+    public static final int ACT_BEAM = 6;
+
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> ACTION =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(UmbraBoss.class, net.minecraft.network.syncher.EntityDataSerializers.INT);
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> ACTION_AT =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(UmbraBoss.class, net.minecraft.network.syncher.EntityDataSerializers.INT);
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ACTION, ACT_NONE);
+        builder.define(ACTION_AT, -1000);
+    }
+
+    /** Starts an action (its model plays it from now). */
+    public void startAction(int action) {
+        this.entityData.set(ACTION, action);
+        this.entityData.set(ACTION_AT, (int) this.level().getGameTime());   // the world's clock: the same on both sides
+    }
+
+    public int action() {
+        return this.entityData.get(ACTION);
+    }
+
+    /** For the client check's photographs: held at {@code age} ticks into {@code action} (-1: let go). */
+    private int heldAction = -1, heldAge;
+
+    public void holdAction(int action, int age) {
+        heldAction = age < 0 ? -1 : action;
+        heldAge = age;
+        if (heldAction >= 0) startAction(action);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (heldAction >= 0 && !this.level().isClientSide()) {
+            this.entityData.set(ACTION, heldAction);
+            this.entityData.set(ACTION_AT, (int) this.level().getGameTime() - heldAge);
+        }
+    }
+
+    /** Ticks since the action began (with the partial tick, for drawing). */
+    public float actionAge(float partial) {
+        return (int) this.level().getGameTime() - this.entityData.get(ACTION_AT) + partial;
+    }
+
+    /** 2.10: what it has thrown and is still flying (every boss may throw; most do, from afar). */
+    protected final BossMoves.Bolts bolts = new BossMoves.Bolts();
+
+    public BossMoves.Bolts bolts() {
+        return bolts;
+    }
+
+    // --- 2.10: near and far -----------------------------------------------------------------------------------
+    /**
+     * A boss does not walk the length of the arena after someone who stands off: past {@link #rangedFrom()} blocks
+     * (or after a few blows in reach) it winds up and strikes from where it is ({@link #rangedAttack}). Bosses that
+     * fight this way call {@link #rangedTick} from their {@link #bossTick}.
+     */
+    private int rangedCooldown = 60, rangedWindup = -1, meleeHits;
+    private net.minecraft.world.entity.LivingEntity rangedTarget;
+
+    /** Distance past which it would rather strike from afar. */
+    protected double rangedFrom() {
+        return 7.0;
+    }
+
+    /** Ticks between two attacks from afar. */
+    protected int rangedEvery() {
+        return phase() == 1 ? 90 : 65;
+    }
+
+    /** Ticks it winds up before it lets go (what you have to see it coming). */
+    protected int rangedWindupTicks() {
+        return 16;
+    }
+
+    /** The attack from afar itself (when the wind-up is done). */
+    protected void rangedAttack(ServerLevel level, net.minecraft.world.entity.LivingEntity target) {
+    }
+
+    /** The sound of the wind-up. */
+    protected net.minecraft.sounds.SoundEvent rangedWindupSound() {
+        return net.minecraft.sounds.SoundEvents.EVOKER_PREPARE_ATTACK;
+    }
+
+    /** Is it winding up a strike from afar right now? */
+    public boolean windingUp() {
+        return rangedWindup >= 0;
+    }
+
+    /**
+     * Call each tick from {@link #bossTick}: returns true while it winds up (it stands, turned to its target, and the
+     * rest of its tick should wait).
+     */
+    protected boolean rangedTick(ServerLevel level, net.minecraft.world.entity.LivingEntity target) {
+        if (rangedWindup >= 0) {
+            this.getNavigation().stop();
+            if (rangedTarget != null && rangedTarget.isAlive()) this.getLookControl().setLookAt(rangedTarget, 30.0F, 30.0F);
+            if (--rangedWindup < 0) {
+                if (rangedTarget != null && rangedTarget.isAlive()) rangedAttack(level, rangedTarget);
+                rangedTarget = null;
+            }
+            return true;
+        }
+        if (target == null || --rangedCooldown > 0) return false;
+        double d = this.distanceTo(target);
+        if ((d > rangedFrom() || meleeHits >= 3) && d < 32 && this.hasLineOfSight(target)) {
+            rangedTarget = target;
+            rangedWindup = rangedWindupTicks();
+            rangedCooldown = rangedEvery();
+            meleeHits = 0;
+            startAction(ACT_CAST);
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), rangedWindupSound(), net.minecraft.sounds.SoundSource.HOSTILE, 1.2F, 0.8F);
+            return true;
+        }
+        return false;
+    }
+
+    /** Where its throws leave from (a little in front of its eyes). */
+    protected net.minecraft.world.phys.Vec3 throwFrom() {
+        return this.getEyePosition().add(this.getLookAngle().scale(this.getBbWidth() * 0.6 + 0.4));
+    }
+
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
@@ -32,9 +171,11 @@ public abstract class UmbraBoss extends Monster {
             String id = dev.umbra.journal.Bestiary.ids().get(this.getType());
             if (id != null) for (ServerPlayer p : opponents(level)) dev.umbra.journal.Journal.unlock(p, "weak_" + id);
         }
+        if (pinned != null && pinned.isAlive()) this.setTarget(pinned);
         bossTick(level);
     }
 
+<<<<<<< HEAD
     // --- server: a boss meant for one survivor stands up to a party -------------------------------------
     public static final net.minecraft.resources.Identifier PARTY = net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "party");
     /** Extra health per fighter beyond the first, and the most it can grow to (×3). */
@@ -58,6 +199,14 @@ public abstract class UmbraBoss extends Monster {
         attr.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(PARTY, want,
                 net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         this.setHealth(ratio * this.getMaxHealth());
+=======
+    /** For the smoke test: a target its own eyes would not pick (a fake player), kept through its target goals. */
+    private net.minecraft.world.entity.LivingEntity pinned;
+
+    public void pinTarget(net.minecraft.world.entity.LivingEntity target) {
+        pinned = target;
+        this.setTarget(target);
+>>>>>>> origin/main
     }
 
     // --- 1.8.2: the window after a big move ---------------------------------------------------------------
@@ -85,6 +234,7 @@ public abstract class UmbraBoss extends Monster {
 
     @Override
     public void aiStep() {
+        if (this.level() instanceof ServerLevel b && bolts.size() > 0) bolts.tick(b, this, opponents(b));
         if (guard > 0 && this.level() instanceof ServerLevel g) {
             guard--;
             // 2.9: the second wind mends a fixed share of its health, and it shows (the phase it has reached stays reached)
@@ -128,7 +278,9 @@ public abstract class UmbraBoss extends Monster {
     @Override
     public boolean doHurtTarget(ServerLevel level, net.minecraft.world.entity.Entity target) {
         boolean shielded = target instanceof net.minecraft.world.entity.player.Player p && !BossMoves.raisedShield(p, this).isEmpty();
+        startAction(ACT_SWING);
         boolean hit = super.doHurtTarget(level, target);
+        if (hit) meleeHits++;
         if (shielded && target instanceof net.minecraft.world.entity.player.Player p && ++blockedHits >= BossMoves.GUARD_HITS) {
             blockedHits = 0;
             BossMoves.breakGuard(level, p, BossMoves.GUARD_BREAK);
@@ -218,6 +370,8 @@ public abstract class UmbraBoss extends Monster {
             if (p > lastPhase) {
                 guard = GUARD_TICKS;
                 stun = 0;
+                rangedWindup = -1;
+                startAction(ACT_ROAR);
                 level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.BEACON_POWER_SELECT, net.minecraft.sounds.SoundSource.HOSTILE, 2.0F, 0.5F);
             }
             lastPhase = p;
@@ -245,6 +399,29 @@ public abstract class UmbraBoss extends Monster {
     @Override
     public boolean removeWhenFarAway(double distance) {
         return false;
+    }
+
+    // --- 2.10: a boss dies slowly: it sinks and comes apart into smoke over two and a half seconds -------------
+    public static final int DEATH_TICKS = 50;
+
+    @Override
+    protected void tickDeath() {
+        this.deathTime++;
+        if (this.level() instanceof ServerLevel level) {
+            if (this.deathTime == 1) bolts.clear();
+            if (this.deathTime % 3 == 0) {
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, this.getX(), this.getY() + this.getBbHeight() * 0.5, this.getZ(),
+                        4 + this.deathTime / 6, this.getBbWidth() * 0.5, this.getBbHeight() * 0.4, this.getBbWidth() * 0.5, 0.02);
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.SQUID_INK, this.getX(), this.getY() + this.getBbHeight() * 0.3, this.getZ(),
+                        2, this.getBbWidth() * 0.4, this.getBbHeight() * 0.3, this.getBbWidth() * 0.4, 0.02);
+            }
+            if (this.deathTime == DEATH_TICKS - 5)
+                level.playSound(null, this.getX(), this.getY(), this.getZ(), net.minecraft.sounds.SoundEvents.WARDEN_DEATH, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 1.4F);
+            if (this.deathTime >= DEATH_TICKS && !this.isRemoved()) {
+                level.broadcastEntityEvent(this, (byte) 60);
+                this.remove(net.minecraft.world.entity.Entity.RemovalReason.KILLED);
+            }
+        }
     }
 
     @Override

@@ -36,6 +36,24 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
     private int pulseTimer;
     private final BossMoves.Bursts bursts = new BossMoves.Bursts();
 
+    /** 2.10: what he sends from afar: sickles of soul fire, low over the ground; who is struck goes slow. */
+    private static final BossMoves.Style SICKLES = new BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SOUL_FIRE_FLAME, net.minecraft.core.particles.ParticleTypes.SOUL, 0.0, net.minecraft.core.particles.ParticleTypes.SOUL, net.minecraft.sounds.SoundEvents.SOUL_ESCAPE.value())
+            .homing(0.015, 70)
+            .onHit((l, p) -> p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 50, 1)));
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        net.minecraft.world.phys.Vec3 at = target.position().add(0, 0.7, 0);
+        net.minecraft.world.phys.Vec3 from = this.position().add(this.getLookAngle().scale(1.2)).add(0, 0.8, 0);
+        bolts.shoot(level, from, at, phase() == 1 ? 3 : 5, phase() == 1 ? 24.0F : 40.0F, 0.75, 6.0F, SICKLES);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 1.5F, 0.5F);
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent rangedWindupSound() {
+        return SoundEvents.BELL_RESONATE;
+    }
+
     public Shepherd(EntityType<? extends Shepherd> type, Level level) {
         super(type, level, BossEvent.BossBarColor.PURPLE);
     }
@@ -132,14 +150,17 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         bursts.tick(level, this, 7.0F);
         LivingEntity target = this.getTarget();
         if (target == null) return;
+        if (rangedTick(level, target)) return;
         // crook sweep: too close and you are thrown away
         if (++sweepTimer >= 70 && this.distanceTo(target) < 4.5) {
             sweepTimer = 0;
+            startAction(ACT_SLAM);
             BossMoves.shockwave(level, this, 4.5, 6.0F, 1.5);
         }
         // phase 2: the herd is called home — pulled in, then the darkness bursts around him
         if (phase == 2 && ++pulseTimer >= 180) {
             pulseTimer = 0;
+            startAction(ACT_SUMMON);
             BossMoves.pull(level, this, 14, 1.3);
             BlockPos c = this.blockPosition();
             for (int a = 0; a < 8; a++) {
@@ -162,6 +183,7 @@ public class Shepherd extends UmbraBoss implements LightSensitive {
         }
         if (++shadeTimer >= (phase == 1 ? 400 : 260)) {
             shadeTimer = 0;
+            startAction(ACT_SUMMON);
             BossMoves.shades(level, this, target, phase == 1 ? 3 : 4);
         }
     }

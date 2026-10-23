@@ -1450,7 +1450,14 @@ final class SmokeTest {
             w.setHealth(w.getMaxHealth());
             float before = w.getHealth();
             w.hurtServer(level, level.damageSources().magic(), 100.0F);
-            check(before - w.getHealth() < 100.0F * 0.5F, "the Watcher's eye shrugs off most of a blow (" + (before - w.getHealth()) + " of 100)");
+            check(before - w.getHealth() <= 100.0F * dev.umbra.boss.Watcher.ARMOURED_EYE + 0.01F, "the Watcher's eye shrugs off part of a blow (" + (before - w.getHealth()) + " of 100)");
+            // 2.10: but not while its eye is open wide (spent after its gaze, say): then the whole blow lands, and more
+            w.setHealth(w.getMaxHealth());
+            for (int i = 0; i < 21; i++) w.baseTick();   // the last blow's grace would swallow this one
+            w.stun(40);
+            float open = w.getHealth();
+            w.hurtServer(level, level.damageSources().magic(), 20.0F);
+            check(w.eyeOpen() && open - w.getHealth() >= 20.0F, "2.10: while its eye is open wide every blow lands whole (" + (open - w.getHealth()) + " of 20)");
             float h = w.getHealth();
             w.onLit(level, null);
             check(h - w.getHealth() <= w.getMaxHealth() * dev.umbra.boss.UmbraBoss.LIGHT_CAP + 0.01F, "a flash takes no more than 2% of a boss");
@@ -2402,6 +2409,70 @@ final class SmokeTest {
         int teared = 0;
         for (int i = 0; i < 100 && tears.size() > 0; i++) teared += tears.tick(level, watcher, java.util.List.of(fake), 1.0F);
         check(teared >= 1 && tears.size() == 0, "its tears fly in an arc, strike the one it weeps at and burst on the floor (" + teared + " hit)");
+
+        // 2.10: bolts, the bosses' attacks from afar: they fly, strike, and burst on the floor
+        var bolts = new dev.umbra.boss.BossMoves.Bolts();
+        var style = new dev.umbra.boss.BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SMOKE, net.minecraft.core.particles.ParticleTypes.CRIT, 0.03,
+                net.minecraft.core.particles.ParticleTypes.CRIT, net.minecraft.sounds.SoundEvents.ARROW_HIT);
+        fake.setHealth(fake.getMaxHealth());
+        fake.snapTo(c.getX() + 7.5, c.getY(), c.getZ() + 0.5, 0, 0);
+        bolts.shoot(level, new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5), fake.getEyePosition().add(0, -0.4, 0), 3, 12.0F, 0.9, 2.0F, style);
+        int struck = 0;
+        for (int i = 0; i < 100 && bolts.size() > 0; i++) struck += bolts.tick(level, watcher, java.util.List.of(fake));
+        check(struck >= 1 && bolts.size() == 0, "2.10: a boss's bolts fly at their mark, strike it and burst on the floor (" + struck + " hit)");
+        var homing = new dev.umbra.boss.BossMoves.Bolts();
+        homing.shoot(level, new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5), new Vec3(c.getX() + 0.5, c.getY() + 1.5, c.getZ() - 8.5), 1, 0.0F, 0.4, 1.0F,
+                new dev.umbra.boss.BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SMOKE, net.minecraft.core.particles.ParticleTypes.CRIT, 0.0,
+                        net.minecraft.core.particles.ParticleTypes.CRIT, net.minecraft.sounds.SoundEvents.ARROW_HIT).homing(0.12, 120));
+        int turned = 0;
+        for (int i = 0; i < 120 && homing.size() > 0; i++) turned += homing.tick(level, watcher, java.util.List.of(fake));
+        check(turned == 1, "2.10: a homing bolt turns after you even when thrown wide (" + homing.size() + " still flying)");
+        // far off, a boss winds up and strikes from where it stands
+        var queen = ModEntities.MIMIC_QUEEN.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        if (queen != null) {
+            for (int z = -9; z <= 9; z++)
+                for (int y = 0; y <= 4; y++)
+                    for (int x = -2; x <= 2; x++) level.setBlock(c.offset(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            for (int z = -9; z <= 9; z++)
+                for (int x = -2; x <= 2; x++) level.setBlock(c.offset(x, -1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            fake.setHealth(fake.getMaxHealth());
+            queen.snapTo(c.getX() + 0.5, c.getY(), c.getZ() - 7.5, 0, 0);
+            level.addFreshEntity(queen);
+            queen.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 600, 9));   // she stays where she is
+            // the one she aims at: an acolyte standing still (a fake player is no one a mob would take for a target)
+            var mark = ModEntities.ACOLYTE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+            mark.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 7.5, 180, 0);
+            mark.setNoAi(true);
+            level.addFreshEntity(mark);
+            queen.pinTarget(mark);
+            boolean wound = false;
+            for (int i = 0; i < 200 && !wound; i++) {
+                queen.tick();
+                wound = queen.windingUp();
+            }
+            int action = queen.action();
+            int flew = 0;
+            for (int i = 0; i < 40; i++) {
+                queen.tick();
+                flew = Math.max(flew, queen.bolts().size());
+            }
+            check(wound && action == dev.umbra.boss.UmbraBoss.ACT_CAST && flew >= 3,
+                    "2.10: from afar the Queen winds up (seen) and spits her coins instead of crossing the room (" + flew + " coins; wound " + wound
+                            + ", action " + action + ", target " + (queen.getTarget() == mark) + ", sight " + queen.hasLineOfSight(mark) + ", "
+                            + String.format("%.1f", queen.distanceTo(mark)) + " off, hidden " + queen.isDisguised() + ")");
+            queen.pinTarget(null);
+            mark.discard();
+            // and a boss dies slowly: it sinks into its smoke and is gone after a couple of seconds
+            queen.setHealth(0.0F);
+            queen.die(level.damageSources().magic());
+            int gone = -1;
+            for (int i = 1; i <= 80 && gone < 0; i++) {
+                queen.tick();
+                if (queen.isRemoved()) gone = i;
+            }
+            check(gone >= dev.umbra.boss.UmbraBoss.DEATH_TICKS - 2 && gone <= dev.umbra.boss.UmbraBoss.DEATH_TICKS + 2, "2.10: a boss takes " + gone + " ticks to die, not a moment");
+            if (!queen.isRemoved()) queen.discard();
+        }
 
         var temp = new dev.umbra.boss.BossMoves.TempBlocks();
         BlockPos w = c.offset(-3, 0, -3);

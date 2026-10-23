@@ -21,4 +21,16 @@ public class UmbraRenderState extends LivingEntityRenderState {
     public float timer2 = -1.0F;
     /** Block light where it stands, 0..15. */
     public float bright;
+    /** 2.10: a boss: what it is doing ({@code UmbraBoss.ACT_*}) and for how many ticks it has been at it. */
+    public int action;
+    public float actionAge = 1000.0F;
+    /** 2.10: how hard it has just been hit, 1 at the blow, 0 a moment later (it flinches). */
+    public float hurt;
+    /** 2.10: a boss, which dies slowly and its own way (no tipping over). */
+    public boolean boss;
+
+    /** 0..1 over the first {@code len} ticks of {@code action} if that is what it is doing now, else -1. */
+    public float act(int action, float len) {
+        return this.action == action && actionAge >= 0 && actionAge < len ? actionAge / len : -1.0F;
+    }
 }

@@ -43,6 +43,26 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
     private int dashTimer;
     private final BossMoves.Bursts bursts = new BossMoves.Bursts();
 
+    /** 2.10: what she sends from afar: clots of the first dark, slow, that turn after you; they blind and gnaw the mind. */
+    private static final BossMoves.Style CLOTS = new BossMoves.Style(net.minecraft.core.particles.ParticleTypes.SQUID_INK, net.minecraft.core.particles.ParticleTypes.REVERSE_PORTAL, 0.0, net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH)
+            .homing(0.05, 120)
+            .onHit((l, p) -> {
+                p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0));
+                if (dev.umbra.sanity.Sanity.enabled()) dev.umbra.sanity.Sanity.add(p, -2.0F);
+            });
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        int n = 2 + phase();
+        bolts.shoot(level, this.getEyePosition().add(0, 0.5, 0), target.getEyePosition(), n, 70.0F, 0.42, 6.0F, CLOTS);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.HOSTILE, 1.2F, 1.4F);
+    }
+
+    @Override
+    protected double rangedFrom() {
+        return 8.0;
+    }
+
     public PrimordialShadow(EntityType<? extends PrimordialShadow> type, Level level) {
         super(type, level, BossEvent.BossBarColor.PURPLE);
     }
@@ -86,6 +106,7 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         timer++;
         int phase = trackPhase(level);
         bursts.tick(level, this, 9.0F);
+        if (rangedTick(level, target)) return;
         // a dash through the arena, ending in a blow on the ground
         if (dashing && this.onGround() && dashTimer > 5) {
             dashing = false;
@@ -96,10 +117,14 @@ public class PrimordialShadow extends UmbraBoss implements LightSensitive {
         if (!dashing && target != null && dashTimer >= (phase == 3 ? 80 : 140) && this.distanceTo(target) > 5) {
             dashTimer = 0;
             dashing = true;
+            startAction(ACT_SLAM);
             BossMoves.leap(this, target, 1.6);
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 1.0F, 1.6F);
         }
-        if (phase >= 2 && timer % 220 == 0) BossMoves.pull(level, this, 16, 1.4);
+        if (phase >= 2 && timer % 220 == 0) {
+            startAction(ACT_SUMMON);
+            BossMoves.pull(level, this, 16, 1.4);
+        }
         if (phase == 3) {
             if (timer % 80 == 0) for (ServerPlayer p : opponents(level)) bursts.mark(level, p.blockPosition(), 25);
             if (timer % 120 == 60) BossMoves.fangsRing(level, this, this.position(), 3.5, 14, 20);

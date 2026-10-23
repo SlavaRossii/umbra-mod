@@ -44,6 +44,23 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
     private boolean leaping;
     private int spitTimer;
 
+    /** 2.10: what she spits from afar: the coins she has swallowed, in a spray. */
+    private static final BossMoves.Style COINS = new BossMoves.Style(net.minecraft.core.particles.ParticleTypes.WAX_ON, net.minecraft.core.particles.ParticleTypes.END_ROD, 0.035, net.minecraft.core.particles.ParticleTypes.WAX_OFF, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_HIT);
+
+    @Override
+    protected void rangedAttack(ServerLevel level, LivingEntity target) {
+        int phase = phase();
+        bolts.shoot(level, throwFrom(), target.getEyePosition().add(0, -0.4, 0), phase == 1 ? 5 : 7, phase == 1 ? 30.0F : 46.0F, 0.85, 5.0F, COINS);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LLAMA_SPIT, SoundSource.HOSTILE, 1.5F, 0.6F);
+        // in her second phase the bile comes with it: the ground under you bursts a moment later
+        if (phase == 2) for (ServerPlayer p : opponents(level)) spit.mark(level, p.blockPosition(), 25);
+    }
+
+    @Override
+    protected double rangedFrom() {
+        return 6.0;
+    }
+
     public MimicQueen(EntityType<? extends MimicQueen> type, Level level) {
         super(type, level, BossEvent.BossBarColor.GREEN);
     }
@@ -84,6 +101,7 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
             return;
         }
         LivingEntity target = this.getTarget();
+        if (rangedTick(level, target)) return;
         // leap and bite: lands with a slam
         if (leaping && this.onGround() && leapTimer > 5) {
             leaping = false;
@@ -96,12 +114,14 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
             if (d > 4 && d < 14) {
                 leapTimer = 0;
                 leaping = true;
+                startAction(ACT_SLAM);
                 BossMoves.leap(this, target, Math.min(1.4, d / 8));
                 level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 1.0F, 1.5F);
             }
         }
-        // phase 2: spits mimic bile — the floor under you bursts a second later
-        if (phase == 2 && target != null && ++spitTimer >= 70) {
+        // phase 2: spits mimic bile — the floor under you bursts a second later (2.10: when you stand close; from afar
+        // the bile comes with her coins)
+        if (phase == 2 && target != null && this.distanceTo(target) <= rangedFrom() && ++spitTimer >= 70) {
             spitTimer = 0;
             for (ServerPlayer p : opponents(level)) spit.mark(level, p.blockPosition(), 25);
         }
@@ -112,6 +132,7 @@ public class MimicQueen extends UmbraBoss implements LightSensitive {
     }
 
     private void disguise(ServerLevel level) {
+        startAction(ACT_SUMMON);
         hidden = 1;
         this.setInvisible(true);
         level.sendParticles(ParticleTypes.SQUID_INK, this.getX(), this.getY() + 1, this.getZ(), 40, 0.6, 1, 0.6, 0.05);
