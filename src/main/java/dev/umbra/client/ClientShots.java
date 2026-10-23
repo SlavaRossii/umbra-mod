@@ -104,7 +104,7 @@ public final class ClientShots {
         POSES.add(new Pose(String.format("%02d_third_luminite_bow_drawn", n++), CameraType.THIRD_PERSON_FRONT, true, true));
         // 2.8.0: the lantern held out on the arm, seen from the side: a mannequin renders like a player, arm poses and all
         for (String[] v : new String[][]{{"luminite_lantern", "{\"umbra:lit\":true}", "90"}, {"luminite_lantern", "{\"umbra:lit\":true}", "140"},
-                {"marta_lantern", "{}", "130"}, {"dawn_lantern", "{}", "60"}}) {
+                {"marta_lantern", "{}", "130"}, {"dawn_lantern", "{}", "60"}, {"luminite_spear", "{}", "90"}, {"luminite_spear", "{}", "150"}}) {
             POSES.add(new Pose(String.format("%02d_side_%s_%s", n++, v[0], v[2]), CameraType.FIRST_PERSON, false, true, CLEAR, away, noSlimes,
                     "kill @e[type=minecraft:mannequin]", "tp @a ~ ~ ~ 0 18",
                     "execute as @p at @p run summon minecraft:mannequin ~ ~ ~2.7 {Tags:[\"shot\"],immovable:1b,hide_description:1b,Rotation:[" + v[2]

@@ -60,9 +60,13 @@ class W:
     def write(self, suffix="_3d"):
         tex = {m: "umbra:item/mat_" + m for m in sorted(self.used)}
         tex["particle"] = "umbra:item/" + self.name
-        g.model(MI + self.name + suffix + '.json', self.parent, tex, self.els, {"display": display(self.parent, self.scale)})
+        disp = display(self.parent, self.scale)
+        for ctx, (r, t, sc) in self.hold.items():
+            disp[ctx] = {"rotation": r, "translation": t, "scale": [sc] * 3}
+        g.model(MI + self.name + suffix + '.json', self.parent, tex, self.els, {"display": disp})
 
     scale = 0.85
+    hold = {}   # a weapon's own way of being held, over the vanilla one: context -> (rotation, translation, scale)
 
 
 # vanilla's own transforms for a held sprite (and a bow), shrunk a little: a 3D weapon reaches past its 16 x 16 square
@@ -183,6 +187,10 @@ def spear():
         w.box(x1, y1, x2, y2, "luminite", t=0.8, light=12)                 # the leaf
     w.box(7.6, 22.2, 8.4, 30.6, "gloom_dark", t=1.2)                         # its steel spine
     w.box(9.0, 14.2, 9.8, 19.0, "crimson", t=0.6).box(9.4, 13.0, 10.0, 14.2, "crimson", t=0.5)   # the tassel
+    # held as a spear, not as a sword: in the third person raised before you, the head over your shoulder; in the first
+    # person low at your side and pointing ahead, the head out in front of you where you can see it
+    w.hold = {"thirdperson_righthand": ([0, -90, 30], [0, 4.0, 0.5], 0.722), "thirdperson_lefthand": ([0, 90, -30], [0, 4.0, 0.5], 0.722),
+              "firstperson_righthand": ([0, -90, 75], [2.0, 2.0, 0.0], 0.45), "firstperson_lefthand": ([0, 90, -75], [2.0, 2.0, 0.0], 0.45)}
     return w
 
 
