@@ -121,5 +121,17 @@
       "sodium"
     ],
     "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night|goggles"
+  },
+  "opt": {
+    "mods": [
+      "ferrite-core",
+      "immediatelyfast",
+      "entityculling",
+      "sound-physics-remastered",
+      "ambientsounds",
+      "lambdynamiclights",
+      "sodium"
+    ],
+    "shots": "hand_luminite_lantern_lit|third_luminite_spear|mob_watcher_night|mob_primordial_night|tour_depths_landing|tour_depths_sanctum|tour_rift|tour_village_street|tour_citadel_1|tour_maze|tour_lighthouse|lantern_night|goggles"
   }
 }
