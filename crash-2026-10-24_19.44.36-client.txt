@@ -1,0 +1,216 @@
+---- Minecraft Crash Report ----
+// I'm sorry, Dave.
+
+Time: 2026-10-24 19:44:36
+Description: Bootstrap
+
+net.neoforged.fml.ModLoadingException: Loading errors encountered:
+	- Particular Reforged (particular) has failed to load correctly
+	  java.lang.NoSuchFieldError: Class net.neoforged.fml.config.ModConfig$Type does not have member field 'net.neoforged.fml.config.ModConfig$Type COMMON'
+Loading warnings encountered:
+	- Mod lambdynlights uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod lambdynlights_api uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod ferritecore uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod yet_another_config_lib_v3 uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod baguettelib uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod fzzy_config uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod pride uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod zoomify uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+	- Mod spruceui uses the deprecated `logoFile` property; change to `bannerFile` and/or (for square icons) `iconFile`
+
+	at net.neoforged.fml.ModLoader.waitForFuture(ModLoader.java:253) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.dispatchParallelTask(ModLoader.java:216) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.constructMods(ModLoader.java:124) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.gatherAndInitializeMods(ModLoader.java:101) ~[loader-12.0.12.jar:12.0] {}
+	at TRANSFORMER/neoforge@26.3.0.76/net.neoforged.neoforge.internal.CommonModLoader.begin(CommonModLoader.java:49) ~[neoforge-26.3.0.76-universal.jar:?] {}
+	at TRANSFORMER/neoforge@26.3.0.76/net.neoforged.neoforge.client.loading.ClientModLoader.begin(ClientModLoader.java:56) ~[neoforge-26.3.0.76-universal.jar:?] {}
+	at TRANSFORMER/minecraft@26.3/net.minecraft.client.main.Main.main(Main.java:167) [minecraft-patched-26.3.0.76.jar:?] {}
+	at net.neoforged.fml.startup.Client.main(Client.java:19) [loader-12.0.12.jar:12.0] {}
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[?:?] {}
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[?:?] {}
+	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: main
+Stacktrace:
+	at net.neoforged.fml.ModLoader.waitForFuture(ModLoader.java:253) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.dispatchParallelTask(ModLoader.java:216) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.constructMods(ModLoader.java:124) ~[loader-12.0.12.jar:12.0] {}
+	at net.neoforged.fml.ModLoader.gatherAndInitializeMods(ModLoader.java:101) ~[loader-12.0.12.jar:12.0] {}
+	at TRANSFORMER/neoforge@26.3.0.76/net.neoforged.neoforge.internal.CommonModLoader.begin(CommonModLoader.java:49) ~[neoforge-26.3.0.76-universal.jar:?] {}
+	at TRANSFORMER/neoforge@26.3.0.76/net.neoforged.neoforge.client.loading.ClientModLoader.begin(ClientModLoader.java:56) ~[neoforge-26.3.0.76-universal.jar:?] {}
+-- Initialization --
+Details:
+	Modules: 
+Stacktrace:
+	at TRANSFORMER/minecraft@26.3/net.minecraft.client.main.Main.main(Main.java:167) [minecraft-patched-26.3.0.76.jar:?] {}
+	at net.neoforged.fml.startup.Client.main(Client.java:19) [loader-12.0.12.jar:12.0] {}
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[?:?] {}
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[?:?] {}
+	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 26.3
+	Minecraft Version ID: 26.3
+	Operating System: Linux (amd64) version 6.17.0-1022-azure
+	Java Version: 25.0.4.1, Eclipse Adoptium
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Eclipse Adoptium
+	Memory: 71834328 bytes (68 MiB) / 488636416 bytes (466 MiB) up to 4192206848 bytes (3998 MiB)
+	Memory (heap): init: 250MiB, used: 395MiB, committed: 466MiB, max: 3998MiB
+	Memory (non-heap): init: 007MiB, used: 160MiB, committed: 162MiB, max: 000MiB
+	CPUs: 4
+	Processor Vendor: AuthenticAMD
+	Processor Name: AMD EPYC 7763 64-Core Processor
+	Identifier: AuthenticAMD Family 25 Model 1 Stepping 1
+	Microarchitecture: Zen 3
+	Frequency (GHz): -0.00
+	Number of physical packages: 1
+	Number of physical CPUs: 2
+	Number of logical CPUs: 4
+	Graphics card #0 name: hyperv_drmdrmfb
+	Graphics card #0 vendor: unknown
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Virtual memory max (MiB): 11066.84
+	Virtual memory used (MiB): 2869.23
+	Swap memory total (MiB): 3072.00
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 85949.39, total: 147718.61
+	Space in storage for workdir (MiB): available: 85949.39, total: 147718.61
+	Operating System Version: GNU/Linux Ubuntu 24.04.5 LTS (Noble Numbat) build 6.17.0-1022-azure
+	Process Elevated: false
+	Process Loads: Uptime: 14s, user: 41s (283.74%), kernel: 1s (5.91%), total: 42s (289.65%)
+	Process Virtual Size (MiB): 7981.49
+	Process Resident Size (MiB): 852.97
+	JVM Flags: 1 total; -XX:StackShadowPages=32
+	Debug Flags: 0 total; 
+	Yumi MC Core: 1.1.3+26.2
+	Mods: 
+		baguettelib: BaguetteLib v2.0.8
+		betterclouds: Better Clouds v1.15.0-beta.6+26.3-neoforge
+		entityculling: EntityCulling v1.11.3
+		ferritecore: Ferrite Core v9.0.0
+		fzzy_config: Fzzy Config v0.7.7+fix3+26.3+neoforge
+		immediatelyfast: ImmediatelyFast v1.17.1+26.3
+		lambdynlights: LambDynamicLights v4.13.0+26.3
+		lambdynlights_api: LambDynamicLights (API) v4.13.0+26.3
+		minecraft: Minecraft v26.3
+		neoforge: NeoForge v26.3.0.76
+		notenoughanimations: NotEnoughAnimations v1.12.6
+		particular: Particular Reforged v1.5.7
+		pride: Pride Lib v1.8.0+26.3
+		skinlayers3d: 3d-Skin-Layers v1.11.4
+		sodium: Sodium v0.9.3-beta.1+mc26.3
+		sound_physics_remastered: Sound Physics Remastered v1.5.2+26.3
+		spruceui: SpruceUI v12.0.0+26.3
+		subtle_effects: Subtle Effects v1.15.1-hotfix.1
+		transition: TRansition v1.0.27
+		trender: TRender v1.0.17
+		umbra: Umbra v2.12.2
+		yet_another_config_lib_v3: YetAnotherConfigLib v3.9.7+26.3-neoforge
+		yumi_mc_core: Yumi Minecraft Libraries: Foundation v1.1.3+26.2
+		zoomify: Zoomify v2.17.0+mc26.3
+	Launched Version: 26.3.0.76
+	Backend library: LWJGL version 3.4.3+4
+	Window size: <not initialized>
+	Surface Info: <no surface>
+	SDL Platform: Linux
+	Graphics Device: <none>
+	GL debug messages: <no renderer available>
+	Is Modded: Definitely; Client brand changed to 'neoforge'
+	Universe: 404
+	Type: Client
+	Locale: en
+	System encoding: UTF-8
+	File encoding: UTF-8
+	CPU: 4x AMD EPYC 7763 64-Core Processor
+	Class Processors: 
+		04.54%: neoforge:access_transformer
+		00.00%: neoforge:neoforge_dev_dist_cleaner
+		00.01%: neoforge:mixin_frame_context
+		00.00%: neoforge:computing_frames (marker)
+		00.00%: neoforge:runtime_enum_extender
+		03.04%: neoforge:mixin
+		00.00%: neoforge:simple_processors_default (marker)
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.biome.biome
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.block.flowerpotblock
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.levelgen.structure.structure
+		00.27%: neoforge.coremods:method_redirector
+	Mod List: 
+		skinlayers3d-neoforge-1.11.4-mc26.3.jar           |3d-Skin-Layers                |skinlayers3d                  |1.11.4              |Manifest: c4e9cad7c759c024bc9a33d1c3c3ff953a0bb48a5f055b089a4284203242050d
+		baguettelib-26.3-NeoForge-2.0.8.jar               |BaguetteLib                   |baguettelib                   |2.0.8               |Manifest: 9a71e5e9537dd5126ce782103595e58923cf50c807b5c82b90e65211085f3f47
+		better-clouds-1.15.0-beta.6+26.3-neoforge.jar     |Better Clouds                 |betterclouds                  |1.15.0-beta.6+26.3-n|Manifest: 2f3eb4f151b481f13158e0eee82dac5b78156ddaef9905956d9fe46c7a315f27
+		entityculling-neoforge-1.11.3-mc26.3.jar          |EntityCulling                 |entityculling                 |1.11.3              |Manifest: 08ef339292ef63f22f1c22bed5df9d6ed5bed595fc712af73f121907d1babc5b
+		ferritecore-9.0.0-neoforge.jar                    |Ferrite Core                  |ferritecore                   |9.0.0               |Manifest: a3292dadb1caf7ad220d3a4b68abff2ad58592ddd372160f9cf66c57d159b539
+		fzzy_config-0.7.7+fix3+26.3+neoforge.jar          |Fzzy Config                   |fzzy_config                   |0.7.7+fix3+26.3+neof|Manifest: f0d86811e10a46bb5603e8756b1bb6c5f5e246e4fdc08f6dff9e1f696cb9c7e2
+		ImmediatelyFast-NeoForge-1.17.1+26.3.jar          |ImmediatelyFast               |immediatelyfast               |1.17.1+26.3         |Manifest: 447a22be8b4610d8c2fe35c5a3ea3f445a2cb7151650dd9fec1149ebe8e8bf67
+		lambdynamiclights-4.13.0+26.3.jar                 |LambDynamicLights             |lambdynlights                 |4.13.0+26.3         |Manifest: b7550288423affed86370acd80d064876d7e256f5489461b7ff7941627552ab2
+		lambdynamiclights-api-4.13.0+26.3.jar             |LambDynamicLights (API)       |lambdynlights_api             |4.13.0+26.3         |Manifest: bbcfe5a57e5ab93d6be3d4e8a69b47f466a1259de9927956461f08a7811a24ec
+		minecraft-patched-26.3.0.76.jar                   |Minecraft                     |minecraft                     |26.3                |Manifest: NOSIGNATURE
+		neoforge-26.3.0.76-universal.jar                  |NeoForge                      |neoforge                      |26.3.0.76           |Manifest: NOSIGNATURE
+		notenoughanimations-neoforge-1.12.6-mc26.3.jar    |NotEnoughAnimations           |notenoughanimations           |1.12.6              |Manifest: 55366363c1156d2ba3a48fa06b26b5d3d7553091e86ed91ce07d1b097be55f05
+		particular-26.3-NeoForge-1.5.7.jar                |Particular Reforged           |particular                    |1.5.7               |Manifest: 891de09ba6334274a8e6c2755c3bf8e689eafb52cffd16513f970403c448107d
+		pridelib-1.8.0+26.3.jar                           |Pride Lib                     |pride                         |1.8.0+26.3          |Manifest: 5b4a57ab5cf88af242529b65556969d69fb0b5ff2ab598f9c420f23b6ef9aaf5
+		net.caffeinemc.sodium-neoforge-0.9.3-beta.1+mc26.3|Sodium                        |sodium                        |0.9.3-beta.1+mc26.3 |Manifest: 2fe6582d155c6466a9eb426194af8e0e2536697b436b4ae9b1ab8426c016972e
+		sound-physics-remastered-neoforge-1.5.2+26.3.jar  |Sound Physics Remastered      |sound_physics_remastered      |1.5.2+26.3          |Manifest: 36fd02710be7c0830856b6e2bbddc90648b8cf5991790c81d55f48102efb1746
+		spruceui-12.0.0+26.3.jar                          |SpruceUI                      |spruceui                      |12.0.0+26.3         |Manifest: c27cada96e9dd98f13f38926b87e29d693cc75649677375388991781675e7408
+		SubtleEffects-neoforge-26.3-1.15.1-hotfix.1.jar   |Subtle Effects                |subtle_effects                |1.15.1-hotfix.1     |Manifest: 4966ef8e33992beb6009b4ae8391ed2354299737f0c7bdb8164f67c057bb32ce
+		TRansition-1.0.27-26.3-neoforge-SNAPSHOT.jar      |TRansition                    |transition                    |1.0.27              |Manifest: 398358fe5b5fe14c118c22124278ee72e45ef6fad92f47063df1af48cc86c294
+		TRender-1.0.17-26.3-neoforge-SNAPSHOT.jar         |TRender                       |trender                       |1.0.17              |Manifest: 77422e898594c441354f0e0e9160423b3134d476f18ac0132ff54183058e8a82
+		main                                              |Umbra                         |umbra                         |2.12.2              |Manifest: NOSIGNATURE
+		yet_another_config_lib_v3-3.9.7+26.3-neoforge.jar |YetAnotherConfigLib           |yet_another_config_lib_v3     |3.9.7+26.3-neoforge |Manifest: 6f7ab07ed3ad69636e15b4ec838cecd961513349b1d7f33604316ee82a8b020c
+		yumi-mc-foundation-1.1.3+26.2.jar                 |Yumi Minecraft Libraries: Foun|yumi_mc_core                  |1.1.3+26.2          |Manifest: deee01ea90aac18fe8d61abcee0d0a528420fa6327abb9bd1034c1785278743e
+		zoomify-2.17.0+mc26.3-universal.jar               |Zoomify                       |zoomify                       |2.17.0+mc26.3       |Manifest: 134edcc2992d2f6c3793746101dec1aba3ef02f046024fd280afb09094593027
+	Crash Report UUID: 53ec8d52-6e74-4190-b0cf-3d534a9ca693
+	FML: 12.0.12
+	NeoForge: 26.3.0.76
+	Class Processors: 
+		04.54%: neoforge:access_transformer
+		00.00%: neoforge:neoforge_dev_dist_cleaner
+		00.01%: neoforge:mixin_frame_context
+		00.00%: neoforge:computing_frames (marker)
+		00.00%: neoforge:runtime_enum_extender
+		03.04%: neoforge:mixin
+		00.00%: neoforge:simple_processors_default (marker)
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.biome.biome
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.block.flowerpotblock
+		00.01%: neoforge.coremods:field_to_getter.net.minecraft.world.level.levelgen.structure.structure
+		00.27%: neoforge.coremods:method_redirector
+	Mod List: 
+		skinlayers3d-neoforge-1.11.4-mc26.3.jar           |3d-Skin-Layers                |skinlayers3d                  |1.11.4              |Manifest: c4e9cad7c759c024bc9a33d1c3c3ff953a0bb48a5f055b089a4284203242050d
+		baguettelib-26.3-NeoForge-2.0.8.jar               |BaguetteLib                   |baguettelib                   |2.0.8               |Manifest: 9a71e5e9537dd5126ce782103595e58923cf50c807b5c82b90e65211085f3f47
+		better-clouds-1.15.0-beta.6+26.3-neoforge.jar     |Better Clouds                 |betterclouds                  |1.15.0-beta.6+26.3-n|Manifest: 2f3eb4f151b481f13158e0eee82dac5b78156ddaef9905956d9fe46c7a315f27
+		entityculling-neoforge-1.11.3-mc26.3.jar          |EntityCulling                 |entityculling                 |1.11.3              |Manifest: 08ef339292ef63f22f1c22bed5df9d6ed5bed595fc712af73f121907d1babc5b
+		ferritecore-9.0.0-neoforge.jar                    |Ferrite Core                  |ferritecore                   |9.0.0               |Manifest: a3292dadb1caf7ad220d3a4b68abff2ad58592ddd372160f9cf66c57d159b539
+		fzzy_config-0.7.7+fix3+26.3+neoforge.jar          |Fzzy Config                   |fzzy_config                   |0.7.7+fix3+26.3+neof|Manifest: f0d86811e10a46bb5603e8756b1bb6c5f5e246e4fdc08f6dff9e1f696cb9c7e2
+		ImmediatelyFast-NeoForge-1.17.1+26.3.jar          |ImmediatelyFast               |immediatelyfast               |1.17.1+26.3         |Manifest: 447a22be8b4610d8c2fe35c5a3ea3f445a2cb7151650dd9fec1149ebe8e8bf67
+		lambdynamiclights-4.13.0+26.3.jar                 |LambDynamicLights             |lambdynlights                 |4.13.0+26.3         |Manifest: b7550288423affed86370acd80d064876d7e256f5489461b7ff7941627552ab2
+		lambdynamiclights-api-4.13.0+26.3.jar             |LambDynamicLights (API)       |lambdynlights_api             |4.13.0+26.3         |Manifest: bbcfe5a57e5ab93d6be3d4e8a69b47f466a1259de9927956461f08a7811a24ec
+		minecraft-patched-26.3.0.76.jar                   |Minecraft                     |minecraft                     |26.3                |Manifest: NOSIGNATURE
+		neoforge-26.3.0.76-universal.jar                  |NeoForge                      |neoforge                      |26.3.0.76           |Manifest: NOSIGNATURE
+		notenoughanimations-neoforge-1.12.6-mc26.3.jar    |NotEnoughAnimations           |notenoughanimations           |1.12.6              |Manifest: 55366363c1156d2ba3a48fa06b26b5d3d7553091e86ed91ce07d1b097be55f05
+		particular-26.3-NeoForge-1.5.7.jar                |Particular Reforged           |particular                    |1.5.7               |Manifest: 891de09ba6334274a8e6c2755c3bf8e689eafb52cffd16513f970403c448107d
+		pridelib-1.8.0+26.3.jar                           |Pride Lib                     |pride                         |1.8.0+26.3          |Manifest: 5b4a57ab5cf88af242529b65556969d69fb0b5ff2ab598f9c420f23b6ef9aaf5
+		net.caffeinemc.sodium-neoforge-0.9.3-beta.1+mc26.3|Sodium                        |sodium                        |0.9.3-beta.1+mc26.3 |Manifest: 2fe6582d155c6466a9eb426194af8e0e2536697b436b4ae9b1ab8426c016972e
+		sound-physics-remastered-neoforge-1.5.2+26.3.jar  |Sound Physics Remastered      |sound_physics_remastered      |1.5.2+26.3          |Manifest: 36fd02710be7c0830856b6e2bbddc90648b8cf5991790c81d55f48102efb1746
+		spruceui-12.0.0+26.3.jar                          |SpruceUI                      |spruceui                      |12.0.0+26.3         |Manifest: c27cada96e9dd98f13f38926b87e29d693cc75649677375388991781675e7408
+		SubtleEffects-neoforge-26.3-1.15.1-hotfix.1.jar   |Subtle Effects                |subtle_effects                |1.15.1-hotfix.1     |Manifest: 4966ef8e33992beb6009b4ae8391ed2354299737f0c7bdb8164f67c057bb32ce
+		TRansition-1.0.27-26.3-neoforge-SNAPSHOT.jar      |TRansition                    |transition                    |1.0.27              |Manifest: 398358fe5b5fe14c118c22124278ee72e45ef6fad92f47063df1af48cc86c294
+		TRender-1.0.17-26.3-neoforge-SNAPSHOT.jar         |TRender                       |trender                       |1.0.17              |Manifest: 77422e898594c441354f0e0e9160423b3134d476f18ac0132ff54183058e8a82
+		main                                              |Umbra                         |umbra                         |2.12.2              |Manifest: NOSIGNATURE
+		yet_another_config_lib_v3-3.9.7+26.3-neoforge.jar |YetAnotherConfigLib           |yet_another_config_lib_v3     |3.9.7+26.3-neoforge |Manifest: 6f7ab07ed3ad69636e15b4ec838cecd961513349b1d7f33604316ee82a8b020c
+		yumi-mc-foundation-1.1.3+26.2.jar                 |Yumi Minecraft Libraries: Foun|yumi_mc_core                  |1.1.3+26.2          |Manifest: deee01ea90aac18fe8d61abcee0d0a528420fa6327abb9bd1034c1785278743e
+		zoomify-2.17.0+mc26.3-universal.jar               |Zoomify                       |zoomify                       |2.17.0+mc26.3       |Manifest: 134edcc2992d2f6c3793746101dec1aba3ef02f046024fd280afb09094593027
+	Crash Report UUID: e4b6faa3-502d-4896-9e80-a128ef3bf417
+	FML: 12.0.12
+	NeoForge: 26.3.0.76
