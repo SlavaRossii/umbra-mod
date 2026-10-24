@@ -32,8 +32,10 @@ jobs:
           # the same as a .7z (some Windows setups balk at the plain zip)
           z=$(ls pack/umbra-pack-*.zip | head -1); d=$(mktemp -d); unzip -q "$z" -d "$d"
           (cd "$d" && 7z a -t7z -mx=7 "$GITHUB_WORKSPACE/${z%.zip}.7z" . > /dev/null) && 7z t "${z%.zip}.7z" | tail -3
+          # and in parts of 40 MB each (big single files may not come through a download whole); open part .001 in 7-Zip
+          (cd "$d" && 7z a -t7z -mx=7 -v40m "$GITHUB_WORKSPACE/${z%.zip}-parts.7z" . > /dev/null) && ls -la pack
       - name: Publish
         if: always()
-        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/*.7z pack/pack.md pack/pack.log
+        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/*.7z pack/*.7z.0* pack/pack.md pack/pack.log
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
