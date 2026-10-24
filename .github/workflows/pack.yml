@@ -28,9 +28,12 @@ jobs:
           mkdir -p pack
           ls -la build/libs
           python3 tools/compat/make_pack.py "$(ls build/libs/umbra-*.jar | grep -v sources | head -1)" pack > pack/pack.log 2>&1; rc=$?
-          cat pack/pack.log; exit $rc
+          cat pack/pack.log; [ $rc = 0 ] || exit $rc
+          # the same as a .7z (some Windows setups balk at the plain zip)
+          z=$(ls pack/umbra-pack-*.zip | head -1); d=$(mktemp -d); unzip -q "$z" -d "$d"
+          (cd "$d" && 7z a -t7z -mx=7 "$GITHUB_WORKSPACE/${z%.zip}.7z" . > /dev/null) && 7z t "${z%.zip}.7z" | tail -3
       - name: Publish
         if: always()
-        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/pack.md pack/pack.log
+        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/*.7z pack/pack.md pack/pack.log
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
