@@ -20,7 +20,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * so nothing is ever left behind (not even after a crash: the first tick after loading cleans it up).
  */
 public class HeldLightBlock extends Block implements DarknessProof, net.minecraft.world.level.block.SimpleWaterloggedBlock {
-    public static final int LIGHT = 12;
+    public static final int LIGHT = 15;   // 2.12.2: as bright as light gets (it was 12)
+    /** How far from the one carrying the light it may stand (the light thrown ahead stands a few blocks off). */
+    public static final double REACH = 6.5;
     private static final int CHECK = 10;
 
     /** 2.7: under water too (the Depths are drowned): it holds the water it stands in and gives it back. */
@@ -66,7 +68,7 @@ public class HeldLightBlock extends Block implements DarknessProof, net.minecraf
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         for (Player p : level.players()) {
-            if (p.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < 2.5 * 2.5 && (LanternItem.carriesLit(p) || dev.umbra.lighthouse.YanErrands.holdsMartasLantern(p) || dev.umbra.gear.SetPowers.shines(p) || dev.umbra.lighthouse.KeeperStaffItem.holds(p))) {
+            if (p.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) < REACH * REACH && (LanternItem.carriesLit(p) || dev.umbra.lighthouse.YanErrands.holdsMartasLantern(p) || dev.umbra.gear.SetPowers.shines(p) || dev.umbra.lighthouse.KeeperStaffItem.holds(p))) {
                 level.scheduleTick(pos, this, CHECK);
                 return;
             }

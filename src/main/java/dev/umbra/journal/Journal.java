@@ -201,7 +201,7 @@ public final class Journal {
             Map.entry("yan_gift_bell", List.of("keeper_bell")),
             Map.entry("luminite", List.of("luminite_lamp", "luminite_spear", "luminite_bow", "luminite_shield")),
             Map.entry("shadow_dispelled", List.of("dusk_stone", "antipsychotic", "shadow_dagger", "shadow_knife")),
-            Map.entry("underside", List.of("dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
+            Map.entry("underside", List.of("night_goggles", "dead_log_to_planks", "gloom_axe", "gloom_block", "gloom_boots", "gloom_chestplate", "gloom_helmet",
                     "gloom_ingot_from_blasting", "gloom_ingot_from_block", "gloom_ingot_from_smelting", "gloom_leggings",
                     "gloom_pickaxe", "gloom_shovel", "gloom_sword", "quantum_compass",
                     "seal_of_watching", "seal_of_mimicry", "seal_of_herding", "seal_of_reflection", "summoning_altar")),

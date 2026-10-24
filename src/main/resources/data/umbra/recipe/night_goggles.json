@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": "umbra:luminite_crystal",
+    "I": "umbra:gloom_ingot",
+    "S": "minecraft:leather"
+  },
+  "pattern": [
+    "LIL",
+    "S S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "umbra:night_goggles"
+  }
+}

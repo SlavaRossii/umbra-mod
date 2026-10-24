@@ -187,6 +187,7 @@ public class Umbra {
         dev.umbra.registry.ModEffects.tick(player);
         dev.umbra.gear.Gear.tick(player);
         dev.umbra.gear.WeaponEvents.setTick(player);
+        dev.umbra.gear.NightGoggles.tick(player);
         dev.umbra.gear.SetPowers.tick(player);
         dev.umbra.journal.JournalEvents.tick(player);
         dev.umbra.nightmare.Nightmares.tick(player);

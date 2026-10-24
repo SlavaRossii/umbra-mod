@@ -947,5 +947,8 @@
   "journal.umbra.nights.title": "Strange Nights",
   "journal.umbra.nights.text": "Some nights the Underside comes very close. Each such night is strange in its own way.",
   "journal.umbra.yan_gifts.title": "Yan's Gifts",
-  "journal.umbra.yan_gifts.text": "Yan pays for help with the Keepers' things — what he has kept from those days."
+  "journal.umbra.yan_gifts.text": "Yan pays for help with the Keepers' things — what he has kept from those days.",
+  "item.umbra.night_goggles": "Night Goggles",
+  "message.umbra.night_goggles.dim": "The goggles' lenses have dimmed: mend them with a luminite crystal at an anvil.",
+  "tip.umbra.night_goggles": "Worn instead of a helmet: in the dark you see as by day. The lenses dim in an hour: mend them with a luminite crystal at an anvil."
 }

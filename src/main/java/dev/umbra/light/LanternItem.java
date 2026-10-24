@@ -111,6 +111,21 @@ public class LanternItem extends Item {
             }
         }
         if (player.tickCount % 4 == 0) placeLight(level, player);
+        if (player.tickCount % 8 == 2) throwLight(level, player);
+    }
+
+    /** 2.12.2: the lantern's light reaches ahead of you too: a second light a few blocks along your look, where there is air. */
+    public static void throwLight(ServerLevel level, Player player) {
+        net.minecraft.world.phys.Vec3 eye = player.getEyePosition(), look = player.getLookAngle();
+        BlockPos last = null;
+        for (int i = 1; i <= 5; i++) {
+            BlockPos p = BlockPos.containing(eye.add(look.scale(i)));
+            BlockState s = level.getBlockState(p);
+            if (!s.isAir() && !s.is(ModBlocks.HELD_LIGHT.get())) break;
+            last = p;
+        }
+        if (last != null && level.getBlockState(last).isAir() && last.distSqr(player.blockPosition()) > 4)
+            level.setBlock(last, ModBlocks.HELD_LIGHT.get().defaultBlockState(), Block.UPDATE_ALL);
     }
 
     /** Puts the invisible light at head height (or at the feet when the head is in something). */
