@@ -2044,11 +2044,17 @@ final class SmokeTest {
         ItemStack goggles = new ItemStack(ModItems.NIGHT_GOGGLES.get());
         fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, goggles);
         fake.tickCount = 203;
-        dev.umbra.gear.NightGoggles.tick(fake);
+        dev.umbra.gear.NightGoggles.apply(fake, true);     // the room was walled in this very tick: its light has not caught up yet
+        boolean restsByDay = true;
+        fake.removeAllEffects();
+        dev.umbra.gear.NightGoggles.apply(fake, false);
+        restsByDay = !fake.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+        fake.tickCount = 203;
+        dev.umbra.gear.NightGoggles.apply(fake, true);
         boolean sees = fake.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
         int used = fake.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).getDamageValue();
         var eq = goggles.get(net.minecraft.core.component.DataComponents.EQUIPPABLE);
-        check(sees && used == 1 && eq != null && eq.slot() == net.minecraft.world.entity.EquipmentSlot.HEAD,
+        check(sees && restsByDay && used == 2 && eq != null && eq.slot() == net.minecraft.world.entity.EquipmentSlot.HEAD,
                 "2.12.2: night goggles on the head: in the dark you see, and the lenses burn their charge (" + used + ")");
         fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);

@@ -31,10 +31,13 @@ public final class NightGoggles {
 
     public static void tick(ServerPlayer player) {
         if (player.tickCount % 20 != 3 || !worn(player)) return;
+        apply(player, player.level().getMaxLocalRawBrightness(player.blockPosition()) <= DARK);
+    }
+
+    /** Once a second while worn: in the dark ({@code dark}) the lenses work and burn their charge. */
+    public static void apply(ServerPlayer player, boolean dark) {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.HEAD);
-        if (charge(stack) <= 0) return;
-        boolean dark = player.level().getMaxLocalRawBrightness(player.blockPosition()) <= DARK;
-        if (!dark) return;
+        if (!stack.is(ModItems.NIGHT_GOGGLES.get()) || charge(stack) <= 0 || !dark) return;
         MobEffectInstance nv = player.getEffect(MobEffects.NIGHT_VISION);
         if (nv == null || nv.getDuration() < 240) player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, true, false, true));
         if (!player.isCreative() && player.tickCount % DRAIN_TICKS == 3) {
