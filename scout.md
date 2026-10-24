@@ -1,0 +1,130 @@
+## Mods for 26.3 NeoForge, client side, most downloaded
+- `sodium` Sodium — 252857104 dl — fabric, neoforge, optimization, quilt — A high-performance rendering engine replacement for Minecraft, which greatly improves frame rates and reduces 
+- `iris` Iris Shaders — 195905645 dl — decoration, fabric, neoforge, optimization, quilt — A modern shader pack loader for Minecraft intended to be compatible with existing OptiFine shader packs
+- `entityculling` Entity Culling — 189229383 dl — babric, fabric, forge, neoforge, optimization, quilt — Using async path-tracing to hide Block-/Entities that are not visible
+- `cloth-config` Cloth Config API — 184962773 dl — fabric, forge, library, neoforge — Configuration Library for Minecraft Mods
+- `ferrite-core` FerriteCore — 166337682 dl — fabric, forge, neoforge, optimization, quilt, utility — Memory usage optimizations
+- `lithium` Lithium — 141961607 dl — fabric, neoforge, optimization, quilt — No-compromises game logic optimization mod, useful for both single-player games and multi-player servers.
+- `immediatelyfast` ImmediatelyFast — 137590903 dl — fabric, forge, neoforge, optimization, quilt — Speed up immediate mode rendering in Minecraft
+- `yacl` YetAnotherConfigLib (YACL) — 135396418 dl — fabric, forge, library, management, neoforge, quilt — A builder-based configuration library for Minecraft!
+- `xaeros-minimap` Xaero's Minimap — 120985375 dl — adventure, fabric, forge, neoforge, quilt, transportation — Displays a map of the nearby world terrain, players, mobs, entities in the corner of your screen. Lets you cre
+- `entitytexturefeatures` [ETF] Entity Texture Features — 111271025 dl — decoration, fabric, forge, neoforge, quilt, utility — Emissive, Random & Custom texture support for entities in resourcepacks just like Optifine but for Fabric
+- `architectury-api` Architectury API — 108333482 dl — fabric, forge, library, neoforge, quilt — An intermediary api aimed to ease developing multiplatform mods.
+- `sodium-extra` Sodium Extra — 106256396 dl — cursed, fabric, neoforge, optimization, quilt, utility — A Sodium addon that adds features that shouldn't be in Sodium.
+- `xaeros-world-map` Xaero's World Map — 106087426 dl — adventure, fabric, forge, neoforge, quilt, transportation — Adds a full screen world map which shows you what you have explored in the world. Works great together with Xa
+- `entity-model-features` [EMF] Entity Model Features — 105736638 dl — decoration, fabric, forge, mobs, neoforge, quilt — EMF is an, OptiFine format, Custom Entity Model replacement mod available for Fabric and Forge.
+- `appleskin` AppleSkin — 98839725 dl — fabric, food, forge, neoforge, quilt, utility — Food/hunger-related HUD improvements
+- `not-enough-animations` Not Enough Animations — 94710906 dl — adventure, decoration, fabric, forge, neoforge — Bringing first-person animations to the third-person
+- `reeses-sodium-options` Reese's Sodium Options — 88493776 dl — fabric, neoforge, quilt, utility — Alternative Options Menu for Sodium
+- `jei` Just Enough Items (JEI) — 85903167 dl — fabric, forge, library, neoforge, utility — View Items and Recipes
+- `3dskinlayers` 3D Skin Layers — 85084884 dl — adventure, decoration, fabric, forge, neoforge, quilt — Render the player skin layer in 3d!
+- `geckolib` Geckolib — 77097099 dl — fabric, forge, game-mechanics, library, neoforge, quilt — A 3D animation library for entities, blocks, items, armor, and more!
+- `simple-voice-chat` Simple Voice Chat — 76828304 dl — adventure, bukkit, bungeecord, fabric, folia, forge — A working voice chat in Minecraft!
+- `jade` Jade 🔍 — 73986285 dl — fabric, forge, library, neoforge, quilt, utility — Shows information about what you are looking at. (Hwyla/Waila fork for Minecraft 1.16+)
+- `veinminer-client` VeinMiner Hotkey — 73746242 dl — equipment, fabric, game-mechanics, neoforge, quilt, utility — Veinminer Addon - Use a hotkey to veinmine with a dynamic crosshair & block highlighting
+- `moreculling` More Culling — 73164772 dl — fabric, library, neoforge, optimization, quilt, utility — A mod that changes how multiple types of culling are handled in order to improve performance
+- `zoomify` Zoomify (Zoom) — 72685366 dl — fabric, neoforge, quilt, utility — A zoom mod with infinite customizability.
+- `dynamic-fps` Dynamic FPS — 72020123 dl — fabric, forge, management, neoforge, optimization, quilt — Reduce resource usage while Minecraft is in the background, idle, or on battery.
+- `forge-config-api-port` Forge Config API Port — 71572409 dl — fabric, forge, library, neoforge — NeoForge's & Forge's config systems provided to other modding ecosystems. Designed for a multiloader architect
+- `collective` Collective — 70941448 dl — fabric, forge, library, neoforge, quilt — 🎓 Collective is a shared library with common code for all of Serilum's mods.
+- `fancymenu` FancyMenu — 70730800 dl — fabric, forge, neoforge, utility — Customize Minecraft's menus with ease!
+- `puzzles-lib` Puzzles Lib — 66889209 dl — fabric, forge, library, neoforge — Why is it called Puzzles? That's the puzzle.
+- `konkrete` Konkrete — 65973632 dl — fabric, forge, library, neoforge — Just another boring library mod.
+- `mouse-tweaks` Mouse Tweaks — 64592163 dl — fabric, forge, modloader, neoforge, storage, utility — Enhances inventory management by adding various functions to the mouse buttons. 
+- `balm` Balm — 64445945 dl — fabric, forge, library, neoforge — Abstraction Layer for Multi-Loader Mods
+- `lambdynamiclights` LambDynamicLights - Dynamic Lights — 64141882 dl — adventure, decoration, fabric, neoforge, quilt, utility — Adds dynamic lights to Minecraft as the most feature-complete and optimized dynamic lighting mod.
+- `no-chat-reports` No Chat Reports — 62425468 dl — fabric, forge, management, neoforge, quilt, social — Makes chat unreportable (where possible)
+- `sound-physics-remastered` Sound Physics Remastered — 56887082 dl — adventure, fabric, forge, neoforge, quilt, utility — A Minecraft mod that provides realistic sound attenuation, reverberation, and absorption through blocks.
+- `creativecore` CreativeCore — 55845291 dl — fabric, forge, library, neoforge — A core mod
+- `kotlin-for-forge` Kotlin for Forge — 54947764 dl — forge, library, neoforge — Adds a Kotlin language loader and provides some optional utilities.
+- `melody` Melody — 53401840 dl — fabric, forge, library, neoforge — OpenAL-based library mod for playing background music.
+- `chat-heads` Chat Heads — 53078710 dl — decoration, fabric, forge, neoforge, social — See who you're chatting with!
+- `bookshelf-lib` Bookshelf — 49225809 dl — fabric, forge, library, neoforge, quilt, utility — An open source library for other mods!
+- `badoptimizations` BadOptimizations — 48027225 dl — fabric, forge, neoforge, optimization — Optimization mod that focuses on things other than rendering
+- `fzzy-config` Fzzy Config — 44492009 dl — fabric, forge, game-mechanics, library, management, neoforge — Config API with automatic GUIs, powerful validation options, server-client sync, and more!
+- `terrablender` TerraBlender — 43203629 dl — fabric, forge, library, neoforge, quilt, worldgen — A library mod for adding biomes in a simple and compatible manner!
+- `clumps` Clumps — 42996297 dl — fabric, forge, neoforge, storage, utility — Clumps XP orbs together to reduce lag
+- `searchables` Searchables — 42752076 dl — fabric, forge, library, neoforge, utility — Searchables is a library mod that adds helper methods that allow for searching and filtering elements based on
+- `controlling` Controlling — 42561993 dl — fabric, forge, neoforge, utility — Adds a search bar to the Key-Bindings menu
+- `inventory-profiles-next` Inventory Profiles Next — 42536862 dl — fabric, forge, neoforge, quilt, storage, utility — Take control over your inventory. Sort. Move matching Items. Throw all. Locked slots. Gear sets! And much more
+- `ambientsounds` AmbientSounds — 41523699 dl — decoration, fabric, forge, neoforge — #listentonature
+- `shulkerboxtooltip` Shulker Box Tooltip — 41305054 dl — fabric, forge, neoforge, storage, utility — View the contents of shulker boxes from your inventory
+- `enchantment-descriptions` Enchantment Descriptions — 40183881 dl — fabric, forge, magic, neoforge, quilt, utility — Provides a way to get enchantment descriptions from enchanted books.
+- `biomes-o-plenty` Biomes O' Plenty — 39298951 dl — adventure, decoration, fabric, forge, neoforge, worldgen — Adds 50+ unique biomes to enhance your world, with new trees, flowers, and more!
+- `distanthorizons` Distant Horizons — 38351798 dl — fabric, forge, neoforge, optimization, utility — Massively increase render distance without harming performance.
+- `iceberg` Iceberg — 38137425 dl — fabric, forge, library, neoforge — A modding library that contains new events, helpers, and utilities to make modder's lives easier.
+- `resourceful-lib` Resourceful Lib — 37519076 dl — fabric, forge, library, neoforge — Resourceful Lib
+- `libipn` libIPN — 36744865 dl — fabric, forge, library, neoforge, quilt — Inventory Profiles Next GUI/Config library
+- `betterf3` BetterF3 — 36499381 dl — decoration, fabric, forge, game-mechanics, neoforge, quilt — BetterF3 is a mod that replaces Minecraft's original debug HUD with a highly customizable, more human-readable
+- `supermartijn642s-config-lib` SuperMartijn642's Config Lib — 34227041 dl — fabric, forge, library, neoforge, quilt — Config Lib makes dealing with config files just a bit easier.
+- `cherished-worlds` Cherished Worlds — 34201992 dl — fabric, forge, management, neoforge, quilt, utility — Favorite/pin/bookmark certain worlds, which will always be at the top of the list and cannot be deleted.
+- `curios` Curios API — 33632608 dl — adventure, equipment, fabric, forge, library, neoforge — A flexible and expandable accessory/equipment API for users and developers.
+
+## Shader packs for 26.3
+- `complementary-reimagined` Complementary Shaders - Reimagined — 72723568 dl — atmosphere, bloom, cartoon, colored-lighting, fantasy, foliage — Preserving the elements of Minecraft with exceptional quality, detail, and performance.
+- `complementary-unbound` Complementary Shaders - Unbound — 47161071 dl — atmosphere, bloom, cartoon, colored-lighting, fantasy, foliage — Transforming the visuals of Minecraft with exceptional quality, detail, and performance.
+- `bsl-shaders` BSL Shaders — 31848313 dl — atmosphere, bloom, cartoon, colored-lighting, foliage, iris — Shaderpack for Minecraft: Java Edition. It's bright, colorful, and distinct.
+- `photon-shader` Photon Shaders — 29440930 dl — atmosphere, bloom, colored-lighting, foliage, high, iris — A gameplay-focused shader pack with a semi-realistic style
+- `solas-shader` Solas Shader — 18742799 dl — atmosphere, bloom, cartoon, colored-lighting, fantasy, foliage — A modern fantasy stylized shaderpack with colored lighting and stunning visuals
+- `bliss-shader` Bliss Shaders — 15866026 dl — atmosphere, bloom, colored-lighting, fantasy, foliage, high — A well performing fantasy styled shaderpack with emphasis on scene variation and customization.
+- `makeup-ultra-fast-shaders` MakeUp - Ultra Fast — 14216693 dl — atmosphere, bloom, fantasy, foliage, iris, low — MakeUp aims to provide the best quality / performance ratio, building a shader that can be adapted to anyone's
+- `mellow` Mellow — 8173224 dl — atmosphere, bloom, fantasy, iris, optifine, potato — Shaderpack with a painterly aesthetic made for people who want to actually play the game. It's easy on your ey
+- `astralex` AstraLex Shaders — 5787023 dl — atmosphere, bloom, cartoon, colored-lighting, fantasy, foliage — Shaderpack with very high customization. If you like effects, this shaderpack is made for you!
+- `miniature-shader` Miniature Shader — 5162439 dl — atmosphere, iris, low, optifine, path-tracing, potato — Extremely lightweight with shadows and reflections
+- `spooklementary` Spooklementary — 3375104 dl — atmosphere, bloom, fantasy, foliage, high, iris — A Spooky, very moody and atmospheric Complementary Shaders Edit
+- `i-like-vanilla` I Like Vanilla — 2961626 dl — atmosphere, fantasy, iris, low, medium, optifine — A shader that improves minecraft's style instead of replacing it
+- `noble` Noble Shaders — 2483338 dl — atmosphere, bloom, fantasy, foliage, high, iris — Using clever lighting techniques and powerful customization to create clean, immersive, and enjoyable visuals.
+- `bloop-shaders` Bloop Shaders — 1971277 dl — atmosphere, bloom, colored-lighting, fantasy, foliage, high — A shader aimed at maximum speed while maintaining good visuals.
+
+Scalable from low to high end computers.
+- `lite-shaders` E-LITE shaders (MakeUp edit) — 1695651 dl — atmosphere, bloom, foliage, iris, low, optifine — A MakeUp - Ultra Fast shaders edit that is highly customizable, beautiful, and fast!
+- `clarityshader` Clarity — 1518985 dl — atmosphere, cartoon, cursed, fantasy, iris, low — FullBright2 is now named Clarity and it removes all shadows and fog wich makes you see clearly everywhere and 
+- `fantasy-shaders` Fantasy Shaders Reimagined — 1480286 dl — bloom, colored-lighting, fantasy, foliage, iris, low — Colors of fantasy, vivid and striking
+- `body-camera-shader` Body Camera — 1463661 dl — atmosphere, bloom, colored-lighting, high, iris, low — Adds a body camera effect
+- `renderpearl` RenderPearl — 1442724 dl — atmosphere, colored-lighting, iris, low, medium, pbr — Clean, high performance shaders for modern hardware
+- `fantasy-shader-unbound` Fantasy Shaders Unbound — 1196101 dl — bloom, colored-lighting, fantasy, foliage, iris, optifine — A shader that aims to give a fantasy setting for those who like color.
+- `redhat-shaders` RedHat Shaders — 1046269 dl — atmosphere, bloom, colored-lighting, fantasy, foliage, high — A shaderpack based on older versions of Chocapic13 Shaders.
+- `pegasus` Pegasus Shaders — 965184 dl — atmosphere, bloom, cartoon, fantasy, high, iris — A shader that blends high performance range with new features, and lots of stylistic range!
+- `sildurs-vibrant-shaders` Sildur's Vibrant Shaders — 735699 dl — atmosphere, bloom, fantasy, foliage, high, iris — Very optimized shaderpack for MC: Java edition, around since 2012!
+Runs on any hardware and supports every MC 
+- `cursed-fog` Cursed Fog — 717166 dl — atmosphere, bloom, colored-lighting, cursed, high, iris — Creepy, tense shaders that will tickle your nerves.
+- `bvs` BVS - Best Vanilla Shader — 690305 dl — colored-lighting, foliage, high, iris, low, medium — Very Simple and Best shader for You!
+- `just-colored-lighting` Just Colored Lighting — 680412 dl — colored-lighting, iris, pbr, potato, shadows, vanilla-like — Just Colored Lighting and Dynamic Lights added to a very fast shader for Potato computers, with optional shado
+- `ctrvcr` CTR VCR — 632173 dl — bloom, cursed, iris, low, optifine, potato — Retro stylized shader that brings artifacts from CRT and VCR / VHS
+- `light-shaders` LIGHT Shaders — 623433 dl — atmosphere, cartoon, fantasy, foliage, high, iris — As light as light, as beautiful as painting.
+
+Make you have both high FPS and good image quality.
+- `reverie_shader` Reverie — 444046 dl — atmosphere, bloom, iris, medium, pbr, reflections — Shader with a foggy and warm look. It leverages new features added by Iris for effects previously impossible t
+- `opal-shaders` OPAL Shaders — 395833 dl — atmosphere, bloom, fantasy, foliage, high, iris — OPAL Shaders is a shaderpack for Minecraft Java Edition based on BSL Shaders created by Capt Tatsu.
+It aims to
+- `alpha-piscium` Alpha Piscium — 368589 dl — atmosphere, bloom, colored-lighting, high, iris, path-tracing — High-quality realistic Minecraft shaderpack.
+- `mello` Mello — 328028 dl — bloom, fantasy, foliage, iris, low, medium — Mello is a shader with high performance and great visuals.
+- `truelight-fx-lite` TrueLightFX Lite — 276755 dl — atmosphere, iris, low, medium, optifine, reflections — A lightweight Shader for low end Hardware - Vanilla styled
+- `sildurs-enhanced-default-shaders` Sildur's Enhanced Default Shaders — 274048 dl — atmosphere, foliage, iris, low, medium, optifine — Improves the look of vanilla MC with shadows, reflections and more. Runs on any Potato!
+- `night-vision-shaders` Night Vision Shaders — 232480 dl — potato, vanilla, vanilla-like — A shaderpack that aims on giving brightness everywhere while keeping the game aesthetic.
+- `lethal-shaders` Lethal Shaders — 224111 dl — cartoon, cursed, iris, low, potato — A simple shaderpack which aims to recreate the visual style of Lethal Company.
+- `aurora-fantasy` Aurora Fantasy — 211662 dl — atmosphere, colored-lighting, fantasy, high, iris, low — Transform Minecraft into a magical fantasy world featuring glowing night fireflies, shimmering Auroras, vibran
+- `lumina-shader-event-horizon` Lumina Shader - Event Horizon — 201743 dl — atmosphere, colored-lighting, high, iris, optifine, pbr — Cinematic shaders for Minecraft Java featuring a black hole and white hole in the End, atmospheric lighting, v
+- `pixelcraft-shaders` PixelCraft Shaders — 170314 dl — atmosphere, bloom, cartoon, colored-lighting, foliage, iris — PixelCraft Shaders is a Complementary Shaders edit aiming to replicate pixel art. Every screenshot is a new pi
+- `taa` TAA Project — 141307 dl — iris, low, optifine, potato, vanilla-like — Lightweight Temporal Anti-Aliasing shaderpack.
+- `ch-motion` CH Motion — 127913 dl — iris, low, optifine, path-tracing, potato, realistic — A simple but very good low performance motion blur pack, which enhances the vanilla experience!
+- `bvsf` BVSF — 126978 dl — colored-lighting, high, iris, low, medium, optifine — A fast version of BVS for weak PCs!
+- `sildurs-basic-shaders` Sildur's Basic Shaders — 124890 dl — atmosphere, fantasy, foliage, iris, low, optifine — Return of an old time favorite! Lightweight and Fast! Reworked and ported from enhanced default.
+- `vanilla_enhance` Vanilla Enhanced — 124119 dl — atmosphere, high, iris, low, medium, optifine — A lightweight shader for realistic lighting & better visuals.
+- `boosted-brightness-rp` Boosted Brightness — 111242 dl — core-shaders, environment, minecraft, tweaks, utility, vanilla — Multiples the brightness setting by 10x which allows for fullbright. Uses the new 1.21.2 lightmap core shader 
+- `sundial-lite` Sundial Lite — 100694 dl — atmosphere, bloom, foliage, iris, medium, optifine — The balance of quality, performance and compatibility
+- `truelightfx` TrueLightFX — 99074 dl — atmosphere, high, iris, medium, optifine, realistic — TrueLightFX is a custom Minecraft shader offering a wide range of customizable settings.
+- `energy-shaders-java` Energy Shaders Java — 98177 dl — atmosphere, colored-lighting, fantasy, potato, vanilla, vanilla-like — Energy Shaders for Java. A vanilla Minecraft shaderpack that aims on making the game more vibrant and aestheti
+- `trickeds-shaders` Tricked Shaders — 96067 dl — atmosphere, colored-lighting, iris, low, medium, optifine — Based on Mellow Shader, a modified version to reduce brightness and make the game look better while maintainin
+- `zayko` Zayko Shaders — 88371 dl — atmosphere, bloom, colored-lighting, fantasy, high, iris — Built for quality sometimes at playable performance + Built in PBR, Emissive Textures, and amazing adjustabili
+- `lumina-shader-lite` Lumina Shader - Lite — 85485 dl — atmosphere, colored-lighting, foliage, iris, low, optifine — Optimized version of Lumina Shaders designed for low-end PCs and integrated graphics. Get 60+ FPS without losi
+- `nwoofs-wynn-shader` Nwoof's Wynn Shader — 70401 dl — atmosphere, colored-lighting, fantasy, high, iris, low — Shader designed for Wynncraft.
+- `anti-aliasing` Anti Aliasing (TAA, FXAA) — 70372 dl — iris, optifine, potato, vanilla-like — Fix rendering aliasing (TAA, FXAA)
+- `bettervoxels` Better Voxels — 64946 dl — colored-lighting, high, iris, path-tracing, pbr, realistic — Rethinking Voxels Fork | Every legendary feature you ever wanted in a shader. Combined. Optimized. Perfected.
+- `b-and-w-shader` B&W Shader — 60715 dl — atmosphere, cursed, iris, optifine, potato — A shader that completely turns your game into a black and white version
+- `pvp-zerox` PVP ZeroX — 59637 dl — cursed, iris, optifine, potato, vanilla-like — A shader that visually assists in PVP!
+- `psx-core` PSX-Core Shader — 55320 dl — atmosphere, cursed, iris, low, optifine, vanilla-like — A PSX shader with affine texture mapping, dithering, vertex snapping and more!
+- `smoother-glowing` Smoother Glowing — 54700 dl — potato, vanilla — Replace vanilla glowing shader with optimized and prettier one imo
+- `the-better-default` The Better Default — 48334 dl — bloom, colored-lighting, foliage, iris, low, medium — RTX feel, volumetricish lighting
+And great performance for a shader.
+- `miasma` Miasma — 45892 dl — atmosphere, cartoon, cursed, fantasy, iris, low — Miasma - Cel-shading shader that transforms Minecraft into a toxic, mesmerizing planet, inspired by the iconic
