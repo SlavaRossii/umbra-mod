@@ -62,6 +62,8 @@ public class LightEater extends Vex implements LightSensitive {
         if (state.getLightEmission() < 10) return false;
         if (state.getBlock() instanceof DarknessProof || state.is(IGNORED) || state.is(ModBlocks.LUMINITE_LAMP.get())) return false;
         if (state.getBlock() instanceof dev.umbra.underside.RiftBlock) return false;
+        // 2.12.2: the grottos' own crystals are not food (they shine brighter now and would be gone in a night)
+        if (state.is(ModBlocks.LUMINITE_BLOCK.get()) || state.is(ModBlocks.LUMINITE_CLUSTER.get())) return false;
         return state.getBlock().defaultDestroyTime() >= 0;
     }
 

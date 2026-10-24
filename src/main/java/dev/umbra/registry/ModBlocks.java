@@ -76,10 +76,10 @@ public final class ModBlocks {
     // --- Luminite: the light that the dark fears ---
     public static final DeferredBlock<DropExperienceBlock> LUMINITE_ORE = BLOCKS.registerBlock("luminite_ore",
             p -> new DropExperienceBlock(UniformInt.of(2, 5), p),
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).lightLevel(s -> 5));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).lightLevel(s -> 8));
     public static final DeferredBlock<DropExperienceBlock> DEEPSLATE_LUMINITE_ORE = BLOCKS.registerBlock("deepslate_luminite_ore",
             p -> new DropExperienceBlock(UniformInt.of(2, 5), p),
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 5));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 8));
     public static final DeferredBlock<Block> LUMINITE_LAMP = BLOCKS.registerSimpleBlock("luminite_lamp",
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).lightLevel(s -> 12).mapColor(MapColor.COLOR_LIGHT_BLUE));
     public static final DeferredBlock<EternalTorchBlock> ETERNAL_TORCH = BLOCKS.registerBlock("eternal_torch",
@@ -245,10 +245,10 @@ public final class ModBlocks {
     // --- Underside decoration (1.5) ---
     public static final DeferredBlock<net.minecraft.world.level.block.AmethystClusterBlock> LUMINITE_CLUSTER = BLOCKS.registerBlock("luminite_cluster",
             p -> new net.minecraft.world.level.block.AmethystClusterBlock(7.0F, 3.0F, p),
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 7).mapColor(MapColor.COLOR_LIGHT_BLUE));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 12).mapColor(MapColor.COLOR_LIGHT_BLUE));
     public static final DeferredBlock<net.minecraft.world.level.block.AmethystClusterBlock> ECHO_CLUSTER = BLOCKS.registerBlock("echo_cluster",
             p -> new net.minecraft.world.level.block.AmethystClusterBlock(5.0F, 3.0F, p),
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 3).mapColor(MapColor.COLOR_CYAN));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(s -> 8).mapColor(MapColor.COLOR_CYAN));
     public static final DeferredBlock<dev.umbra.decor.GloomMushroomBlock> GLOOM_MUSHROOM = BLOCKS.registerBlock("gloom_mushroom",
             dev.umbra.decor.GloomMushroomBlock::new,
             () -> BlockBehaviour.Properties.of().noCollision().instabreak().noOcclusion().lightLevel(s -> 6)
@@ -277,10 +277,10 @@ public final class ModBlocks {
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_IRON_ORE).mapColor(MapColor.COLOR_GRAY));
     public static final DeferredBlock<DropExperienceBlock> ECHO_QUARTZ_ORE = BLOCKS.registerBlock("echo_quartz_ore",
             p -> new DropExperienceBlock(UniformInt.of(3, 7), p),
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 3));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 6));
     /** Grown luminite: the spires of the crystal grottos. */
     public static final DeferredBlock<Block> LUMINITE_BLOCK = BLOCKS.registerSimpleBlock("luminite_block",
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel(s -> 10).mapColor(MapColor.COLOR_LIGHT_BLUE));
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel(s -> 14).mapColor(MapColor.COLOR_LIGHT_BLUE));
     public static final DeferredBlock<Block> GLOOM_BLOCK = BLOCKS.registerSimpleBlock("gloom_block",
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK).mapColor(MapColor.COLOR_BLACK));
     public static final DeferredBlock<RiftBlock> RIFT = BLOCKS.registerBlock("rift",

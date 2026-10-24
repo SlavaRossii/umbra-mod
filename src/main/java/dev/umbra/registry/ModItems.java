@@ -168,6 +168,13 @@ public final class ModItems {
             dev.umbra.madness.SilenceTinctureItem::new, p -> p.stacksTo(8).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<dev.umbra.madness.MadmanMaskItem> MADMAN_MASK = ITEMS.registerItem("madman_mask",
             dev.umbra.madness.MadmanMaskItem::new, p -> p.stacksTo(1).rarity(Rarity.RARE).equippable(net.minecraft.world.entity.EquipmentSlot.HEAD));
+    // --- 2.12.2: night goggles: luminite lenses on a gloom frame; worn instead of a helmet, the dark is seen through ---
+    public static final DeferredItem<Item> NIGHT_GOGGLES = ITEMS.registerSimpleItem("night_goggles", p -> p.stacksTo(1).rarity(Rarity.UNCOMMON)
+            .durability(dev.umbra.gear.NightGoggles.CHARGE).repairable(LUMINITE_CRYSTAL.get())
+            .component(net.minecraft.core.component.DataComponents.EQUIPPABLE, net.minecraft.world.item.equipment.Equippable.builder(net.minecraft.world.entity.EquipmentSlot.HEAD)
+                    .setAsset(net.minecraft.resources.ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID,
+                            net.minecraft.resources.Identifier.fromNamespaceAndPath(dev.umbra.Umbra.MODID, "night_goggles")))
+                    .setEquipSound(net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER).setDamageOnHurt(false).build()));
     // --- 2.5: weapons ---
     public static final DeferredItem<Item> LUMINITE_SPEAR = ITEMS.registerSimpleItem("luminite_spear", p -> p.sword(ModMaterials.GLOOM_TOOLS, 3.0F, -2.8F)
             .attributes(weapon("spear", 7.0, -2.8, 2.0)).rarity(Rarity.UNCOMMON)

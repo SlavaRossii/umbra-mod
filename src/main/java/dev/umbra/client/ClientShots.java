@@ -129,6 +129,10 @@ public final class ClientShots {
         POSES.add(new Pose(String.format("%02d_lantern_night", n++), CameraType.FIRST_PERSON, false, false, CLEAR, "time set midnight", "tp @a ~ ~ ~ 0 50",
                 "item replace entity @a weapon.mainhand with umbra:luminite_lantern[umbra:lit=true]"));
         POSES.add(new Pose(String.format("%02d_lantern_night_third", n++), CameraType.THIRD_PERSON_BACK, false, true));
+        // 2.12.2: the night goggles on the head, and what they show at midnight
+        POSES.add(new Pose(String.format("%02d_goggles_third", n++), CameraType.THIRD_PERSON_FRONT, false, true, CLEAR, "time set noon",
+                "item replace entity @a armor.head with umbra:night_goggles"));
+        POSES.add(new Pose(String.format("%02d_goggles_night", n++), CameraType.FIRST_PERSON, false, false, "time set midnight", "tp @a ~ ~ ~ 0 10"));
     }
 
     // the compatibility check takes only some of them (a regex over the names; the whole set when empty)

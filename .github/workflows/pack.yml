@@ -24,9 +24,18 @@ jobs:
       - name: Build Umbra
         run: ./gradlew build -x test --stacktrace > build.log 2>&1 || (tail -60 build.log; exit 1)
       - name: Put the pack together
-        run: python3 tools/compat/make_pack.py "$(ls build/libs/umbra-*.jar | grep -v sources | head -1)" pack
+        run: |
+          mkdir -p pack
+          ls -la build/libs
+          python3 tools/compat/make_pack.py "$(ls build/libs/umbra-*.jar | grep -v sources | head -1)" pack > pack/pack.log 2>&1; rc=$?
+          cat pack/pack.log; [ $rc = 0 ] || exit $rc
+          # the same as a .7z (some Windows setups balk at the plain zip)
+          z=$(ls pack/umbra-pack-*.zip | head -1); d=$(mktemp -d); unzip -q "$z" -d "$d"
+          (cd "$d" && 7z a -t7z -mx=7 "$GITHUB_WORKSPACE/${z%.zip}.7z" . > /dev/null) && 7z t "${z%.zip}.7z" | tail -3
+          # and in parts of 40 MB each (big single files may not come through a download whole); open part .001 in 7-Zip
+          (cd "$d" && 7z a -t7z -mx=7 -v40m "$GITHUB_WORKSPACE/${z%.zip}-parts.7z" . > /dev/null) && ls -la pack
       - name: Publish
         if: always()
-        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/pack.md
+        run: .github/scripts/publish.sh ci-pack pack/*.mrpack pack/*.zip pack/*.7z pack/*.7z.0* pack/pack.md pack/pack.log
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

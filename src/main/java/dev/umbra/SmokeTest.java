@@ -2029,6 +2029,37 @@ final class SmokeTest {
         check(new ItemStack(ModItems.LUMINITE_SPEAR.get()).get(anim).type() == stab && new ItemStack(ModItems.SHADOW_DAGGER.get()).get(anim).type() == stab
                 && new ItemStack(ModItems.SHEPHERD_SCYTHE.get()).get(anim).duration() > new ItemStack(ModItems.SHADOW_DAGGER.get()).get(anim).duration(),
                 "2.12: the spear and the dagger stab, the scythe sweeps slower");
+        // 2.12.2: the lantern throws its light ahead of you too
+        fake.snapTo(c.getX() + 0.5, c.getY(), c.getZ() + 0.5, 180, 0);
+        fake.setYHeadRot(180);
+        dev.umbra.light.LanternItem.throwLight(level, fake);
+        BlockPos ahead = BlockPos.containing(fake.getEyePosition().add(fake.getLookAngle().scale(5)));
+        check(level.getBlockState(ahead).is(ModBlocks.HELD_LIGHT.get()) && ModBlocks.HELD_LIGHT.get().defaultBlockState().getLightEmission() == 15,
+                "2.12.2: the lit lantern shines at full light, and a few blocks ahead of you as well");
+        level.setBlock(ahead, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        // night goggles: in the dark you see, and the lenses burn their charge
+        BlockPos room = c.offset(0, 0, 4);
+        for (BlockPos p : BlockPos.betweenClosed(room.offset(-2, -1, -2), room.offset(2, 3, 2)))
+            level.setBlock(p, Math.abs(p.getX() - room.getX()) == 2 || Math.abs(p.getZ() - room.getZ()) == 2 || p.getY() == room.getY() - 1 || p.getY() == room.getY() + 3
+                    ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        fake.removeAllEffects();
+        fake.snapTo(room.getX() + 0.5, room.getY(), room.getZ() + 0.5, 0, 0);
+        ItemStack goggles = new ItemStack(ModItems.NIGHT_GOGGLES.get());
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, goggles);
+        fake.tickCount = 203;
+        dev.umbra.gear.NightGoggles.apply(fake, true);     // the room was walled in this very tick: its light has not caught up yet
+        boolean restsByDay = true;
+        fake.removeAllEffects();
+        dev.umbra.gear.NightGoggles.apply(fake, false);
+        restsByDay = !fake.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+        fake.tickCount = 203;
+        dev.umbra.gear.NightGoggles.apply(fake, true);
+        boolean sees = fake.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+        int used = fake.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).getDamageValue();
+        var eq = goggles.get(net.minecraft.core.component.DataComponents.EQUIPPABLE);
+        check(sees && restsByDay && used == 2 && eq != null && eq.slot() == net.minecraft.world.entity.EquipmentSlot.HEAD,
+                "2.12.2: night goggles on the head: in the dark you see, and the lenses burn their charge (" + used + ")");
+        fake.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
         fake.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         fake.setHealth(fake.getMaxHealth());
         fake.removeAllEffects();
