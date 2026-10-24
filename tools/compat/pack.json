@@ -1,7 +1,19 @@
 {
   "name": "Umbra — хоррор-сборка",
-  "summary": "Umbra и немного атмосферы: звуки (Sound Physics Remastered, AmbientSounds), свет в руке (LambDynamicLights), шейдеры (Sodium + Iris, Spooklementary; MakeUp — Ultra Fast для слабых компьютеров).",
-  "mods": ["sound-physics-remastered", "ambientsounds", "lambdynamiclights", "sodium", "iris"],
-  "shaders": ["spooklementary", "makeup-ultra-fast-shaders"],
+  "summary": "Umbra и немного атмосферы: звуки (Sound Physics Remastered, AmbientSounds), свет в руке (LambDynamicLights), шейдеры (Sodium + Iris, Spooklementary; MakeUp — Ultra Fast для слабых компьютеров); оптимизация: FerriteCore, ImmediatelyFast, Entity Culling.",
+  "mods": [
+    "sound-physics-remastered",
+    "ambientsounds",
+    "lambdynamiclights",
+    "sodium",
+    "iris",
+    "ferrite-core",
+    "immediatelyfast",
+    "entityculling"
+  ],
+  "shaders": [
+    "spooklementary",
+    "makeup-ultra-fast-shaders"
+  ],
   "default_shader": "spooklementary"
 }
