@@ -1,0 +1,371 @@
+01_aegis_main  using=false hand=MAIN_HAND main=1 umbra:luminite_shield off=0 minecraft:air
+02_aegis_main_block  using=true hand=MAIN_HAND main=1 umbra:luminite_shield off=0 minecraft:air
+03_aegis_off  using=false hand=MAIN_HAND main=0 minecraft:air off=1 umbra:luminite_shield
+04_aegis_off_block  using=true hand=OFF_HAND main=0 minecraft:air off=1 umbra:luminite_shield
+05_vanilla_main  using=false hand=OFF_HAND main=1 minecraft:shield off=0 minecraft:air
+06_vanilla_main_block  using=true hand=MAIN_HAND main=1 minecraft:shield off=0 minecraft:air
+07_vanilla_off  using=false hand=MAIN_HAND main=0 minecraft:air off=1 minecraft:shield
+08_vanilla_off_block  using=true hand=OFF_HAND main=0 minecraft:air off=1 minecraft:shield
+09_aegis_third  using=false hand=OFF_HAND main=0 minecraft:air off=1 umbra:luminite_shield
+10_aegis_third_block  using=true hand=OFF_HAND main=0 minecraft:air off=1 umbra:luminite_shield
+11_marta_lantern  using=false hand=OFF_HAND main=1 umbra:marta_lantern off=0 minecraft:air
+12_gloom_boots_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+13_gloom_leggings_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+14_gloom_chestplate_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+15_gloom_helmet_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+16_gloom_full  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+17_shadow_boots_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+18_shadow_leggings_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+19_shadow_chestplate_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+20_shadow_helmet_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+21_shadow_full  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+22_luminite_boots_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+23_luminite_leggings_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+24_luminite_chestplate_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+25_luminite_helmet_only  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+26_luminite_full  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+27_mob_fallen_keeper_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+28_mob_fallen_keeper_210  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+29_mob_drowned_keeper_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+30_mob_drowned_keeper_210  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+31_mob_acolyte_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+32_mob_acolyte_210  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+33_mob_primordial_day_160  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+34_mob_primordial_day_200  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+35_mob_primordial_night_180  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+36_mob_architect_day_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+37_mob_architect_day_215  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+38_mob_architect_night_180  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+39_mob_shepherd_day_160  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+40_mob_shepherd_day_220  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+41_mob_shepherd_night_180  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+42_mob_mimic_queen_day_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+43_mob_mimic_queen_day_215  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+44_mob_mimic_queen_night_180  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+45_mob_watcher_day_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+46_mob_watcher_day_220  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+47_mob_watcher_night_180  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+48_act_watcher_6  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+49_act_mimic_queen_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+50_act_shepherd_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+51_act_architect_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+52_act_architect_3  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+53_act_primordial_shadow_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+54_act_primordial_shadow_4  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+55_act_drowned_keeper_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+56_act_fallen_keeper_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+57_clear  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+58_hand_gloom_sword  using=false hand=OFF_HAND main=1 umbra:gloom_sword off=0 minecraft:air
+59_hand_despair_blade  using=false hand=OFF_HAND main=1 umbra:despair_blade off=0 minecraft:air
+60_hand_shadow_dagger  using=false hand=OFF_HAND main=1 umbra:shadow_dagger off=0 minecraft:air
+61_hand_shadow_knife  using=false hand=OFF_HAND main=1 umbra:shadow_knife off=0 minecraft:air
+62_hand_gloom_axe  using=false hand=OFF_HAND main=1 umbra:gloom_axe off=0 minecraft:air
+63_hand_gloom_pickaxe  using=false hand=OFF_HAND main=1 umbra:gloom_pickaxe off=0 minecraft:air
+64_hand_gloom_shovel  using=false hand=OFF_HAND main=1 umbra:gloom_shovel off=0 minecraft:air
+65_hand_luminite_spear  using=false hand=OFF_HAND main=1 umbra:luminite_spear off=0 minecraft:air
+66_hand_shepherd_scythe  using=false hand=OFF_HAND main=1 umbra:shepherd_scythe off=0 minecraft:air
+67_hand_echo_staff  using=false hand=OFF_HAND main=1 umbra:echo_staff off=0 minecraft:air
+68_hand_keeper_staff  using=false hand=OFF_HAND main=1 umbra:keeper_staff off=0 minecraft:air
+69_hand_luminite_bow  using=false hand=OFF_HAND main=1 umbra:luminite_bow off=0 minecraft:air
+70_hand_seal_of_watching  using=false hand=OFF_HAND main=1 umbra:seal_of_watching off=0 minecraft:air
+71_hand_seal_of_mimicry  using=false hand=OFF_HAND main=1 umbra:seal_of_mimicry off=0 minecraft:air
+72_hand_seal_of_herding  using=false hand=OFF_HAND main=1 umbra:seal_of_herding off=0 minecraft:air
+73_hand_seal_of_reflection  using=false hand=OFF_HAND main=1 umbra:seal_of_reflection off=0 minecraft:air
+74_hand_luminite_lantern_lit  using=false hand=OFF_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+75_hand_luminite_lantern  using=false hand=OFF_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+76_hand_marta_lantern  using=false hand=OFF_HAND main=1 umbra:marta_lantern off=0 minecraft:air
+77_hand_dawn_lantern  using=false hand=OFF_HAND main=1 umbra:dawn_lantern off=0 minecraft:air
+78_hand_luminite_bow_drawn  using=false hand=OFF_HAND main=1 umbra:dawn_lantern off=0 minecraft:air
+79_hold0_luminite_lantern  using=false hand=OFF_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+80_hold0_lantern_down  using=false hand=OFF_HAND main=1 umbra:marta_lantern off=0 minecraft:air
+81_hold0_lantern_offhand  using=false hand=OFF_HAND main=1 umbra:gloom_sword off=1 umbra:dawn_lantern
+82_third_luminite_spear  using=false hand=OFF_HAND main=1 umbra:luminite_spear off=0 minecraft:air
+83_third_shepherd_scythe  using=false hand=OFF_HAND main=1 umbra:shepherd_scythe off=0 minecraft:air
+84_third_keeper_staff  using=false hand=OFF_HAND main=1 umbra:keeper_staff off=0 minecraft:air
+85_third_gloom_axe  using=false hand=OFF_HAND main=1 umbra:gloom_axe off=0 minecraft:air
+86_third_luminite_bow  using=false hand=OFF_HAND main=1 umbra:luminite_bow off=0 minecraft:air
+87_third_seal_of_watching  using=false hand=OFF_HAND main=1 umbra:seal_of_watching off=0 minecraft:air
+88_third_seal_of_herding  using=false hand=OFF_HAND main=1 umbra:seal_of_herding off=0 minecraft:air
+89_third_luminite_lantern_lit  using=false hand=OFF_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+90_third_marta_lantern  using=false hand=OFF_HAND main=1 umbra:marta_lantern off=0 minecraft:air
+91_third_luminite_bow_drawn  using=false hand=OFF_HAND main=1 umbra:marta_lantern off=0 minecraft:air
+92_side_luminite_lantern_90  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+93_side_luminite_lantern_140  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+94_side_marta_lantern_130  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+95_side_dawn_lantern_60  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+96_side_luminite_spear_90  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+97_side_luminite_spear_150  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+98_side_clear  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+99_tour_lighthouse  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+100_tour_village_ring  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+101_tour_village_street  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+102_tour_village_hamlet  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+103_tour_workshop  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+104_tour_maze  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+105_tour_temple  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+106_tour_citadel_gate  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+107_tour_rift  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+108_tour_camp  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+109_tour_broken_rift  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+110_tour_figures  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+111_tour_citadel_1  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+112_tour_citadel_2  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+113_tour_citadel_3  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+114_tour_citadel_4  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+115_tour_citadel_5  using=false hand=OFF_HAND main=0 minecraft:air off=0 minecraft:air
+116_tour_depths_landing  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+117_tour_depths_gallery  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+118_tour_depths_pillars  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+119_tour_depths_gates  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+120_tour_depths_sanctum  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+121_tour_mobs_1  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+122_tour_mobs_2  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+123_tour_mobs_3  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+124_tour_mobs_4  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+125_tour_blocks_1  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+126_tour_blocks_2  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+127_tour_altar  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+128_tour_altar_seal  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+129_tour_altar_rite  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+130_tour_treasure  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+131_tour_knives  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+132_tour_end  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+133_lantern_night  using=false hand=MAIN_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+134_lantern_night_third  using=false hand=MAIN_HAND main=1 umbra:luminite_lantern off=0 minecraft:air
+135_goggles_third  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+136_goggles_night  using=false hand=MAIN_HAND main=0 minecraft:air off=0 minecraft:air
+50:[24Oct2026 19:30:14.235] [Render thread/ERROR] [net.minecraft.client.Minecraft/]: Failed to create backend OpenGL
+51:com.mojang.renderpearl.api.device.BackendCreationException: Failed to create window for OpenGL context: Couldn't find matching GLX visual
+69:[24Oct2026 19:30:14.808] [Render thread/ERROR] [com.mojang.text2speech.Narrator/]: Error while loading the narrator
+70:com.mojang.text2speech.Narrator$InitializeException: Failed to load library flite
+98:	Suppressed: java.io.IOException: Native library (linux-x86-64/libflite.so) not found in resource path (/home/runner/work/umbra-mod/umbra-mod/build/classes/java/main:/home/runner/work/umbra-mod/umbra-mod/build/resources/main:/home/runner/work/umbra-mod/umbra-mod/build/moddev/artifacts/minecraft-patched-26.3.0.76.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/DevLaunch/1.0.2/2e0e9a67793d5bfdedee4f9ea00934dbf3f2e22d/DevLaunch-1.0.2.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/26.3.0.76/163993fbd027998d8d1a951f28ed5b344d96b6b6/neoforge-26.3.0.76-universal.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/earlydisplay/12.0.12/8437387fd35033b1ea0d3fac7cc28ced4efdc6b/earlydisplay-12.0.12.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged.fancymodloader/loader/12.0.12/f097a25d6289aa0b289e7cdb6de83a5c8c72f77e/loader-12.0.12.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/accesstransformers/11.0.2/25dcb69c78b16669935f0ab91dff830ce192379d/accesstransformers-11.0.2.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.11/7ddfa7d6cee28f627af0bd246ef046e24e1b02a/asm-commons-9.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/mergetool/2.0.7/793b18456e92c4a7f66d9b5d8bf7a9c1c7a20b20/mergetool-2.0.7-api.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.11/1d4e8839681014f2530b85a1969eb5b0d8af3dd7/asm-util-9.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.11/f35f7706e93e0de19c256b3e7e7f43e792a8d571/asm-analysis-9.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.11/2e0298e7c0986f94e161de26d108c78d20547935/asm-tree-9.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/bus/8.0.5/5b2d33285ab5d1554e9798ad98c40d6ea3868bd5/bus-8.0.5.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.11/2a2c870691d2220eb93492c88fdcd3711ab0fadb/asm-9.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.electronwill.night-config/toml/3.9.0/8548891033db17e8f219b453cac38fb865ee4224/toml-3.9.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.electronwill.night-config/core/3.9.0/29bba7ced5c9768adda06384c61fff2c33dc5e05/core-3.9.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarSelector/0.5.3/6b845aab8d5c8e721b4e3cd30f97722b7f8044b1/JarJarSelector-0.5.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/JarJarMetadata/0.5.3/ff40c1cd721d07615d825c5bbf27705b2e3258ed/JarJarMetadata-0.5.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact/3.10.0/27e1f01911be3be075ea108d4fe8fd59ae717c5c/maven-artifact-3.10.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.jodah/typetools/0.6.3/a01aaa6ddaea9ec07ec4f209487b7a46a526283a/typetools-0.6.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.minecrell/terminalconsoleappender/1.3.0/b562e9bb61235c9520e26282cdee71f8f802d1fc/terminalconsoleappender-1.3.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/26.0.2-1/c7ce3cdeda3d18909368dfe5977332dfad326c6d/annotations-26.0.2-1.jar:/home/runner/.gradle/caches/modules-2/files-2.1/ca.weblite/java-objc-bridge/1.1/1227f9e0666314f9de41477e3ec277e542ed7f7b/java-objc-bridge-1.1.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/5.0.4/4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c/jopt-simple-5.0.4.jar:/home/runner/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.20.0/36f3474daec2849c149e877614e7f979b2082cd2/commons-io-2.20.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-sdl/3.4.3/c02146735d6ff70d070c73532b435e5c893a346b/lwjgl-sdl-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-sdl/3.4.3/6ed1b80b7c211a491612c70e43f27ba1f42cccd0/lwjgl-sdl-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/logging/1.7.12/351cea64a5233361327d8d54c44277041beed97f/logging-1.7.12.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-slf4j2-impl/2.26.0/668c0f0e813d83f00a7182533aa658ec7e7a0a0d/log4j-slf4j2-impl-2.26.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.26.0/d267ca60b27ddb075e0b4e75e7875859717bf85f/log4j-core-2.26.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.26.0/ad52af0ecf054a7e3f275a2e180ee06d9c490951/log4j-api-2.26.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/33.6.0-jre/c376b13067cc99a5774403530953f7b05a91e218/guava-33.6.0-jre.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.14.0/efc0e34ede4e3204eaefb84a00e55e8c86634382/gson-2.14.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.20.0/65897b3e5731220962e659e001904af3c3cbeba9/commons-lang3-3.20.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.jspecify/jspecify/1.0.1/3d60fd98eb8ade73004f4195c37b6317e02cf3d7/jspecify-1.0.1.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged.accesstransformers/at-parser/11.0.2/64aae57d6d26d69543c5275181fe6971707a4e16/at-parser-11.0.2.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/2.0.17/d9e58ac9c7779ba3bf8142aff6c830617a7fe60f/slf4j-api-2.0.17.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.neoforged/srgutils/1.0.10/abb471237b33b19f040ada00bfbad1ec45b949b6/srgutils-1.0.10.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/3.6.2/c8e32e2f08fb3a0e6caf34f1448cc69f077f4282/plexus-utils-3.6.2.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.jline/jline-reader/3.20.0/8f15415b022a25b473e8e16c28ae913186ffb9c4/jline-reader-3.20.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/at.yawk.lz4/lz4-java/1.10.1/f541d7f910fe3d76f38f799c507c48cc81b12ecb/lz4-java-1.10.1.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.azure/azure-json/1.4.0/fcc1d354dbc3e0300e5276b1bf124d0247799cd8/azure-json-1.4.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.github.oshi/oshi-core/6.9.0/3224870731860cfcd7744581a05b559e94291e7/oshi-core-6.9.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.3/aeaffd00d57023a2c947393ed251f0354f0985fc/failureaccess-1.0.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/78.3/6a851a53bb1f25689fc418dcc8935b0d93580adf/icu4j-78.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.microsoft.azure/msal4j/1.24.1/c233f2d047b9755f7041adf21a858c680e4c9242/msal4j-1.24.1.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/authlib/10.0.77/add8754cda96cf0cd840441632875648836f8a71/authlib-10.0.77.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/blocklist/1.0.10/5c685c5ffa94c4cd39496c7184c1d122e515ecef/blocklist-1.0.10.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/brigadier/1.3.11/3373d1e7bf00c8b99bed1ea4efb8c47344e4a887/brigadier-1.3.11.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/datafixerupper/10.0.21/b6b2ae770c02e0c1eb90f9985b151e9085a38d0b/datafixerupper-10.0.21.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/jtracy/1.14.38/cc2ad81342001b4281c305a298d7f50332354058/jtracy-1.14.38.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/jtracy/1.14.38/d2433300f8a4e99595d513546d19ecddc3eaa15e/jtracy-1.14.38-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/patchy/2.2.10/da05971b07cbb379d002cf7eaec6a2048211fefc/patchy-2.2.10.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.mojang/text2speech/1.19.12/2e517a75c79d34d32de2b5d68422150836c2133e/text2speech-1.19.12.jar:/home/runner/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.22.0/6b3eb4beb7058c2a638f5f17bcb388649fd339dd/commons-codec-1.22.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-buffer/4.2.16.Final/5397ef65dcb60670e0e0dba4854522873af3070/netty-buffer-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-codec-base/4.2.16.Final/1a01d45a9efc228c6d747525848b065e0656b5f/netty-codec-base-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-codec-compression/4.2.16.Final/bdbbcfcdbe217b95c14a04df4fc5d31213d5c27c/netty-codec-compression-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-codec-http/4.2.16.Final/b5e0715df90047ee5a0138c8f704f43c751009e4/netty-codec-http-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-common/4.2.16.Final/c2bc7fa5acfa2afc777e944d84f0aa65559cc81e/netty-common-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-handler/4.2.16.Final/cc82873ae4b6d14effe480740ad838de09add70d/netty-handler-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-resolver/4.2.16.Final/fcea6d64273b59ab9127b68c16ae98af34642139/netty-resolver-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-classes-epoll/4.2.16.Final/cf90c7b892e284ba9f1545dce170168369b3b9d6/netty-transport-classes-epoll-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-classes-kqueue/4.2.16.Final/fa2bcf8c71626510f6fae173f78182117b70f7a/netty-transport-classes-kqueue-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-native-unix-common/4.2.16.Final/3cf32390f1b80af890ac44aa0698c2ff58c2a4d7/netty-transport-native-unix-common-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport/4.2.16.Final/ae87a3bec51d503475a19fbd718bf777f2fc06c6/netty-transport-4.2.16.Final.jar:/home/runner/.gradle/caches/modules-2/files-2.1/it.unimi.dsi/fastutil/8.5.18/a6cff377eecc19c2037bf31568a6d7106b50ba1f/fastutil-8.5.18.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform/5.17.0/a4934c44d25a9d8c2ddf4203affd20330cb3426f/jna-platform-5.17.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/5.17.0/33d12735bef894440780fce64f9758d420c7bae2/jna-5.17.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-compress/1.28.0/e482f2c7a88dac3c497e96aa420b6a769f59c8d7/commons-compress-1.28.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.jcraft/jorbis/0.0.17/8872d22b293e8f5d7d56ff92be966e6dc28ebdc6/jorbis-0.0.17.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.joml/joml/1.10.9/438e036486bad66b189bff385dd07dea4f74a146/joml-1.10.9.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-freetype/3.4.3/d2b12961d44f92860fb1ab501f9c69b7a2975236/lwjgl-freetype-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-freetype/3.4.3/38f27c9a0fbe000bfb38b295c32944d699e246e9/lwjgl-freetype-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.4.3/350f317eaf5295b1e53f6664ef5fdeeaaa7dcbf0/lwjgl-jemalloc-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.4.3/ca21b4b4c6d223907de645a18436ef6f677a5d4f/lwjgl-jemalloc-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.4.3/32b52cda5af6937a4e4bd321bdb83082025cb332/lwjgl-openal-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.4.3/7daa62f9f7b38b30e8a3d3bc7069e9b2e3cd52f0/lwjgl-openal-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.4.3/b81769ee48050f8c71e70839505f350bf9219d90/lwjgl-opengl-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.4.3/ec6fb42167943e94f7f0b14707c1737653c4044b/lwjgl-opengl-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-shaderc/3.4.3/ba9fbc8fc4d50b3e4b436cc958ddb4abdb05867c/lwjgl-shaderc-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-shaderc/3.4.3/37faa5824f75901f4961e56805aedf68e13cf8b/lwjgl-shaderc-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-spvc/3.4.3/98e5b5ef5159100b26a169a9aed6c24e820e3eaa/lwjgl-spvc-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-spvc/3.4.3/709eb01deec4bdafb7634b125a63fd8de172fc50/lwjgl-spvc-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-stb/3.4.3/cdce54785bd3758e44a81f345d6260774d921c78/lwjgl-stb-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-stb/3.4.3/3878e44ce27c12791e570b5c8754ef3b68401dd3/lwjgl-stb-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-vma/3.4.3/816a6ac87f1e447e5346ca0e7a1078353f51fbd6/lwjgl-vma-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-vma/3.4.3/3a9a95d3e83f7fc49c6ed8d0e1c853b77662d90e/lwjgl-vma-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-vulkan/3.4.3/ffdaf1898192059f059d66f9fa37e3debcac10e0/lwjgl-vulkan-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.4.3/7ab5265a73d8a959ed62332d546536ae6be2f0d5/lwjgl-3.4.3.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.4.3/2800e134537db1a175eba41c430b1018eddc48f0/lwjgl-3.4.3-natives-linux.jar:/home/runner/.gradle/caches/modules-2/files-2.1/org.jline/jline-terminal/3.20.0/d0ddcc708ddf527a3454c941b7b9225cc83a15ff/jline-terminal-3.20.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-native-epoll/4.2.16.Final/eed34f3b37b4c46a0cbb49456ccc4e3bd7195e4c/netty-transport-native-epoll-4.2.16.Final-linux-aarch_64.jar:/home/runner/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-native-epoll/4.2.16.Final/439c24f5c27c220deb042b42e4048d606edeb78d/netty-transport-native-epoll-4.2.16.Final-linux-x86_64.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.48.0/bbe30942a31d1778c74cb272321267eca82dc708/error_prone_annotations-2.48.0.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/home/runner/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/3.1/a892ca9507839bbdb900d64310ac98256cab992f/j2objc-annotations-3.1.jar)
+107:[24Oct2026 19:30:17.644] [Render thread/ERROR] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Error starting SoundSystem. Turning off sounds & music
+108:java.lang.IllegalStateException: Failed to open OpenAL device
+181:[24Oct2026 19:30:32.009] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 01_aegis_main
+198:[24Oct2026 19:30:35.385] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 02_aegis_main_block
+199:[24Oct2026 19:30:38.672] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 03_aegis_off
+202:[24Oct2026 19:30:41.876] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 04_aegis_off_block
+203:[24Oct2026 19:30:45.146] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 05_vanilla_main
+206:[24Oct2026 19:30:48.420] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 06_vanilla_main_block
+207:[24Oct2026 19:30:51.603] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 07_vanilla_off
+210:[24Oct2026 19:30:54.867] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 08_vanilla_off_block
+211:[24Oct2026 19:30:58.071] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 09_aegis_third
+214:[24Oct2026 19:31:01.321] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 10_aegis_third_block
+215:[24Oct2026 19:31:04.569] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 11_marta_lantern
+218:[24Oct2026 19:31:06.998] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+219:[24Oct2026 19:31:07.030] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+220:[24Oct2026 19:31:07.752] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 12_gloom_boots_only
+223:[24Oct2026 19:31:11.014] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 13_gloom_leggings_only
+226:[24Oct2026 19:31:14.264] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 14_gloom_chestplate_only
+229:[24Oct2026 19:31:17.462] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 15_gloom_helmet_only
+232:[24Oct2026 19:31:20.761] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 16_gloom_full
+238:[24Oct2026 19:31:23.971] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 17_shadow_boots_only
+241:[24Oct2026 19:31:27.219] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 18_shadow_leggings_only
+244:[24Oct2026 19:31:30.514] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 19_shadow_chestplate_only
+247:[24Oct2026 19:31:33.723] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 20_shadow_helmet_only
+250:[24Oct2026 19:31:36.975] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 21_shadow_full
+256:[24Oct2026 19:31:40.270] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 22_luminite_boots_only
+259:[24Oct2026 19:31:43.466] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 23_luminite_leggings_only
+262:[24Oct2026 19:31:46.769] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 24_luminite_chestplate_only
+265:[24Oct2026 19:31:49.974] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 25_luminite_helmet_only
+268:[24Oct2026 19:31:53.223] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 26_luminite_full
+274:[24Oct2026 19:31:56.511] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 27_mob_fallen_keeper_150
+279:[24Oct2026 19:31:56.559] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_fallen_keeper
+280:[24Oct2026 19:31:59.824] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 28_mob_fallen_keeper_210
+285:[24Oct2026 19:32:03.059] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 29_mob_drowned_keeper_150
+290:[24Oct2026 19:32:03.099] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_drowned_keeper
+291:[24Oct2026 19:32:06.369] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 30_mob_drowned_keeper_210
+296:[24Oct2026 19:32:09.627] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 31_mob_acolyte_150
+301:[24Oct2026 19:32:09.663] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+302:[24Oct2026 19:32:12.871] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 32_mob_acolyte_210
+307:[24Oct2026 19:32:16.112] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 33_mob_primordial_day_160
+315:[24Oct2026 19:32:16.149] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_primordial_shadow
+317:[24Oct2026 19:32:19.370] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 34_mob_primordial_day_200
+325:[24Oct2026 19:32:22.675] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 35_mob_primordial_night_180
+332:[24Oct2026 19:32:25.950] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 36_mob_architect_day_150
+340:[24Oct2026 19:32:26.017] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_architect
+342:[24Oct2026 19:32:29.254] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 37_mob_architect_day_215
+350:[24Oct2026 19:32:32.517] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 38_mob_architect_night_180
+357:[24Oct2026 19:32:35.873] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 39_mob_shepherd_day_160
+365:[24Oct2026 19:32:35.909] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_shepherd
+367:[24Oct2026 19:32:39.127] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 40_mob_shepherd_day_220
+375:[24Oct2026 19:32:42.414] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 41_mob_shepherd_night_180
+382:[24Oct2026 19:32:45.704] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 42_mob_mimic_queen_day_150
+390:[24Oct2026 19:32:45.771] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_mimic_queen
+392:[24Oct2026 19:32:49.014] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 43_mob_mimic_queen_day_215
+400:[24Oct2026 19:32:52.318] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 44_mob_mimic_queen_night_180
+407:[24Oct2026 19:32:55.607] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 45_mob_watcher_day_150
+415:[24Oct2026 19:32:55.680] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_watcher
+417:[24Oct2026 19:32:58.972] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 46_mob_watcher_day_220
+425:[24Oct2026 19:33:02.200] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 47_mob_watcher_night_180
+432:[24Oct2026 19:33:05.511] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 48_act_watcher_6
+440:[24Oct2026 19:33:08.867] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 49_act_mimic_queen_2
+448:[24Oct2026 19:33:08.903] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_mimic_queen
+449:[24Oct2026 19:33:12.102] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 50_act_shepherd_2
+457:[24Oct2026 19:33:12.167] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_shepherd
+458:[24Oct2026 19:33:15.415] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 51_act_architect_2
+466:[24Oct2026 19:33:15.452] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_architect
+467:[24Oct2026 19:33:18.725] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 52_act_architect_3
+475:[24Oct2026 19:33:21.977] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 53_act_primordial_shadow_2
+483:[24Oct2026 19:33:22.012] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_primordial_shadow
+484:[24Oct2026 19:33:25.201] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 54_act_primordial_shadow_4
+492:[24Oct2026 19:33:28.455] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 55_act_drowned_keeper_2
+500:[24Oct2026 19:33:28.521] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_drowned_keeper
+501:[24Oct2026 19:33:31.715] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 56_act_fallen_keeper_2
+509:[24Oct2026 19:33:31.750] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_fallen_keeper
+510:[24Oct2026 19:33:35.014] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 57_clear
+515:[24Oct2026 19:33:35.049] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+516:[24Oct2026 19:33:38.257] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 58_hand_gloom_sword
+520:[24Oct2026 19:33:41.514] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 59_hand_despair_blade
+524:[24Oct2026 19:33:44.814] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 60_hand_shadow_dagger
+528:[24Oct2026 19:33:48.059] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 61_hand_shadow_knife
+532:[24Oct2026 19:33:51.321] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 62_hand_gloom_axe
+536:[24Oct2026 19:33:54.549] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 63_hand_gloom_pickaxe
+540:[24Oct2026 19:33:57.801] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 64_hand_gloom_shovel
+544:[24Oct2026 19:34:01.019] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 65_hand_luminite_spear
+548:[24Oct2026 19:34:04.327] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 66_hand_shepherd_scythe
+552:[24Oct2026 19:34:07.556] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 67_hand_echo_staff
+556:[24Oct2026 19:34:10.801] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 68_hand_keeper_staff
+560:[24Oct2026 19:34:14.061] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 69_hand_luminite_bow
+564:[24Oct2026 19:34:17.298] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 70_hand_seal_of_watching
+568:[24Oct2026 19:34:20.577] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 71_hand_seal_of_mimicry
+572:[24Oct2026 19:34:23.822] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 72_hand_seal_of_herding
+576:[24Oct2026 19:34:27.051] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 73_hand_seal_of_reflection
+580:[24Oct2026 19:34:30.313] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 74_hand_luminite_lantern_lit
+584:[24Oct2026 19:34:32.005] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+585:[24Oct2026 19:34:32.037] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+586:[24Oct2026 19:34:33.500] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 75_hand_luminite_lantern
+590:[24Oct2026 19:34:36.753] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 76_hand_marta_lantern
+594:[24Oct2026 19:34:37.021] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -3.433E-1 -1.236E+0), drawn true
+595:[24Oct2026 19:34:39.948] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 77_hand_dawn_lantern
+599:[24Oct2026 19:34:42.016] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+600:[24Oct2026 19:34:43.155] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 78_hand_luminite_bow_drawn
+601:[24Oct2026 19:34:46.428] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 79_hold0_luminite_lantern
+605:[24Oct2026 19:34:47.014] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+606:[24Oct2026 19:34:49.663] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 80_hold0_lantern_down
+611:[24Oct2026 19:34:52.029] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+612:[24Oct2026 19:34:52.928] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 81_hold0_lantern_offhand
+618:[24Oct2026 19:34:56.116] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 82_third_luminite_spear
+621:[24Oct2026 19:34:59.371] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 83_third_shepherd_scythe
+625:[24Oct2026 19:35:02.611] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 84_third_keeper_staff
+627:[24Oct2026 19:35:05.872] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 85_third_gloom_axe
+630:[24Oct2026 19:35:09.123] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 86_third_luminite_bow
+633:[24Oct2026 19:35:12.369] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 87_third_seal_of_watching
+636:[24Oct2026 19:35:15.666] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 88_third_seal_of_herding
+639:[24Oct2026 19:35:18.922] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 89_third_luminite_lantern_lit
+642:[24Oct2026 19:35:22.121] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 90_third_marta_lantern
+645:[24Oct2026 19:35:25.419] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 91_third_luminite_bow_drawn
+646:[24Oct2026 19:35:28.650] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 92_side_luminite_lantern_90
+653:[24Oct2026 19:35:31.898] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 93_side_luminite_lantern_140
+660:[24Oct2026 19:35:35.158] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 94_side_marta_lantern_130
+667:[24Oct2026 19:35:38.413] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 95_side_dawn_lantern_60
+674:[24Oct2026 19:35:41.671] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 96_side_luminite_spear_90
+681:[24Oct2026 19:35:44.900] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 97_side_luminite_spear_150
+688:[24Oct2026 19:35:48.166] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 98_side_clear
+691:[24Oct2026 19:35:51.421] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 99_tour_lighthouse
+694:[24Oct2026 19:36:02.919] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 100_tour_village_ring
+695:[24Oct2026 19:36:14.371] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 101_tour_village_street
+697:[24Oct2026 19:36:25.822] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 102_tour_village_hamlet
+699:[24Oct2026 19:36:37.325] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 103_tour_workshop
+701:[24Oct2026 19:36:48.750] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 104_tour_maze
+703:[24Oct2026 19:37:00.263] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 105_tour_temple
+706:[24Oct2026 19:37:11.721] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 106_tour_citadel_gate
+708:[24Oct2026 19:37:23.107] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 107_tour_rift
+710:[24Oct2026 19:37:34.518] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 108_tour_camp
+712:[24Oct2026 19:37:46.911] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 109_tour_broken_rift
+714:[24Oct2026 19:37:58.421] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 110_tour_figures
+717:[24Oct2026 19:38:09.821] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 111_tour_citadel_1
+719:[24Oct2026 19:38:21.325] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 112_tour_citadel_2
+721:[24Oct2026 19:38:32.722] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 113_tour_citadel_3
+724:[24Oct2026 19:38:45.127] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 114_tour_citadel_4
+726:[24Oct2026 19:38:56.672] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 115_tour_citadel_5
+729:[24Oct2026 19:39:08.224] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 116_tour_depths_landing
+732:[24Oct2026 19:39:10.223] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.underside
+735:[24Oct2026 19:39:21.800] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 117_tour_depths_gallery
+737:[24Oct2026 19:39:33.414] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 118_tour_depths_pillars
+739:[24Oct2026 19:39:45.000] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 119_tour_depths_gates
+741:[24Oct2026 19:39:56.362] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 120_tour_depths_sanctum
+743:[24Oct2026 19:40:08.066] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 121_tour_mobs_1
+745:[24Oct2026 19:40:08.253] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_drowned_keeper
+746:[24Oct2026 19:40:08.426] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+747:[24Oct2026 19:40:09.109] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_drowned_keeper
+748:[24Oct2026 19:40:20.358] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 122_tour_mobs_2
+750:[24Oct2026 19:40:20.459] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+751:[24Oct2026 19:40:32.560] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 123_tour_mobs_3
+753:[24Oct2026 19:40:44.869] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 124_tour_mobs_4
+755:[24Oct2026 19:40:46.076] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music music.boss_doppelganger
+757:[24Oct2026 19:40:57.069] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 125_tour_blocks_1
+759:[24Oct2026 19:40:57.173] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+761:[24Oct2026 19:41:08.469] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 126_tour_blocks_2
+762:[24Oct2026 19:41:19.877] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 127_tour_altar
+764:[24Oct2026 19:41:32.180] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 128_tour_altar_seal
+766:[24Oct2026 19:41:44.381] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 129_tour_altar_rite
+768:[24Oct2026 19:41:55.581] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 130_tour_treasure
+770:[24Oct2026 19:42:06.882] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 131_tour_knives
+772:[24Oct2026 19:42:18.200] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 132_tour_end
+774:[24Oct2026 19:42:30.500] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 133_lantern_night
+779:[24Oct2026 19:42:33.117] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+780:[24Oct2026 19:42:33.615] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 134_lantern_night_third
+781:[24Oct2026 19:42:36.815] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 135_goggles_third
+785:[24Oct2026 19:42:40.015] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: pose 136_goggles_night
+788:[24Oct2026 19:42:43.316] [Render thread/INFO] [dev.umbra.Umbra/]: UMBRA CLIENTSHOTS: done
+[19:40:57] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: music (the game's own)
+[19:41:08] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:41:08] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 126_tour_blocks_2
+[19:41:19] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 127_tour_altar
+[19:41:19] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:41:32] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 128_tour_altar_seal
+[19:41:32] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:41:44] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 129_tour_altar_rite
+[19:41:44] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:41:55] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 130_tour_treasure
+[19:41:55] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:42:06] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 131_tour_knives
+[19:42:06] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:42:18] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 132_tour_end
+[19:42:18] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No entity was found
+[19:42:30] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 133_lantern_night
+[19:42:30] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: No items were found on player Dev
+[19:42:30] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Set minecraft:overworld to time marker minecraft:midnight
+[19:42:30] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Teleported Dev to 0.000000, -60.000000, 0.000000
+[19:42:30] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Replaced 1 slot(s) on Dev with [Luminite Lantern]
+[19:42:33] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: lantern in the MAIN_HAND hand, hold 0, fist at ( 5.656E-1 -9.374E-2 -1.236E+0), drawn true
+[19:42:33] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 134_lantern_night_third
+[19:42:36] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 135_goggles_third
+[19:42:36] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Removed 1 item(s) from player Dev
+[19:42:36] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Set minecraft:overworld to time marker minecraft:noon
+[19:42:36] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Replaced 1 slot(s) on Dev with [Night Goggles]
+[19:42:40] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: pose 136_goggles_night
+[19:42:40] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Set minecraft:overworld to time marker minecraft:midnight
+[19:42:40] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Teleported Dev to 0.000000, -60.000000, 0.000000
+[19:42:43] [Render thread/INFO] [de.um.Umbra/]: UMBRA CLIENTSHOTS: done
+[19:42:43] [Render thread/DEBUG] [ne.ne.fm.cl.tr.ClassTransformStatistics/]: Transformed/total loaded classes: 431/9906 (4.35%) and 5 parsed for mixin
+[19:42:43] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+[19:42:43] [Server thread/INFO] [minecraft/ServerGamePacketListenerImpl]: Dev lost connection: Disconnected
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: System chat: Dev left the game
+[19:42:43] [Server thread/INFO] [minecraft/ServerCommonPacketListenerImpl]: Stopping singleplayer server as player logged out
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[shots]'/minecraft:overworld
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[shots]'/minecraft:the_nether
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[shots]'/umbra:underside
+[19:42:43] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[shots]'/minecraft:the_end
+[19:42:43] [Server thread/DEBUG] [ne.ne.ne.co.CommonHooks/WP]: Gathered mod list to write to world save shots
+[19:42:43] [Server thread/DEBUG] [ne.ne.fm.co.ConfigTracker/CONFIG]: Unloading configs type SYNCED
+[19:42:43] [Render thread/INFO] [ne.ne.fm.lo.FMLLoader/]: Closing FML Loader 16167d52
+[19:42:43] [Render thread/INFO] [ne.ne.fm.ModLoader/]: Clearing ModLoader
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1792870207383.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/umbra-mod/umbra-mod/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 12m 37s
+7 actionable tasks: 2 executed, 5 up-to-date
+Configuration cache entry stored.
+client exited with 0
